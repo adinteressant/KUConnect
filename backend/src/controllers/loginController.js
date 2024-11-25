@@ -1,6 +1,17 @@
+
+import jwt from 'jsonwebtoken'; 
+
 const loginController = ((req,res) =>{
-  console.log(req.body);
-  res.status(201).json({"Login":"Successful"}) 
+  let data = req.body;
+  //i try to validate the user data from database and if exists, we go brrr with generating the token and giving it to the user :)
+  const token = jwt.sign({"email":data.email},process.env.JWT_SECRET_KEY,{expiresIn:'10m'})
+  res.status(201).json({"status":"successful",
+    "data":token,
+    "user":{
+      "email":req.body.email,
+      "role":"student", // returns user role if student or faculty
+    }
+  })
 });
 
 export default loginController;

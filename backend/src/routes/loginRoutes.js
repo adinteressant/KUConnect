@@ -11,7 +11,7 @@ router.post("/v1/api/user-login",
       .trim()
       .escape()
       .isLength({ min: 10 })
-      .withMessage('Username must be at least 3 characters long'),
+      .withMessage('Email must be at least 3 characters long'),
     body('password')
       .trim()
       .escape()
