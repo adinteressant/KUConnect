@@ -11,10 +11,17 @@ export default function LoginPage() {
     password: ""
   })
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     //logic to be added
-    console.log("Login attempt with:", formData)
+    const response = await fetch(`http://localhost:6969/v1/api/user-login/`,{
+      method:'POST',
+      headers:{
+        "Content-type":'application/json',
+      },
+      body:JSON.stringify(formData),
+    })
+    console.log(await response.json())
   }
 
   const handleGoogleLogin = () => {
