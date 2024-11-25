@@ -1,6 +1,15 @@
+import { BrowserRouter, Route, Routes } from "react-router-dom"
+import LoginPage from './components/LoginPage.jsx'
+import Home from './components/Home.jsx'
 export default function App() {
-
-  return <div className="bg-red-400">
-      Hello World!
-    </div>
+  return(
+  <>
+    <BrowserRouter>
+    <Routes>
+      <Route path="/" element={<Home/>}/>
+      <Route path="/login" element={<LoginPage/>}/>
+    </Routes>
+    </BrowserRouter>
+  </>
+  );
 }
