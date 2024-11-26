@@ -1,5 +1,6 @@
 
 import jwt from 'jsonwebtoken'; 
+import authenticateJWT from '../middlewares/authenticateJWT.js';
 
 const loginController = ((req,res) =>{
   let data = req.body;
@@ -12,6 +13,7 @@ const loginController = ((req,res) =>{
       "role":"student", // returns user role if student or faculty
     }
   })
+
 });
 
 export default loginController;
