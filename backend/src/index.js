@@ -4,6 +4,8 @@ import cors from 'cors';
 
 import router from './routes/index.js';
 
+import { connectToDB } from './db/index.js'
+
 dotenv.config({path: './.env'});
 
 
@@ -16,6 +18,13 @@ app.use(router)
 
 const PORT = process.env.PORT || 3000
 
-app.listen(PORT,()=>{
-  console.log(`Server is running on port ${PORT}`)
+connectToDB()
+.then(()=>{
+  app.listen(PORT,()=>{
+    console.log(`Server is running on port ${PORT}`)
+  })
+})
+.catch((error)=>{
+  console.log(`connection error: ${error}`)
+  process.exit(1)
 })

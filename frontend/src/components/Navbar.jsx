@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link,NavLink } from 'react-router-dom';
 import { Search, User } from 'lucide-react';
 
 const Navigation = () => {
@@ -32,12 +32,15 @@ const Navigation = () => {
               {pathList.map((path) => {
                 const label = path.slice(1) || 'Home';
                 return (
-                  <Link 
+                  <NavLink 
                     key={path} 
                     to={path} 
-                    className="relative text-gray-800 font-serif
-                              px-4 py-2 transition-all duration-1000 
-                              hover:text-cyan-600 group"
+                    className={({isActive})=>
+                        `${isActive ? 'text-cyan-600': 'text-gray-800'}
+                              relative font-serif
+                              px-4 py-2 transition-all duration-150 
+                              hover:text-cyan-600 group`
+                    }
                   >
                     <span className="relative z-10">
                       {label.charAt(0).toUpperCase() + label.slice(1)}
@@ -49,7 +52,7 @@ const Navigation = () => {
                                 transition-opacity duration-1000 
                                 scale-0 group-hover:scale-150"
                     />
-                  </Link>
+                  </NavLink>
                 );
               })}
             </nav>
