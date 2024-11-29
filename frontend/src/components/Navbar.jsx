@@ -2,8 +2,16 @@ import React from 'react';
 import { Link,NavLink } from 'react-router-dom';
 import { Search, User } from 'lucide-react';
 
-const Navigation = () => {
+const Navigation = ({setVisibility}) => {
   let pathList = ['/', '/login', '/register'];
+
+  function checkLoginOrRegistration(path){
+    if(path === '/login' || path ==='/register'){
+      setVisibility(false)
+    }else{
+      setVisibility(true)
+    }
+  }
   
   return (
     <div className="w-full bg-white shadow-sm">
@@ -35,6 +43,7 @@ const Navigation = () => {
                   <NavLink 
                     key={path} 
                     to={path} 
+                    onClick={()=>{checkLoginOrRegistration(path)}}
                     className={({isActive})=>
                         `${isActive ? 'text-cyan-600': 'text-gray-800'}
                               relative font-serif
