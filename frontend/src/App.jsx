@@ -1,9 +1,5 @@
-import { BrowserRouter, Outlet, Route, Routes} from "react-router-dom";
-import LoginPage from './components/LoginPage.jsx';
-import RegisterPage from "./components/RegisterPage.jsx";
-import HomePage from "./components/HomePage.jsx";
+import { Outlet } from "react-router-dom";
 import Navbar from "./components/Navbar.jsx";
-import MessagePage from "./components/MessagePage.jsx";
 import Sidebar from "./components/Sidebar.jsx";
 
 export default function App() {
