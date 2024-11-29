@@ -1,18 +1,15 @@
-import { BrowserRouter, Route, Routes} from "react-router-dom";
-import LoginPage from './components/LoginPage.jsx';
-import RegisterPage from "./components/RegisterPage.jsx";
-import HomePage from "./components/HomePage.jsx";
+import { Outlet } from "react-router-dom";
 import Navbar from "./components/Navbar.jsx";
+import Sidebar from "./components/Sidebar.jsx";
 
 export default function App() {
   return(
-    <BrowserRouter>
-    <Navbar/>
-      <Routes>
-        <Route path="/" element={<HomePage/>}/>
-        <Route path="/login" element={<LoginPage/>}/>
-        <Route path="/register" element={<RegisterPage/>}/>
-      </Routes>
-    </BrowserRouter>
+    <>
+      <Navbar/>
+      <div className="flex h-screen bg-gray-100">
+      <Sidebar/>
+      <Outlet/>
+      </div>
+    </>
   );
 }

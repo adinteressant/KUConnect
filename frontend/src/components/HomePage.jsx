@@ -1,39 +1,6 @@
-import React from 'react';
-import { 
-  Home as HomeIcon, 
-  MessageCircle as MessagesIcon, 
-  Users as FriendsIcon, 
-  Bell as NotificationsIcon, 
-} from 'lucide-react';
 
 const HomePage = () => {
   return (
-    <div className="flex h-screen bg-gray-100">
-      {/* Sidebar */}
-      <div className="w-64 bg-white shadow-md p-4">
-        <nav>
-          <ul className="space-y-2">
-            <li className="flex items-center p-2 hover:bg-gray-200 rounded-lg cursor-pointer">
-              <HomeIcon className="mr-3 text-cyan-600" />
-              <span>Home</span>
-            </li>
-            <li className="flex items-center p-2 hover:bg-gray-200 rounded-lg cursor-pointer">
-              <MessagesIcon className="mr-3 text-cyan-600" />
-              <span>Messages</span>
-            </li>
-            <li className="flex items-center p-2 hover:bg-gray-200 rounded-lg cursor-pointer">
-              <FriendsIcon className="mr-3 text-cyan-600" />
-              <span>Friends</span>
-            </li>
-            <li className="flex items-center p-2 hover:bg-gray-200 rounded-lg cursor-pointer">
-              <NotificationsIcon className="mr-3 text-cyan-600" />
-              <span>Notifications</span>
-            </li>
-          </ul>
-        </nav>
-      </div>
-
-      {/* Main Content Area */}
       <div className="flex-1 flex flex-col">
         {/* Content Feed */}
         <main className="flex-1 p-6 overflow-y-auto">
@@ -67,7 +34,7 @@ const HomePage = () => {
           </div>
         </main>
       </div>
-    </div>
+   
   );
 };
 
