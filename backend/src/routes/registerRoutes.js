@@ -1,6 +1,6 @@
 import express from 'express';
 import registerController from './../controllers/registerController.js';
-import registerMiddleware from './../controllers/registerController.js';
+import registerMiddleware from './../middlewares/registerMiddleware.js';
 
 import { checkSchema } from 'express-validator'
 import { registerSchema } from '../utils/validationSchema.js'
