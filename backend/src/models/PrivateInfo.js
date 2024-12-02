@@ -2,14 +2,15 @@ import mongoose from 'mongoose';
 
 const privateInfoSchema = new mongoose.Schema({
   user_id: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
     required: true,
-    unique: true,
+    ref: 'PublicInfo',
   },
   email: {
     type: String,
     required: true,
     unique: true,
+    trim: true,
   },
   password_hash: {
     type: String,
