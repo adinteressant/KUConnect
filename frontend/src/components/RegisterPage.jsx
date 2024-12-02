@@ -16,9 +16,11 @@ export default function RegisterPage() {
     password: ""
   })
 
-  const handleSubmit =  (e) => {
-    e.preventDefault()
-    const response =  fetch(`http://localhost:6969/v1/api/user-register/`, {
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  try {
+    const response = await fetch(`http://localhost:6969/v1/api/user-register/`, {
       method: 'POST',
       headers: {
         "Content-type": 'application/json',
@@ -28,10 +30,25 @@ export default function RegisterPage() {
         email: formData.email,
         password: formData.password,
       }),
-    })
-    const context =  response.json();
-    console.log(context);
+    });
+
+    // Ensure the response is properly parsed
+    const context = await response.json();
+
+    if (!response.ok) {
+      console.error('Error:', context);
+      alert(context.message || 'Failed to register.');
+      return;
+    }
+
+    console.log('Success:', context);
+    alert('Registration successful!');
+  } catch (error) {
+    console.error('Unexpected error:', error);
+    alert('Something went wrong. Please try again later.');
   }
+};
+
   const handleGoogleLogin = () => {
     //logic to be added
     console.log("Attempting to log in with Google")
