@@ -1,8 +1,47 @@
-import { validationResult } from 'express-validator'
+import PrivateInfo from '../models/PrivateInfo.js';
+import PublicInfo from '../models/PublicInfo.js';
+import { hashPassword } from '../utils/hashPassword.js';
+import { v4 as uuidv4 } from 'uuid';
 
-export default function registerController(req,res){
-  //To implment implementing the addition of user data into database
-  res.send({
-    "status":"Success registering"
-  })
+export default async function registerController(req, res) {
+  const { username, email, password } = req.body;
+
+  try {
+    // Generate unique user ID
+    const userId = uuidv4();
+
+    // Hash the password
+    const hashedPassword = hashPassword(password);
+
+    // Create entries for both public and private information
+    const privateInfo = new PrivateInfo({
+      user_id: userId,
+      email,
+      password_hash: hashedPassword,
+    });
+
+    const publicInfo = new PublicInfo({
+      user_id: userId,
+      username,
+      tags: [],
+    });
+
+    // Save both documents in a transaction-like approach
+    await privateInfo.save();
+    await publicInfo.save();
+
+    // Respond with success and user details
+    res.status(201).json({
+      message: 'User registered successfully',
+      user_id: userId, // Include user_id for tracking
+    });
+  } catch (error) {
+    console.error('Error in user registration:', error);
+
+    // Handle errors (e.g., validation or database errors)
+    res.status(500).json({
+      message: 'Error registering user',
+      error: error.message,
+    });
+  }
 }
