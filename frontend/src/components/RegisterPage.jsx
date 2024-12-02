@@ -18,40 +18,6 @@ export default function RegisterPage() {
     role: "" // Added role error field
   });
 
-<<<<<<< HEAD
-const handleSubmit = async (e) => {
-  e.preventDefault();
-
-  try {
-    const response = await fetch(`http://localhost:6969/v1/api/user-register/`, {
-      method: 'POST',
-      headers: {
-        "Content-type": 'application/json',
-      },
-      body: JSON.stringify({
-        username: formData.username,
-        email: formData.email,
-        password: formData.password,
-      }),
-    });
-
-    // Ensure the response is properly parsed
-    const context = await response.json();
-
-    if (!response.ok) {
-      console.error('Error:', context);
-      alert(context.message || 'Failed to register.');
-      return;
-    }
-
-    console.log('Success:', context);
-    alert('Registration successful!');
-  } catch (error) {
-    console.error('Unexpected error:', error);
-    alert('Something went wrong. Please try again later.');
-  }
-};
-=======
   const handleSubmit = async (e) => {
     e.preventDefault();
   
@@ -88,7 +54,6 @@ const handleSubmit = async (e) => {
       alert('Something went wrong. Please try again later.');
     }
   };  
->>>>>>> origin/suyog
 
   const handleGoogleLogin = () => {
     console.log("Attempting to log in with Google")

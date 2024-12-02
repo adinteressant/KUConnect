@@ -58,12 +58,8 @@ export default async function registerController(req, res) {
     const publicInfo = new PublicInfo({
       user_id: userId,
       username,
-<<<<<<< HEAD
-      tags: [],
-=======
       tags: [], // Default empty tags
       role: role, // Save the role in PublicInfo
->>>>>>> origin/suyog
     });
 
     
@@ -78,11 +74,7 @@ export default async function registerController(req, res) {
   } catch (error) {
     console.error('Error in user registration:', error);
 
-<<<<<<< HEAD
-    // Handle errors 
-=======
     // Handle internal errors
->>>>>>> origin/suyog
     res.status(500).json({
       message: 'Failed to register. Please try again later.',
       error: error.message,

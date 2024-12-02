@@ -40,8 +40,8 @@ export default async function loginController(req,res)
       user:
       {
         user_id: privateInfo.user_id,
-        email: privateInfo.email
-        //Role aile chaina
+        email: privateInfo.email,
+        role: privateInfo.role
       }
     });
 
