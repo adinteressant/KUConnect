@@ -24,7 +24,7 @@ export const registerSchema = {
         min:12,
         //max:32
       },
-      errorMessage:'Length of email must be greater than 3!'
+      errorMessage:'Length of email must be greater than 12!'
     }
   },
   password:{
@@ -32,10 +32,10 @@ export const registerSchema = {
     escape:true,
     isLength:{
       options:{
-        min:16,
+        min:8,
         //max:32
       },
-      errorMessage:'Password must be of 16 characters or more!',
+      errorMessage:'Password must be of 8 characters or more!',
     }
   }
 }
@@ -57,10 +57,10 @@ export const loginSchema = {
     escape:true,
     isLength:{
       options:{
-        min:6,
+        min:8,
         //max:32
       },
-      errorMessage:'Password must be at least 6 characters long'
+      errorMessage:'Password must be at least 8 characters long'
     }
   }
 }
