@@ -6,21 +6,20 @@ import { hashPassword,comparePassword } from '../utils/hashPassword.js';
 
 export default async function loginController(req,res)
 {
-  const {email, password} = req.body;
+  const {email, password} = matchedData(body);
 
   try
   {
     //Check if the user is registered
     const privateInfo = await PrivateInfo.findOne({ email });
-    console.log(privateInfo);
     if(!privateInfo)
     {
       return res.status(404).json({message: 'Invalid email'});
     }
 
     //Verify the password
-    const hashedpw = hashPassword(password);
-    if(hashedpw !== privateInfo.password_hash)
+    const isValidPassword = comparePassword(password,privateInfo.password_hash); 
+    if(!isValidPassword)
     {
       return res.status(401).json({ message: 'Invalid password'});
     }
