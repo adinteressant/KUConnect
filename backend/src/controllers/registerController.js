@@ -15,9 +15,15 @@ export default async function registerController(req, res) {
 
     // Check if the user already exists (by email or username)
     const existingPrivateInfo = await PrivateInfo.findOne({ email });
+    const existingPublicInfo = await PublicInfo.findOne({ username });
+    
     if (existingPrivateInfo) {
       return res.status(400).json({ message: 'User already exists with this email' });
     }
+    if (existingPublicInfo) {
+      return res.status(400).json({ message: 'Username is already taken' });
+    }
+    
 
     // Create entries for both public and private information
     const privateInfo = new PrivateInfo({
