@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import authenticateJWT from '../middlewares/authenticateJWT.js';
 import { matchedData } from 'express-validator';
 import PrivateInfo from '../models/PrivateInfo.js';
-import { comparePassword } from '../utils/hashPassword.js';
+import { hashPassword,comparePassword } from '../utils/hashPassword.js';
 
 export default async function loginController(req,res)
 {
@@ -12,14 +12,15 @@ export default async function loginController(req,res)
   {
     //Check if the user is registered
     const privateInfo = await PrivateInfo.findOne({ email });
+    console.log(privateInfo);
     if(!privateInfo)
     {
       return res.status(404).json({message: 'Invalid email'});
     }
 
     //Verify the password
-    const isPasswordValid = comparePassword(password, privateInfo.password_hash);
-    if(!isPasswordValid)
+    const hashedpw = hashPassword(password);
+    if(hashedpw !== privateInfo.password_hash)
     {
       return res.status(401).json({ message: 'Invalid password'});
     }

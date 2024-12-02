@@ -16,7 +16,7 @@ app.use(cors());
 
 app.use(router)
 
-const PORT = process.env.PORT || 6969
+const PORT = process.env.PORT || 3000
 
 connectToDB()
 .then(()=>{
