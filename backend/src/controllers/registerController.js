@@ -13,8 +13,6 @@ export default async function registerController(req, res) {
     // Hash the password
     const hashedPassword = hashPassword(password);
 
-<<<<<<< HEAD
-=======
     // Check if the user already exists (by email or username)
     const existingPrivateInfo = await PrivateInfo.findOne({ email });
     const existingPublicInfo = await PublicInfo.findOne({ username });
@@ -27,7 +25,6 @@ export default async function registerController(req, res) {
     }
     
 
->>>>>>> origin/suyog
     // Create entries for both public and private information
     const privateInfo = new PrivateInfo({
       user_id: userId,
