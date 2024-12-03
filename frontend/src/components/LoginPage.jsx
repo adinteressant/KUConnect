@@ -12,17 +12,36 @@ export default function LoginPage() {
   })
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    //logic to be added
-    const response = await fetch(`http://localhost:6969/v1/api/user-login/`,{
-      method:'POST',
-      headers:{
-        "Content-type":'application/json',
-      },
-      body:JSON.stringify(formData),
-    })
-    const context = await response.json()
-    sessionStorage.setItem("jwtToken",context.data);
+    try
+    {
+      e.preventDefault()
+
+      const response = await fetch(`http://localhost:3000/v1/api/user-login/`,{
+        method:'POST',
+        headers:{
+          "Content-type":'application/json',
+        },
+        body:JSON.stringify
+        ({
+          email: formData.email,
+          password: formData.password
+        }),
+      })
+      const context = await response.json()
+
+      if (!response.ok) {
+        throw new Error(context.message || 'Login failed');
+      }
+
+      sessionStorage.setItem("jwtToken",context.data);
+
+      console.log('Success:', context);
+    }
+    catch(error)
+    {
+      console.error('Login error:', error.message);
+    }
+    
   }
 
   const handleGoogleLogin = () => {

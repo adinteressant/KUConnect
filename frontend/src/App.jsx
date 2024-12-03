@@ -1,24 +1,20 @@
-import { BrowserRouter, Route, Routes, Link } from "react-router-dom";
-import LoginPage from './components/LoginPage.jsx';
-import Home from './components/Home.jsx';
-import RegisterPage from "./components/RegisterPage.jsx";
-import HomePage from "./components/HomePage.jsx";
+import { Outlet } from "react-router-dom";
+import Navbar from "./components/Navbar.jsx";
+import Sidebar from "./components/Sidebar.jsx";
+
+import { useState } from 'react'
 
 export default function App() {
+
+  const[isSidebarVisible,setIsSidebarVisible] = useState(true);
+
   return(
-    <BrowserRouter>
-      <nav>
-        <Link to="/">Home</Link>
-        <Link to="/login">Login</Link>
-        <Link to="/register">Register</Link>
-        <Link to="/homepage">HomePage</Link>
-      </nav>
-      <Routes>
-        <Route path="/" element={<Home/>}/>
-        <Route path="/login" element={<LoginPage/>}/>
-        <Route path="/register" element={<RegisterPage/>}/>
-        <Route path="/homepage" element={<HomePage/>}/>
-      </Routes>
-    </BrowserRouter>
+    <>
+      <Navbar setVisibility={setIsSidebarVisible}/>
+      <div className="flex h-screen bg-gray-100">
+      {isSidebarVisible && <Sidebar/>}
+      <Outlet/>
+      </div>
+    </>
   );
 }

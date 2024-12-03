@@ -6,40 +6,62 @@ export default function RegisterPage() {
     username: "",
     email: "",
     rePassword: "",
-    password: ""
-  })
+    password: "",
+    role: "" // Added role field
+  });
 
   const [errors, setErrors] = useState({
     username: "",
     email: "",
     rePassword: "",
-    password: ""
-  })
+    password: "",
+    role: "" // Added role error field
+  });
 
-  const handleSubmit =  (e) => {
-    e.preventDefault()
-    const response =  fetch(`http://localhost:6969/v1/api/user-register/`, {
-      method: 'POST',
-      headers: {
-        "Content-type": 'application/json',
-      },
-      body: JSON.stringify({
-        username: formData.username,
-        email: formData.email,
-        password: formData.password,
-      }),
-    })
-    const context =  response.json();
-    console.log(context);
-  }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  
+    // Log the form data to verify it's correct
+    console.log('Form Data:', formData);
+  
+    try {
+      const response = await fetch(`http://localhost:3000/v1/api/user-register/`, {
+        method: 'POST',
+        headers: {
+          "Content-type": 'application/json',
+        },
+        body: JSON.stringify({
+          username: formData.username,
+          email: formData.email,
+          password: formData.password,
+          rePassword: formData.rePassword,
+          role: formData.role, // Ensure role is included
+        }),
+      });
+  
+      const context = await response.json();
+  
+      if (!response.ok) {
+        console.error('Error:', context);
+        alert(context.message || 'Failed to register.');
+        return;
+      }
+  
+      console.log('Success:', context);
+      alert('Registration successful!');
+    } catch (error) {
+      console.error('Unexpected error:', error);
+      alert('Something went wrong. Please try again later.');
+    }
+  };  
+
   const handleGoogleLogin = () => {
-    //logic to be added
     console.log("Attempting to log in with Google")
-  }
+  };
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-gray-100">
-      <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-md">
+      <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-md mt-8">
         <h1 className="text-4xl font-serif mb-8 text-center text-gray-800">Signup</h1>
         <form onSubmit={handleSubmit} className="w-full space-y-6">
           <div className="w-full space-y-2">
@@ -86,6 +108,20 @@ export default function RegisterPage() {
               required
             />
             {errors.rePassword && <p className="text-sm text-red-500">{errors.rePassword}</p>}
+          </div>
+
+          {/* Dropdown for selecting role */}
+          <div className="w-full space-y-2">
+            <select
+              value={formData.role}
+              onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+              className="w-full px-4 py-3 rounded-md text-base transition-colors bg-gray-100 focus:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+            >
+              <option value="">Select Role (Student or Faculty)</option>
+              <option value="student">Student</option>
+              <option value="faculty">Faculty</option>
+            </select>
+            {errors.role && <p className="text-sm text-red-500">{errors.role}</p>}
           </div>
 
           <div className="pt-2">
