@@ -2,18 +2,25 @@ import { Outlet } from "react-router-dom";
 import Navbar from "./components/Navbar.jsx";
 import Sidebar from "./components/Sidebar.jsx";
 
-import { useState } from 'react'
+import { useState } from "react";
 
 export default function App() {
+  const [isSidebarVisible, setIsSidebarVisible] = useState(true);
 
-  const[isSidebarVisible,setIsSidebarVisible] = useState(true);
-
-  return(
+  return (
     <>
-      <Navbar setVisibility={setIsSidebarVisible}/>
+      {/* Navbar */}
+      <Navbar setVisibility={setIsSidebarVisible} />
+
+      {/* Main Layout */}
       <div className="flex h-screen bg-gray-100">
-      {isSidebarVisible && <Sidebar/>}
-      <Outlet/>
+        {/* Sidebar */}
+        {isSidebarVisible && <Sidebar />}
+
+        {/* Content Area */}
+        <div className="flex-grow">
+          <Outlet />
+        </div>
       </div>
     </>
   );
