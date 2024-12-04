@@ -2,8 +2,7 @@ import React from 'react';
 
 const NotificationPage = () => {
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-full h-full max-h-full">
         <h1 className="text-4xl font-serif font-bold text-gray-800 mb-6">Notifications</h1>
 
         <div className="space-y-4">
@@ -64,7 +63,6 @@ const NotificationPage = () => {
           </div>
         </div>
       </div>
-    </div>
   );
 };
 
