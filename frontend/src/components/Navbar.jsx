@@ -1,20 +1,13 @@
-import React from 'react';
-import { Link,NavLink } from 'react-router-dom';
-import { Search, User } from 'lucide-react';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Search, User, LogIn, UserPlus, ChevronDown, UserCircle } from 'lucide-react';
 
-const Navigation = ({setVisibility}) => {
-  let pathList = ['/', '/login', '/register'];
+const Navigation = () => {
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  function checkLoginOrRegistration(path){
-    if(path === '/login' || path ==='/register'){
-      setVisibility(false)
-    }else{
-      setVisibility(true)
-    }
-  }
   
   return (
-    <div className="w-full bg-white shadow-sm">
+    <div className="w-full bg-white shadow-sm relative">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -36,41 +29,42 @@ const Navigation = ({setVisibility}) => {
 
           {/* Navigation Links and Profile */}
           <div className="flex items-center space-x-6">
-            <nav className="flex space-x-6 items-center">
-              {pathList.map((path) => {
-                const label = path.slice(1) || 'Home';
-                return (
-                  <NavLink 
-                    key={path} 
-                    to={path} 
-                    onClick={()=>{checkLoginOrRegistration(path)}}
-                    className={({isActive})=>
-                        `${isActive ? 'text-cyan-600': 'text-gray-800'}
-                              relative font-serif
-                              px-4 py-2 transition-all duration-150 
-                              hover:text-cyan-600 group`
-                    }
+            {/* Profile Dropdown */}
+            <div className="relative">
+              <button
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                className="p-2 rounded-full hover:bg-gray-100 transition-colors flex items-center"
+                aria-label="Profile"
+              >
+                <User className="h-6 w-6 text-gray-600" />
+                <ChevronDown className="h-4 w-4 ml-1 text-gray-600" />
+              </button>
+
+              {isDropdownOpen && (
+                <div className="absolute right-0 top-full mt-2 w-48 bg-white shadow-lg rounded-lg border border-gray-200 z-50">
+                  <Link 
+                    to="/login" 
+                    className="flex items-center px-4 py-2 hover:bg-gray-100 transition-colors"
                   >
-                    <span className="relative z-10">
-                      {label.charAt(0).toUpperCase() + label.slice(1)}
-                    </span>
-                    <span 
-                      className="absolute inset-0 bg-cyan-500 opacity-0 
-                                rounded-full -z-10 
-                                group-hover:opacity-5 
-                                transition-opacity duration-1000 
-                                scale-0 group-hover:scale-150"
-                    />
-                  </NavLink>
-                );
-              })}
-            </nav>
-            <button
-              className="p-2 rounded-full hover:bg-gray-100 transition-colors"
-              aria-label="Profile"
-            >
-              <User className="h-6 w-6 text-gray-600" />
-            </button>
+                    <LogIn className="h-4 w-4 mr-2" /> Login
+                  </Link>
+                  <Link 
+                    to="/register" 
+                    className="flex items-center px-4 py-2 hover:bg-gray-100 transition-colors"
+                  >
+                    <UserPlus className="h-4 w-4 mr-2" /> Register
+                  </Link>
+
+                  <Link 
+                    to="/myprofile" 
+                    className="flex items-center px-4 py-2 hover:bg-gray-100 transition-colors"
+                  >
+                    <UserCircle className="h-4 w-4 mr-2" /> My Profile
+                  </Link>
+
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -79,4 +73,3 @@ const Navigation = ({setVisibility}) => {
 };
 
 export default Navigation;
-

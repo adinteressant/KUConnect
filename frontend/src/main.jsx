@@ -11,6 +11,7 @@ import HomePage from './components/HomePage.jsx'
 import MessagePage from './components/MessagePage.jsx'
 import FriendsPage from './components/FriendsPage.jsx'
 import NotificationPage from './components/NotificationPage.jsx'
+import MyProfile from './components/MyProfile.jsx'
 
 const router = createBrowserRouter([
   {
@@ -40,6 +41,10 @@ const router = createBrowserRouter([
       {
         path:'/notifications',
         element:<NotificationPage/>
+      },
+      {
+        path:'/myprofile',
+        element:<MyProfile/>
       }
       
     ]
