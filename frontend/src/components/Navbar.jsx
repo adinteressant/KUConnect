@@ -2,9 +2,12 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, User, LogIn, UserPlus, ChevronDown, UserCircle } from 'lucide-react';
 
-const Navigation = () => {
+const Navigation = ({setVisibility}) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
+  const checkLoginOrRegister = (path) => {
+    (path === '/login' || path === '/register') ? setVisibility(false) : setVisibility(true)
+  }
   
   return (
     <div className="w-full bg-white shadow-sm relative">
@@ -43,12 +46,14 @@ const Navigation = () => {
               {isDropdownOpen && (
                 <div className="absolute right-0 top-full mt-2 w-48 bg-white shadow-lg rounded-lg border border-gray-200 z-50">
                   <Link 
+                    onClick={()=>{checkLoginOrRegister('/login')}}
                     to="/login" 
                     className="flex items-center px-4 py-2 hover:bg-gray-100 transition-colors"
                   >
                     <LogIn className="h-4 w-4 mr-2" /> Login
                   </Link>
                   <Link 
+                    onClick={()=>{checkLoginOrRegister('/register')}}
                     to="/register" 
                     className="flex items-center px-4 py-2 hover:bg-gray-100 transition-colors"
                   >
@@ -56,6 +61,7 @@ const Navigation = () => {
                   </Link>
 
                   <Link 
+                  onClick={()=>{checkLoginOrRegister('/myprofile')}}
                     to="/myprofile" 
                     className="flex items-center px-4 py-2 hover:bg-gray-100 transition-colors"
                   >
