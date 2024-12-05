@@ -2,15 +2,21 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, User, LogIn, UserPlus, ChevronDown, UserCircle } from 'lucide-react';
 
-const Navigation = ({setVisibility}) => {
+const Navigation = ({setVisibility,setPadding}) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const checkLoginOrRegister = (path) => {
-    (path === '/login' || path === '/register') ? setVisibility(false) : setVisibility(true)
+    if(path === '/login' || path === '/register'){
+      setVisibility(false)
+      setPadding('')
+    }else{
+      setVisibility(true)
+      setPadding('pl-64')
+    }
   }
   
   return (
-    <div className="w-full bg-white shadow-sm relative">
+    <div className="w-full bg-white shadow-sm fixed z-20 top-0">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
