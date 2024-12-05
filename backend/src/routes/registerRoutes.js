@@ -7,7 +7,9 @@ import { registerSchema } from '../utils/validationSchema.js'
 
   let router = express.Router();
 
-  router.post("/v1/api/user-register/",checkSchema(registerSchema)
-  ,registerMiddleware,registerController);
+  router.post("/v1/api/user-register/",
+    checkSchema(registerSchema)
+    ,registerMiddleware,
+    registerController);
 
 export default router;
