@@ -1,4 +1,4 @@
-import { verify } from "jsonwebtoken";
+// import { verify } from "jsonwebtoken";
 import { generate_jwt_token } from "../utils/generateJwtToken.js";
 
 export default function generateTokenController(req, res) {
