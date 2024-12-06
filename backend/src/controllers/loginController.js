@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import authenticateJWT from '../middlewares/authenticateJWT.js';
 import { matchedData } from 'express-validator';
 import PrivateInfo from '../models/PrivateInfo.js';
-import { hashPassword,comparePassword } from '../utils/hashPassword.js';
+import { comparePassword } from '../utils/hashPassword.js';
 
 export default async function loginController(req,res)
 {
