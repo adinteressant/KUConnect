@@ -12,13 +12,14 @@ export default function LoginPage() {
   })
 
   const handleSubmit = async (e) => {
-    try {
-      e.preventDefault();
-  
-      const response = await fetch(`http://localhost:3000/v1/api/user-login/`, {
-        method: 'POST',
-        headers: {
-          'Content-type': 'application/json',
+    try
+    {
+      e.preventDefault()
+
+      const response = await fetch(`/v1/api/user-login/`,{
+        method:'POST',
+        headers:{
+          "Content-type":'application/json',
         },
         body: JSON.stringify({
           email: formData.email,

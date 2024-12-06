@@ -1,5 +1,24 @@
+import { useEffect, useState } from 'react'
 
 const HomePage = () => {
+  const [googleUser,setGoogleUser] = useState(null)
+  useEffect(() => {
+    fetch('/api/google/status',{credentials:'include'})
+    .then((response)=>{
+      return response.json()
+    })
+    .then((googleUserInfo)=>{
+      console.log('inside then')
+      setGoogleUser(googleUserInfo)
+       console.log(googleUser)
+    })
+    .catch((e)=>{
+      console.log('inside catch')
+      console.log(e)
+      setGoogleUser({})
+    })
+      
+  },[])
   return (
       <div className="flex-1 flex flex-col">
         {/* Content Feed */}
@@ -25,7 +44,7 @@ const HomePage = () => {
                   className="rounded-full w-10 h-10 mr-3"
                 />
                 <div>
-                  <h3 className="font-serif">John Doe</h3>
+                  <h3 className="font-serif">John Doe {googleUser ? googleUser.email : ''}</h3>
                   <p className="text-gray-500 text-sm">2 hours ago</p>
                 </div>
               </div>
