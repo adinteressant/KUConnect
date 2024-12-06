@@ -39,10 +39,10 @@ const Navigation = ({setVisibility,setPadding}) => {
           {/* Navigation Links and Profile */}
           <div className="flex items-center space-x-6">
             {/* Profile Dropdown */}
-            <div className="relative group">
+            <div className="relative">
               <button
               
-                // onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 className="p-2 rounded-full hover:bg-gray-100 transition-colors flex items-center"
                 aria-label="Profile"
               >
@@ -50,9 +50,9 @@ const Navigation = ({setVisibility,setPadding}) => {
                 <ChevronDown className="h-4 w-4 ml-1 text-gray-600" />
               </button>
 
-              {/* {isDropdownOpen && ( */}
+              {isDropdownOpen && (
               
-                <div className="absolute hidden group-hover:block right-0 top-full mt-2 w-48 bg-white shadow-lg rounded-lg border border-gray-200 z-50">
+                <div className="absolute right-0 top-full mt-2 w-48 bg-white shadow-lg rounded-lg border border-gray-200 z-50">
                   <Link 
                     onClick={()=>{checkLoginOrRegister('/login')}}
                     to="/login" 
@@ -77,7 +77,7 @@ const Navigation = ({setVisibility,setPadding}) => {
                   </Link>
 
                 </div>
-              {/* )} */}
+               )} 
             </div>
           </div>
         </div>

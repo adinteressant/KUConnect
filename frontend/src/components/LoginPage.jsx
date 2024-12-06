@@ -16,7 +16,7 @@ export default function LoginPage() {
     {
       e.preventDefault()
 
-      const response = await fetch(`/v1/api/user-login/`,{
+      const response = await fetch(`/api/user-login/`,{
         method:'POST',
         headers:{
           "Content-type":'application/json',
@@ -37,6 +37,7 @@ export default function LoginPage() {
       sessionStorage.setItem('jwtToken', context.token); // Store JWT token
   
       console.log('Login successful:', context);
+      window.location.href = '/';
     } catch (error) {
       console.error('Login error:', error.message);
     }

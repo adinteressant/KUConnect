@@ -8,12 +8,9 @@ const HomePage = () => {
       return response.json()
     })
     .then((googleUserInfo)=>{
-      console.log('inside then')
       setGoogleUser(googleUserInfo)
-       console.log(googleUser)
     })
     .catch((e)=>{
-      console.log('inside catch')
       console.log(e)
       setGoogleUser({})
     })
