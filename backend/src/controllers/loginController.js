@@ -32,9 +32,34 @@ export default async function loginController(req,res)
       {expiresIn: '1h'} //Token expires in 1 hour
     );
 
-    //Respond with the JWT token
-    res.status(200).json
-    ({
+    //
+    //
+    const jwt_token = generate_jwt_token(
+      privateInfo.user_id,
+      privateInfo.email
+    ) // token, has time of life: 1h.
+
+    const refresh_token = generate_refresh_token(
+      privateInfo.user_id,
+      privateInfo.email
+    ) // refresh_token, has a time of life: 1d.
+      // Respond with the JWT token and user info
+      
+    
+    res.cookie('JWT_TOKEN',jwt_token,{
+      httpOnly:true,
+    });
+    res.cookie('REFRESH_TOKEN',refresh_token,{
+      httpOnly:true,
+    });
+  
+    sessionStorage.setItem('uid',privateInfo.user_id);
+    sessionStorage.setItem('username',publicInfo.username);
+    sessionStorage.setItem('role',privateInfo.role);
+    //sets the f*ing session storage to have quickly retrievable data and yeah,ROLE isn't PRIVATE.
+
+
+    return res.status(200).json({
       message: 'Login Successful',
       token: token,
       user:
