@@ -44,8 +44,8 @@ export default function LoginPage() {
   
 
   const handleGoogleLogin = () => {
-    //logic to be added
-    console.log("Attempting to log in with Google")
+    const backendUrl = 'http://localhost:4000'
+    window.location.href = `${backendUrl}/api/auth/google`
   }
 
   return (
