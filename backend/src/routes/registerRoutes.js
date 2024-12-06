@@ -10,7 +10,7 @@ import passport from 'passport';
 
   let router = express.Router();
 
-  router.post("/v1/api/user-register/",
+  router.post("/api/user-register/",
     checkSchema(registerSchema)
     ,registerMiddleware,
     registerController);
@@ -23,7 +23,6 @@ import passport from 'passport';
   router.get('/api/google/status',(req,res) => {
     if(req.user) return res.send(req.user)
     
-    console.log('there is error in user') 
     return res.status(400).json({msg:'user not authenticated'})
   })
 export default router;

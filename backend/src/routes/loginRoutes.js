@@ -7,6 +7,6 @@ import { loginSchema } from '../utils/validationSchema.js'
 
 const router = express.Router();
 
-router.post("/v1/api/user-login",checkSchema(loginSchema),loginMiddleware,loginController);
+router.post("/api/user-login",checkSchema(loginSchema),loginMiddleware,loginController);
 
 export default router;
