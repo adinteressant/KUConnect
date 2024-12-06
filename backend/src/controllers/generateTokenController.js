@@ -1,5 +1,10 @@
-import { verify } from "jsonwebtoken";
+
 import { generate_jwt_token } from "../utils/generateJwtToken.js";
+import jwt from "jsonwebtoken";
+
+const { verify } = jwt;
+
+// Your code using `verify`...
 
 export default function generateTokenController(req, res) {
   try {
