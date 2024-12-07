@@ -15,11 +15,17 @@ import passport from 'passport';
     ,registerMiddleware,
     registerController);
 
-  router.get('/api/auth/google',passport.authenticate('google'))
+  
+  let frontendPort 
+  router.get('/api/auth/google',(req,res,next)=>{
+    frontendPort = req.query.port
+    next()
+  },passport.authenticate('google'))
+  
   router.get('/api/google/callback',passport.authenticate('google'),(req,res)=>{
-    res.redirect(`${process.env.FRONTEND_URL}`);
-    // res.sendStatus(200);
+    res.redirect(`http://localhost:${frontendPort}`);  
   })
+
   router.get('/api/google/status',(req,res) => {
     if(req.user) return res.send(req.user)
     
