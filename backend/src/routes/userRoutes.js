@@ -4,7 +4,7 @@ import authenticateJWT from '../middlewares/authenticateJWT.js'
 
 const router = express.Router();
 
-router.get("/v1/api/get-user-profile/",authenticateJWT,getUserProfileController);
+router.get("/api/get-user-profile/",authenticateJWT,getUserProfileController);
 
 export default router;
 
