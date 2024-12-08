@@ -3,7 +3,7 @@ import authenticateJWT from '../middlewares/authenticateJWT.js';
 import { matchedData } from 'express-validator';
 import PrivateInfo from '../models/PrivateInfo.js';
 import { comparePassword } from '../utils/hashPassword.js';
-
+import { generate_jwt_token,generate_refresh_token } from '../utils/generateJwtToken.js';
 export default async function loginController(req,res)
 {
   const { email, password } = matchedData(req);

@@ -4,7 +4,7 @@ import express from 'express';
 
 let router = express.Router();
 
-router.post("/v1/api/generate-token/",
+router.post("/api/generate-token/",
   // generate
 );
 
