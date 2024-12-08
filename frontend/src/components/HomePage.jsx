@@ -20,7 +20,7 @@ const HomePage = () => {
             <div className="bg-white p-4 rounded-lg shadow-md">
               <div className="flex items-center mb-4">
                 <img 
-                  src="/api/placeholder/40/40" 
+                  src="https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?t=st=1733666784~exp=1733670384~hmac=034d09dc5141bd8909e5c0eefdcaffae16d03173368ccc0146b8a0368fc432e7&w=740" 
                   alt="User" 
                   className="rounded-full w-10 h-10 mr-3"
                 />

@@ -5,7 +5,7 @@ export const generate_jwt_token = (user, email_id)=>{
  const token =  jwt.sign(
  { user_id: user, email: email_id }, // User _id suffix replaced to remove ambiguity :)
     process.env.JWT_SECRET_KEY, // Ensure JWT_SECRET_KEY is correctly set
- { expiresIn: '1h' }
+ { expiresIn: '10s' }
  );
   return token;
 };
