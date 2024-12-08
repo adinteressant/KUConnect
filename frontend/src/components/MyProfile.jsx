@@ -1,6 +1,35 @@
-import React from 'react';
+import {useState, useEffect } from 'react';
+import axios from 'axios';
+
+
+
 
 const MyProfile = () => {
+ 
+  
+const [userProfile,setuserProfile] = useState({
+  username:' ',
+  role:' ',
+});
+
+useEffect(()=>{
+  (async ()=>{
+  try {
+      const response = await axios.get('/v1/api/get-user-profile/', {
+        withCredentials: true // Sends the cookie with the request
+      });
+    if(!response.data){
+      return
+    }  
+
+    setuserProfile(JSON.parse(response.data));
+    } catch (error) {
+      console.error('Error fetching user profile:', error);
+      throw error;
+    }
+  })();
+},[]);
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-md">
@@ -11,8 +40,8 @@ const MyProfile = () => {
 
         {/* Name and Tagline */}
         <div className="text-center mt-4">
-          <h1 className="text-4xl font-serif font-bold text-gray-800">John Doe</h1>
-          <p className="text-gray-600 mt-2">@johndoe</p>
+          <h1 className="text-4xl font-serif font-bold text-gray-800 ">{userProfile.username}</h1>
+          <p className="text-gray-600 mt-2">@{userProfile.user_id}</p>
           <p className="text-gray-700 mt-2">
             Enthusiastic developer, coffee lover, and tech enthusiast.
           </p>
@@ -22,13 +51,7 @@ const MyProfile = () => {
         <div className="mt-6 text-left">
           <h2 className="text-2xl font-serif font-semibold mb-2 text-gray-800">Academic Info</h2>
           <p className="text-gray-700">
-            <strong>University:</strong> XYZ University
-          </p>
-          <p className="text-gray-700">
-            <strong>Department:</strong> Computer Science
-          </p>
-          <p className="text-gray-700">
-            <strong>Year:</strong> Sophomore
+            <strong>University Status: </strong> {userProfile.role}
           </p>
         </div>
 

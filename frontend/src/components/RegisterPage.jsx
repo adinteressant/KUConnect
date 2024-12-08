@@ -25,7 +25,7 @@ export default function RegisterPage() {
     console.log('Form Data:', formData);
   
     try {
-      const response = await fetch(`http://localhost:3000/v1/api/user-register/`, {
+      const response = await fetch(`/v1/api/user-register/`, {
         method: 'POST',
         headers: {
           "Content-type": 'application/json',

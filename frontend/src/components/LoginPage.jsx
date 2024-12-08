@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState } from 'react';
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
@@ -16,7 +16,7 @@ export default function LoginPage() {
     {
       e.preventDefault()
 
-      const response = await fetch(`http://localhost:3000/v1/api/user-login/`,{
+      const response = await fetch(`/v1/api/user-login/`,{
         method:'POST',
         headers:{
           "Content-type":'application/json',
@@ -27,15 +27,14 @@ export default function LoginPage() {
           password: formData.password
         }),
       })
-      const context = await response.json()
 
       if (!response.ok) {
         throw new Error(context.message || 'Login failed');
       }
 
-      sessionStorage.setItem("jwtToken",context.data);
+      const token = response.cookies
 
-      console.log('Success:', context);
+      console.log(token);
     }
     catch(error)
     {

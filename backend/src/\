@@ -1,0 +1,12 @@
+import PublicInfo from "../models/PublicInfo";
+
+export const getUserProfileController = async(req,res)=>{
+
+  console.log("get-user-info called!");
+  const user_info = jwt.decode(req.cookies.JWT_TOKEN);
+  const email = user_info.email;
+  user_profile = await PublicInfo.findOne({email})
+  res.body = user_profile; 
+  return res.status(200).json(res.body);
+
+}

@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 
-export const generate_jwt_token = ({user, email_id})=>{ 
+export const generate_jwt_token = (user, email_id)=>{ 
 
  const token =  jwt.sign(
  { user_id: user, email: email_id }, // User _id suffix replaced to remove ambiguity :)
