@@ -15,7 +15,7 @@ const [userProfile,setuserProfile] = useState({
 useEffect(()=>{
   (async ()=>{
   try {
-      const response = await axios.get('/v1/api/get-user-profile/', {
+      const response = await axios.get('/api/get-user-profile/', {
         withCredentials: true // Sends the cookie with the request
       });
     if(!response.data){

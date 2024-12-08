@@ -1,38 +1,43 @@
 import { useEffect, useState } from 'react';
 
 const HomePage = () => {
-  const [user, setUser] = useState(null); // State for user information (Google or manual)
+  const [user, setUser] = useState(null); // State for user information
   const [content, setContent] = useState(''); // State for post content
-  const [token,setToken] = useState('');
-  // Fetch user information (either Google or manual login)
+  const [token,setToken] = useState(null);
+  // Check for logged-in user on component mount
   useEffect(() => {
-    setToken(localStorage.getItem('jwtToken')); // Check for token in localStorage
-    console.log(token);
-    if (token) {
-      setUser({ email: 'user@example.com' }); // can be updated with real user data if needed
+  const storedToken = localStorage.getItem('jwtToken'); // Check for token in localStorage
+    setToken(storedToken);
+    if (storedToken) {
+      setUser({ email: 'user@example.com' }); // Placeholder for user; replace with actual user data if needed
     } else {
-      // If token is not found, check Google login status
       fetch('/api/google/status', { credentials: 'include' })
         .then((response) => response.json())
         .then((googleUserInfo) => {
           if (googleUserInfo && googleUserInfo.email) {
             setUser(googleUserInfo); // Set Google user info if logged in
           } else {
-            setUser(null); 
-            // No user logged in
+            setUser(null); // No user logged in
           }
         })
         .catch((e) => {
-          console.error('Failed to fetch Google user status:', e);
+          console.error('Error checking Google login status:', e);
           setUser(null);
         });
     }
-  }, []); // Empty dependency array ensures this runs only on component mount
+  }, []); // Dependency array left empty to run only once on mount
 
   const handlePostSubmit = () => {
+    if (!user) {
+      alert('You must be logged in to post.');
+      return;
+    }
+
     if (content.trim()) {
-      // console.log('Post submitted:', content); replace this with actual POST logic
-      // setContent(''); // Clear the content after submitting
+      console.log('Post submitted:', content); // Placeholder for actual post logic
+      setContent(''); // Clear the content after submitting
+    } else {
+      alert('Post content cannot be empty.');
     }
   };
 
