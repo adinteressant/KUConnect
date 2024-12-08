@@ -35,7 +35,7 @@ useEffect(()=>{
       <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-md">
         {/* Profile Picture */}
         <div className="w-32 h-32 md:w-40 md:h-40 rounded-full bg-gray-300 flex items-center justify-center mx-auto">
-          {/* Placeholder for Profile Picture */}
+    {/*Placeholder for Profile Picture */}
         </div>
 
         {/* Name and Tagline */}

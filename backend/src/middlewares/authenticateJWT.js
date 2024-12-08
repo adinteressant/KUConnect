@@ -21,16 +21,19 @@ const authenticateJWT = async (req, res, next) => {
             if (!refreshErr) {
               // Decode the expired token and generate a new one
               const decoded_jwt = jwt.decode(token);
-              req.user = decoded_jwt;
+              req.user = decoded_jwt.user_id;
 
-              const newToken = generate_jwt_token(decoded_jwt);
+              const newToken = generate_jwt_token(decoded_jwt.user_id,decoded_jwt.email);
+              res.clearCookie("JWT_TOKEN");
               res.cookie("JWT_TOKEN", newToken, {
                 httpOnly: true,
-                secure: process.env.NODE_ENV === "production",
+                secure: false,
               });
               console.log("Token Refreshed!");
               return next();
             } else {
+              
+              res.clearCookie("JWT_TOKEN");
               return res.status(401).json({
                 message: "Unauthorized: Refresh token invalid!",
                 error: refreshErr,
@@ -38,6 +41,8 @@ const authenticateJWT = async (req, res, next) => {
             }
           });
         } else {
+
+          res.clearCookie("JWT_TOKEN");
           return res.status(401).json({
             message: "Unauthorized: Invalid token!",
             error: err,
@@ -45,7 +50,7 @@ const authenticateJWT = async (req, res, next) => {
         }
       } else {
         // Token is valid
-        req.user = decoded;
+        req.user = decoded.user_id;
         next();
       }
     });
