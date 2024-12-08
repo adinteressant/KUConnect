@@ -1,28 +1,27 @@
+import jwt from 'jsonwebtoken'; 
+import authenticateJWT from '../middlewares/authenticateJWT.js';
 import { matchedData } from 'express-validator';
 import PrivateInfo from '../models/PrivateInfo.js';
 import { comparePassword } from '../utils/hashPassword.js';
-import { generate_jwt_token,generate_refresh_token } from '../utils/generateJwtToken.js';
-import PublicInfo from '../models/PublicInfo.js';
 
-export default async function loginController(req, res) {
-  try {
-    // Extract validated data from request
-    const { email, password } = matchedData(req); // matchedData ensures the data is validated
-    console.log("Incoming login request:", { email });
+export default async function loginController(req,res)
+{
+  const { email, password } = matchedData(req);
 
-    // Check if the user is registered
+  try
+  {
+    //Check if the user is registered
     const privateInfo = await PrivateInfo.findOne({ email });
-    const publicInfo = await PublicInfo.findOne({email});
-    if (!privateInfo) {
-      console.error("Email not found:", email);
-      return res.status(404).json({ message: 'Invalid email' });
+    if(!privateInfo)
+    {
+      return res.status(404).json({message: 'Invalid email'});
     }
 
-    // Verify the password
-    const isValidPassword = comparePassword(password, privateInfo.password_hash);
-    if (!isValidPassword) {
-      console.error("Invalid password attempt for:", email);
-      return res.status(401).json({ message: 'Invalid password' });
+    //Verify the password
+    const isValidPassword = comparePassword(password,privateInfo.password_hash); 
+    if(!isValidPassword)
+    {
+      return res.status(401).json({ message: 'Invalid password'});
     }
 
     const jwt_token = generate_jwt_token(
@@ -45,7 +44,9 @@ export default async function loginController(req, res) {
 
     return res.status(200).json({
       message: 'Login Successful',
-      user: {
+      token: token,
+      user:
+      {
         user_id: privateInfo.user_id,
         email: privateInfo.email,
         role: privateInfo.role,
@@ -53,11 +54,15 @@ export default async function loginController(req, res) {
       //sends the user_id , email and role to the frontend
     });
 
-  } catch (error) {
-    console.error('Error during login:', error.message);
-    return res.status(500).json({
-      message: 'Internal server error during login',
-      error: error.message,
+  }
+  catch(error)
+  {
+    console.error('Error during login:', error);
+
+    res.status(500).json
+    ({
+      message: 'Error logging in',
+      error: error.message
     });
   }
 }

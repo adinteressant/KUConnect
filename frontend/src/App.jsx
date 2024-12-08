@@ -1,16 +1,30 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar.jsx";
 import Sidebar from "./components/Sidebar.jsx";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function App() {
   const [isSidebarVisible, setIsSidebarVisible] = useState(true);
+  const [paddingValue, setPaddingValue] = useState("pl-64");
+
+  const location = useLocation();
+
+  useEffect(() => {
+    // Hide sidebar for login and register pages
+    if (location.pathname === "/login" || location.pathname === "/register") {
+      setIsSidebarVisible(false);
+      setPaddingValue("");
+    } else {
+      setIsSidebarVisible(true);
+      setPaddingValue("pl-64");
+    }
+  }, [location.pathname]);
 
   return (
     <>
       {/* Navbar */}
-      <Navbar setVisibility={setIsSidebarVisible} />
+      <Navbar setVisibility={setIsSidebarVisible} setPadding={setPaddingValue} />
 
       {/* Main Layout */}
       <div className="flex h-screen bg-gray-100">
@@ -18,7 +32,7 @@ export default function App() {
         {isSidebarVisible && <Sidebar />}
 
         {/* Content Area */}
-        <div className="flex-grow">
+        <div className={`flex-grow pt-14 ${paddingValue}`}>
           <Outlet />
         </div>
       </div>

@@ -7,7 +7,7 @@ import {
 import { NavLink } from 'react-router-dom';
 
 export default function Sidebar(){
-  return <div className="w-64 bg-white shadow-md p-4">
+  return <div className="w-64 bg-white shadow-md p-4 fixed z-10 bottom-0 top-14">
     <nav>
       <ul className="space-y-2">
         <li>

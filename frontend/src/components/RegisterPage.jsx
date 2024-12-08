@@ -25,7 +25,7 @@ export default function RegisterPage() {
     console.log('Form Data:', formData);
   
     try {
-      const response = await fetch(`/v1/api/user-register/`, {
+      const response = await fetch(`/api/user-register/`, {
         method: 'POST',
         headers: {
           "Content-type": 'application/json',
@@ -49,6 +49,7 @@ export default function RegisterPage() {
   
       console.log('Success:', context);
       alert('Registration successful!');
+      window.location.href = '/';
     } catch (error) {
       console.error('Unexpected error:', error);
       alert('Something went wrong. Please try again later.');
@@ -56,7 +57,9 @@ export default function RegisterPage() {
   };  
 
   const handleGoogleLogin = () => {
-    console.log("Attempting to log in with Google")
+    const backendUrl = 'http://localhost:4000'
+    const currentPort = window.location.port
+    window.location.href = `${backendUrl}/api/auth/google?port=${currentPort}`
   };
 
   return (

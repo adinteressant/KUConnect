@@ -16,15 +16,14 @@ export default function LoginPage() {
     {
       e.preventDefault()
 
-      const response = await fetch(`/v1/api/user-login/`,{
+      const response = await fetch(`/api/user-login/`,{
         method:'POST',
         headers:{
           "Content-type":'application/json',
         },
-        body:JSON.stringify
-        ({
+        body: JSON.stringify({
           email: formData.email,
-          password: formData.password
+          password: formData.password,
         }),
       })
 
@@ -35,17 +34,19 @@ export default function LoginPage() {
       const token = response.cookies
 
       console.log(token);
+      window.location.href = '/';
     }
     catch(error)
     {
       console.error('Login error:', error.message);
     }
-    
-  }
+  };
+  
 
   const handleGoogleLogin = () => {
-    //logic to be added
-    console.log("Attempting to log in with Google")
+    const backendUrl = 'http://localhost:4000'
+    const currentPort = window.location.port
+    window.location.href = `${backendUrl}/api/auth/google?port=${currentPort}`
   }
 
   return (

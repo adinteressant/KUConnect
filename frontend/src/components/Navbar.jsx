@@ -2,12 +2,21 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, User, LogIn, UserPlus, ChevronDown, UserCircle } from 'lucide-react';
 
-const Navigation = () => {
+const Navigation = ({setVisibility,setPadding}) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
+  const checkLoginOrRegister = (path) => {
+    if(path === '/login' || path === '/register'){
+      setVisibility(false)
+      setPadding('')
+    }else{
+      setVisibility(true)
+      setPadding('pl-64')
+    }
+  }
   
   return (
-    <div className="w-full bg-white shadow-sm relative">
+    <div className="w-full bg-white shadow-sm fixed z-20 top-0">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -32,6 +41,7 @@ const Navigation = () => {
             {/* Profile Dropdown */}
             <div className="relative">
               <button
+              
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 className="p-2 rounded-full hover:bg-gray-100 transition-colors flex items-center"
                 aria-label="Profile"
@@ -41,14 +51,17 @@ const Navigation = () => {
               </button>
 
               {isDropdownOpen && (
+              
                 <div className="absolute right-0 top-full mt-2 w-48 bg-white shadow-lg rounded-lg border border-gray-200 z-50">
                   <Link 
+                    onClick={()=>{checkLoginOrRegister('/login')}}
                     to="/login" 
                     className="flex items-center px-4 py-2 hover:bg-gray-100 transition-colors"
                   >
                     <LogIn className="h-4 w-4 mr-2" /> Login
                   </Link>
                   <Link 
+                    onClick={()=>{checkLoginOrRegister('/register')}}
                     to="/register" 
                     className="flex items-center px-4 py-2 hover:bg-gray-100 transition-colors"
                   >
@@ -56,6 +69,7 @@ const Navigation = () => {
                   </Link>
 
                   <Link 
+                  onClick={()=>{checkLoginOrRegister('/myprofile')}}
                     to="/myprofile" 
                     className="flex items-center px-4 py-2 hover:bg-gray-100 transition-colors"
                   >
@@ -63,7 +77,7 @@ const Navigation = () => {
                   </Link>
 
                 </div>
-              )}
+               )} 
             </div>
           </div>
         </div>
