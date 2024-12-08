@@ -49,7 +49,7 @@ export default function RegisterPage() {
   
       console.log('Success:', context);
       alert('Registration successful!');
-      window.location.href = '/';
+      window.location.href = '/login';
     } catch (error) {
       console.error('Unexpected error:', error);
       alert('Something went wrong. Please try again later.');
