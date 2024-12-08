@@ -2,11 +2,6 @@ import { matchedData } from 'express-validator';
 import PrivateInfo from '../models/PrivateInfo.js';
 import { comparePassword } from '../utils/hashPassword.js';
 import { generate_jwt_token,generate_refresh_token } from '../utils/generateJwtToken.js';
-<<<<<<< HEAD
-export default async function loginController(req,res)
-{
-  const { email, password } = matchedData(req);
-=======
 import PublicInfo from '../models/PublicInfo.js';
 
 export default async function loginController(req, res) {
@@ -14,7 +9,6 @@ export default async function loginController(req, res) {
     // Extract validated data from request
     const { email, password } = matchedData(req); // matchedData ensures the data is validated
     console.log("Incoming login request:", { email });
->>>>>>> origin/suyog
 
     // Check if the user is registered
     const privateInfo = await PrivateInfo.findOne({ email });
