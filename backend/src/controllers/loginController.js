@@ -24,21 +24,10 @@ export default async function loginController(req,res)
       return res.status(401).json({ message: 'Invalid password'});
     }
 
-    //Generate a JWT token
-    const token = jwt.sign
-    (
-      {user_id: privateInfo.user_id, email: privateInfo.email},
-      process.env.JWT_SECRET_KEY,
-      {expiresIn: '1h'} //Token expires in 1 hour
-    );
-
-    //
-    //
     const jwt_token = generate_jwt_token(
       privateInfo.user_id,
       privateInfo.email
     ) // token, has time of life: 1h.
-
     const refresh_token = generate_refresh_token(
       privateInfo.user_id,
       privateInfo.email
@@ -52,12 +41,6 @@ export default async function loginController(req,res)
     res.cookie('REFRESH_TOKEN',refresh_token,{
       httpOnly:true,
     });
-  
-    sessionStorage.setItem('uid',privateInfo.user_id);
-    sessionStorage.setItem('username',publicInfo.username);
-    sessionStorage.setItem('role',privateInfo.role);
-    //sets the f*ing session storage to have quickly retrievable data and yeah,ROLE isn't PRIVATE.
-
 
     return res.status(200).json({
       message: 'Login Successful',
@@ -66,8 +49,9 @@ export default async function loginController(req,res)
       {
         user_id: privateInfo.user_id,
         email: privateInfo.email,
-        role: privateInfo.role
-      }
+        role: privateInfo.role,
+      },
+      //sends the user_id , email and role to the frontend
     });
 
   }

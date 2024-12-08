@@ -1,7 +1,7 @@
 import loginController from "../controllers/loginController.js";
 import loginMiddleware from "../middlewares/loginMiddleware.js"
 import express from "express";
-
+import authenticateJWT from '../middlewares/authenticateJWT.js'
 import { checkSchema } from 'express-validator'
 import { loginSchema } from '../utils/validationSchema.js'
 

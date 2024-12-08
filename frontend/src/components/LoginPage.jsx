@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState } from 'react';
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
@@ -25,20 +25,19 @@ export default function LoginPage() {
           email: formData.email,
           password: formData.password,
         }),
-      });
-  
-      const context = await response.json(); // This is the response you get from the backend
-  
+      })
+
       if (!response.ok) {
         throw new Error(context.message || 'Login failed');
       }
-  
-      // Only storing the JWT token in sessionStorage
-      sessionStorage.setItem('jwtToken', context.token); // Store JWT token
-  
-      console.log('Login successful:', context);
+
+      const token = response.cookies
+
+      console.log(token);
       window.location.href = '/';
-    } catch (error) {
+    }
+    catch(error)
+    {
       console.error('Login error:', error.message);
     }
   };
