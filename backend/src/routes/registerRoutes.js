@@ -6,7 +6,8 @@ import { checkSchema } from 'express-validator'
 import { registerSchema } from '../utils/validationSchema.js'
 
 import '../strategies/googleStrategy.js'
-import passport from 'passport';
+import passport from 'passport'
+import verifyOTP from '../controllers/verifyOTP.js'
 
   let router = express.Router();
 
@@ -15,7 +16,12 @@ import passport from 'passport';
     ,registerMiddleware,
     registerController);
 
+
+  router.post('/api/verify-otp/',verifyOTP)
+
   
+
+  //google authorization
   let frontendPort 
   router.get('/api/auth/google',(req,res,next)=>{
     frontendPort = req.query.port

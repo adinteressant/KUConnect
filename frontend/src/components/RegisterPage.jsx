@@ -24,7 +24,7 @@ export default function RegisterPage() {
     // Log the form data to verify it's correct
     console.log('Form Data:', formData);
   
-    try {
+   try {
       const response = await fetch(`/api/user-register/`, {
         method: 'POST',
         headers: {
@@ -48,8 +48,7 @@ export default function RegisterPage() {
       }
   
       console.log('Success:', context);
-      alert('Registration successful!');
-      window.location.href = '/login';
+      window.location.href = `/verifyotp?email=${formData.email}`;
     } catch (error) {
       console.error('Unexpected error:', error);
       alert('Something went wrong. Please try again later.');

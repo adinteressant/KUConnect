@@ -11,6 +11,7 @@ import MessagePage from './components/MessagePage.jsx'
 import FriendsPage from './components/FriendsPage.jsx'
 import NotificationPage from './components/NotificationPage.jsx'
 import MyProfile from './components/MyProfile.jsx'
+import VerifyOtp from './components/VerifyOtpPage.jsx'
 
 const router = createBrowserRouter([
   {
@@ -44,6 +45,10 @@ const router = createBrowserRouter([
       {
         path:'/myprofile',
         element:<MyProfile/>
+      },
+      {
+        path:'/verifyotp',
+        element:<VerifyOtp/>
       }
       
     ]

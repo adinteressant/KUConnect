@@ -6,6 +6,8 @@ import PrivateInfo from '../models/PrivateInfo.js'
 import PublicInfo from '../models/PublicInfo.js'
 import sendMail from '../utils/sendMail.js'
 import { GoogleUser } from '../models/googleUser.model.js'
+import generateOTP from '../utils/generateOTP.js'
+import { UnregisteredUser } from '../models/unregisteredUser.model.js'
 
 export default async function registerMiddleware(req,res,next){
   const errors = validationResult(req)
@@ -13,8 +15,7 @@ export default async function registerMiddleware(req,res,next){
     return res.status(400).json({error:errors.array()})
   } 
   const data = matchedData(req)
-  console.log(data) // 'data' now is ready to be stored in database
-
+ 
   const { username, email, password, rePassword, role } = data;
 
   // Check if passwords match
@@ -59,41 +60,27 @@ export default async function registerMiddleware(req,res,next){
     return res.status(400).json({ message: 'Username is already taken' })
   }
 
+  //generate OTP
+  const otp = generateOTP()
 
   //send mail to the email address
-  sendMail(email,1234)
+  sendMail(email,otp)
 
-
-
-  // Create entries for both public and private information
-  const privateInfo = new PrivateInfo({
+  const unregisteredUser = new UnregisteredUser({
     user_id: userId,
-    email,
+    email: email,
     password_hash: hashedPassword,
-    role: role, // Save the role in PrivateInfo
+    role: role,
+    username:username,
+    otp: otp
   })
-
-  const publicInfo = new PublicInfo({
-    user_id: userId,
-    username,
-    tags: [], // Default empty tags
-    role: role, // Save the role in PublicInfo
-  })
-
   try{
-    await privateInfo.save()
-    await publicInfo.save()
-  }
-  catch(error){
+    await unregisteredUser.save()
+  }catch(e){
     console.log(e)
-    res.status(500).json({
-      message: 'Failed to register. Please try again later.',
-      error: error.message,
-    })
   }
 
-  req.userId = userId
-
+  
   next();
 }
 
