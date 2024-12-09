@@ -80,7 +80,7 @@ const Navigation = ({ setVisibility, setPadding }) => {
                 <ChevronDown className="h-4 w-4 ml-1 text-gray-600" />
               </button>
               {isDropdownOpen && (
-                <div className="absolute right-0 top-full mt-2 w-48 bg-white shadow-lg rounded-lg border border-gray-200 z-50">
+                <div className=" absolute right-0 top-full mt-6 w-48 bg-white shadow-lg rounded-lg border border-gray-200 z-50" onMouseLeave={() => setIsDropdownOpen(false)}>
                   {isAuthenticated ? (
                     <>
                       <Link
