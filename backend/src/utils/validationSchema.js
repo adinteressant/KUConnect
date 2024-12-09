@@ -37,6 +37,22 @@ export const registerSchema = {
       },
       errorMessage:'Password must be of 8 characters or more!',
     }
+  },
+  rePassword:{
+    trim:true,
+    escape:true,
+    isLength:{
+      options:{
+        min:8,
+        //max:32
+      },
+      errorMessage:'Password must be of 8 characters or more!',
+    } 
+  },
+  role:{
+    notEmpty:{
+      errorMessage:'role should not be empty'
+    }
   }
 }
 
