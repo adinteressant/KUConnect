@@ -11,7 +11,7 @@ const HomePage = () => {
     role: '',
   });
 
-  // Fetch user profile on mount
+   //Fetch user profile on mount
   useEffect(() => {
     (async () => {
       try {
@@ -30,10 +30,14 @@ const HomePage = () => {
 
   // Check for logged-in user based on isAuthenticated
   useEffect(() => {
-    const isAuthenticated = localStorage.getItem('isAuthenticated');
-    if (isAuthenticated) {
+    let isAuthenticated = localStorage.getItem('isAuthenticated')=='true'?true:false;
+    console.log(isAuthenticated);
+    if ( isAuthenticated ) {
       setUser({ email: 'user@example.com' });
-    } else {
+    
+    }
+
+    else {
       fetch('/api/google/status', { credentials: 'include' })
         .then((response) => response.json())
         .then((googleUserInfo) => {
@@ -47,6 +51,7 @@ const HomePage = () => {
           console.error('Error checking Google login status:', error);
         });
     }
+
   }, []);
 
   // Handle Post Submit

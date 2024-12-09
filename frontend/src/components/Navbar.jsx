@@ -1,15 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Search, User, ChevronDown, LogOut, LogIn, UserPlus, UserCircle } from 'lucide-react';
+import axios from 'axios';
 
 const Navigation = ({ setVisibility, setPadding }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem('isAuthenticated'));
   const navigate = useNavigate();
 
   useEffect(() => {
-    const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
-    setIsAuthenticated(isAuthenticated);
+
+    if (localStorage.getItem('isAuthenticated')){
+    setIsAuthenticated(true);
+    }
+    else{
+        fetch('/api/google/status', { credentials: 'include' })
+          .then((response) => response.json())
+          .then((googleUserInfo) => {
+            if (googleUserInfo?.email) {
+              setIsAuthenticated(true);
+              localStorage.setItem('isAuthenticated',true)
+            } 
+          })
+          .catch((error) => {
+            console.error('Error checking Google login status:', error);
+          });
+      }
   }, []);
 
   const checkLoginOrRegister = (path) => {
@@ -22,10 +38,18 @@ const Navigation = ({ setVisibility, setPadding }) => {
     }
   };
 
-  const handleLogout = () => {
-    localStorage.setItem('isAuthenticated', 'false');
-    setIsAuthenticated(false);
-    navigate('/login');
+  // Handle Logout
+  const handleLogout = async () => {
+    try {
+      await axios.get('/api/user-logout', { withCredentials: true }); // Actual logout API
+      localStorage.setItem('isAuthenticated',false);
+      setIsAuthenticated(false);
+      setVisibility(false);
+      setPadding('');
+      navigate('/login');
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
   };
 
   return (
