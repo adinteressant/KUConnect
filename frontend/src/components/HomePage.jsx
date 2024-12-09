@@ -3,12 +3,10 @@ import { useEffect, useState } from 'react';
 const HomePage = () => {
   const [user, setUser] = useState(null); // State for user information
   const [content, setContent] = useState(''); // State for post content
-  const [token,setToken] = useState(null);
   // Check for logged-in user on component mount
   useEffect(() => {
-  const storedToken = localStorage.getItem('jwtToken'); // Check for token in localStorage
-    setToken(storedToken);
-    if (storedToken) {
+  const token = localStorage.getItem('jwtToken'); // Check for token in localStorage
+    if (token) {
       setUser({ email: 'user@example.com' }); // Placeholder for user; replace with actual user data if needed
     } else {
       fetch('/api/google/status', { credentials: 'include' })
