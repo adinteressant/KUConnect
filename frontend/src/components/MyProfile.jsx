@@ -1,9 +1,6 @@
 import {useState, useEffect } from 'react';
 import axios from 'axios';
 
-
-
-
 const MyProfile = () => {
  
   
@@ -21,8 +18,9 @@ useEffect(()=>{
     if(!response.data){
       return
     }  
-    console.log(response.data);
-    setuserProfile(JSON.parse(response.data));
+    //console.log(response.data);
+    
+    setuserProfile(response.data);
     } catch (error) {
       console.error('Error fetching user profile:', error);
       throw error;

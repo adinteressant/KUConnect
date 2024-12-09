@@ -4,6 +4,7 @@ import axios from 'axios';
 const HomePage = () => {
   const [user, setUser] = useState(null);
   const [content, setContent] = useState('');
+  const [googleUser,setGoogleUser] = useState(null);
   const [userProfile, setUserProfile] = useState({
     username: '',
     email: '',
@@ -27,19 +28,19 @@ const HomePage = () => {
     })();
   }, []);
 
-  // Check for logged-in user based on JWT token
+  // Check for logged-in user based on isAuthenticated
   useEffect(() => {
-    const token = localStorage.getItem('jwtToken');
-    if (token) {
+    const isAuthenticated = localStorage.getItem('isAuthenticated');
+    if (isAuthenticated) {
       setUser({ email: 'user@example.com' });
     } else {
       fetch('/api/google/status', { credentials: 'include' })
         .then((response) => response.json())
         .then((googleUserInfo) => {
           if (googleUserInfo?.email) {
-            setUser(googleUserInfo);
+            setGoogleUser(googleUserInfo);
           } else {
-            setUser(null);
+            setGoogleUser(null);
           }
         })
         .catch((error) => {
@@ -67,7 +68,7 @@ const HomePage = () => {
     <div className="flex-1 flex flex-col">
       <main className="flex-1 p-6 overflow-y-auto">
         <div className="max-w-2xl mx-auto space-y-4">
-          {user ? (
+          {user || googleUser ? (
             <div className="bg-white p-4 rounded-lg shadow-md">
               <textarea
                 placeholder="What's on your mind?"
@@ -93,6 +94,11 @@ const HomePage = () => {
             <div className="flex justify-between items-center mt-6 p-4 bg-gray-100 rounded-lg shadow-md">
               <div className="text-gray-800">Welcome, {userProfile.username}</div>
             </div>
+          )}
+            {googleUser && (
+              <div className="flex justify-between items-center mt-6 p-4 bg-gray-100 rounded-lg shadow-md">
+                <div className="text-gray-800">Welcome, {googleUser.email}</div>
+              </div>
           )}
         </div>
       </main>
