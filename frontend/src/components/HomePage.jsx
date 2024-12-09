@@ -28,7 +28,7 @@ const HomePage = () => {
     })();
   }, []);
 
-  // Check for logged-in user based on JWT token
+  // Check for logged-in user based on isAuthenticated
   useEffect(() => {
     const isAuthenticated = localStorage.getItem('isAuthenticated');
     if (isAuthenticated) {

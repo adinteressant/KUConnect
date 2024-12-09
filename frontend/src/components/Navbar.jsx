@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Search, User, ChevronDown, LogOut, LogIn, UserPlus, UserCircle } from 'lucide-react';
+import axios from 'axios';
 
 const Navigation = ({ setVisibility, setPadding }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -8,10 +9,10 @@ const Navigation = ({ setVisibility, setPadding }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem('jwtToken');
+    let isAuthenticated = localStorage.getItem('isAuthenticated');
 
-    if (token){
-    setIsAuthenticated(!!token);
+    if (isAuthenticated){
+    setIsAuthenticated(!!isAuthenticated);
     }
     else{
         fetch('/api/google/status', { credentials: 'include' })
@@ -40,10 +41,18 @@ const Navigation = ({ setVisibility, setPadding }) => {
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('jwtToken');
-    setIsAuthenticated(false);
-    navigate('/login');
+  // Handle Logout
+  const handleLogout = async () => {
+    try {
+      await axios.get('/api/user-logout', { withCredentials: true }); // Actual logout API
+      localStorage.setItem('isAuthenticated',false);
+      setIsAuthenticated(false);
+      //setVisibility(false);
+      //setPadding('');
+      navigate('/login');
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
   };
 
   return (
