@@ -3,7 +3,7 @@ import React from 'react';
 const NotificationPage = () => {
   return (
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-full h-full max-h-full">
-        <h1 className="text-4xl font-serif font-bold text-gray-800 mb-6">Notifications</h1>
+        <h1 className="text-4xl font-serif text-gray-800 mb-6">Notifications</h1>
 
         <div className="space-y-4">
           <div className="bg-gray-200 p-4 rounded-lg">
