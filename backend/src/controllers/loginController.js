@@ -49,8 +49,7 @@ export default async function loginController(req, res) {
         user_id: privateInfo.user_id,
         email: privateInfo.email,
         role: privateInfo.role,
-      },
-      token: jwt_token
+      }
       //sends the user_id , email and role to the frontend
     });
 

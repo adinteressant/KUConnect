@@ -67,24 +67,6 @@ const HomePage = () => {
               Please <a href="/login" className="text-cyan-600">log in</a> to post.
             </div>
           )}
-
-          {/* Display Posts */}
-          {posts.map((post) => (
-            <div key={post._id} className="bg-white p-4 rounded-lg shadow-md">
-              <div className="flex items-center mb-4">
-                <img 
-                  src="https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?t=st=1733666784~exp=1733670384~hmac=034d09dc5141bd8909e5c0eefdcaffae16d03173368ccc0146b8a0368fc432e7&w=740" 
-                  alt="User" 
-                  className="rounded-full w-10 h-10 mr-3"
-                />
-                <div>
-                  <h3 className="font-serif">{post.username || 'Anonymous'}</h3>
-                  <p className="text-gray-500 text-sm">{new Date(post.createdAt).toLocaleString()}</p>
-                </div>
-              </div>
-              <p>{post.content}</p>
-            </div>
-          ))}
         </div>
       </main>
     </div>
