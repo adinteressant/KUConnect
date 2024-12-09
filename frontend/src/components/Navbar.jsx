@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Search, User, ChevronDown, LogOut, LogIn, UserPlus, UserCircle } from 'lucide-react';
-import axios from 'axios';
 
 const Navigation = ({ setVisibility, setPadding }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -9,26 +8,8 @@ const Navigation = ({ setVisibility, setPadding }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    let isAuthenticated = localStorage.getItem('isAuthenticated');
-
-    if (isAuthenticated){
-    setIsAuthenticated(!!isAuthenticated);
-    }
-    else{
-        fetch('/api/google/status', { credentials: 'include' })
-          .then((response) => response.json())
-          .then((googleUserInfo) => {
-            if (googleUserInfo?.email) {
-              setIsAuthenticated(true);
-            } 
-            else {
-              setIsAuthenticated(false);
-            }
-          })
-          .catch((error) => {
-            console.error('Error checking Google login status:', error);
-          });
-      }
+    const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
+    setIsAuthenticated(isAuthenticated);
   }, []);
 
   const checkLoginOrRegister = (path) => {
@@ -41,18 +22,10 @@ const Navigation = ({ setVisibility, setPadding }) => {
     }
   };
 
-  // Handle Logout
-  const handleLogout = async () => {
-    try {
-      await axios.get('/api/user-logout', { withCredentials: true }); // Actual logout API
-      localStorage.setItem('isAuthenticated',false);
-      setIsAuthenticated(false);
-      //setVisibility(false);
-      //setPadding('');
-      navigate('/login');
-    } catch (error) {
-      console.error('Error logging out:', error);
-    }
+  const handleLogout = () => {
+    localStorage.setItem('isAuthenticated', 'false');
+    setIsAuthenticated(false);
+    navigate('/login');
   };
 
   return (
@@ -73,15 +46,15 @@ const Navigation = ({ setVisibility, setPadding }) => {
             </div>
           </div>
           <div className="flex items-center space-x-6">
-            <div className="relative">
-              <button
-                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className="p-2 rounded-full hover:bg-gray-100 transition-colors flex items-center"
-              >
+            <div
+              className="relative"
+              onMouseEnter={() => setIsDropdownOpen(true)}
+              onMouseLeave={() => setIsDropdownOpen(false)}
+            >
+              <button className="p-2 rounded-full hover:bg-gray-100 transition-colors flex items-center">
                 <User className="h-6 w-6 text-gray-600" />
                 <ChevronDown className="h-4 w-4 ml-1 text-gray-600" />
               </button>
-
               {isDropdownOpen && (
                 <div className="absolute right-0 top-full mt-2 w-48 bg-white shadow-lg rounded-lg border border-gray-200 z-50">
                   {isAuthenticated ? (
