@@ -1,10 +1,11 @@
 import { useState } from "react";
-
+import { useNavigate } from "react-router-dom";
 export default function LoginPage() {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+  const navigate = useNavigate();
 
   const [errorMessage, setErrorMessage] = useState(""); // Add state for displaying errors
 
@@ -35,8 +36,7 @@ export default function LoginPage() {
       //const token = data.token;
       console.log(data);
       localStorage.setItem("isAuthenticated", true); // Save token to localStorage //BRO WHAT 
-      
-      window.location.href = "/"; // Redirect to the home page 
+      navigate("/");
     } catch (error) {
       console.error("Login error:", error.message);
       setErrorMessage(error.message); // Display the error message to the user

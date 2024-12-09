@@ -5,14 +5,13 @@ import axios from 'axios';
 
 const Navigation = ({ setVisibility, setPadding }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem('isAuthenticated'));
   const navigate = useNavigate();
 
   useEffect(() => {
-    let isAuthenticated = localStorage.getItem('isAuthenticated');
 
-    if (isAuthenticated){
-    setIsAuthenticated(!!isAuthenticated);
+    if (localStorage.getItem('isAuthenticated')){
+    setIsAuthenticated(true);
     }
     else{
         fetch('/api/google/status', { credentials: 'include' })
@@ -20,10 +19,8 @@ const Navigation = ({ setVisibility, setPadding }) => {
           .then((googleUserInfo) => {
             if (googleUserInfo?.email) {
               setIsAuthenticated(true);
+              localStorage.setItem('isAuthenticated',true)
             } 
-            else {
-              setIsAuthenticated(false);
-            }
           })
           .catch((error) => {
             console.error('Error checking Google login status:', error);
@@ -47,8 +44,8 @@ const Navigation = ({ setVisibility, setPadding }) => {
       await axios.get('/api/user-logout', { withCredentials: true }); // Actual logout API
       localStorage.setItem('isAuthenticated',false);
       setIsAuthenticated(false);
-      //setVisibility(false);
-      //setPadding('');
+      setVisibility(false);
+      setPadding('');
       navigate('/login');
     } catch (error) {
       console.error('Error logging out:', error);
