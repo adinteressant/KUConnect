@@ -5,7 +5,7 @@ const HomePage = () => {
   const [content, setContent] = useState(''); // State for post content
   // Check for logged-in user on component mount
   useEffect(() => {
-  const token = localStorage.getItem('jwtToken'); // Check for token in localStorage
+  const token = localStorage.getItem('isAuthenticated'); // Check for token in localStorage
     if (token) {
       setUser({ email: 'user@example.com' }); // Placeholder for user; replace with actual user data if needed
     } else {

@@ -9,7 +9,7 @@ const Navigation = ({ setVisibility, setPadding }) => {
 
   // Check token and update authentication state
   useEffect(() => {
-    const token = localStorage.getItem('jwtToken');
+    const token = localStorage.getItem('isAuthenticated');
     if (token) {
       setIsAuthenticated(true);
     }
@@ -28,11 +28,11 @@ const Navigation = ({ setVisibility, setPadding }) => {
   // Handle Logout
   const handleLogout = async () => {
     try {
-      await axios.post('/api/logout', {}, { withCredentials: true }); // Actual logout API
+      await axios.get('/api/user-logout', {}, { withCredentials: true }); // Actual logout API
       setIsAuthenticated(false);
       setVisibility(false);
       setPadding('');
-      localStorage.removeItem('jwtToken'); // jwtToken is removed 
+      localStorage.setItem('isAuthenticated',false);
     } catch (error) {
       console.error('Error logging out:', error);
     }

@@ -4,6 +4,6 @@ import logoutController  from "../controllers/logoutController.js";
 
 const router = express.Router();
 
-router.post("/api/user-logout",authenticateJWT,logoutController);
+router.get("/api/user-logout",authenticateJWT,logoutController);
 
 export default router;

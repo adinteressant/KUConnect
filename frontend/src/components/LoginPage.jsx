@@ -34,12 +34,10 @@ export default function LoginPage() {
       const data = await response.json();
       const token = data.token;
       console.log(data);
-    // Assuming token is sent in the response body
-
-      console.log("Token received:", token);
-      localStorage.setItem("jwtToken", token); // Save token to localStorage
       
-      window.location.href = "/"; // Redirect to the home page
+      localStorage.setItem("isAuthenticated", true); // Save token to localStorage //BRO WHAT 
+      
+      window.location.href = "/"; // Redirect to the home page 
     } catch (error) {
       console.error("Login error:", error.message);
       setErrorMessage(error.message); // Display the error message to the user
