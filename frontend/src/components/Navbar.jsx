@@ -5,27 +5,33 @@ import axios from 'axios';
 
 const Navigation = ({ setVisibility, setPadding }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem('isAuthenticated'));
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const navigate = useNavigate();
+  let timeout = null;
 
   useEffect(() => {
-
-    if (localStorage.getItem('isAuthenticated')){
-    setIsAuthenticated(true);
-    }
-    else{
-        fetch('/api/google/status', { credentials: 'include' })
-          .then((response) => response.json())
-          .then((googleUserInfo) => {
-            if (googleUserInfo?.email) {
-              setIsAuthenticated(true);
-              localStorage.setItem('isAuthenticated',true)
-            } 
-          })
-          .catch((error) => {
-            console.error('Error checking Google login status:', error);
-          });
+    const checkAuthentication = async () => {
+      const localAuth = localStorage.getItem('isAuthenticated') === 'true';
+      if (localAuth) {
+        setIsAuthenticated(true);
+      } else {
+        try {
+          const response = await fetch('/api/google/status', { credentials: 'include' });
+          const googleUserInfo = await response.json();
+          if (googleUserInfo?.email) {
+            localStorage.setItem('isAuthenticated', 'true');
+            setIsAuthenticated(true);
+          } else {
+            localStorage.setItem('isAuthenticated', 'false');
+            setIsAuthenticated(false);
+          }
+        } catch (error) {
+          console.error('Error checking Google login status:', error);
+        }
       }
+    };
+
+    checkAuthentication();
   }, []);
 
   const checkLoginOrRegister = (path) => {
@@ -38,11 +44,10 @@ const Navigation = ({ setVisibility, setPadding }) => {
     }
   };
 
-  // Handle Logout
   const handleLogout = async () => {
     try {
-      await axios.get('/api/user-logout', { withCredentials: true }); // Actual logout API
-      localStorage.setItem('isAuthenticated',false);
+      await axios.get('/api/user-logout', { withCredentials: true });
+      localStorage.setItem('isAuthenticated', 'false');
       setIsAuthenticated(false);
       setVisibility(false);
       setPadding('');
@@ -52,6 +57,19 @@ const Navigation = ({ setVisibility, setPadding }) => {
     }
   };
 
+  const handleDropdownOpen = () => {
+    if (timeout) clearTimeout(timeout);
+    setIsDropdownOpen(true);
+  };
+
+  const handleDropdownClose = (e) => {
+    timeout = setTimeout(() => {
+      if (!e.relatedTarget?.closest('.dropdown-area')) {
+        setIsDropdownOpen(false);
+      }
+    }, 300);
+  };
+
   return (
     <div className="w-full bg-white shadow-sm fixed z-20 top-0">
       <div className="max-w-7xl mx-auto px-4">
@@ -59,7 +77,9 @@ const Navigation = ({ setVisibility, setPadding }) => {
           <Link to="/" className="text-2xl font-serif text-gray-800">
             KUConnect
           </Link>
+
           <div className="w-full max-w-md mx-32">
+            {/* Search Section */}
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
               <input
@@ -69,18 +89,25 @@ const Navigation = ({ setVisibility, setPadding }) => {
               />
             </div>
           </div>
+
           <div className="flex items-center space-x-6">
+            {/* Dropdown Section */}
             <div
-              className="relative"
-              onMouseEnter={() => setIsDropdownOpen(true)}
-              onMouseLeave={() => setIsDropdownOpen(false)}
+              className="relative dropdown-area"
+              onMouseEnter={handleDropdownOpen}
+              onMouseLeave={handleDropdownClose}
             >
               <button className="p-2 rounded-full hover:bg-gray-100 transition-colors flex items-center">
                 <User className="h-6 w-6 text-gray-600" />
                 <ChevronDown className="h-4 w-4 ml-1 text-gray-600" />
               </button>
+
               {isDropdownOpen && (
-                <div className=" absolute right-0 top-full mt-6 w-48 bg-white shadow-lg rounded-lg border border-gray-200 z-50" onMouseLeave={() => setIsDropdownOpen(false)}>
+                <div
+                  className="absolute right-0 top-14 w-48 bg-white shadow-lg rounded-lg border border-gray-200 z-50 dropdown-area"
+                  onMouseEnter={handleDropdownOpen}
+                  onMouseLeave={handleDropdownClose}
+                >
                   {isAuthenticated ? (
                     <>
                       <Link
