@@ -10,24 +10,24 @@ const Navigation = ({ setVisibility, setPadding }) => {
   useEffect(() => {
     const token = localStorage.getItem('jwtToken');
 
-    if (token){
-    setIsAuthenticated(!!token);
+    if (token) {
+      setIsAuthenticated(!!token);
     }
-    else{
-        fetch('/api/google/status', { credentials: 'include' })
-          .then((response) => response.json())
-          .then((googleUserInfo) => {
-            if (googleUserInfo?.email) {
-              setIsAuthenticated(true);
-            } 
-            else {
-              setIsAuthenticated(false);
-            }
-          })
-          .catch((error) => {
-            console.error('Error checking Google login status:', error);
-          });
-      }
+    else {
+      fetch('/api/google/status', { credentials: 'include' })
+        .then((response) => response.json())
+        .then((googleUserInfo) => {
+          if (googleUserInfo?.email) {
+            setIsAuthenticated(true);
+          }
+          else {
+            setIsAuthenticated(false);
+          }
+        })
+        .catch((error) => {
+          console.error('Error checking Google login status:', error);
+        });
+    }
   }, []);
 
   const checkLoginOrRegister = (path) => {
@@ -64,9 +64,11 @@ const Navigation = ({ setVisibility, setPadding }) => {
             </div>
           </div>
           <div className="flex items-center space-x-6">
-            <div className="relative">
+            <div className="relative"
+             onMouseEnter={() => setIsDropdownOpen(true)}
+             
+            >
               <button
-                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 className="p-2 rounded-full hover:bg-gray-100 transition-colors flex items-center"
               >
                 <User className="h-6 w-6 text-gray-600" />
@@ -74,7 +76,7 @@ const Navigation = ({ setVisibility, setPadding }) => {
               </button>
 
               {isDropdownOpen && (
-                <div className="absolute right-0 top-full mt-2 w-48 bg-white shadow-lg rounded-lg border border-gray-200 z-50">
+                <div className=" absolute right-0 top-full mt-6 w-48 bg-white shadow-lg rounded-lg border border-gray-200 z-50" onMouseLeave={() => setIsDropdownOpen(false)}>
                   {isAuthenticated ? (
                     <>
                       <Link
