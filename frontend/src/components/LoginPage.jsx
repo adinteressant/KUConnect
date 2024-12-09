@@ -35,6 +35,7 @@ export default function LoginPage() {
       const token = data.token;
       console.log(data);
       
+      localStorage.setItem("jwtToken",token);
       localStorage.setItem("isAuthenticated", true); // Save token to localStorage //BRO WHAT 
       
       window.location.href = "/"; // Redirect to the home page 

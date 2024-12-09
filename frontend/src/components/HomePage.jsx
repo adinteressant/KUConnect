@@ -1,30 +1,54 @@
 import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const HomePage = () => {
-  const [user, setUser] = useState(null); // State for user information
-  const [content, setContent] = useState(''); // State for post content
-  // Check for logged-in user on component mount
+  const [user, setUser] = useState(null);
+  const [content, setContent] = useState('');
+  const [userProfile, setUserProfile] = useState({
+    username: '',
+    email: '',
+    role: '',
+  });
+
+  // Fetch user profile on mount
   useEffect(() => {
-  const token = localStorage.getItem('isAuthenticated'); // Check for token in localStorage
+    (async () => {
+      try {
+        const response = await axios.get('/api/get-user-profile/', {
+          withCredentials: true,
+        });
+
+        if (response.data) {
+          setUserProfile(response.data);
+        }
+      } catch (error) {
+        console.error('Error fetching user profile:', error);
+      }
+    })();
+  }, []);
+
+  // Check for logged-in user based on JWT token
+  useEffect(() => {
+    const token = localStorage.getItem('jwtToken');
     if (token) {
-      setUser({ email: 'user@example.com' }); // Placeholder for user; replace with actual user data if needed
+      setUser({ email: 'user@example.com' });
     } else {
       fetch('/api/google/status', { credentials: 'include' })
         .then((response) => response.json())
         .then((googleUserInfo) => {
-          if (googleUserInfo && googleUserInfo.email) {
-            setUser(googleUserInfo); // Set Google user info if logged in
+          if (googleUserInfo?.email) {
+            setUser(googleUserInfo);
           } else {
-            setUser(null); // No user logged in
+            setUser(null);
           }
         })
-        .catch((e) => {
-          console.error('Error checking Google login status:', e);
-          setUser(null);
+        .catch((error) => {
+          console.error('Error checking Google login status:', error);
         });
     }
-  }, []); // Dependency array left empty to run only once on mount
+  }, []);
 
+  // Handle Post Submit
   const handlePostSubmit = () => {
     if (!user) {
       alert('You must be logged in to post.');
@@ -32,8 +56,8 @@ const HomePage = () => {
     }
 
     if (content.trim()) {
-      console.log('Post submitted:', content); // Placeholder for actual post logic
-      setContent(''); // Clear the content after submitting
+      console.log('Post submitted:', content);
+      setContent('');
     } else {
       alert('Post content cannot be empty.');
     }
@@ -43,7 +67,6 @@ const HomePage = () => {
     <div className="flex-1 flex flex-col">
       <main className="flex-1 p-6 overflow-y-auto">
         <div className="max-w-2xl mx-auto space-y-4">
-          {/* Post Creation Area */}
           {user ? (
             <div className="bg-white p-4 rounded-lg shadow-md">
               <textarea
@@ -53,7 +76,7 @@ const HomePage = () => {
                 onChange={(e) => setContent(e.target.value)}
               />
               <button
-                disabled={!content.trim()} // Disable post button if content is empty
+                disabled={!content.trim()}
                 onClick={handlePostSubmit}
                 className="bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:ring-offset-2 disabled:bg-gray-400"
               >
@@ -63,6 +86,12 @@ const HomePage = () => {
           ) : (
             <div className="bg-yellow-100 text-yellow-800 p-4 rounded-lg shadow-md">
               Please <a href="/login" className="text-cyan-600">log in</a> to post.
+            </div>
+          )}
+
+          {user && (
+            <div className="flex justify-between items-center mt-6 p-4 bg-gray-100 rounded-lg shadow-md">
+              <div className="text-gray-800">Welcome, {userProfile.username}</div>
             </div>
           )}
         </div>
