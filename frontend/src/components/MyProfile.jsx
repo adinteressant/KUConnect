@@ -21,7 +21,7 @@ useEffect(()=>{
     if(!response.data){
       return
     }  
-
+    console.log(response.data);
     setuserProfile(JSON.parse(response.data));
     } catch (error) {
       console.error('Error fetching user profile:', error);

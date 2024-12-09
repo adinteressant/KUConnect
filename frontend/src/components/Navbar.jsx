@@ -5,7 +5,6 @@ import axios from 'axios'; // Ensure axios is imported
 
 const Navigation = ({ setVisibility, setPadding }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // Track authentication state
 
   // Check token and update authentication state
   useEffect(() => {
@@ -28,11 +27,11 @@ const Navigation = ({ setVisibility, setPadding }) => {
   // Handle Logout
   const handleLogout = async () => {
     try {
-      await axios.get('/api/user-logout', {}, { withCredentials: true }); // Actual logout API
+      await axios.get('/api/user-logout', { withCredentials: true }); // Actual logout API
       setIsAuthenticated(false);
       setVisibility(false);
       setPadding('');
-      localStorage.setItem('isAuthenticated',false);
+      setIsAuthenticated(false);
     } catch (error) {
       console.error('Error logging out:', error);
     }

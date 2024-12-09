@@ -4,9 +4,10 @@ import { generate_jwt_token } from "../utils/generateJwtToken.js";
 const authenticateJWT = async (req, res, next) => {
   try {
     //const authHeader = req.headers.authorization;
- 
-    const refresh_token = req.cookies.REFRESH_TOKEN;
+  
 
+    const refresh_token = req.cookies.REFRESH_TOKEN;
+    
     const token = req.cookies.JWT_TOKEN; 
     if (!token) {
       return res.status(401).json({ message: "Unauthorized: Invalid token!" });
