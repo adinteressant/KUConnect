@@ -8,9 +8,9 @@ const HomePage = () => {
   const [posts, setPosts] = useState([]);
   const [showWelcomePopup, setShowWelcomePopup] = useState(false);
 
-  // Fetch user profile on mount
+  // Fetch user profile and check Google login status on mount
   useEffect(() => {
-    (async () => {
+    const fetchUserProfile = async () => {
       try {
         const response = await axios.get('/api/get-user-profile/', {
           withCredentials: true,
@@ -18,18 +18,39 @@ const HomePage = () => {
 
         if (response.data) {
           setUser(response.data);
-
-          // Check if the welcome popup has been shown
-          const welcomeShown = localStorage.getItem('welcomeShown');
-          if (!welcomeShown) {
-            setShowWelcomePopup(true); // Show popup
-            localStorage.setItem('welcomeShown', 'true'); // Mark popup as shown
-          }
+        }
+        
+        // Check if the welcome popup has been shown
+        const welcomeShown = localStorage.getItem('welcomeShown');
+        if (!welcomeShown) {
+          setShowWelcomePopup(true); // Show popup
+          localStorage.setItem('welcomeShown', 'true'); // Mark popup as shown
         }
       } catch (error) {
         console.error('Error fetching user profile:', error);
       }
-    })();
+    };
+
+    const checkGoogleLoginStatus = async () => {
+      let isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
+      if (!isAuthenticated) {
+        try {
+          const googleUserInfo = await fetch('/api/google/status', { credentials: 'include' }).then(res => res.json());
+          if (googleUserInfo?.email) {
+            setGoogleUser(googleUserInfo);
+          } else {
+            setGoogleUser(null);
+          }
+        } catch (error) {
+          console.error('Error checking Google login status:', error);
+        }
+      } else {
+        setUser({ email: 'user@example.com' }); // Example: Use real user data here
+      }
+    };
+
+    fetchUserProfile();
+    checkGoogleLoginStatus();
   }, []);
 
   // Fetch posts
@@ -124,7 +145,9 @@ const HomePage = () => {
               </button>
             </div>
           ) : (
-            <p>You need to be logged in to create a post.</p>
+            <div className="bg-yellow-100 text-yellow-800 p-4 rounded-lg shadow-md">
+              Please <a href="/login" className="text-cyan-600">log in</a> to post.
+            </div>
           )}
 
           {/* Display Posts */}
