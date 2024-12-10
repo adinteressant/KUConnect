@@ -17,29 +17,37 @@ const authenticateJWT = async (req, res, next) => {
       if (err) {
         // Handle token expiration
         if (err.name === "TokenExpiredError") {
-          // Verify the refresh token
-          jwt.verify(refresh_token, process.env.JWT_SECRET_KEY, (refreshErr) => {
-            if (!refreshErr) {
-              // Decode the expired token and generate a new one
-              const decoded_jwt = jwt.decode(token);
-              req.user = decoded_jwt.user_id;
+          if (!refresh_token) {
+            return res.status(401).json({ message: "Unauthorized: Missing refresh token!" });
+          }
 
-              const newToken = generate_jwt_token(decoded_jwt.user_id,decoded_jwt.email);
-              res.clearCookie("JWT_TOKEN");
-              res.cookie("JWT_TOKEN", newToken, {
-                httpOnly: true,
-                secure: false,
-              });
-              console.log("Token Refreshed!");
-              return next();
-            } else {
-              
+          jwt.verify(refresh_token, process.env.JWT_SECRET_KEY, async (refreshErr, refreshDecoded) => {
+            if (refreshErr) {
               res.clearCookie("JWT_TOKEN");
               return res.status(401).json({
                 message: "Unauthorized: Refresh token invalid!",
                 error: refreshErr,
               });
             }
+
+            const newToken = generate_jwt_token(refreshDecoded.user_id, refreshDecoded.email);
+
+            res.clearCookie("JWT_TOKEN");
+            res.cookie("JWT_TOKEN", newToken, {
+              httpOnly: true,
+              secure: false,
+            });
+
+            console.log('User from refresh token:', refreshDecoded);
+
+            req.user = {
+              user_id: refreshDecoded.user_id,
+              username: refreshDecoded.username,
+              email: refreshDecoded.email,
+            };
+
+            console.log('User set in request:', req.user);  // Log the user
+            return next();
           });
         } else {
 
@@ -50,9 +58,13 @@ const authenticateJWT = async (req, res, next) => {
           });
         }
       } else {
-        // Token is valid
-        req.user = decoded.user_id;
-        next();
+        req.user = {
+          user_id: decoded.user_id,
+          username: decoded.username,
+          email: decoded.email,
+        };
+        console.log('User set in request:', req.user);  // Log the user
+        return next();
       }
     });
   } catch (error) {
