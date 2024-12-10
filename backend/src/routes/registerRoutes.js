@@ -1,40 +1,53 @@
 import express from 'express';
+import passport from 'passport';
+import { checkSchema } from 'express-validator';
+import { registerSchema } from '../utils/validationSchema.js';
+
 import registerController from './../controllers/registerController.js';
 import registerMiddleware from './../middlewares/registerMiddleware.js';
+import verifyOTP from '../controllers/verifyOTP.js';
+import '../strategies/googleStrategy.js';  // Passport Google OAuth Strategy
 
-import { checkSchema } from 'express-validator'
-import { registerSchema } from '../utils/validationSchema.js'
+let router = express.Router();
 
-import '../strategies/googleStrategy.js'
-import passport from 'passport'
-import verifyOTP from '../controllers/verifyOTP.js'
+// Register and OTP Routes
+router.post(
+  '/api/user-register/',
+  checkSchema(registerSchema),
+  registerMiddleware,
+  registerController
+);
 
-  let router = express.Router();
+router.post('/api/verify-otp/', verifyOTP);
 
-  router.post("/api/user-register/",
-    checkSchema(registerSchema)
-    ,registerMiddleware,
-    registerController);
+// Google OAuth Routes
+let frontendPort;
+router.get('/api/auth/google', (req, res, next) => {
+  frontendPort = req.query.port;
+  next();
+}, passport.authenticate('google'));
 
+router.get('/api/google/callback', passport.authenticate('google'), (req, res) => {
+  res.redirect(`http://localhost:${frontendPort}`);  // Redirect to frontend
+});
 
-  router.post('/api/verify-otp/',verifyOTP)
+router.get('/api/google/status', (req, res) => {
+  if (req.user) return res.send(req.user);
+  return res.status(400).json({ msg: 'User not authenticated' });
+});
 
-  
+router.get('/api/session', (req, res) => {
+  console.log('req.session:', req.session); // Logs the entire session object
+  console.log('Session ID:', req.session.id); // Logs the session ID directly from req.session
 
-  //google authorization
-  let frontendPort 
-  router.get('/api/auth/google',(req,res,next)=>{
-    frontendPort = req.query.port
-    next()
-  },passport.authenticate('google'))
-  
-  router.get('/api/google/callback',passport.authenticate('google'),(req,res)=>{
-    res.redirect(`http://localhost:${frontendPort}`);  
-  })
+  // Use req.session directly to check if the user is authenticated
+  if (req.session && req.session.passport && req.session.passport.user) {
+    console.log('Authenticated User:', req.session.passport.user);
+    return res.json({ sessionData: req.session });
+  } else {
+    console.log('No active session or user found');
+    return res.status(401).json({ message: 'No active session' });
+  }
+});
 
-  router.get('/api/google/status',(req,res) => {
-    if(req.user) return res.send(req.user)
-    
-    return res.status(400).json({msg:'user not authenticated'})
-  })
 export default router;
