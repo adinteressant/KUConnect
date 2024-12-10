@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Search, User, ChevronDown, LogOut, LogIn, UserPlus, UserCircle } from 'lucide-react';
-import { useAuth } from '../AuthContext';
+import { useAuth } from '../context/AuthContext';
 import Cookies from 'js-cookie';
 
 const Navigation = ({ setVisibility, setPadding }) => {
