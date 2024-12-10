@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Cookies from 'js-cookie';
+
 export default function LoginPage() {
   const [formData, setFormData] = useState({
     email: "",
@@ -23,20 +25,26 @@ export default function LoginPage() {
           password: formData.password,
         }),
       });
-      console.log("token");
 
+      console.log("token");
 
       if (!response.ok) {
         const errorResponse = await response.json();
         throw new Error(errorResponse.message || "Login failed");
       }
 
-      
       const data = await response.json();
-      //const token = data.token;
       console.log(data);
-      localStorage.setItem("isAuthenticated", true); // Save token to localStorage //BRO WHAT 
+
+      // Access the jwt_token and refresh_token from the top-level response object
+      Cookies.set('JWT_TOKEN', data.jwt_token);
+      Cookies.set('REFRESH_TOKEN', data.refresh_token);
+
+      console.log("Login Successful! Tokens are set in cookies.");
+    
+      // Redirect to the homepage or desired page (only call navigate once)
       navigate("/");
+
     } catch (error) {
       console.error("Login error:", error.message);
       setErrorMessage(error.message); // Display the error message to the user
@@ -77,7 +85,6 @@ export default function LoginPage() {
           </div>
           <div className="pt-2">
             <button
-            
               type="submit"
               className="w-full px-4 py-3 rounded-md text-base font-medium transition-colors bg-cyan-600 hover:bg-cyan-700 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2"
             >

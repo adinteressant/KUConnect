@@ -1,38 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Search, User, ChevronDown, LogOut, LogIn, UserPlus, UserCircle } from 'lucide-react';
-import axios from 'axios';
+import { useAuth } from '../AuthContext';
+import Cookies from 'js-cookie';
 
 const Navigation = ({ setVisibility, setPadding }) => {
+  const { isAuthenticated, logout } = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const navigate = useNavigate();
   let timeout = null;
-
-  useEffect(() => {
-    const checkAuthentication = async () => {
-      const localAuth = localStorage.getItem('isAuthenticated') === 'true';
-      if (localAuth) {
-        setIsAuthenticated(true);
-      } else {
-        try {
-          const response = await fetch('/api/google/status', { credentials: 'include' });
-          const googleUserInfo = await response.json();
-          if (googleUserInfo?.email) {
-            localStorage.setItem('isAuthenticated', 'true');
-            setIsAuthenticated(true);
-          } else {
-            localStorage.setItem('isAuthenticated', 'false');
-            setIsAuthenticated(false);
-          }
-        } catch (error) {
-          console.error('Error checking Google login status:', error);
-        }
-      }
-    };
-
-    checkAuthentication();
-  }, []);
 
   const checkLoginOrRegister = (path) => {
     if (path === '/login' || path === '/register') {
@@ -46,9 +22,7 @@ const Navigation = ({ setVisibility, setPadding }) => {
 
   const handleLogout = async () => {
     try {
-      await axios.get('/api/user-logout', { withCredentials: true });
-      localStorage.setItem('isAuthenticated', 'false');
-      setIsAuthenticated(false);
+      await logout();  // Call logout function from context
       setVisibility(false);
       setPadding('');
       navigate('/login');
@@ -77,9 +51,7 @@ const Navigation = ({ setVisibility, setPadding }) => {
           <Link to="/" className="text-2xl font-serif text-gray-800">
             KUConnect
           </Link>
-
           <div className="w-full max-w-md mx-32">
-            {/* Search Section */}
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
               <input
@@ -89,9 +61,7 @@ const Navigation = ({ setVisibility, setPadding }) => {
               />
             </div>
           </div>
-
           <div className="flex items-center space-x-6">
-            {/* Dropdown Section */}
             <div
               className="relative dropdown-area"
               onMouseEnter={handleDropdownOpen}
@@ -101,13 +71,8 @@ const Navigation = ({ setVisibility, setPadding }) => {
                 <User className="h-6 w-6 text-gray-600" />
                 <ChevronDown className="h-4 w-4 ml-1 text-gray-600" />
               </button>
-
               {isDropdownOpen && (
-                <div
-                  className="absolute right-0 top-14 w-48 bg-white shadow-lg rounded-lg border border-gray-200 z-50 dropdown-area"
-                  onMouseEnter={handleDropdownOpen}
-                  onMouseLeave={handleDropdownClose}
-                >
+                <div className="absolute right-0 top-14 w-48 bg-white shadow-lg rounded-lg border border-gray-200 z-50 dropdown-area">
                   {isAuthenticated ? (
                     <>
                       <Link

@@ -17,7 +17,15 @@ dotenv.config({path: './.env'});
 const app = express();
 //middleware attachments
 app.use(express.json());
-app.use(cors());
+
+app.use(
+  cors({
+    origin: 'http://localhost:5173', // Frontend URL
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true, // Allow cookies to be sent with requests
+  })
+);
+
 app.use(cookieParser());
 
 const PORT = process.env.PORT || 3000
@@ -34,17 +42,23 @@ connectToDB()
 })
 
 
-app.use(session({
-  secret: 'secret',
-  resave: false,
-  saveUninitialized: false,
-  cookie:{
-    maxAge: 60000*60
-  },
-  store:MongoStore.create({
-    client:mongoose.connection.getClient()
+// Session Setup
+app.use(
+  session({
+    secret: 'secret',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      maxAge: 60000 * 60, // 1 hour
+      secure: process.env.NODE_ENV === 'production', // Set to true in production, false in development
+      httpOnly: true, // Ensures the cookie cannot be accessed via JavaScript
+      sameSite: 'lax', // Adjust to 'strict' or 'none' depending on your needs
+    },
+    store: MongoStore.create({
+      client: mongoose.connection.getClient(),
+    }),
   })
-}))
+);
 app.use(passport.initialize())
 app.use(passport.session())
 
