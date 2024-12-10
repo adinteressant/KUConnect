@@ -46,7 +46,7 @@ const HomePage = () => {
           console.error('Error checking Google login status:', error);
         }
       } else {
-        setUser({ username: 'exampleUser' }); // Example: Use real user data here
+        setUser({ username: user?.username }); // Example: Use real user data here
       }
     };
 
@@ -150,6 +150,7 @@ const HomePage = () => {
               Please <a href="/login" className="text-cyan-600">log in</a> to post.
             </div>
           )}
+          <h2>Welcome, {user?.username}</h2>
 
           {/* Display Posts */}
           <div className="space-y-4 mt-8">
