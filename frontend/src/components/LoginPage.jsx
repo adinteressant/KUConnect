@@ -1,39 +1,59 @@
-import { useState } from "react"
-
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 export default function LoginPage() {
   const [formData, setFormData] = useState({
     email: "",
-    password: ""
-  })
+    password: "",
+  });
+  const navigate = useNavigate();
 
-  const [errors, setErrors] = useState({
-    email: "",
-    password: ""
-  })
+  const [errorMessage, setErrorMessage] = useState(""); // Add state for displaying errors
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    //logic to be added
-    const response = await fetch(`http://localhost:6969/v1/api/user-login/`,{
-      method:'POST',
-      headers:{
-        "Content-type":'application/json',
-      },
-      body:JSON.stringify(formData),
-    })
-    const context = await response.json()
-    sessionStorage.setItem("jwtToken",context.data);
-  }
+    try {
+      e.preventDefault();
+
+      const response = await fetch(`/api/user-login/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+        }),
+      });
+      console.log("token");
+
+
+      if (!response.ok) {
+        const errorResponse = await response.json();
+        throw new Error(errorResponse.message || "Login failed");
+      }
+
+      
+      const data = await response.json();
+      //const token = data.token;
+      console.log(data);
+      localStorage.setItem("isAuthenticated", true); // Save token to localStorage //BRO WHAT 
+      navigate("/");
+    } catch (error) {
+      console.error("Login error:", error.message);
+      setErrorMessage(error.message); // Display the error message to the user
+    }
+  };
 
   const handleGoogleLogin = () => {
-    //logic to be added
-    console.log("Attempting to log in with Google")
-  }
+    const backendUrl = 'http://localhost:4000';  // Adjust based on your actual backend URL
+    const currentPort = window.location.port;
+    window.location.href = `${backendUrl}/api/auth/google?port=${currentPort}`;
+  };
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-gray-100">
       <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-md">
         <h1 className="text-4xl font-serif mb-8 text-center text-gray-800">Login</h1>
+        {errorMessage && <p className="text-sm text-red-500 text-center">{errorMessage}</p>}
         <form onSubmit={handleSubmit} className="w-full space-y-6">
           <div className="w-full space-y-2">
             <input
@@ -44,7 +64,6 @@ export default function LoginPage() {
               className="w-full px-4 py-3 rounded-md text-base transition-colors bg-gray-100 focus:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-cyan-500"
               required
             />
-            {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
           </div>
           <div className="w-full space-y-2">
             <input
@@ -55,12 +74,12 @@ export default function LoginPage() {
               className="w-full px-4 py-3 rounded-md text-base transition-colors bg-gray-100 focus:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-cyan-500"
               required
             />
-            {errors.password && <p className="text-sm text-red-500">{errors.password}</p>}
           </div>
           <div className="pt-2">
             <button
+            
               type="submit"
-              className="w-full px-4 py-3 rounded-md text-base font-medium transition-colors bg-cyan-600 hover:bg--700 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2"
+              className="w-full px-4 py-3 rounded-md text-base font-medium transition-colors bg-cyan-600 hover:bg-cyan-700 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2"
             >
               Login
             </button>
@@ -75,6 +94,5 @@ export default function LoginPage() {
         </form>
       </div>
     </div>
-  )
+  );
 }
-

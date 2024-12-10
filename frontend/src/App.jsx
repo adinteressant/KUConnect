@@ -1,18 +1,41 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import LoginPage from './components/LoginPage.jsx';
-import Home from './components/Home.jsx';
-import RegisterPage from "./components/RegisterPage.jsx";
+import { Outlet, useLocation } from "react-router-dom";
+import Navbar from "./components/Navbar.jsx";
+import Sidebar from "./components/Sidebar.jsx";
+
+import { useState, useEffect } from "react";
 
 export default function App() {
-  return(
-  <>
-    <BrowserRouter>
-    <Routes>
-      <Route path="/" element={<Home/>}/>
-      <Route path="/login" element={<LoginPage/>}/>
-      <Route path="/register" element={<RegisterPage/>}/>
-    </Routes>
-    </BrowserRouter>
-  </>
+  const [isSidebarVisible, setIsSidebarVisible] = useState(true);
+  const [paddingValue, setPaddingValue] = useState("pl-64");
+
+  const location = useLocation();
+
+  useEffect(() => {
+    // Hide sidebar for login and register pages
+    if (location.pathname === "/login" || location.pathname === "/register") {
+      setIsSidebarVisible(false);
+      setPaddingValue("");
+    } else {
+      setIsSidebarVisible(true);
+      setPaddingValue("pl-64");
+    }
+  }, [location.pathname]);
+
+  return (
+    <>
+      {/* Navbar */}
+      <Navbar setVisibility={setIsSidebarVisible} setPadding={setPaddingValue} />
+
+      {/* Main Layout */}
+      <div className="flex h-screen bg-gray-100">
+        {/* Sidebar */}
+        {isSidebarVisible && <Sidebar />}
+
+        {/* Content Area */}
+        <div className={`flex-grow pt-14 ${paddingValue}`}>
+          <Outlet />
+        </div>
+      </div>
+    </>
   );
 }

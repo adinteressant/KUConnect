@@ -1,0 +1,155 @@
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Search, User, ChevronDown, LogOut, LogIn, UserPlus, UserCircle } from 'lucide-react';
+import axios from 'axios';
+
+const Navigation = ({ setVisibility, setPadding }) => {
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const navigate = useNavigate();
+  let timeout = null;
+
+  useEffect(() => {
+    const checkAuthentication = async () => {
+      const localAuth = localStorage.getItem('isAuthenticated') === 'true';
+      if (localAuth) {
+        setIsAuthenticated(true);
+      } else {
+        try {
+          const response = await fetch('/api/google/status', { credentials: 'include' });
+          const googleUserInfo = await response.json();
+          if (googleUserInfo?.email) {
+            localStorage.setItem('isAuthenticated', 'true');
+            setIsAuthenticated(true);
+          } else {
+            localStorage.setItem('isAuthenticated', 'false');
+            setIsAuthenticated(false);
+          }
+        } catch (error) {
+          console.error('Error checking Google login status:', error);
+        }
+      }
+    };
+
+    checkAuthentication();
+  }, []);
+
+  const checkLoginOrRegister = (path) => {
+    if (path === '/login' || path === '/register') {
+      setVisibility(false);
+      setPadding('');
+    } else {
+      setVisibility(true);
+      setPadding('pl-64');
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await axios.get('/api/user-logout', { withCredentials: true });
+      localStorage.setItem('isAuthenticated', 'false');
+      setIsAuthenticated(false);
+      setVisibility(false);
+      setPadding('');
+      navigate('/login');
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+  };
+
+  const handleDropdownOpen = () => {
+    if (timeout) clearTimeout(timeout);
+    setIsDropdownOpen(true);
+  };
+
+  const handleDropdownClose = (e) => {
+    timeout = setTimeout(() => {
+      if (!e.relatedTarget?.closest('.dropdown-area')) {
+        setIsDropdownOpen(false);
+      }
+    }, 300);
+  };
+
+  return (
+    <div className="w-full bg-white shadow-sm fixed z-20 top-0">
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="flex items-center justify-between h-16">
+          <Link to="/" className="text-2xl font-serif text-gray-800">
+            KUConnect
+          </Link>
+
+          <div className="w-full max-w-md mx-32">
+            {/* Search Section */}
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+              <input
+                type="text"
+                placeholder="Search"
+                className="w-full pl-10 pr-4 py-2 rounded-full bg-gray-100 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:bg-white transition-colors font-serif"
+              />
+            </div>
+          </div>
+
+          <div className="flex items-center space-x-6">
+            {/* Dropdown Section */}
+            <div
+              className="relative dropdown-area"
+              onMouseEnter={handleDropdownOpen}
+              onMouseLeave={handleDropdownClose}
+            >
+              <button className="p-2 rounded-full hover:bg-gray-100 transition-colors flex items-center">
+                <User className="h-6 w-6 text-gray-600" />
+                <ChevronDown className="h-4 w-4 ml-1 text-gray-600" />
+              </button>
+
+              {isDropdownOpen && (
+                <div
+                  className="absolute right-0 top-14 w-48 bg-white shadow-lg rounded-lg border border-gray-200 z-50 dropdown-area"
+                  onMouseEnter={handleDropdownOpen}
+                  onMouseLeave={handleDropdownClose}
+                >
+                  {isAuthenticated ? (
+                    <>
+                      <Link
+                        to="/myprofile"
+                        onClick={() => checkLoginOrRegister('/myprofile')}
+                        className="flex items-center px-4 py-2 hover:bg-gray-100 transition-colors"
+                      >
+                        <UserCircle className="h-4 w-4 mr-2" /> My Profile
+                      </Link>
+                      <button
+                        onClick={handleLogout}
+                        className="w-full flex items-center px-4 py-2 hover:bg-gray-100 transition-colors text-left"
+                      >
+                        <LogOut className="h-4 w-4 mr-2" /> Logout
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <Link
+                        to="/login"
+                        onClick={() => checkLoginOrRegister('/login')}
+                        className="flex items-center px-4 py-2 hover:bg-gray-100 transition-colors"
+                      >
+                        <LogIn className="h-4 w-4 mr-2" /> Login
+                      </Link>
+                      <Link
+                        to="/register"
+                        onClick={() => checkLoginOrRegister('/register')}
+                        className="flex items-center px-4 py-2 hover:bg-gray-100 transition-colors"
+                      >
+                        <UserPlus className="h-4 w-4 mr-2" /> Register
+                      </Link>
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Navigation;

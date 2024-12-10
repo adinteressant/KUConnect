@@ -1,6 +1,7 @@
-export default function registerController(req,res){
-  //To implment implementing the addition of user data into database
-  res.send({
-    "status":"Success"
+
+export default function registerController(req, res) {
+  
+  res.status(201).json({
+    message: 'User registered successfully',
   })
 }
