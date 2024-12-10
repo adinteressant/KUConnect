@@ -18,6 +18,7 @@ const HomePage = () => {
 
         if (response.data) {
           setUser(response.data);
+          console.log(user);
         }
         
         // Check if the welcome popup has been shown
@@ -45,7 +46,7 @@ const HomePage = () => {
           console.error('Error checking Google login status:', error);
         }
       } else {
-        setUser({ email: 'user@example.com' }); // Example: Use real user data here
+        setUser({ username: 'exampleUser' }); // Example: Use real user data here
       }
     };
 
@@ -77,8 +78,8 @@ const HomePage = () => {
       try {
         const postData = {
           content,
-          username: user?.username || googleUser?.username,
-          email: user?.email || googleUser?.email,
+          username: user?.username || googleUser?.username, // Use username instead of email
+          email: user?.email || googleUser?.email, // This can still be used if needed
         };
 
         const response = await axios.post('/api/create-post', postData, { withCredentials: true });
@@ -109,10 +110,10 @@ const HomePage = () => {
                 className="mx-auto rounded-full w-24 h-24 mb-4"
               />
               <h2 className="text-xl font-semibold">
-                Welcome, {user?.username || 'User'}!
+                Welcome, {user?.username || 'User'}! {/* Display username */}
               </h2>
               <p className="text-gray-600">
-                {user?.email || 'We’re glad to have you here!'}
+                {user?.username || 'We’re glad to have you here!'} {/* Display username */}
               </p>
               <button
                 onClick={() => setShowWelcomePopup(false)}
