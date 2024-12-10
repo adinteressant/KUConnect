@@ -12,7 +12,7 @@ import FriendsPage from './components/FriendsPage.jsx'
 import NotificationPage from './components/NotificationPage.jsx'
 import MyProfile from './components/MyProfile.jsx'
 import VerifyOtp from './components/VerifyOtpPage.jsx'
-import { AuthProvider } from './AuthContext.jsx'
+import { AuthProvider } from './context/AuthContext.jsx'
 
 const router = createBrowserRouter([
   {
