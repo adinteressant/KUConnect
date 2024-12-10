@@ -8,6 +8,7 @@ import sendMail from '../utils/sendMail.js'
 import { GoogleUser } from '../models/googleUser.model.js'
 import generateOTP from '../utils/generateOTP.js'
 import { UnregisteredUser } from '../models/unregisteredUser.model.js'
+import { KU_DOMAIN } from '../constants.js'
 
 export default async function registerMiddleware(req,res,next){
   const errors = validationResult(req)
@@ -17,7 +18,9 @@ export default async function registerMiddleware(req,res,next){
   const data = matchedData(req)
  
   const { username, email, password, rePassword, role } = data;
-
+  if(!email.includes(KU_DOMAIN)){
+    return res.status(400).json({message:'must be a KU-domain.'})
+  }
   // Check if passwords match
   if (password !== rePassword) {
     return res.status(400).json({
