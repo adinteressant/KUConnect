@@ -6,6 +6,7 @@ import axios from 'axios';
 const Navigation = ({ setVisibility, setPadding }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isGoogleUser, setIsGoogleUser] = useState(false); // Track if Google user
   const navigate = useNavigate();
   let timeout = null;
 
@@ -14,16 +15,21 @@ const Navigation = ({ setVisibility, setPadding }) => {
       const localAuth = localStorage.getItem('isAuthenticated') === 'true';
       if (localAuth) {
         setIsAuthenticated(true);
+        setIsGoogleUser(localStorage.getItem('isGoogleUser') === 'true'); // Check if Google login
       } else {
         try {
           const response = await fetch('/api/google/status', { credentials: 'include' });
           const googleUserInfo = await response.json();
           if (googleUserInfo?.email) {
             localStorage.setItem('isAuthenticated', 'true');
+            localStorage.setItem('isGoogleUser', 'true'); // Store Google user status
             setIsAuthenticated(true);
+            setIsGoogleUser(true);
           } else {
             localStorage.setItem('isAuthenticated', 'false');
+            localStorage.setItem('isGoogleUser', 'false');
             setIsAuthenticated(false);
+            setIsGoogleUser(false);
           }
         } catch (error) {
           console.error('Error checking Google login status:', error);
@@ -48,12 +54,31 @@ const Navigation = ({ setVisibility, setPadding }) => {
     try {
       await axios.get('/api/user-logout', { withCredentials: true });
       localStorage.setItem('isAuthenticated', 'false');
+      localStorage.setItem('isGoogleUser', 'false'); // Clear Google user status
       setIsAuthenticated(false);
+      setIsGoogleUser(false);
       setVisibility(false);
       setPadding('');
       navigate('/login');
     } catch (error) {
       console.error('Error logging out:', error);
+    }
+  };
+
+  const handleGoogleLogout = async () => {
+    if (window.gapi.auth2) {
+      const auth2 = window.gapi.auth2.getAuthInstance();
+      await auth2.signOut().then(() => {
+        console.log("Google user logged out");
+        axios.get('/api/user-logout', { withCredentials: true });
+        localStorage.setItem('isAuthenticated', 'false');
+        localStorage.setItem('isGoogleUser', 'false'); // Clear Google user status
+        setIsAuthenticated(false);
+        setIsGoogleUser(false);
+        setVisibility(false);
+        setPadding('');
+        navigate('/login');
+      });
     }
   };
 
@@ -118,7 +143,7 @@ const Navigation = ({ setVisibility, setPadding }) => {
                         <UserCircle className="h-4 w-4 mr-2" /> My Profile
                       </Link>
                       <button
-                        onClick={handleLogout}
+                        onClick={isGoogleUser ? handleGoogleLogout : handleLogout}
                         className="w-full flex items-center px-4 py-2 hover:bg-gray-100 transition-colors text-left"
                       >
                         <LogOut className="h-4 w-4 mr-2" /> Logout
