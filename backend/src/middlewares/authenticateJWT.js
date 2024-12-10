@@ -10,7 +10,10 @@ const authenticateJWT = async (req, res, next) => {
     
     const token = req.cookies.JWT_TOKEN; 
     if (!token) {
-      return res.status(401).json({ message: "Unauthorized: Invalid token!" });
+      if(!req.user){
+        return res.status(401).json({ message: "Access denied!" });
+      }
+      return next()
     }
 
     jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decoded) => {
@@ -56,7 +59,7 @@ const authenticateJWT = async (req, res, next) => {
       }
     });
   } catch (error) {
-    console.error("JWT authentication error:", error);
+    console.error("Authentication error:", error);
     res.status(500).json({ message: "Internal Server Error", error });
   }
 };

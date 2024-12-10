@@ -1,36 +1,14 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 
 const HomePage = () => {
   const [user, setUser] = useState(null);
   const [content, setContent] = useState('');
-  const [googleUser,setGoogleUser] = useState(null);
-  const [userProfile, setUserProfile] = useState({
-    username: '',
-    email: '',
-    role: '',
-  });
-
-   //Fetch user profile on mount
-  useEffect(() => {
-    (async () => {
-      try {
-        const response = await axios.get('/api/get-user-profile/', {
-          withCredentials: true,
-        });
-
-        if (response.data) {
-          setUserProfile(response.data);
-        }
-      } catch (error) {
-        console.error('Error fetching user profile:', error);
-      }
-    })();
-  }, []);
+  const [googleUser,setGoogleUser] = useState('');
+  const [userProfile, setUserProfile] = useState({});
 
   // Check for logged-in user based on isAuthenticated
   useEffect(() => {
-    let isAuthenticated = localStorage.getItem('isAuthenticated')=='true'?true:false;
+    let isAuthenticated = localStorage.getItem('isAuthenticated')==='true'?true:false;
     console.log(isAuthenticated);
     if ( isAuthenticated ) {
       setUser({ email: 'user@example.com' });
@@ -38,13 +16,11 @@ const HomePage = () => {
     }
 
     else {
-      fetch('/api/google/status', { credentials: 'include' })
+      fetch('/api/google/status')
         .then((response) => response.json())
         .then((googleUserInfo) => {
           if (googleUserInfo?.email) {
-            setGoogleUser(googleUserInfo);
-          } else {
-            setGoogleUser(null);
+            setGoogleUser(googleUserInfo.email);
           }
         })
         .catch((error) => {
@@ -54,9 +30,21 @@ const HomePage = () => {
 
   }, []);
 
+   //Fetch user profile on mount
+   useEffect(() => {
+      fetch('/api/get-user-profile')
+      .then(response => response.json())
+      .then((data)=>{
+        setUserProfile(data)
+      })
+      .catch((e)=>{
+        console.error('Error fetching user profile:', e);
+      })
+  },[]);
+
   // Handle Post Submit
   const handlePostSubmit = () => {
-    if (!user) {
+    if (!user && !googleUser) {
       alert('You must be logged in to post.');
       return;
     }
@@ -68,12 +56,12 @@ const HomePage = () => {
       alert('Post content cannot be empty.');
     }
   };
-
+  
   return (
     <div className="flex-1 flex flex-col">
       <main className="flex-1 p-6 overflow-y-auto">
         <div className="max-w-2xl mx-auto space-y-4">
-          {user || googleUser ? (
+          {(user || googleUser) ? (
             <div className="bg-white p-4 rounded-lg shadow-md">
               <textarea
                 placeholder="What's on your mind?"
@@ -102,7 +90,7 @@ const HomePage = () => {
           )}
             {googleUser && (
               <div className="flex justify-between items-center mt-6 p-4 bg-gray-100 rounded-lg shadow-md">
-                <div className="text-gray-800">Welcome, {googleUser.email}</div>
+                <div className="text-gray-800">Welcome, {userProfile.username}</div>
               </div>
           )}
         </div>
