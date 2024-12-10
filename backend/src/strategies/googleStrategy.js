@@ -1,7 +1,7 @@
 import passport from 'passport'
 import { Strategy } from 'passport-google-oauth2'
 import { GoogleUser } from '../models/googleUser.model.js'
-
+import { KU_DOMAIN } from '../constants.js'
 
 passport.serializeUser((user,done) => {
   // console.log('inside serializeUser')
@@ -28,6 +28,10 @@ export default passport.use(new Strategy({
   passReqToCallback   : true
 },
   async (req,accessToken, refreshToken, profile, done) => {
+    const gmail = profile.email
+    if(!gmail.includes(KU_DOMAIN)){
+      return done({error:'Email address should contain KU-domain.'},null)
+    }
     let findUser
     try{
       findUser = await GoogleUser.findOne({googleId:profile.id})
