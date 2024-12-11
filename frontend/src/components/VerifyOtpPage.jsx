@@ -48,13 +48,13 @@ export default function VerifyOtp(){
           <div className="w-full space-y-2">
             <input
               type="text"
-              placeholder="Enter 6-digit OTP"
+              placeholder="Enter 4-digit OTP"
               value={otp}
               onChange={(e) => setOtp(e.target.value)}
               className="w-full px-4 py-3 rounded-md text-base transition-colors bg-gray-100 focus:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-cyan-500"
               required
-              maxLength="6"
-              pattern="\d{6}"
+              maxLength="4"
+              pattern="\d{4}"
             />
           </div>
           <div className="pt-2">
