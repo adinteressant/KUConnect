@@ -12,7 +12,6 @@ import FriendsPage from './components/FriendsPage.jsx'
 import NotificationPage from './components/NotificationPage.jsx'
 import MyProfile from './components/MyProfile.jsx'
 import VerifyOtp from './components/VerifyOtpPage.jsx'
-import { AuthProvider } from './context/AuthContext.jsx'
 
 const router = createBrowserRouter([
   {
@@ -57,8 +56,6 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <AuthProvider>
       <RouterProvider router={router} />
-    </AuthProvider>
   </StrictMode>
 );
