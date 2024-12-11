@@ -109,7 +109,7 @@ const MyProfile = () => {
                 {profilePictures.map((pic, index) => (
                   <img 
                     key={index} 
-                    src={`/api/get-pfp/${pic}`} 
+                    src={`/api/get-pfp?id=${pic}`} 
                     alt={`Profile option ${index + 1}`}
                     className="w-24 h-24 object-cover rounded-full cursor-pointer 
                                hover:scale-105 transition-transform"

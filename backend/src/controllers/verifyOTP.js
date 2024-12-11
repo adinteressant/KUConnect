@@ -22,6 +22,7 @@ const verifyOTP = async (req,res) => {
     })
 
     const publicInfo = new PublicInfo({
+      pfp_id: 1,
       user_id: user_id,
       username: username,
       tags: [], // Default empty tags
