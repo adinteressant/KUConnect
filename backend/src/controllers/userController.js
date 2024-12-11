@@ -4,7 +4,8 @@ import jwt from "jsonwebtoken";
 
 export const getUserProfileController = async (req, res) => {
 
-  if(req.session.id){
+  if(req.user.googleId){
+    console.log('google session')
     const {user:{email}} = req
     
     let privateProfile,publicProfile

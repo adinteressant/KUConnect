@@ -8,6 +8,7 @@ import { registerSchema } from '../utils/validationSchema.js'
 import '../strategies/googleStrategy.js'
 import passport from 'passport'
 import verifyOTP from '../controllers/verifyOTP.js'
+import PrivateInfo from '../models/PrivateInfo.js'
 
   let router = express.Router();
 
@@ -28,8 +29,15 @@ import verifyOTP from '../controllers/verifyOTP.js'
     next()
   },passport.authenticate('google'))
   
-  router.get('/api/google/callback',passport.authenticate('google'),(req,res)=>{
-    res.redirect(`http://localhost:${frontendPort}`);  
+  router.get('/api/google/callback',passport.authenticate('google'),async (req,res)=>{
+    const {user:{email}} = req
+
+    const privateProfile = await PrivateInfo.findOne({email:email});
+    if(!privateProfile){
+      return res.redirect(`http://localhost:${frontendPort}/update-profile?email=${email}`)
+    }
+
+    return res.redirect(`http://localhost:${frontendPort}`);  
   })
 
   router.get('/api/google/status',(req,res) => {

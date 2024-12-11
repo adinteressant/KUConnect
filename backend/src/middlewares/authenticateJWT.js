@@ -15,7 +15,7 @@ const authenticateJWT = async (req, res, next) => {
       }
       return next()
     }
-
+    console.log('control reached here jwt')
     jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decoded) => {
       if (err) {
         // Handle token expiration
@@ -54,8 +54,9 @@ const authenticateJWT = async (req, res, next) => {
         }
       } else {
         // Token is valid
+        console.log('token is valid')
         req.user = decoded.user_id;
-        next();
+        return next();
       }
     });
   } catch (error) {
