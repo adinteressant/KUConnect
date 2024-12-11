@@ -9,6 +9,7 @@ export const setUserInfo = async (req,res) => {
   const userId = uuidv4()
 
   const publicInfo = new PublicInfo({
+    pfp_id:1,
     user_id: userId,
     username:username,
     tags:[],

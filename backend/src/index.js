@@ -18,6 +18,8 @@ const app = express();
 //middleware attachments
 app.use(express.json());
 
+app.use("/public",express.static("../public/"))
+
 app.use(
   cors({
     origin: 'http://localhost:5173', // Frontend URL
