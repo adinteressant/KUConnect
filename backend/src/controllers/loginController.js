@@ -36,20 +36,12 @@ export default async function loginController(req, res) {
       // Respond with the JWT token and user info
       
     
-      // res.cookie('JWT_TOKEN', jwt_token, {
-      //   httpOnly: true,
-      //   sameSite: 'None', // Required for cross-origin requests
-      //   secure: process.env.NODE_ENV === 'production',
-      //   path: '/', // Cookie available throughout the site
-      // });
-      
-      // res.cookie('REFRESH_TOKEN', refresh_token, {
-      //   httpOnly: true,
-      //   sameSite: 'None',
-      //   secure: process.env.NODE_ENV === 'production',
-      //   path: '/',
-      // });
-      
+    res.cookie('JWT_TOKEN',jwt_token,{
+      httpOnly:true,
+    });
+    res.cookie('REFRESH_TOKEN',refresh_token,{
+      httpOnly:true,
+    });
 
     return res.status(200).json({
       message: 'Login Successful',
@@ -57,9 +49,7 @@ export default async function loginController(req, res) {
         user_id: privateInfo.user_id,
         email: privateInfo.email,
         role: privateInfo.role,
-      },
-      jwt_token: jwt_token, // Include JWT token in the response
-      refresh_token: refresh_token, // Include Refresh token in the response
+      }
       //sends the user_id , email and role to the frontend
     });
 
