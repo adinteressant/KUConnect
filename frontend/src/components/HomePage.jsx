@@ -36,6 +36,8 @@ const HomePage = () => {
       .then(response => response.json())
       .then((data)=>{
         setUserProfile(data)
+        console.log('user Profile')
+        console.log(userProfile)
       })
       .catch((e)=>{
         console.error('Error fetching user profile:', e);
@@ -83,16 +85,16 @@ const HomePage = () => {
             </div>
           )}
 
-          {user && (
+          {(user||googleUser) && (
             <div className="flex justify-between items-center mt-6 p-4 bg-gray-100 rounded-lg shadow-md">
-              <div className="text-gray-800">Welcome, {userProfile.username}</div>
+              <div className="text-gray-800">Welcome, {userProfile.username || userProfile.email?.split('@')[0]}</div>
             </div>
           )}
-            {googleUser && (
+            {/* {googleUser && (
               <div className="flex justify-between items-center mt-6 p-4 bg-gray-100 rounded-lg shadow-md">
-                <div className="text-gray-800">Welcome, {userProfile.username}</div>
+                <div className="text-gray-800">Welcome, {userProfile.username || userProfile.email}</div>
               </div>
-          )}
+          )} */}
         </div>
       </main>
     </div>

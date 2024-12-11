@@ -10,6 +10,14 @@ export const getUserProfileController = async (req, res) => {
     let privateProfile,publicProfile
     try{
       privateProfile = await PrivateInfo.findOne({email:email});
+      if(!privateProfile){
+        return res.status(200).json({
+          user_id: '',
+          username: '',
+          email: email,  
+          role: ''
+        })
+      }
       publicProfile = await PublicInfo.findOne({user_id:privateProfile.user_id})
     }catch(e){
       console.log('error in getting the public/private info')
