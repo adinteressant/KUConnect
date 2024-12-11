@@ -1,5 +1,6 @@
 import PublicInfo from "../models/PublicInfo.js";
 import PrivateInfo from "../models/PrivateInfo.js";
+import { GoogleUser } from "../models/googleUser.model.js";
 import jwt from "jsonwebtoken";
 
 export const getUserProfileController = async (req, res) => {
@@ -9,6 +10,7 @@ export const getUserProfileController = async (req, res) => {
     
     let privateProfile,publicProfile
     try{
+      
       privateProfile = await PrivateInfo.findOne({email:email});
       if(!privateProfile){
         return res.status(200).json({
@@ -19,11 +21,13 @@ export const getUserProfileController = async (req, res) => {
         })
       }
       publicProfile = await PublicInfo.findOne({user_id:privateProfile.user_id})
+      googleProfile = await GoogleUser.findOne({email:email});
+
     }catch(e){
       console.log('error in getting the public/private info')
     }
-    console.log(publicProfile.user_id+' '+publicProfile.username+' '+privateProfile.email
-      +' '+publicProfile.role)
+    //console.log(+' '+publicProfile.username+' '+privateProfile.email
+    //  +' '+publicProfile.role)
     return res.status(200).json({
       user_id: publicProfile.user_id,
       username: publicProfile.username,
