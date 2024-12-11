@@ -25,13 +25,11 @@ export default function LoginPage() {
       });
       console.log("token");
 
-
       if (!response.ok) {
         const errorResponse = await response.json();
         throw new Error(errorResponse.message || "Login failed");
       }
 
-      
       const data = await response.json();
       //const token = data.token;
       console.log(data);
@@ -47,6 +45,7 @@ export default function LoginPage() {
     const backendUrl = 'http://localhost:4000';  // Adjust based on your actual backend URL
     const currentPort = window.location.port;
     window.location.href = `${backendUrl}/api/auth/google?port=${currentPort}`;
+    localStorage.setItem('isAuthenticated', false);
   };
 
   return (

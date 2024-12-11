@@ -1,96 +1,87 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 
 const HomePage = () => {
   const [user, setUser] = useState(null);
   const [content, setContent] = useState('');
-  const [googleUser, setGoogleUser] = useState(null);
-  const [posts, setPosts] = useState([]);
-  const [showWelcomePopup, setShowWelcomePopup] = useState(false);
+  const [googleUser, setGoogleUser] = useState('');
+  const [userProfile, setUserProfile] = useState({});
+  const [posts, setPosts] = useState([]); // Store posts in state
 
-  // Fetch user profile and check Google login status on mount
+  // Check for logged-in user based on isAuthenticated
   useEffect(() => {
-    const fetchUserProfile = async () => {
-      try {
-        const response = await axios.get('/api/get-user-profile/', {
-          withCredentials: true,
-        });
-
-        if (response.data) {
-          setUser(response.data);
-        }
-        
-        // Check if the welcome popup has been shown
-        const welcomeShown = localStorage.getItem('welcomeShown');
-        if (!welcomeShown) {
-          setShowWelcomePopup(true); // Show popup
-          localStorage.setItem('welcomeShown', 'true'); // Mark popup as shown
-        }
-      } catch (error) {
-        console.error('Error fetching user profile:', error);
-      }
-    };
-
-    const checkGoogleLoginStatus = async () => {
-      let isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
-      if (!isAuthenticated) {
-        try {
-          const googleUserInfo = await fetch('/api/google/status', { credentials: 'include' }).then(res => res.json());
+    let isAuthenticated = localStorage.getItem('isAuthenticated') === 'true' ? true : false;
+    if (isAuthenticated) {
+      setUser({ email: 'user@example.com' });
+    } else {
+      fetch('/api/google/status')
+        .then((response) => response.json())
+        .then((googleUserInfo) => {
           if (googleUserInfo?.email) {
-            setGoogleUser(googleUserInfo);
-          } else {
-            setGoogleUser(null);
+            setGoogleUser(googleUserInfo.email);
           }
-        } catch (error) {
+        })
+        .catch((error) => {
           console.error('Error checking Google login status:', error);
-        }
-      } else {
-        setUser({ email: 'user@example.com' }); // Example: Use real user data here
-      }
-    };
-
-    fetchUserProfile();
-    checkGoogleLoginStatus();
+        });
+    }
   }, []);
 
-  // Fetch posts
+  // Fetch user profile on mount
   useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const response = await axios.get('/api/fetch-posts');
-        setPosts(response.data);
-      } catch (error) {
-        console.error('Error fetching posts:', error);
-      }
-    };
-    fetchPosts();
+    fetch('/api/get-user-profile')
+      .then((response) => response.json())
+      .then((data) => {
+        setUserProfile(data); // Ensure user_id is fetched and set properly
+      })
+      .catch((e) => {
+        console.error('Error fetching user profile:', e);
+      });
+  }, []);
+
+  // Fetch all posts on mount
+  useEffect(() => {
+    fetch('/api/get-posts')
+      .then((response) => response.json())
+      .then((data) => {
+        setPosts(data); // Store posts in the state
+      })
+      .catch((e) => {
+        console.error('Error fetching posts:', e);
+      });
   }, []);
 
   // Handle Post Submit
-  const handlePostSubmit = async () => {
+  const handlePostSubmit = () => {
     if (!user && !googleUser) {
       alert('You must be logged in to post.');
       return;
     }
 
     if (content.trim()) {
-      try {
-        const postData = {
-          content,
-          username: user?.username || googleUser?.username,
-          email: user?.email || googleUser?.email,
-        };
+      const userInfo = userProfile || googleUser;  // Ensure that userProfile includes user_id
 
-        const response = await axios.post('/api/create-post', postData, { withCredentials: true });
-        if (response.status === 201) {
-          setPosts((prevPosts) => [response.data, ...prevPosts]);
-          setContent('');
-        } else {
-          console.error('Error creating post:', response.data.message);
-        }
-      } catch (error) {
-        console.error('Error creating post:', error.response?.data?.message || error);
-      }
+      // Send the post request with user info
+      fetch('/api/create-post', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          content,
+          userInfo, 
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.post) {
+            setContent('');
+            setPosts([data.post, ...posts]); // Add the new post to the state and prepend it
+            console.log('Post submitted:', data.post);
+          }
+        })
+        .catch((error) => {
+          console.error('Error submitting post:', error);
+        });
     } else {
       alert('Post content cannot be empty.');
     }
@@ -98,36 +89,9 @@ const HomePage = () => {
 
   return (
     <div className="flex-1 flex flex-col">
-      {/* Welcome Popup */}
-      {showWelcomePopup && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
-            <div className="text-center">
-              <img
-                src="https://via.placeholder.com/150" // Replace with a user icon or image URL
-                alt="User"
-                className="mx-auto rounded-full w-24 h-24 mb-4"
-              />
-              <h2 className="text-xl font-semibold">
-                Welcome, {user?.username || 'User'}!
-              </h2>
-              <p className="text-gray-600">
-                {user?.email || 'We’re glad to have you here!'}
-              </p>
-              <button
-                onClick={() => setShowWelcomePopup(false)}
-                className="mt-4 bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700"
-              >
-                Get Started
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
       <main className="flex-1 p-6 overflow-y-auto">
         <div className="max-w-2xl mx-auto space-y-4">
-          {/* Post Submission Area */}
+          {/* Post creation section */}
           {(user || googleUser) ? (
             <div className="bg-white p-4 rounded-lg shadow-md">
               <textarea
@@ -150,13 +114,34 @@ const HomePage = () => {
             </div>
           )}
 
-          {/* Display Posts */}
-          <div className="space-y-4 mt-8">
-            {posts.map((post) => (
-              <div key={post._id} className="bg-white p-4 rounded-lg shadow-md">
-                <p>{post.content}</p>
+          {/* Displaying user profile */}
+          {(user || googleUser) && (
+            <div className="flex justify-between items-center mt-6 p-4 bg-gray-100 rounded-lg shadow-md">
+              <div className="text-gray-800">Welcome, {userProfile.username || userProfile.email?.split('@')[0]}</div>
+              {/* Displaying user_id */}
+            </div>
+          )}
+
+          {/* Displaying posts */}
+          <div className="mt-8">
+            {posts.length > 0 ? (
+              posts.map((post) => (
+                <div key={post._id} className="bg-white p-4 rounded-lg shadow-md mb-4">
+                  <div className="text-gray-800 font-semibold">{post.username || post.email.split('@')[0]}</div>
+                  <div className="text-gray-600 text-sm">{new Date(post.createdAt).toLocaleString()}</div>
+                  <p className="mt-2 text-gray-800">{post.content}</p>
+                  {post.tags.length > 0 && (
+                    <div className="mt-2 text-sm text-gray-600">
+                      Tags: {post.tags.join(', ')}
+                    </div>
+                  )}
+                </div>
+              ))
+            ) : (
+              <div className="bg-gray-100 p-4 rounded-lg shadow-md text-center">
+                No posts available.
               </div>
-            ))}
+            )}
           </div>
         </div>
       </main>

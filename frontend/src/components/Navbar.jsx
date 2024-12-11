@@ -19,7 +19,7 @@ const Navigation = ({ setVisibility, setPadding }) => {
           const response = await fetch('/api/google/status', { credentials: 'include' });
           const googleUserInfo = await response.json();
           if (googleUserInfo?.email) {
-            localStorage.setItem('isAuthenticated', 'true');
+            localStorage.setItem('isAuthenticated', 'false');
             setIsAuthenticated(true);
           } else {
             localStorage.setItem('isAuthenticated', 'false');

@@ -1,56 +1,48 @@
 //Controller
+import Post from '../models/Post.js'; // Post model 
 
-import Post from '../models/Post.js';
-import { getUserProfileController } from './userController.js';
-import PublicInfo from '../models/PublicInfo.js';
 
-// Create a new post
-export const createPost = async (req, res) => {
+// Get all posts
+export const getAllPosts = async (req, res) => {
   try {
-    const { content, tags } = req.body;
-    console.log(req.body);
-    const user = await PublicInfo.findOne({username:req.body.username});
-    console.log(user);
-    const {user_id} = user;
-    // Check if the user is authenticated and data is available
-    if (!user_id || !req.body.username) {
-      return res.status(400).json({ message: 'User information is missing' });
-    }
-
-    if (!content || content.trim().length === 0) {
-      return res.status(400).json({ message: 'Post content cannot be empty.' });
-    }
-
-    if (content.length > 500) {
-      return res.status(400).json({ message: 'Post content exceeds the maximum length of 500 characters.' });
-    }
-
-    // Call to get user profile if needed
-    await getUserProfileController();
-
-    // Create new post
-    const newPost = new Post({
-      user_id,
-      username,
-      content,
-      tags: tags || [],
-    });
-
-    await newPost.save();
-    return res.status(201).json(newPost);
+    // Retrieve all posts from the database, sorted by createdAt (most recent first)
+    const posts = await Post.find().sort({ createdAt: -1 });
+    res.json(posts);
   } catch (error) {
-    console.error('Error creating post:', error);
-    return res.status(500).json({ message: 'Server error' });
+    console.error('Error fetching posts:', error);
+    res.status(500).json({ message: 'Internal Server Error', error });
   }
 };
 
-// Fetch all posts
-export const getAllPosts = async (req, res) => {
+// Create a new post
+export const createPost = async (req, res) => {
+  const { content, userInfo, tags } = req.body;
+
+  // Validate content
+  if (!content || content.trim() === '') {
+    return res.status(400).json({ message: 'Post content is required!' });
+  }
+
+  // Ensure userInfo is provided (email or username)
+  if (!userInfo) {
+    return res.status(400).json({ message: 'User information is required!' });
+  }
+
   try {
-    const posts = await Post.find();
-    return res.status(200).json(posts);
+    // Create a new post using the provided data
+    const newPost = new Post({
+      userId: userInfo.user_id,
+      username: userInfo.username || userInfo.email, // username or email for username
+      email: userInfo.email, // Store email
+      content,
+      tags: tags || [], // Optional: If no tags provided, default to empty array
+    });
+
+    // Save the post in the database
+    const savedPost = await newPost.save();
+    res.status(201).json({ post: savedPost });
   } catch (error) {
-    console.error('Error fetching posts:', error);
-    return res.status(500).json({ message: 'Server error' });
+    console.error('Error creating post:', error);
+    res.status(500).json({ message: 'Internal Server Error', error });
   }
 };

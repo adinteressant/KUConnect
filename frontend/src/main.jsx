@@ -12,6 +12,7 @@ import FriendsPage from './components/FriendsPage.jsx'
 import NotificationPage from './components/NotificationPage.jsx'
 import MyProfile from './components/MyProfile.jsx'
 import VerifyOtp from './components/VerifyOtpPage.jsx'
+import SetInfoGoogle from './components/SetInfoGoogle.jsx'
 
 const router = createBrowserRouter([
   {
@@ -49,14 +50,17 @@ const router = createBrowserRouter([
       {
         path:'/verifyotp',
         element:<VerifyOtp/>
+      },
+      {
+        path:'/set-google-profile',
+        element:<SetInfoGoogle/>
       }
-      
     ]
   }
 ])
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <RouterProvider router = {router}/>
-  </StrictMode>,
-)
+      <RouterProvider router={router} />
+  </StrictMode>
+);

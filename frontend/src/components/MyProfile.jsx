@@ -4,10 +4,7 @@ import axios from 'axios';
 const MyProfile = () => {
  
   
-const [userProfile,setuserProfile] = useState({
-  username:' ',
-  role:' ',
-});
+const [userProfile,setuserProfile] = useState({})
 
 useEffect(()=>{
   (async ()=>{
@@ -38,7 +35,9 @@ useEffect(()=>{
 
         {/* Name and Tagline */}
         <div className="text-center mt-4">
-          <h1 className="text-4xl font-serif font-bold text-gray-800 ">{userProfile.username}</h1>
+          <h1 className="text-4xl font-serif font-bold text-gray-800 ">
+            {userProfile.username || userProfile.email?.split('@')[0]}
+          </h1>
           <p className="text-gray-600 mt-2">@{userProfile.user_id}</p>
           <p className="text-gray-700 mt-2">
             Enthusiastic developer, coffee lover, and tech enthusiast.
