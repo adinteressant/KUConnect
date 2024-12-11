@@ -5,13 +5,22 @@ import jwt from "jsonwebtoken";
 
 export const getUserProfileController = async (req, res) => {
 
-  if(req.session.id){
+  if(req.user.googleId){
+    console.log('google session')
     const {user:{email}} = req
     
     let privateProfile,publicProfile
     try{
       
       privateProfile = await PrivateInfo.findOne({email:email});
+      if(!privateProfile){
+        return res.status(200).json({
+          user_id: '',
+          username: '',
+          email: email,  
+          role: ''
+        })
+      }
       publicProfile = await PublicInfo.findOne({user_id:privateProfile.user_id})
       googleProfile = await GoogleUser.findOne({email:email});
 
