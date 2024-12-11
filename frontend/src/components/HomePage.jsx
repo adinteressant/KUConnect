@@ -1,13 +1,16 @@
 import { useEffect, useState } from 'react';
 
 const HomePage = () => {
+ 
   const [user, setUser] = useState(null);
   const [content, setContent] = useState('');
   const [googleUser, setGoogleUser] = useState('');
   const [userProfile, setUserProfile] = useState({});
   const [posts, setPosts] = useState([]); // Store posts in state
 
+
   // Check for logged-in user based on isAuthenticated
+  
   useEffect(() => {
     let isAuthenticated = localStorage.getItem('isAuthenticated') === 'true' ? true : false;
     if (isAuthenticated) {
@@ -44,7 +47,7 @@ const HomePage = () => {
       .then((response) => response.json())
       .then((data) => {
         setPosts(data); // Store posts in the state
-      })
+      },[posts])
       .catch((e) => {
         console.error('Error fetching posts:', e);
       });
