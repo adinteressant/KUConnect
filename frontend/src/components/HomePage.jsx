@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 const HomePage = () => {
-  const { isAuthenticated, logout, user } = useAuth();
+  const [user, setUser] = useState(null);
   const [content, setContent] = useState('');
   const [googleUser,setGoogleUser] = useState('');
   const [userProfile, setUserProfile] = useState({});
@@ -43,47 +43,22 @@ const HomePage = () => {
   },[]);
 
   // Handle Post Submit
-  const handlePostSubmit = async () => {
+  const handlePostSubmit = () => {
     if (!user && !googleUser) {
       alert('You must be logged in to post.');
       return;
     }
 
-    try {
-      const postData = {
-        content,
-        username: user?.username,  // Use user details from the context
-        email: user?.email,
-      };
-
-      const response = await axios.post('/api/create-post', postData, { withCredentials: true });
-      setContent(''); // Clear input field
-      setPosts((prev) => [response.data, ...prev]); // Add new post to list
-    } catch (error) {
-      console.error('Error creating post:', error);
+    if (content.trim()) {
+      console.log('Post submitted:', content);
+      setContent('');
+    } else {
+      alert('Post content cannot be empty.');
     }
   };
   
   return (
     <div className="flex-1 flex flex-col">
-      {showWelcomePopup && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
-            <div className="text-center">
-              <img src="https://via.placeholder.com/150" alt="User" className="mx-auto rounded-full w-24 h-24 mb-4" />
-              <h2 className="text-xl font-semibold">Welcome, {user?.username || 'User'}!</h2>
-              <p className="text-gray-600">{user?.email || 'We’re glad to have you here!'}</p>
-              <button
-                onClick={() => setShowWelcomePopup(false)}
-                className="mt-4 bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700"
-              >
-                Get Started
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
       <main className="flex-1 p-6 overflow-y-auto">
         <div className="max-w-2xl mx-auto space-y-4">
           {(user || googleUser) ? (
@@ -97,7 +72,7 @@ const HomePage = () => {
               <button
                 disabled={!content.trim()}
                 onClick={handlePostSubmit}
-                className="bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 focus:outline-none"
+                className="bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:ring-offset-2 disabled:bg-gray-400"
               >
                 Post
               </button>
@@ -117,8 +92,8 @@ const HomePage = () => {
               <div className="flex justify-between items-center mt-6 p-4 bg-gray-100 rounded-lg shadow-md">
                 <div className="text-gray-800">Welcome, {userProfile.username}</div>
               </div>
-            )}
-          </div>
+          )}
+        </div>
       </main>
     </div>
   );
