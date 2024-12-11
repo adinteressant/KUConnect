@@ -16,6 +16,7 @@ export const getUserProfileController = async (req, res) => {
       console.log("private profile: "+ privateProfile);
       if(!privateProfile){
         return res.status(200).json({
+          pfp_id: 1,
           user_id: '',
           username: '',
           email: email,  
@@ -33,6 +34,7 @@ export const getUserProfileController = async (req, res) => {
     //console.log(+' '+publicProfile.username+' '+privateProfile.email
     //  +' '+publicProfile.role)
     return res.status(200).json({
+      pfp_id:publicProfile.pfp_id,
       user_id: publicProfile.user_id,
       username: publicProfile.username,
       email: privateProfile.email,  // Email is fetched from PrivateInfo model
