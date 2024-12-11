@@ -8,8 +8,12 @@ const authenticateJWT = async (req, res, next) => {
 
     const refresh_token = req.cookies.REFRESH_TOKEN;
     
-    const token = req.cookies.JWT_TOKEN; 
-    if (!token) {
+    const token = req.cookies.JWT_TOKEN;
+    const connect_sid = req.cookies['connect.sid'];
+    if(connect_sid) {
+      return res.status(200).json({message:"Access Provided to Google User!"});
+    }
+    if (!token && !refresh_token ) {
       if(!req.user){
         return res.status(401).json({ message: "Access denied!" });
       }
