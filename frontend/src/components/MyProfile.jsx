@@ -27,8 +27,7 @@ const MyProfile = () => {
           withCredentials: true
         });
         if (!response.data) return;
-        setUserProfile(response.data);
-      } catch (error) {
+        setUserProfile(response.data); } catch (error) {
         console.error('Error fetching user profile:', error);
       }
     })();
@@ -60,13 +59,15 @@ const MyProfile = () => {
     }
   };
 
-  const handleProfilePicSelect = async (picUrl) => {
+  const handleProfilePicSelect = async (p) => {
     try {
-      await axios.post('/api/update-profile-pic', 
-        { profilePicUrl: picUrl }, 
-        { withCredentials: true }
+      await axios.post(`/api/update-pfp?id=${p}`, 
+        {
+          user_id:userProfile.user_id,
+        },
+        { withCredentials: true },
       );
-      setUserProfile(prev => ({ ...prev, profilePic: picUrl }));
+      setUserProfile(prev => ({ ...prev, pfp_id: p }));
       setShowProfilePicOverlay(false);
     } catch (error) {
       console.error('Error updating profile picture:', error);
@@ -83,9 +84,9 @@ const MyProfile = () => {
                      relative group cursor-pointer"
           onClick={() => setShowProfilePicOverlay(true)}
         >
-          {userProfile.profilePic ? (
+          {userProfile.pfp_id? (
             <img 
-              src={userProfile.profilePic} 
+              src={`/api/get-pfp?id=${userProfile.pfp_id}`} 
               alt="Profile" 
               className="w-full h-full rounded-full object-cover"
             />
