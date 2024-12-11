@@ -37,22 +37,36 @@ export default function VerifyOtp(){
     
   }
 
-  return <div className="flex flex-col">
-    <div>
-      Enter the OTP that is sent to your email address
+  return (
+    <div className="min-h-screen w-full flex items-center justify-center bg-gray-100">
+      <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-md">
+        <h1 className="text-4xl font-serif mb-8 text-center text-gray-800">Verify OTP</h1>
+        <p className="text-center text-gray-600 mb-6">
+          Enter the OTP sent to {queryParams.get('email')}
+        </p>
+        <form onSubmit={handleSubmit} className="w-full space-y-6">
+          <div className="w-full space-y-2">
+            <input
+              type="text"
+              placeholder="Enter 6-digit OTP"
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
+              className="w-full px-4 py-3 rounded-md text-base transition-colors bg-gray-100 focus:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              required
+              maxLength="6"
+              pattern="\d{6}"
+            />
+          </div>
+          <div className="pt-2">
+            <button
+              type="submit"
+              className="w-full px-4 py-3 rounded-md text-base font-medium transition-colors bg-cyan-600 hover:bg-cyan-700 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2"
+            >
+              Verify OTP
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
-    <div className="flex flex-col">
-      <form onSubmit={handleSubmit} >
-        <div>
-          <input type="text" placeholder="Enter the OTP" required
-          onChange={(e)=>{setOtp(e.target.value)}}/>
-        </div>
-        <div>
-          <button className="border border-cyan-700 hover:bg-cyan-400"
-          type="submit">Enter</button>
-        </div>
-      </form>
-    </div>
-    
-  </div>
+  )
 }
