@@ -42,7 +42,7 @@ export default function SetInfoGoogle(){
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-gray-100">
       <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-md">
-        <h1 className="text-4xl font-serif mb-8 text-center text-gray-800">Update profile</h1>
+        <h1 className="text-4xl font-serif mb-8 text-center text-gray-800">Enter details</h1>
         <form className="w-full space-y-6" onSubmit={handleSubmit}>
           <div className="w-full space-y-2">
             <input 
