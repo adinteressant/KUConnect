@@ -38,6 +38,8 @@ const HomePage = () => {
         setUserProfile(data)
         console.log('user Profile')
         console.log(userProfile)
+        console.log('data')
+        console.log(data)
       })
       .catch((e)=>{
         console.error('Error fetching user profile:', e);
