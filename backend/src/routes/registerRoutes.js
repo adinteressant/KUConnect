@@ -9,6 +9,7 @@ import '../strategies/googleStrategy.js'
 import passport from 'passport'
 import verifyOTP from '../controllers/verifyOTP.js'
 import PrivateInfo from '../models/PrivateInfo.js'
+import { setUserInfo } from '../controllers/setUserInfo.js'
 
   let router = express.Router();
 
@@ -19,6 +20,8 @@ import PrivateInfo from '../models/PrivateInfo.js'
 
 
   router.post('/api/verify-otp/',verifyOTP)
+
+  router.post('/api/set-user-info',setUserInfo)
 
   
 
@@ -34,7 +37,7 @@ import PrivateInfo from '../models/PrivateInfo.js'
 
     const privateProfile = await PrivateInfo.findOne({email:email});
     if(!privateProfile){
-      return res.redirect(`http://localhost:${frontendPort}/update-profile?email=${email}`)
+      return res.redirect(`http://localhost:${frontendPort}/set-google-profile?email=${email}`)
     }
 
     return res.redirect(`http://localhost:${frontendPort}`);  
