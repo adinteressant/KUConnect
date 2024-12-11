@@ -12,6 +12,7 @@ import FriendsPage from './components/FriendsPage.jsx'
 import NotificationPage from './components/NotificationPage.jsx'
 import MyProfile from './components/MyProfile.jsx'
 import VerifyOtp from './components/VerifyOtpPage.jsx'
+import UpdateProfilePage from './components/UpdateProfilePage.jsx'
 
 const router = createBrowserRouter([
   {
@@ -49,6 +50,10 @@ const router = createBrowserRouter([
       {
         path:'/verifyotp',
         element:<VerifyOtp/>
+      },
+      {
+        path:'/update-profile',
+        element:<UpdateProfilePage/>
       }
     ]
   }

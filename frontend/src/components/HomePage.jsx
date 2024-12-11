@@ -36,6 +36,8 @@ const HomePage = () => {
       .then(response => response.json())
       .then((data)=>{
         setUserProfile(data)
+        console.log('user Profile')
+        console.log(userProfile)
       })
       .catch((e)=>{
         console.error('Error fetching user profile:', e);
@@ -63,36 +65,36 @@ const HomePage = () => {
         <div className="max-w-2xl mx-auto space-y-4">
           {(user || googleUser) ? (
             <div className="bg-white p-4 rounded-lg shadow-md">
-              <textarea
-                placeholder="What's on your mind?"
-                className="w-full p-2 border rounded-lg mb-4 bg-gray-100 focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-600"
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-              />
-              <button
-                disabled={!content.trim()}
-                onClick={handlePostSubmit}
-                className="bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:ring-offset-2 disabled:bg-gray-400"
-              >
-                Post
-              </button>
-            </div>
+            <textarea
+              placeholder="What's on your mind?"
+              className="w-full p-2 border rounded-lg mb-4 bg-gray-100 focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-600"
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+            />
+            <button
+              disabled={!content.trim()}
+              onClick={handlePostSubmit}
+              className="bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:ring-offset-2 disabled:bg-gray-400"
+            >
+              Post
+            </button>
+          </div>
           ) : (
             <div className="bg-yellow-100 text-yellow-800 p-4 rounded-lg shadow-md">
               Please <a href="/login" className="text-cyan-600">log in</a> to post.
             </div>
           )}
 
-          {user && (
+          {(user||googleUser) && (
             <div className="flex justify-between items-center mt-6 p-4 bg-gray-100 rounded-lg shadow-md">
-              <div className="text-gray-800">Welcome, {userProfile.username}</div>
+              <div className="text-gray-800">Welcome, {userProfile.username || userProfile.email?.split('@')[0]}</div>
             </div>
           )}
-            {googleUser && (
+            {/* {googleUser && (
               <div className="flex justify-between items-center mt-6 p-4 bg-gray-100 rounded-lg shadow-md">
-                <div className="text-gray-800">Welcome, {userProfile.username}</div>
+                <div className="text-gray-800">Welcome, {userProfile.username || userProfile.email}</div>
               </div>
-          )}
+          )} */}
         </div>
       </main>
     </div>
