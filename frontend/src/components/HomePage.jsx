@@ -1,36 +1,51 @@
-import React, { useEffect, useState } from 'react';
-import { useAuth } from '../context/AuthContext'; 
-import axios from 'axios';
-import Cookies from 'js-cookie';
+import { useEffect, useState } from 'react';
 
 const HomePage = () => {
   const { isAuthenticated, logout, user } = useAuth();
   const [content, setContent] = useState('');
-  const [posts, setPosts] = useState([]);
-  const [showWelcomePopup, setShowWelcomePopup] = useState(false);
+  const [googleUser,setGoogleUser] = useState('');
+  const [userProfile, setUserProfile] = useState({});
 
+  // Check for logged-in user based on isAuthenticated
   useEffect(() => {
-    const checkTokensAndAuthenticate = async () => {
-      try {
-        const jwtToken = Cookies.get('JWT_TOKEN');
-        const refreshToken = Cookies.get('REFRESH_TOKEN');
+    let isAuthenticated = localStorage.getItem('isAuthenticated')==='true'?true:false;
+    console.log(isAuthenticated);
+    if ( isAuthenticated ) {
+      setUser({ email: 'user@example.com' });
+    
+    }
 
-        if (jwtToken || refreshToken) {
-          // Fetch posts or other data from backend if authenticated
-          const response = await axios.get('/api/get-posts', { withCredentials: true });
-          setPosts(response.data); // Populate posts
-        }
-      } catch (error) {
-        console.error('Error fetching posts:', error);
-      }
-    };
+    else {
+      fetch('/api/google/status')
+        .then((response) => response.json())
+        .then((googleUserInfo) => {
+          if (googleUserInfo?.email) {
+            setGoogleUser(googleUserInfo.email);
+          }
+        })
+        .catch((error) => {
+          console.error('Error checking Google login status:', error);
+        });
+    }
 
-    checkTokensAndAuthenticate();
-  }, [isAuthenticated]);
+  }, []);
 
+   //Fetch user profile on mount
+   useEffect(() => {
+      fetch('/api/get-user-profile')
+      .then(response => response.json())
+      .then((data)=>{
+        setUserProfile(data)
+      })
+      .catch((e)=>{
+        console.error('Error fetching user profile:', e);
+      })
+  },[]);
+
+  // Handle Post Submit
   const handlePostSubmit = async () => {
-    if (!content.trim()) {
-      alert('Content cannot be empty.');
+    if (!user && !googleUser) {
+      alert('You must be logged in to post.');
       return;
     }
 
@@ -48,7 +63,7 @@ const HomePage = () => {
       console.error('Error creating post:', error);
     }
   };
-
+  
   return (
     <div className="flex-1 flex flex-col">
       {showWelcomePopup && (
@@ -71,7 +86,7 @@ const HomePage = () => {
 
       <main className="flex-1 p-6 overflow-y-auto">
         <div className="max-w-2xl mx-auto space-y-4">
-          {isAuthenticated ? (
+          {(user || googleUser) ? (
             <div className="bg-white p-4 rounded-lg shadow-md">
               <textarea
                 placeholder="What's on your mind?"
@@ -92,14 +107,18 @@ const HomePage = () => {
               Please <a href="/login" className="text-cyan-600">log in</a> to post.
             </div>
           )}
-          <div className="space-y-4 mt-8">
-            {posts.map((post) => (
-              <div key={post._id} className="bg-white p-4 rounded-lg shadow-md">
-                <p>{post.content}</p>
+
+          {user && (
+            <div className="flex justify-between items-center mt-6 p-4 bg-gray-100 rounded-lg shadow-md">
+              <div className="text-gray-800">Welcome, {userProfile.username}</div>
+            </div>
+          )}
+            {googleUser && (
+              <div className="flex justify-between items-center mt-6 p-4 bg-gray-100 rounded-lg shadow-md">
+                <div className="text-gray-800">Welcome, {userProfile.username}</div>
               </div>
-            ))}
+            )}
           </div>
-        </div>
       </main>
     </div>
   );

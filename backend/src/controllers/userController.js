@@ -3,6 +3,27 @@ import PrivateInfo from "../models/PrivateInfo.js";
 import jwt from "jsonwebtoken";
 
 export const getUserProfileController = async (req, res) => {
+
+  if(req.session.id){
+    const {user:{email}} = req
+    
+    let privateProfile,publicProfile
+    try{
+      privateProfile = await PrivateInfo.findOne({email:email});
+      publicProfile = await PublicInfo.findOne({user_id:privateProfile.user_id})
+    }catch(e){
+      console.log('error in getting the public/private info')
+    }
+    console.log(publicProfile.user_id+' '+publicProfile.username+' '+privateProfile.email
+      +' '+publicProfile.role)
+    return res.status(200).json({
+      user_id: publicProfile.user_id,
+      username: publicProfile.username,
+      email: privateProfile.email,  // Email is fetched from PrivateInfo model
+      role: publicProfile.role
+    });
+  }
+
   console.log("get-user-id called!");
   const user_info = jwt.decode(req.cookies.JWT_TOKEN);  // Decode the JWT token to get user info
   console.log("Decoded value: " );
