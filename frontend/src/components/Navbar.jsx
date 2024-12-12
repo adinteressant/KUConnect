@@ -5,14 +5,14 @@ import axios from 'axios';
 
 const Navigation = ({ setVisibility, setPadding }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem('isAuthenticated') == 'true');  
   const [userProfile,setUserProfile] = useState({});
   const navigate = useNavigate();
   let timeout = null;
-
+  
   useEffect(() => {
     const checkAuthentication = async () => {
-      const localAuth = localStorage.getItem('isAuthenticated') === 'true';
+      const localAuth = localStorage.getItem('isAuthenticated') == 'true';    
       if (localAuth) {
         setIsAuthenticated(true);
       } else {
@@ -20,11 +20,8 @@ const Navigation = ({ setVisibility, setPadding }) => {
           const response = await fetch('/api/google/status', { credentials: 'include' });
           const googleUserInfo = await response.json();
           if (googleUserInfo?.email) {
-            localStorage.setItem('isAuthenticated', 'false');
+            localStorage.setItem('isAuthenticated', 'true');
             setIsAuthenticated(true);
-          } else {
-            localStorage.setItem('isAuthenticated', 'false');
-            setIsAuthenticated(false);
           }
         } catch (error) {
           console.error('Error checking Google login status:', error);
@@ -107,21 +104,20 @@ const Navigation = ({ setVisibility, setPadding }) => {
               onMouseLeave={handleDropdownClose}
             >
               <button className="p-2 rounded-full hover:bg-gray-100 transition-colors flex items-center">
-          <img
+          <User
             src={`/api/get-pfp?id=${userProfile.pfp_id}`}
             alt="Profile"
             className="h-8 w-8 rounded-full object-cover"
           />
                 <ChevronDown className="h-4 w-4 ml-1 text-gray-600" />
               </button>
-
               {isDropdownOpen && (
                 <div
                   className="absolute right-0 top-14 w-48 bg-white shadow-lg rounded-lg border border-gray-200 z-50 dropdown-area"
                   onMouseEnter={handleDropdownOpen}
                   onMouseLeave={handleDropdownClose}
                 >
-                  {isAuthenticated ? (
+                  {isAuthenticated && (
                     <>
                       <Link
                         to="/myprofile"
@@ -137,7 +133,8 @@ const Navigation = ({ setVisibility, setPadding }) => {
                         <LogOut className="h-4 w-4 mr-2" /> Logout
                       </button>
                     </>
-                  ) : (
+                  )}
+                  {!isAuthenticated && (
                     <>
                       <Link
                         to="/login"
