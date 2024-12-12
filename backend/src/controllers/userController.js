@@ -8,7 +8,6 @@ export const getUserProfileController = async (req, res) => {
   if(req.user.googleId){
     console.log('google session')
     const {user:{email}} = req
-    console.log(email);
     let privateProfile,publicProfile
     try{
       
@@ -24,12 +23,11 @@ export const getUserProfileController = async (req, res) => {
         });
       }
       let temp_uid = PrivateInfo.user_id;
-      publicProfile = await PublicInfo.findOne({ temp_uid });
+      publicProfile = await PublicInfo.findOne({ user_id: privateProfile.user_id });
       console.log("public profile:"+publicProfile);
-      googleProfile = await GoogleUser.findOne({email:email});
-      console.log("googleProfile"+googleProfile);
+      
     }catch(e){
-      console.log('error in getting the public/private info')
+      console.log('error in getting the public/private info '+e)
     }
     //console.log(+' '+publicProfile.username+' '+privateProfile.email
     //  +' '+publicProfile.role)
