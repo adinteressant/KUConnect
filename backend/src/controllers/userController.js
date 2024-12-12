@@ -1,6 +1,5 @@
 import PublicInfo from "../models/PublicInfo.js";
 import PrivateInfo from "../models/PrivateInfo.js";
-import { GoogleUser } from "../models/googleUser.model.js";
 import jwt from "jsonwebtoken";
 
 export const getUserProfileController = async (req, res) => {
@@ -22,7 +21,6 @@ export const getUserProfileController = async (req, res) => {
           role: ''
         });
       }
-      let temp_uid = PrivateInfo.user_id;
       publicProfile = await PublicInfo.findOne({ user_id: privateProfile.user_id });
       console.log("public profile:"+publicProfile);
       
