@@ -186,7 +186,16 @@ const HomePage = () => {
               posts.map((post) => (
                 <div key={post._id} className="bg-white p-4 rounded-lg shadow-md mb-4">
                   <div className="text-gray-800 font-semibold">{post.username || post.email.split('@')[0]}</div>
-                  <div className="text-gray-600 text-sm">{new Date(post.createdAt).toLocaleString()}</div>
+                  <div className="text-gray-600 text-sm">
+                      {new Date(post.createdAt).toLocaleDateString('en-US', { 
+                        day: '2-digit', 
+                        month: 'long', 
+                        year: 'numeric' 
+                      })}, {new Date(post.createdAt).toLocaleTimeString([], { 
+                        hour: '2-digit', 
+                        minute: '2-digit' 
+                      })}
+                    </div>
                   <p className="mt-2 text-gray-800">{post.content}</p>
                   {post.tags.length > 0 && (
                     <div className="mt-2 text-sm text-gray-600">
