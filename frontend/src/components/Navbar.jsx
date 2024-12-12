@@ -44,7 +44,7 @@ const Navigation = ({ setVisibility, setPadding }) => {
       });}, []);
 
   const checkLoginOrRegister = (path) => {
-    if (path === '/login' || path === '/register') {
+    if (path === '/login' || path === '/register' || path.startsWith('/verifyotp')) {
       setVisibility(false);
       setPadding('');
     } else {

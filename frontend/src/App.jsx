@@ -3,6 +3,7 @@ import Navbar from "./components/Navbar.jsx";
 import Sidebar from "./components/Sidebar.jsx";
 
 import { useState, useEffect } from "react";
+import { startsWith } from "lodash";
 
 export default function App() {
   const [isSidebarVisible, setIsSidebarVisible] = useState(true);
@@ -12,7 +13,7 @@ export default function App() {
 
   useEffect(() => {
     // Hide sidebar for login and register pages
-    if (location.pathname === "/login" || location.pathname === "/register") {
+    if (location.pathname === "/login" || location.pathname === "/register" || location.pathname.startsWith("/verifyotp")) {
       setIsSidebarVisible(false);
       setPaddingValue("");
     } else {
