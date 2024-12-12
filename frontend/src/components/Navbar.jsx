@@ -6,6 +6,7 @@ import axios from 'axios';
 const Navigation = ({ setVisibility, setPadding }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userProfile,setUserProfile] = useState({});
   const navigate = useNavigate();
   let timeout = null;
 
@@ -32,7 +33,15 @@ const Navigation = ({ setVisibility, setPadding }) => {
     };
 
     checkAuthentication();
-  }, []);
+  
+    fetch('/api/get-user-profile')
+      .then((response) => response.json())
+      .then((data) => {
+        setUserProfile(data); // Ensure user_id is fetched and set properly
+      })
+      .catch((e) => {
+        console.error('Error fetching user profile:', e);
+      });}, []);
 
   const checkLoginOrRegister = (path) => {
     if (path === '/login' || path === '/register') {
@@ -98,7 +107,11 @@ const Navigation = ({ setVisibility, setPadding }) => {
               onMouseLeave={handleDropdownClose}
             >
               <button className="p-2 rounded-full hover:bg-gray-100 transition-colors flex items-center">
-                <User className="h-6 w-6 text-gray-600" />
+          <img
+            src={`/api/get-pfp?id=${userProfile.pfp_id}`}
+            alt="Profile"
+            className="h-8 w-8 rounded-full object-cover"
+          />
                 <ChevronDown className="h-4 w-4 ml-1 text-gray-600" />
               </button>
 

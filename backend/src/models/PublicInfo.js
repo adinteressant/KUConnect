@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 
 const PublicInfoSchema = new mongoose.Schema({
+  pfp_id: { type: Number, required:true , unique:false },
   user_id: { type: String, required: true, unique: true },
   username: { type: String, required: true, unique: true },
   tags: { type: [String], default: [] },
