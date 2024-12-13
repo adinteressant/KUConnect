@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+  import { useEffect, useState } from 'react';
 
 const HomePage = () => {
   const [user, setUser] = useState(null);
@@ -185,23 +185,46 @@ const HomePage = () => {
             {posts.length > 0 ? (
               posts.map((post) => (
                 <div key={post._id} className="bg-white p-4 rounded-lg shadow-md mb-4">
-                  <div className="text-gray-800 font-semibold">{post.username || post.email.split('@')[0]}</div>
+                  <div className="text-gray-800 font-semibold">{post.username}</div> {/* Display username */}
                   <div className="text-gray-600 text-sm">
-                      {new Date(post.createdAt).toLocaleDateString('en-US', { 
-                        day: '2-digit', 
-                        month: 'long', 
-                        year: 'numeric' 
-                      })}, {new Date(post.createdAt).toLocaleTimeString([], { 
-                        hour: '2-digit', 
-                        minute: '2-digit' 
-                      })}
-                    </div>
+                    {new Date(post.createdAt).toLocaleDateString('en-US', { 
+                      day: '2-digit', 
+                      month: 'long', 
+                      year: 'numeric' 
+                    })}, {new Date(post.createdAt).toLocaleTimeString([], { 
+                      hour: '2-digit', 
+                      minute: '2-digit' 
+                    })}
+                  </div>
                   <p className="mt-2 text-gray-800">{post.content}</p>
                   {post.tags.length > 0 && (
                     <div className="mt-2 text-sm text-gray-600">
                       Tags: {post.tags.join(', ')}
                     </div>
                   )}
+
+                  {/* Comment Section */}
+                  <div className="mt-4">
+                    <textarea
+                      placeholder="Add a comment..."
+                      className="w-full p-2 border rounded-lg bg-gray-100 focus:outline-none focus:ring-2 focus:ring-cyan-600"
+                    />
+                    <button
+                      className="bg-cyan-600 text-white px-4 py-2 rounded-lg mt-2 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-600"
+                      disabled
+                    >
+                      Comment
+                    </button>
+                  </div>
+
+                  {/* Like Section */}
+                  <div className="flex items-center gap-4 mt-4">
+                    <button className="text-cyan-600">Like</button>
+                    <span className="text-sm text-gray-600">{post.likes?.length} Likes</span>
+                    <div className="text-sm text-gray-600">
+                      Liked by: {post.likes?.join(', ')}
+                    </div>
+                  </div>
                 </div>
               ))
             ) : (
@@ -217,3 +240,4 @@ const HomePage = () => {
 };
 
 export default HomePage;
+
