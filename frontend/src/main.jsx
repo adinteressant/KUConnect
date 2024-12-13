@@ -13,6 +13,7 @@ import NotificationPage from './components/NotificationPage.jsx'
 import MyProfile from './components/MyProfile.jsx'
 import VerifyOtp from './components/VerifyOtpPage.jsx'
 import SetInfoGoogle from './components/SetInfoGoogle.jsx'
+import ProfilePage from './components/ProfilePage.jsx'
 
 const router = createBrowserRouter([
   {
@@ -54,6 +55,10 @@ const router = createBrowserRouter([
       {
         path:'/set-google-profile',
         element:<SetInfoGoogle/>
+      },
+      {
+        path:'/:username',
+        element:<ProfilePage/>
       }
     ]
   }

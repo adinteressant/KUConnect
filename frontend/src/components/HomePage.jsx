@@ -1,4 +1,5 @@
   import { useEffect, useState } from 'react';
+  import { Link } from 'react-router-dom'
 
 const HomePage = () => {
   const [user, setUser] = useState(null);
@@ -185,7 +186,10 @@ const HomePage = () => {
             {posts.length > 0 ? (
               posts.map((post) => (
                 <div key={post._id} className="bg-white p-4 rounded-lg shadow-md mb-4">
-                  <div className="text-gray-800 font-semibold">{post.username}</div> {/* Display username */}
+                  <Link to={`/${post.username}`}>
+                    <div className="text-gray-800 font-semibold">{post.username}</div>
+                  </Link>
+                   {/* Display username */}
                   <div className="text-gray-600 text-sm">
                     {new Date(post.createdAt).toLocaleDateString('en-US', { 
                       day: '2-digit', 
