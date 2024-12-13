@@ -1,8 +1,16 @@
 import fs from 'fs';
 import path from 'path';
 
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
 export default function getPictureController(req, res) {
   // Centralized image mapping with type safety
+  
+
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = dirname(__filename);
+
   const PROFILE_PICTURES = {
     '1': '1.webp',
     '2': '2.webp',
@@ -33,10 +41,11 @@ export default function getPictureController(req, res) {
     // Construct absolute file path with safety checks
     const imagePath = path.resolve(
       __dirname,
-      "public/",
+      "../../public/",
       imageName
     );
     //AI GENERATED CODE, IT IS. GUYS, IT WAS WRITTEN BY ME BUT REFACTORED BY AI, FOR BETTER LOOKS --shri
+    console.log(imagePath)
     if (!fs.existsSync(imagePath)) {
       console.error(`Image file missing: ${imagePath}`);
       return res.status(500).json({
