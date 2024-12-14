@@ -117,14 +117,14 @@ const HomePage = () => {
   };
 
   //Handle like in post
-  const handleLike = async(postId) => {
+  const handleLike = async(post) => {
     if (!user && !googleUser) {
       alert('You must be logged in to like the post.');
       return;
     }
     
     try {
-      const response = await fetch(`/api/posts/${postId}/toggle-like`, {
+      const response = await fetch(`/api/posts/${post._id.toString()}/toggle-like`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -152,6 +152,11 @@ const HomePage = () => {
     catch(error) {
       console.error('Error toggling like:', error)
     }
+  }
+
+  const isLiked = (post) =>
+  {
+    return post.likes.some((like) => like && (like.userId === (userProfile.user_id || googleUser.user_id)))
   }
 
   return (
@@ -264,11 +269,11 @@ const HomePage = () => {
                   {/* Like Section */}
                   <div className="flex items-center gap-4 mt-4">
                     <button
-                      onClick = {() => handleLike(post._id.toString())}
+                      onClick = {() => handleLike(post)}
                       className= "flex items-center gap-2 group"
                     >
                       <svg width="24" height="24" viewBox="0 0 24 24"
-                      className= {post.likes.some((like) => like && (like.userId === (userProfile.user_id || googleUser.user_id)))
+                      className= {isLiked(post)
                         ? 'stroke-cyan-600 fill-cyan-600 group-hover:fill-cyan-800 group-hover:stroke-cyan-800 transition-all duration-100'
                         : 'stroke-gray-600 fill-none group-hover:fill-gray-600 transition-all duration-200'}
                       
@@ -280,11 +285,11 @@ const HomePage = () => {
                       </svg>
                       
                       <span className = {
-                          post.likes.some((like) => like && (like.userId === (userProfile.user_id || googleUser.user_id)))
+                          isLiked(post)
                           ? 'text-cyan-600 group-hover:text-cyan-800 transition-all duration-100'
                           : 'text-gray-600'
                       }>
-                        {post.likes.some((like) => like && (like.userId === (userProfile.user_id || googleUser.user_id)))
+                        {isLiked(post)
                         ? 'Liked' 
                         : 'Like'
                         }
