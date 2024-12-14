@@ -213,7 +213,8 @@ const HomePage = () => {
             {posts.length > 0 ? (
               posts.map((post) => (
                 <div key={post._id} className="bg-white p-4 rounded-lg shadow-md mb-4">
-                  <Link to={`/${post.username}`}>
+                  <Link 
+                  to={post.username === userProfile.username?'/myprofile':`/${post.username}`}>
                     <div className="text-gray-800 font-semibold">{post.username}</div>
                   </Link>
                    {/* Display username */}
