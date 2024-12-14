@@ -23,7 +23,6 @@ export const createPost = async (req, res) => {
     return res.status(400).json({ message: 'Post content is required!' });
   }
 
-  // Ensure userInfo is provided (email or username)
   if (!userInfo) {
     return res.status(400).json({ message: 'User information is required!' });
   }
@@ -32,7 +31,7 @@ export const createPost = async (req, res) => {
     // Create a new post using the provided data
     const newPost = new Post({
       userId: userInfo.user_id,
-      username: userInfo.username || userInfo.email, // username or email for username
+      username: userInfo.username,
       email: userInfo.email, // Store email
       content,
       tags: tags || [], // Optional: If no tags provided, default to empty array
@@ -45,4 +44,64 @@ export const createPost = async (req, res) => {
     console.error('Error creating post:', error);
     res.status(500).json({ message: 'Internal Server Error', error });
   }
+};
+
+// Toggle like on a post
+export const toggleLike = async (req, res) => {
+  const { postId } = req.params;
+  const { userId, username } = req.body;
+
+  try {
+    const post = await Post.findById(postId);
+
+    if (!post) {
+      return res.status(404).json({ message: 'Post not found!' });
+    }
+
+    const hasLiked = post.likes.includes(username);
+
+    if (hasLiked) {
+      post.likes = post.likes.filter((id) => id !== userId);
+    } else {
+      post.likes.push(username);
+    }
+
+    const updatedPost = await post.save();
+    res.json(updatedPost);
+  } catch (error) {
+    console.error('Error toggling like:', error);
+    res.status(500).json({ message: 'Internal Server Error', error });
+  }
+};
+
+// Add a comment to a post
+export const addComment = async (req, res) => {
+  const { postId } = req.params;
+  const { content, userId, username } = req.body;
+
+  if (!content || content.trim() === '') {
+    return res.status(400).json({ message: 'Comment content is required!' });
+  }
+
+  try {
+    const post = await Post.findById(postId);
+
+    if (!post) {
+      return res.status(404).json({ message: 'Post not found!' });
+    }
+
+    const comment = { content, userId, username, createdAt: new Date() };
+    post.comments.push(comment);
+
+    const updatedPost = await post.save();
+    res.json(updatedPost);
+  } catch (error) {
+    console.error('Error adding comment:', error);
+    res.status(500).json({ message: 'Internal Server Error', error });
+  }
+};
+
+// Share a post
+export const sharePost = async (req, res) => {
+  // implement sharing functionality as required
 };

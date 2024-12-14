@@ -1,11 +1,10 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+
 export default function LoginPage() {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
-  const navigate = useNavigate();
 
   const [errorMessage, setErrorMessage] = useState(""); // Add state for displaying errors
 
@@ -23,8 +22,7 @@ export default function LoginPage() {
           password: formData.password,
         }),
       });
-      console.log("token");
-
+      
       if (!response.ok) {
         const errorResponse = await response.json();
         throw new Error(errorResponse.message || "Login failed");
@@ -32,9 +30,8 @@ export default function LoginPage() {
 
       const data = await response.json();
       //const token = data.token;
-      console.log(data);
       localStorage.setItem("isAuthenticated", true); // Save token to localStorage //BRO WHAT 
-      navigate("/");
+      window.location.href='/';
     } catch (error) {
       console.error("Login error:", error.message);
       setErrorMessage(error.message); // Display the error message to the user

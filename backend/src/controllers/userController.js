@@ -1,6 +1,5 @@
 import PublicInfo from "../models/PublicInfo.js";
 import PrivateInfo from "../models/PrivateInfo.js";
-import { GoogleUser } from "../models/googleUser.model.js";
 import jwt from "jsonwebtoken";
 
 export const getUserProfileController = async (req, res) => {
@@ -8,28 +7,30 @@ export const getUserProfileController = async (req, res) => {
   if(req.user.googleId){
     console.log('google session')
     const {user:{email}} = req
-    
     let privateProfile,publicProfile
     try{
       
       privateProfile = await PrivateInfo.findOne({email:email});
+      console.log("private profile: "+ privateProfile);
       if(!privateProfile){
         return res.status(200).json({
+          pfp_id: 1,
           user_id: '',
           username: '',
           email: email,  
           role: ''
-        })
+        });
       }
-      publicProfile = await PublicInfo.findOne({user_id:privateProfile.user_id})
-      googleProfile = await GoogleUser.findOne({email:email});
-
+      publicProfile = await PublicInfo.findOne({ user_id: privateProfile.user_id });
+      console.log("public profile:"+publicProfile);
+      
     }catch(e){
-      console.log('error in getting the public/private info')
+      console.log('error in getting the public/private info '+e)
     }
     //console.log(+' '+publicProfile.username+' '+privateProfile.email
     //  +' '+publicProfile.role)
     return res.status(200).json({
+      pfp_id:publicProfile.pfp_id,
       user_id: publicProfile.user_id,
       username: publicProfile.username,
       email: privateProfile.email,  // Email is fetched from PrivateInfo model
