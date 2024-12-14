@@ -9,6 +9,7 @@ import userChangePasswordRoute from '../routes/userChangePasswordRoute.js';
 import getPictureRouter from '../routes/getPictureRoutes.js';
 import updatePictureRouter from '../routes/updatePictureRouter.js';
 import profileRouter from '../routes/profileRoute.js'
+import messageRouter from '../routes/messageRoutes.js'
 
 const router = Router();
 
@@ -21,5 +22,6 @@ router.use(userChangePasswordRoute);
 router.use(getPictureRouter);
 router.use(updatePictureRouter);
 router.use(profileRouter)
+router.use(messageRouter)
 
 export default router;
