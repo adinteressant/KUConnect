@@ -1,5 +1,10 @@
 import mongoose from 'mongoose';
 
+const likeSchema = new mongoose.Schema({
+  userId: {type: String, required: true},
+  username: {type: String, required: true}
+})
+
 const commentSchema = new mongoose.Schema({
   content: { type: String, required: true },
   userId: { type: String, required: true },
@@ -13,7 +18,7 @@ const postSchema = new mongoose.Schema({
   email: { type: String, required: true },
   content: { type: String, required: true, maxlength: 500 },
   tags: { type: [String], default: [] }, // Array of tags
-  likes: { type: [String], default: [] },
+  likes: { type: [likeSchema], default: [] },
   shares: { type: Number, default: 0 },
   comments: { type: [commentSchema], default: [] },
   createdAt: { type: Date, default: Date.now },

@@ -48,31 +48,35 @@ export const createPost = async (req, res) => {
 
 // Toggle like on a post
 export const toggleLike = async (req, res) => {
-  const { postId } = req.params;
-  const { userId, username } = req.body;
+  const { postId } = req.params
+  const { userId, username } = req.body
 
   try {
-    const post = await Post.findById(postId);
+    const post = await Post.findById(postId)
 
     if (!post) {
-      return res.status(404).json({ message: 'Post not found!' });
+      return res.status(404).json({ message: 'Post not found!' })
     }
 
-    const hasLiked = post.likes.includes(username);
+    //Check if user has already liked the post
+    const existingLikedIndex = post.likes.findIndex((like) => like.userId === userId)
+    //returns the index if matched otherwise gives -1
 
-    if (hasLiked) {
-      post.likes = post.likes.filter((id) => id !== userId);
+    if (existingLikedIndex !== -1) {
+      post.likes.splice(existingLikedIndex, 1) //removes the like
     } else {
-      post.likes.push(username);
+      post.likes.push({ userId, username }) //add the new like
     }
 
-    const updatedPost = await post.save();
-    res.json(updatedPost);
-  } catch (error) {
-    console.error('Error toggling like:', error);
-    res.status(500).json({ message: 'Internal Server Error', error });
+    //Save the liked post
+    const updatedPost = await post.save()
+    res.json({message:"Liked post successfully", post: updatedPost})
+  } 
+  catch (error) {
+    console.error('Error toggling like: ', error)
+    res.status(500).json({ message: 'Internal Server Error: ', error })
   }
-};
+}
 
 // Add a comment to a post
 export const addComment = async (req, res) => {
