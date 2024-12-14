@@ -116,8 +116,7 @@ const HomePage = () => {
     }
   };
 
-  //Handle like
-  //not completed
+  //Handle like in post
   const handleLike = async(postId) => {
     if (!user && !googleUser) {
       alert('You must be logged in to like the post.');
@@ -125,16 +124,30 @@ const HomePage = () => {
     }
     
     try {
-      const response = await fetch(`/api/toggle-like/${postId}`, {
+      const response = await fetch(`/api/posts/${postId}/toggle-like`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          userId: userProfile.userId || googleUser.userId,
-          username: userProfile.username || googleUser.username
+          userId: (userProfile.user_id || googleUser.user_id),
+          username: (userProfile.username || googleUser.username)
         })
       })
+
+      const updatedPost = await response.json()
+      if(response.ok)
+      {
+        setPosts((prevPosts) => 
+          prevPosts.map((post) =>
+            post._id === updatedPost.post._id ? updatedPost.post : post
+          )
+        )
+      }
+      else
+      {
+        console.error('Error liking post:', updatedPost.message)
+      }
     }
     catch(error) {
       console.error('Error toggling like:', error)
@@ -250,10 +263,21 @@ const HomePage = () => {
 
                   {/* Like Section */}
                   <div className="flex items-center gap-4 mt-4">
-                    <button className="text-cyan-600">Like</button>
-                    <span className="text-sm text-gray-600">{post.likes?.length} Likes</span>
+                    <button
+                      onClick = {() => handleLike(post._id.toString())}
+                      className={
+                        post.likes.some((like) => like && (like.userId === (userProfile.user_id || googleUser.user_id))) ? 'text-cyan-600' : 'text-gray-600'
+                      }
+                    >
+                      {post.likes.some((like) => like && (like.userId === (userProfile.user_id || googleUser.user_id))) ? 'Liked' : 'Like'}
+                    </button>
                     <div className="text-sm text-gray-600">
-                      Liked by: {post.likes?.join(', ')}
+                      {post.likes.length>0 && 
+                        (post.likes.length<3 
+                          ? `Liked by: ${post.likes.map(user => user.username).join(', ')}` 
+                          : `Liked by: ${post.likes.map(user => user.username).slice(-2).join(', ')} and ${post.likes.length-2} more`
+                        )
+                      }
                     </div>
                   </div>
                 </div>
