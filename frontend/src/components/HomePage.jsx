@@ -124,7 +124,7 @@ const HomePage = () => {
           {(user || googleUser) ? (
             <div
               className={`bg-white p-4 rounded-lg shadow-md transition-all duration-300 ${
-                showTags ? 'h-auto' : 'h-32'
+                showTags ? 'h-auto' : 'h-42'
               }`}
             >
               <textarea
@@ -158,8 +158,9 @@ const HomePage = () => {
                     ))}
                   </div>
                 </div>
+                
               )}
-
+              
               <button
                 disabled={!content.trim()}
                 onClick={handlePostSubmit}
@@ -167,6 +168,7 @@ const HomePage = () => {
               >
                 Post
               </button>
+              
             </div>
           ) : (
             <div className="bg-yellow-100 text-yellow-800 p-4 rounded-lg shadow-md">
