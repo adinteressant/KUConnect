@@ -252,6 +252,64 @@ const HomePage = () => {
                     </div>
                   )}
 
+                  <hr className='mt-2'/>
+                  
+                  {/* Likes, Comments, Shares Information */}
+                  <div className='mt-2 flex items-center gap-4'>
+
+                    {/* like information */}
+                      {post.likes.length>0 &&
+                        <button className="text-sm text-gray-600 hover:text-cyan-600 transition-all duration-200">  
+                          {(post.likes.length<3
+                            ? `Liked by ${post.likes.map(user => user.username).join(', ')}`
+                            : `Liked by ${post.likes.map(user => user.username).slice(-2).join(', ')} and ${post.likes.length-2} more`
+                          )}
+                        </button>
+                      }
+
+                    <div className='ml-auto flex items-center gap-4'>
+                      
+                        {/* comment information */}
+                        {post.comments.length>0 &&
+                          <button className="text-sm text-gray-600 hover:text-cyan-600 transition-all duration-200">  
+                            {post.comments.length} comments
+                          </button>
+                        }
+
+                        {/* share information */}
+                        {post.shares.length>0 &&
+                          <button className="text-sm text-gray-600 hover:text-cyan-600 transition-all duration-200">  
+                            {post.shares.length} shares
+                          </button>
+                        }
+                    </div>
+                  </div>
+
+                  {/* Like, Comment, Share Button */}
+                  <div className="flex items-center gap-4 mt-2">
+                    <button onClick = {() => handleLike(post)} className = "flex items-center gap-2 group">
+                      <svg width="24" height="24" viewBox="0 0 24 24"
+                      className= {isLiked(post)
+                        ? 'stroke-cyan-600 fill-cyan-600 group-hover:fill-cyan-800 group-hover:stroke-cyan-800 transition-all duration-100'
+                        : 'stroke-gray-600 fill-none group-hover:fill-cyan-800 group-hover:stroke-cyan-800 transition-all duration-200'}
+                      xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                      </svg>
+                      
+                      <span className = {
+                          isLiked(post)
+                          ? 'text-cyan-600 group-hover:text-cyan-800 transition-all duration-100'
+                          : 'text-gray-600 group-hover:text-cyan-800 transition-all duration-200'
+                      }>
+                        {isLiked(post)
+                        ? 'Liked' 
+                        : 'Like'
+                        }
+                      </span>
+                    </button>
+                  </div>
+
                   {/* Comment Section */}
                   <div className="mt-4">
                     <textarea
@@ -266,44 +324,6 @@ const HomePage = () => {
                     </button>
                   </div>
 
-                  {/* Like Section */}
-                  <div className="flex items-center gap-4 mt-4">
-                    <button
-                      onClick = {() => handleLike(post)}
-                      className= "flex items-center gap-2 group"
-                    >
-                      <svg width="24" height="24" viewBox="0 0 24 24"
-                      className= {isLiked(post)
-                        ? 'stroke-cyan-600 fill-cyan-600 group-hover:fill-cyan-800 group-hover:stroke-cyan-800 transition-all duration-100'
-                        : 'stroke-gray-600 fill-none group-hover:fill-gray-600 transition-all duration-200'}
-                      
-                      xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
-                        />
-                      </svg>
-                      
-                      <span className = {
-                          isLiked(post)
-                          ? 'text-cyan-600 group-hover:text-cyan-800 transition-all duration-100'
-                          : 'text-gray-600'
-                      }>
-                        {isLiked(post)
-                        ? 'Liked' 
-                        : 'Like'
-                        }
-                      </span>
-                    </button>
-                    <div className="text-sm text-gray-600">
-                      {post.likes.length>0 &&
-                        (post.likes.length<3
-                          ? `Liked by: ${post.likes.map(user => user.username).join(', ')}`
-                          : `Liked by: ${post.likes.map(user => user.username).slice(-2).join(', ')} and ${post.likes.length-2} more`
-                        )
-                      }
-                    </div>
-                  </div>
                 </div>
               ))
             ) : (
