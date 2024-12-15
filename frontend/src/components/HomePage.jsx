@@ -10,6 +10,7 @@ const HomePage = () => {
   const [showTags, setShowTags] = useState(false); // State to toggle tags section
   const [tagValue, setTagValue] = useState('');
   const [tagList, setTagList] = useState([]);
+  const [showCommentBox, setShowCommentBox] = useState(false);
 
   // Check for logged-in user based on isAuthenticated
   useEffect(() => {
@@ -117,14 +118,14 @@ const HomePage = () => {
   };
 
   //Handle like in post
-  const handleLike = async(postId) => {
+  const handleLike = async(post) => {
     if (!user && !googleUser) {
       alert('You must be logged in to like the post.');
       return;
     }
     
     try {
-      const response = await fetch(`/api/posts/${postId}/toggle-like`, {
+      const response = await fetch(`/api/posts/${post._id.toString()}/toggle-like`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -152,6 +153,16 @@ const HomePage = () => {
     catch(error) {
       console.error('Error toggling like:', error)
     }
+  }
+
+  const isLiked = (post) =>
+  {
+    return post.likes.some((like) => like && (like.userId === (userProfile.user_id || googleUser.user_id)))
+  }
+
+  function toggleCommentBox()
+  {
+    setShowCommentBox((prev) => !prev)
   }
 
   return (
@@ -248,8 +259,97 @@ const HomePage = () => {
                     </div>
                   )}
 
-                  {/* Comment Section */}
-                  <div className="mt-4">
+                  <hr className='mt-2'/>
+                  
+                  {/* Likes, Comments, Shares Information */}
+                  <div className='mt-2 flex items-center gap-4'>
+
+                    {/* like information */}
+                      {post.likes.length>0 &&
+                        <button className="text-sm text-gray-600 hover:text-cyan-600 transition-all duration-200">  
+                          {(post.likes.length<3
+                            ? `Liked by ${post.likes.map(user => user.username).join(', ')}`
+                            : `Liked by ${post.likes.map(user => user.username).slice(-2).join(', ')} and ${post.likes.length-2} more`
+                          )}
+                        </button>
+                      }
+
+                    <div className='ml-auto flex items-center gap-4'>
+                      
+                        {/* comment information */}
+                        {post.comments.length>0 &&
+                          <button className="text-sm text-gray-600 hover:text-cyan-600 transition-all duration-200">  
+                            {post.comments.length} comments
+                          </button>
+                        }
+
+                        {/* share information */}
+                        {post.shares.length>0 &&
+                          <button className="text-sm text-gray-600 hover:text-cyan-600 transition-all duration-200">  
+                            {post.shares.length} shares
+                          </button>
+                        }
+                    </div>
+                  </div>
+
+                  {/* Like, Comment, Share Button */}
+                  <div className='flex items-center gap-4 mt-2'>
+
+                    {/* like button */}
+                    <button onClick = {() => handleLike(post)} className = 'flex items-center gap-2 group'>
+                      <svg width='24' height='24' viewBox='0 0 24 24'
+                      className= {isLiked(post)
+                        ? 'stroke-cyan-600 fill-cyan-600 group-hover:fill-cyan-700 group-hover:stroke-cyan-700 transition-all duration-100'
+                        : 'stroke-gray-600 fill-none group-hover:stroke-cyan-600 transition-all duration-200'}
+                      xmlns='http://www.w3.org/2000/svg'
+                      >
+                        <path d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/>
+                      </svg>
+                      
+                      <span className = {
+                          isLiked(post)
+                          ? 'text-cyan-600 group-hover:text-cyan-700 transition-all duration-100'
+                          : 'text-gray-600 group-hover:text-cyan-600 transition-all duration-200'
+                      }>
+                        {isLiked(post)
+                        ? 'Liked' 
+                        : 'Like'
+                        }
+                      </span>
+                    </button>
+
+                    {/* comment button */}
+                    <button onClick={toggleCommentBox} className='ml-auto flex items-center gap-2 group'>
+                      <svg width='24' height='24' viewBox='0 0 24 24'
+                        className='stroke-gray-600 fill-none group-hover:stroke-cyan-600 transition-all duration-200'
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>
+                      </svg>
+
+                      <span className='text-gray-600 group-hover:text-cyan-600 transition-all duration-200'>
+                        Comment
+                      </span>
+                    </button>
+
+                    {/* share button */}
+                    <button className='ml-auto flex items-center gap-2 group'>
+                      <svg width='24' height='24' viewBox='0 0 24 24'
+                        className='stroke-gray-600 fill-none group-hover:stroke-cyan-600 transition-all duration-200'
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/>
+                        <path d="m21.854 2.147-10.94 10.939"/>
+                      </svg>
+
+                      <span className='text-gray-600 group-hover:text-cyan-600 transition-all duration-200'>
+                        Share
+                      </span>
+                    </button>
+                  </div>
+
+                  {/* Comment Input Section */}
+                  {showCommentBox && (<div className="mt-4">
                     <textarea
                       placeholder="Add a comment..."
                       className="w-full p-2 border rounded-lg bg-gray-100 focus:outline-none focus:ring-2 focus:ring-cyan-600"
@@ -260,46 +360,8 @@ const HomePage = () => {
                     >
                       Comment
                     </button>
-                  </div>
+                  </div>)}
 
-                  {/* Like Section */}
-                  <div className="flex items-center gap-4 mt-4">
-                    <button
-                      onClick = {() => handleLike(post._id.toString())}
-                      className= "flex items-center gap-2 group"
-                    >
-                      <svg width="24" height="24" viewBox="0 0 24 24"
-                      className= {post.likes.some((like) => like && (like.userId === (userProfile.user_id || googleUser.user_id)))
-                        ? 'stroke-cyan-600 fill-cyan-600 group-hover:fill-cyan-800 group-hover:stroke-cyan-800 transition-all duration-100'
-                        : 'stroke-gray-600 fill-none group-hover:fill-gray-600 transition-all duration-200'}
-                      
-                      xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
-                        />
-                      </svg>
-                      
-                      <span className = {
-                          post.likes.some((like) => like && (like.userId === (userProfile.user_id || googleUser.user_id)))
-                          ? 'text-cyan-600 group-hover:text-cyan-800 transition-all duration-100'
-                          : 'text-gray-600'
-                      }>
-                        {post.likes.some((like) => like && (like.userId === (userProfile.user_id || googleUser.user_id)))
-                        ? 'Liked' 
-                        : 'Like'
-                        }
-                      </span>
-                    </button>
-                    <div className="text-sm text-gray-600">
-                      {post.likes.length>0 &&
-                        (post.likes.length<3
-                          ? `Liked by: ${post.likes.map(user => user.username).join(', ')}`
-                          : `Liked by: ${post.likes.map(user => user.username).slice(-2).join(', ')} and ${post.likes.length-2} more`
-                        )
-                      }
-                    </div>
-                  </div>
                 </div>
               ))
             ) : (
