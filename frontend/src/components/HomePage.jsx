@@ -1,6 +1,6 @@
-  import { useEffect, useState } from 'react';
-  import { Link, useOutletContext } from 'react-router-dom'
-  import Fuse from 'fuse.js';
+import { useEffect, useState } from 'react';
+import { Link, useOutletContext } from 'react-router-dom'
+import Fuse from 'fuse.js';
 
 const HomePage = () => {
   const [user, setUser] = useState(null);
@@ -9,11 +9,14 @@ const HomePage = () => {
   const [userProfile, setUserProfile] = useState({});
   const [posts, setPosts] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
-  const [showTags, setShowTags] = useState(false); // State to toggle tags section
+  const [showTags, setShowTags] = useState(false);
   const [tagValue, setTagValue] = useState('');
   const [tagList, setTagList] = useState([]);
   const [showCommentBox, setShowCommentBox] = useState(false);
+  const [isTextareaFocused, setIsTextareaFocused] = useState(false);
+  const [isTagsInputFocused, setIsTagsInputFocused] = useState(false);
   const {searchTrait,setSearchTrait} = useOutletContext();
+
   // Check for logged-in user based on isAuthenticated
   useEffect(() => {
     let isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
@@ -51,35 +54,31 @@ const HomePage = () => {
       .then((response) => response.json())
       .then((data) => {
         setPosts(data);
-        //console.log(filteredData);
         setFilteredPosts(data);
       })
       .catch((e) => {
         console.error('Error fetching posts:', e);
-      });
+      }); ///AHHHHHHHHHHHH WHERE IS MY COMMENT, I HATE AI
   }, []);
 
-  useEffect(()=>{
-    
+  useEffect(() => {
     const options = {
-    keys: ['content','username'],
-    useExtendedSearch: true, // used to make the inclusion search
+      keys: ['content', 'username'],
+      useExtendedSearch: true,
     }
 
-    const fuse = new Fuse(posts,options); // yeah ezez
+    const fuse = new Fuse(posts, options);
     
-    const result = fuse.search(`'${searchTrait}`); // using fuse for searching :)
+    const result = fuse.search(`'${searchTrait}`);
     
-    let filResult = []; // filresult stores the filtered result
-    //code might be a bit jumbled :p   
-    result.map((item)=>{filResult.push(item.item)})
+    let filResult = result.map(item => item.item); // FILTERED RESULT
     
-    if(!(searchTrait.length)) {setFilteredPosts(posts);filResult=posts;} //if the searchTrait is empty, we display all the posts :)
-    setFilteredPosts(filResult);
-    //console.log(filResult); for testing :)
-  },[searchTrait]) 
-
-  //so there's a problem with this code,when i push a post, the posts don't update till i change the cause the searchTrait to rerender
+    if (!searchTrait.length) {
+      setFilteredPosts(posts);
+      filResult = posts; //IF THE SEARCH BAR IS EMPTY ALL POSTS APPEAR
+    }
+    setFilteredPosts(filResult); // ELSE FILTERED POSTS
+  }, [searchTrait, posts]);
 
   // Handle Post Submit
   const handlePostSubmit = () => {
@@ -166,10 +165,19 @@ const HomePage = () => {
       if(response.ok)
       {
         setPosts((prevPosts) => 
-          prevPosts.map((post) =>
-            post._id === updatedPost.post._id ? updatedPost.post : post
+          prevPosts.map((p) =>
+            p._id === updatedPost.post._id ? { ...updatedPost.post, isUpdating: true } : p
           )
         )
+        
+        // Reset the isUpdating state after animation
+        setTimeout(() => {
+          setPosts((prevPosts) =>
+            prevPosts.map((p) =>
+              p._id === updatedPost.post._id ? { ...p, isUpdating: false } : p
+            )
+          )
+        }, 300) // Match this with the animation duration
       }
       else
       {
@@ -181,15 +189,37 @@ const HomePage = () => {
     }
   }
 
-  const isLiked = (post) =>
-  {
+  const isLiked = (post) => {
     return post.likes.some((like) => like && (like.userId === (userProfile.user_id || googleUser.user_id)))
   }
 
-  function toggleCommentBox()
-  {
+  function toggleCommentBox() {
     setShowCommentBox((prev) => !prev)
   }
+
+  const handleTextareaFocus = () => {
+    setIsTextareaFocused(true);
+    setShowTags(true);
+  };
+
+  const handleTextareaBlur = () => {
+    setIsTextareaFocused(false);
+    if (!content.trim() && !isTagsInputFocused && !tagValue.trim()) {
+      setShowTags(false);
+    }
+  };
+
+  const handleTagsInputFocus = () => {
+    setIsTagsInputFocused(true);
+    setShowTags(true);
+  };
+
+  const handleTagsInputBlur = () => {
+    setIsTagsInputFocused(false);
+    if (!content.trim() && !isTextareaFocused && !tagValue.trim()) {
+      setShowTags(false);
+    }
+  };
 
   return (
     <div className="flex-1 flex flex-col min-h-screen bg-gray-100">
@@ -198,52 +228,49 @@ const HomePage = () => {
           {/* Post creation section */}
           {(user || googleUser) ? (
             <div
-              className={`bg-white p-4 rounded-lg shadow-md transition-all duration-300 ${
-                showTags ? 'h-auto' : 'h-42'
-              }`}
+              className={`bg-white p-4 rounded-lg shadow-md transition-all duration-300 h-auto`}
             >
               <textarea
                 placeholder="What's on your mind?"
                 className={`w-full p-2 border rounded-lg mb-4 bg-gray-100 focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-600 transition-all duration-300 ${
-                  showTags ? 'h-28' : 'h-20'
+                  isTextareaFocused || isTagsInputFocused ? 'h-28' : 'h-20'
                 }`}
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
-                onFocus={() => setShowTags(true)} // Show tags section on focus
+                onFocus={handleTextareaFocus}
+                onBlur={handleTextareaBlur}
               />
 
-              {showTags && (
-                <div>
-                  <input
-                    type="text"
-                    placeholder="Add tags (space-separated)"
-                    className="w-full p-2 border rounded-lg mb-4 bg-gray-100 focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-600 transition-all duration-300"
-                    value={tagValue}
-                    onChange={handleTagInputChange}
-                    onKeyDown={handleTagInputKeyDown}
-                  />
-                  <div className="flex flex-wrap gap-2">
-                    {tagList.map((tag, index) => (
-                      <span
-                        key={index}
-                        className="bg-cyan-100 text-cyan-800 px-2 py-1 rounded-full text-sm"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
+              <div className={`transition-all duration-300 ${isTextareaFocused || isTagsInputFocused || content.trim() || tagValue.trim() ? 'opacity-100' : 'opacity-0'}`}>
+                <input
+                  type="text"
+                  placeholder="Add tags (space-separated)"
+                  className="w-full p-2 border rounded-lg mb-4 bg-gray-100 focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-600 transition-all duration-300"
+                  value={tagValue}
+                  onChange={handleTagInputChange}
+                  onKeyDown={handleTagInputKeyDown}
+                  onFocus={handleTagsInputFocus}
+                  onBlur={handleTagsInputBlur}
+                />
+                <div className="flex flex-wrap gap-2">
+                  {tagList.map((tag, index) => (
+                    <span
+                      key={index}
+                      className="bg-cyan-100 text-cyan-800 px-2 py-1 rounded-full text-sm"
+                    >
+                      {tag}
+                    </span>
+                  ))}
                 </div>
-                
-              )}
+              </div>
               
               <button
                 disabled={!content.trim()}
                 onClick={handlePostSubmit}
-                className="bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:ring-offset-2 disabled:bg-gray-400"
+                className="bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:ring-offset-2 disabled:bg-gray-400 transition-all duration-300"
               >
                 Post
               </button>
-              
             </div>
           ) : (
             <div className="bg-yellow-100 text-yellow-800 p-4 rounded-lg shadow-md">
@@ -262,7 +289,12 @@ const HomePage = () => {
           <div className="mt-8">
             {filteredPosts.length > 0 ? (
               filteredPosts.map((post) => (
-                <div key={post._id} className="bg-white p-4 rounded-lg shadow-md mb-4">
+                <div
+                  key={post._id}
+                  className={`bg-white p-4 rounded-lg shadow-md mb-4 transition-all duration-300 ${
+                    post.isUpdating ? 'scale-105' : 'scale-100'
+                  }`}
+                >
                   <Link 
                   to={post.username === userProfile.username?'/myprofile':`/${post.username}`}>
                     <div className="text-gray-800 font-semibold">{post.username}</div>
