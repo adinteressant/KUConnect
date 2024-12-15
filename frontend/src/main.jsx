@@ -14,6 +14,8 @@ import MyProfile from './components/MyProfile.jsx'
 import VerifyOtp from './components/VerifyOtpPage.jsx'
 import SetInfoGoogle from './components/SetInfoGoogle.jsx'
 import ProfilePage from './components/ProfilePage.jsx'
+import ResultPage from './components/ResultPage.jsx'
+
 
 const router = createBrowserRouter([
   {
@@ -59,6 +61,10 @@ const router = createBrowserRouter([
       {
         path:'/:username',
         element:<ProfilePage/>
+      },
+      {
+        path:'/results',
+        element:<ResultPage/>,
       }
     ]
   }

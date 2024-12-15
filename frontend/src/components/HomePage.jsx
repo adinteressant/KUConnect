@@ -1,5 +1,6 @@
   import { useEffect, useState } from 'react';
-  import { Link } from 'react-router-dom'
+  import { Link, useOutletContext } from 'react-router-dom'
+  import Fuse from 'fuse.js';
 
 const HomePage = () => {
   const [user, setUser] = useState(null);
@@ -7,11 +8,12 @@ const HomePage = () => {
   const [googleUser, setGoogleUser] = useState('');
   const [userProfile, setUserProfile] = useState({});
   const [posts, setPosts] = useState([]);
+  const [filteredPosts, setFilteredPosts] = useState([]);
   const [showTags, setShowTags] = useState(false); // State to toggle tags section
   const [tagValue, setTagValue] = useState('');
   const [tagList, setTagList] = useState([]);
   const [showCommentBox, setShowCommentBox] = useState(false);
-
+  const {searchTrait,setSearchTrait} = useOutletContext();
   // Check for logged-in user based on isAuthenticated
   useEffect(() => {
     let isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
@@ -45,15 +47,39 @@ const HomePage = () => {
 
   // Fetch all posts on mount
   useEffect(() => {
-    fetch('/api/get-posts')
+    fetch(`/api/get-posts`)
       .then((response) => response.json())
       .then((data) => {
         setPosts(data);
+        //console.log(filteredData);
+        setFilteredPosts(data);
       })
       .catch((e) => {
         console.error('Error fetching posts:', e);
       });
   }, []);
+
+  useEffect(()=>{
+    
+    const options = {
+    keys: ['content','username'],
+    useExtendedSearch: true, // used to make the inclusion search
+    }
+
+    const fuse = new Fuse(posts,options); // yeah ezez
+    
+    const result = fuse.search(`'${searchTrait}`); // using fuse for searching :)
+    
+    let filResult = []; // filresult stores the filtered result
+    //code might be a bit jumbled :p   
+    result.map((item)=>{filResult.push(item.item)})
+    
+    if(!(searchTrait.length)) {setFilteredPosts(posts);filResult=posts;} //if the searchTrait is empty, we display all the posts :)
+    setFilteredPosts(filResult);
+    //console.log(filResult); for testing :)
+  },[searchTrait]) 
+
+  //so there's a problem with this code,when i push a post, the posts don't update till i change the cause the searchTrait to rerender
 
   // Handle Post Submit
   const handlePostSubmit = () => {
@@ -234,8 +260,8 @@ const HomePage = () => {
 
           {/* Displaying posts */}
           <div className="mt-8">
-            {posts.length > 0 ? (
-              posts.map((post) => (
+            {filteredPosts.length > 0 ? (
+              filteredPosts.map((post) => (
                 <div key={post._id} className="bg-white p-4 rounded-lg shadow-md mb-4">
                   <Link 
                   to={post.username === userProfile.username?'/myprofile':`/${post.username}`}>
