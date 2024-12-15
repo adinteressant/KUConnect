@@ -55,12 +55,16 @@ export const getMessageController = async (req,res) => {
   }
 }
 
-export const getUsersWithMessageController = (req,res) => {
+export const getUsersWithMessageController = async(req,res) => {
   try{
     const { senderId } = req
 
+    const objectsWithSenderId = await Conversation.find({ 'participants': senderId },{ 'participants':1 })
+    const arrayOfOtherParticipant = objectsWithSenderId.map((matchingConv) => 
+      (matchingConv.participants[0] === senderId? matchingConv.participants[0] : matchingConv.participants[1]))
 
-    res.send(senderId)
+
+    res.send(arrayOfOtherParticipant)
 
   }catch(e){
     console.log('error in get users with messages '+e)
