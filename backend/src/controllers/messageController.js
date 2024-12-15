@@ -61,7 +61,7 @@ export const getUsersWithMessageController = async(req,res) => {
 
     const objectsWithSenderId = await Conversation.find({ 'participants': senderId },{ 'participants':1 })
     const arrayOfOtherParticipant = objectsWithSenderId.map((matchingConv) => 
-      (matchingConv.participants[0] === senderId? matchingConv.participants[0] : matchingConv.participants[1]))
+      (matchingConv.participants[0].toString() === senderId.toString()? matchingConv.participants[1] : matchingConv.participants[0]))
 
 
     res.send(arrayOfOtherParticipant)
