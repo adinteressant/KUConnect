@@ -297,7 +297,10 @@ const HomePage = () => {
                 >
                   <Link 
                   to={post.username === userProfile.username?'/myprofile':`/${post.username}`}>
-                    <div className="text-gray-800 font-semibold">{post.username}</div>
+                 <img src={`/api/get-pfp?id=${post.pfp_id}`}
+                      className="h-8 w-8 rounded-full object-cover"
+                />
+                <div className="text-gray-800 font-semibold">{post.username}</div>
                   </Link>
                    {/* Display username */}
                   <div className="text-gray-600 text-sm">
