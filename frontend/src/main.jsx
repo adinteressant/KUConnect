@@ -15,6 +15,7 @@ import VerifyOtp from './components/VerifyOtpPage.jsx'
 import SetInfoGoogle from './components/SetInfoGoogle.jsx'
 import ProfilePage from './components/ProfilePage.jsx'
 import ResultPage from './components/ResultPage.jsx'
+import SearchResults from './components/SearchResults.jsx'
 
 
 const router = createBrowserRouter([
@@ -65,6 +66,10 @@ const router = createBrowserRouter([
       {
         path:'/results',
         element:<ResultPage/>,
+      },
+      {
+        path:'/search',
+        element:<SearchResults/>
       }
     ]
   }
