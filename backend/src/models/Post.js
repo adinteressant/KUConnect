@@ -13,6 +13,7 @@ const commentSchema = new mongoose.Schema({
 });
 
 const postSchema = new mongoose.Schema({
+  pfp_id: { type:Number, required:true, unique:false,},
   userId: { type: String, required: true },
   username: { type: String, required: true },
   email: { type: String, required: true },

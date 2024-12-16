@@ -12,6 +12,7 @@ const HomePage = () => {
   const [showTags, setShowTags] = useState(false);
   const [tagValue, setTagValue] = useState('');
   const [tagList, setTagList] = useState([]);
+  const [showLikeOverlay, setShowLikeOverlay] = useState([]);
   const [showCommentBox, setShowCommentBox] = useState(false);
   const [isTextareaFocused, setIsTextareaFocused] = useState(false);
   const [isTagsInputFocused, setIsTagsInputFocused] = useState(false);
@@ -54,6 +55,7 @@ const HomePage = () => {
       .then((response) => response.json())
       .then((data) => {
         setPosts(data);
+        addDataForLikeOverlay(data);
         setFilteredPosts(data);
       })
       .catch((e) => {
@@ -191,6 +193,10 @@ const HomePage = () => {
 
   const isLiked = (post) => {
     return post.likes.some((like) => like && (like.userId === (userProfile.user_id || googleUser.user_id)))
+  }
+
+  const addDataForLikeOverlay = (posts) => {
+   
   }
 
   function toggleCommentBox() {
