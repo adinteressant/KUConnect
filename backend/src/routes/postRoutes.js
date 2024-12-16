@@ -1,6 +1,6 @@
 import express from 'express';
 import { createPost, getAllPosts, toggleLike, addComment, sharePost, searchPostsByTag } from '../controllers/postController.js';
-import { validatePost } from '../middlewares/postMiddleware.js';
+import { validatePost, validateComment } from '../middlewares/postMiddleware.js';
 
 const router = express.Router();
 
@@ -14,7 +14,7 @@ router.post('/api/create-post', validatePost, createPost);
 router.post('/api/posts/:postId/toggle-like', toggleLike);
 
 // Add a comment to a post
-router.post('/api/posts/:postId/add-comment', addComment);
+router.post('/api/posts/:postId/add-comment', validateComment, addComment);
 
 // Share a post
 router.post('/api/posts/:postId/share', sharePost);
