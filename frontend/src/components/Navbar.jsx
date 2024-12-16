@@ -76,8 +76,39 @@ const Navigation = ({ setVisibility, setPadding,searchTrait,setSearchTrait}) => 
     }, 300);
   };
 
-  const handleSearch = (e)=>{
+  const handleSearch = async (e)=>{
     e.preventDefault();
+  
+
+  const trimmedTag = searchTrait.trim();
+    if (!trimmedTag) {
+      alert('Please enter a tag to search');
+      return;
+    }
+
+    try {
+      // Make API call to search posts by tag
+      const response = await axios.get(`/api/posts/search?tag=${trimmedTag}`);
+      
+      // Navigate to search results page and pass search results
+      navigate('/search', { 
+        state: { 
+          posts: response.data, 
+          searchTag: trimmedTag 
+        } 
+      });
+      
+      setSearchTrait('');
+    } catch (error) {
+      console.error('Error searching posts:', error);
+      
+      // Handle different error scenarios
+      if (error.response?.status === 404) {
+        alert('No posts found with this tag');
+      } else {
+        alert('An error occurred while searching');
+      }
+    }
   }
 
   return (
