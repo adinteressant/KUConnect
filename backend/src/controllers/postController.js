@@ -80,28 +80,25 @@ export const toggleLike = async (req, res) => {
 
 // Add a comment to a post
 export const addComment = async (req, res) => {
-  const { postId } = req.params;
-  const { content, userId, username } = req.body;
-
-  if (!content || content.trim() === '') {
-    return res.status(400).json({ message: 'Comment content is required!' });
-  }
+  const { postId } = req.params
+  const { content, userId, username } = req.body
 
   try {
-    const post = await Post.findById(postId);
+    const post = await Post.findById(postId)
 
     if (!post) {
-      return res.status(404).json({ message: 'Post not found!' });
+      return res.status(404).json({ message: 'Post not found!'})
     }
 
-    const comment = { content, userId, username, createdAt: new Date() };
-    post.comments.push(comment);
+    post.comments.push({ content, userId, username})
 
-    const updatedPost = await post.save();
-    res.json(updatedPost);
-  } catch (error) {
-    console.error('Error adding comment:', error);
-    res.status(500).json({ message: 'Internal Server Error', error });
+    const updatedPost = await post.save()
+    res.json({ message: 'Commented on post sucessfully',post: updatedPost })
+  } 
+  catch (error) 
+  {
+    console.error('Error adding comment:', error)
+    res.status(500).json({ message: 'Internal Server Error', error })
   }
 };
 
