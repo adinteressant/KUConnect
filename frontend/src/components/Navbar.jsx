@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Search, User, ChevronDown, LogOut, LogIn, UserPlus, UserCircle } from 'lucide-react';
 import axios from 'axios';
 
-const Navigation = ({ setVisibility, setPadding }) => {
+const Navigation = ({ setVisibility, setPadding,searchTrait,setSearchTrait}) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem('isAuthenticated') == 'true');  
   const [userProfile,setUserProfile] = useState({});
@@ -76,6 +76,10 @@ const Navigation = ({ setVisibility, setPadding }) => {
     }, 300);
   };
 
+  const handleSearch = (e)=>{
+    e.preventDefault();
+  }
+
   return (
     <div className="w-full bg-white shadow-sm fixed z-20 top-0">
       <div className="max-w-7xl mx-auto px-4">
@@ -88,11 +92,15 @@ const Navigation = ({ setVisibility, setPadding }) => {
             {/* Search Section */}
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-              <input
+            <form onSubmit={handleSearch}>  
+            <input
                 type="text"
                 placeholder="Search"
                 className="w-full pl-10 pr-4 py-2 rounded-full bg-gray-100 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:bg-white transition-colors font-serif"
+                value={searchTrait}
+                onChange={(e)=>{setSearchTrait(e.target.value)}}
               />
+            </form>
             </div>
           </div>
 
@@ -104,11 +112,14 @@ const Navigation = ({ setVisibility, setPadding }) => {
               onMouseLeave={handleDropdownClose}
             >
               <button className="p-2 rounded-full hover:bg-gray-100 transition-colors flex items-center">
-          <User
+    {isAuthenticated?<img
             src={`/api/get-pfp?id=${userProfile.pfp_id}`}
             alt="Profile"
             className="h-8 w-8 rounded-full object-cover"
-          />
+          />:<User
+            className="h-8 w-8 rounded-full object-cover"
+      />}
+
                 <ChevronDown className="h-4 w-4 ml-1 text-gray-600" />
               </button>
               {isDropdownOpen && (
