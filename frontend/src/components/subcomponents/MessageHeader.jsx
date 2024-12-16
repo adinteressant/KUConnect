@@ -1,0 +1,11 @@
+export default function MessageHeader() {
+  return <div className="px-1 mb-3 flex gap-1">
+      <div>
+        <img src="public/images/light.svg" alt="" className="inline "/>
+      </div>
+      <div>
+        Name
+      </div>
+    
+  </div>
+}
