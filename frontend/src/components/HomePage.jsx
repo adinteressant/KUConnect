@@ -320,10 +320,10 @@ const HomePage = () => {
                     </div>
                   )}
 
-                  <hr className='mt-2'/>
+                  <hr className='absolute left-0 right-0 mt-4'/>
                   
                   {/* Likes, Comments, Shares Information */}
-                  <div className='mt-2 flex items-center gap-4'>
+                  <div className='mt-6 flex items-center gap-4'>
 
                     {/* like information */}
                       {post.likes.length>0 &&
@@ -353,11 +353,15 @@ const HomePage = () => {
                     </div>
                   </div>
 
+                  {(post.likes.length>0||post.comments.length>0||post.shares.length>0)
+                    && <hr className='mt-2'/>
+                  }
+
                   {/* Like, Comment, Share Button */}
-                  <div className='flex items-center gap-4 mt-2'>
+                  <div className='flex justify-evenly items-center gap-2 mt-2'>
 
                     {/* like button */}
-                    <button onClick = {() => handleLike(post)} className = 'flex items-center gap-2 group'>
+                    <button onClick = {() => handleLike(post)} className = 'flex justify-center items-center gap-2 group'>
                       <svg width='24' height='24' viewBox='0 0 24 24'
                       className= {isLiked(post)
                         ? 'stroke-cyan-600 fill-cyan-600 group-hover:fill-cyan-700 group-hover:stroke-cyan-700 transition-all duration-100'
@@ -380,7 +384,7 @@ const HomePage = () => {
                     </button>
 
                     {/* comment button */}
-                    <button onClick={toggleCommentBox} className='ml-auto flex items-center gap-2 group'>
+                    <button onClick={toggleCommentBox} className='flex justify-center items-center gap-2 group'>
                       <svg width='24' height='24' viewBox='0 0 24 24'
                         className='stroke-gray-600 fill-none group-hover:stroke-cyan-600 transition-all duration-200'
                         xmlns="http://www.w3.org/2000/svg"
@@ -394,7 +398,7 @@ const HomePage = () => {
                     </button>
 
                     {/* share button */}
-                    <button className='ml-auto flex items-center gap-2 group'>
+                    <button className='flex justify-center items-center gap-2 group'>
                       <svg width='24' height='24' viewBox='0 0 24 24'
                         className='stroke-gray-600 fill-none group-hover:stroke-cyan-600 transition-all duration-200'
                         xmlns="http://www.w3.org/2000/svg"
