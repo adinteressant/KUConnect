@@ -30,6 +30,7 @@ export const createPost = async (req, res) => {
   try {
     // Create a new post using the provided data
     const newPost = new Post({
+      pfp_id: userInfo.pfp_id,
       userId: userInfo.user_id,
       username: userInfo.username,
       email: userInfo.email, // Store email

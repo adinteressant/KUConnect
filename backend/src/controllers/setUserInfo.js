@@ -13,7 +13,7 @@ export const setUserInfo = async (req,res) => {
     user_id: userId,
     username:username,
     tags:[],
-    role:role
+    role:role,
   })
   const privateInfo = new PrivateInfo({
     user_id: userId,
