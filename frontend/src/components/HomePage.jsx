@@ -13,7 +13,7 @@ const HomePage = () => {
   const [tagValue, setTagValue] = useState('');
   const [tagList, setTagList] = useState([]);
   const [showLikeOverlay, setShowLikeOverlay] = useState([]);
-  const [showCommentBox, setShowCommentBox] = useState(false);
+  const [showCommentBox, setShowCommentBox] = useState([]);
   const [isTextareaFocused, setIsTextareaFocused] = useState(false);
   const [isTagsInputFocused, setIsTagsInputFocused] = useState(false);
   const {searchTrait,setSearchTrait} = useOutletContext();
@@ -55,8 +55,8 @@ const HomePage = () => {
       .then((response) => response.json())
       .then((data) => {
         setPosts(data);
-        addDataForLikeOverlay(data);
         setFilteredPosts(data);
+        createArrayForCommentBox(data);
       })
       .catch((e) => {
         console.error('Error fetching posts:', e);
@@ -195,12 +195,19 @@ const HomePage = () => {
     return post.likes.some((like) => like && (like.userId === (userProfile.user_id || googleUser.user_id)))
   }
 
-  const addDataForLikeOverlay = (posts) => {
-   
+  const createArrayForCommentBox = (postsArray) => {
+    const updatedArray = postsArray.map((p) => {
+      return {postId: p._id, value: false}
+    })
+    setShowCommentBox(() => updatedArray)
   }
 
-  function toggleCommentBox() {
-    setShowCommentBox((prev) => !prev)
+  function toggleCommentBox(post) {
+    setShowCommentBox((prevArray) => {
+      return prevArray.map((p) => {
+        return p.postId===post._id ? {postId: p.postId, value: !p.value} : {postId: p.postId, value: p.value}
+      })
+    })
   }
 
   const handleTextareaFocus = () => {
@@ -333,7 +340,7 @@ const HomePage = () => {
 
                     {/* like information */}
                       {post.likes.length>0 &&
-                        <button className="text-sm text-gray-600 hover:text-cyan-600 transition-all duration-200">  
+                        <button onClick={() => toggleLikeOverlay(post)} className="text-sm text-gray-600 hover:text-cyan-600 transition-all duration-200">  
                           {(post.likes.length<3
                             ? `Liked by ${post.likes.map(user => user.username).join(', ')}`
                             : `Liked by ${post.likes.map(user => user.username).slice(-2).join(', ')} and ${post.likes.length-2} more`
@@ -390,7 +397,7 @@ const HomePage = () => {
                     </button>
 
                     {/* comment button */}
-                    <button onClick={toggleCommentBox} className='flex justify-center items-center gap-2 group'>
+                    <button onClick={() => toggleCommentBox(post)} className='flex justify-center items-center gap-2 group'>
                       <svg width='24' height='24' viewBox='0 0 24 24'
                         className='stroke-gray-600 fill-none group-hover:stroke-cyan-600 transition-all duration-200'
                         xmlns="http://www.w3.org/2000/svg"
@@ -420,7 +427,7 @@ const HomePage = () => {
                   </div>
 
                   {/* Comment Input Section */}
-                  {showCommentBox && (<div className="mt-4">
+                  {showCommentBox.find(obj => obj.postId===post._id).value && (<div className="mt-4">
                     <textarea
                       placeholder="Add a comment..."
                       className="w-full p-2 border rounded-lg bg-gray-100 focus:outline-none focus:ring-2 focus:ring-cyan-600"
