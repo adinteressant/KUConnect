@@ -199,7 +199,7 @@ const HomePage = () => {
   }
 
   const isInfoDisplayed = (post) => {
-    return (post.likes.length>0||post.comments.length>0||post.shares.length>0)
+    return (post.likes.length>0||post.comments>0||post.shares.length>0)
   }
 
   const createArrayForLikeOverlay = (postsArray) => {
@@ -383,9 +383,9 @@ const HomePage = () => {
                     <div className='ml-auto flex items-center gap-4'>
                       
                         {/* comment information */}
-                        {post.comments.length>0 &&
+                        {post.comments>0 &&
                           <button className="text-sm text-gray-600 hover:text-cyan-600 transition-all duration-300">  
-                            {post.comments.length} comments
+                            {post.comments} comments
                           </button>
                         }
 
