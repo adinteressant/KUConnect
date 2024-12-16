@@ -10,7 +10,7 @@ export const getAllPosts = async (req, res) => {
     res.json(posts);
   } catch (error) {
     console.error('Error fetching posts:', error);
-    res.status(500).json({ message: 'Internal Server Error', error });
+    res.status(500).json({ message: 'Failed to fetch posts. Please try again later.', error });
   }
 };
 
@@ -35,12 +35,12 @@ export const createPost = async (req, res) => {
       username: userInfo.username,
       email: userInfo.email, // Store email
       content,
-      tags: tags || [], // Optional: If no tags provided, default to empty array
+      tags: tags || [],
     });
 
     // Save the post in the database
     const savedPost = await newPost.save();
-    res.status(201).json({ post: savedPost });
+    res.status(201).json({ message: 'Post created successfully!', post: savedPost });
   } catch (error) {
     console.error('Error creating post:', error);
     res.status(500).json({ message: 'Internal Server Error', error });
@@ -56,7 +56,7 @@ export const toggleLike = async (req, res) => {
     const post = await Post.findById(postId)
 
     if (!post) {
-      return res.status(404).json({ message: 'Post not found!' })
+      return res.status(404).json({ message: 'Post not found!' });
     }
 
     //Check if user has already liked the post
@@ -77,7 +77,7 @@ export const toggleLike = async (req, res) => {
     console.error('Error toggling like: ', error)
     res.status(500).json({ message: 'Internal Server Error: ', error })
   }
-}
+};
 
 // Add a comment to a post
 export const addComment = async (req, res) => {
@@ -86,6 +86,10 @@ export const addComment = async (req, res) => {
 
   if (!content || content.trim() === '') {
     return res.status(400).json({ message: 'Comment content is required!' });
+  }
+
+  if (!userId || !username) {
+    return res.status(400).json({ message: 'User ID and username are required to comment!' });
   }
 
   try {
@@ -99,10 +103,10 @@ export const addComment = async (req, res) => {
     post.comments.push(comment);
 
     const updatedPost = await post.save();
-    res.json(updatedPost);
+    res.json({ message: 'Comment added successfully!', post: updatedPost });
   } catch (error) {
     console.error('Error adding comment:', error);
-    res.status(500).json({ message: 'Internal Server Error', error });
+    res.status(500).json({ message: 'Failed to add comment. Please try again later.', error });
   }
 };
 
