@@ -30,7 +30,7 @@ export const addComment = async (req, res) => {
       post.comments = post.comments + 1
       await post.save()
 
-      res.status(201).json({ message: 'Comment created sucessfully', post: post, pfp: user.pfp_id, username:user.username, comment: savedComment })
+      res.status(201).json({ message: 'Comment created sucessfully', post: post, pfp: user.pfp_id, role: user.role, username:user.username, comment: savedComment })
     } 
     catch (error) 
     {

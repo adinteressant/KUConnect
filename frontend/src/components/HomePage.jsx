@@ -276,6 +276,13 @@ const HomePage = () => {
             )
           )
         }, 300) 
+        setShowCommentBox((prev) => 
+          prev.map((p) => p.postId===post._id? {...p, content: '', display: p.display+`
+            <div className="">
+              
+            </div>
+            `} : {...p}
+        ))
       }
       else
       {
@@ -385,24 +392,27 @@ const HomePage = () => {
                     post.isUpdating ? 'scale-105' : 'scale-100'
                   }`}
                 >
-                  <Link 
-                  to={post.username === userProfile.username?'/myprofile':`/${post.username}`}>
-                 <img src={`/api/get-pfp?id=${post.pfp_id}`}
-                      className="h-8 w-8 rounded-full object-cover"
-                />
-                <div className="text-gray-800 font-semibold">{post.username}</div>
+                <div className='flex gap-2 items-center'>
+                  <Link to={post.username === userProfile.username?'/myprofile':`/${post.username}`}>
+                    <img src={`/api/get-pfp?id=${post.pfp_id}`} className="h-8 w-8 rounded-full object-cover"/>
                   </Link>
-                   {/* Display username */}
-                  <div className="text-gray-600 text-sm">
-                    {new Date(post.createdAt).toLocaleDateString('en-US', { 
-                      day: '2-digit', 
-                      month: 'long', 
-                      year: 'numeric' 
-                    })}, {new Date(post.createdAt).toLocaleTimeString([], { 
-                      hour: '2-digit', 
-                      minute: '2-digit' 
-                    })}
+                  <div>
+                    <Link to={post.username === userProfile.username?'/myprofile':`/${post.username}`} 
+                              className="text-gray-800 font-semibold">
+                                {post.username}
+                    </Link>
+                    <div className="text-gray-600 text-sm">
+                      {new Date(post.createdAt).toLocaleDateString('en-US', { 
+                        day: '2-digit', 
+                        month: 'long', 
+                        year: 'numeric' 
+                      })}, {new Date(post.createdAt).toLocaleTimeString([], { 
+                        hour: '2-digit', 
+                        minute: '2-digit' 
+                      })}
+                    </div>
                   </div>
+                </div>
                   <p className="mt-2 text-gray-800">{post.content}</p>
                   {post.tags.length > 0 && (
                     <div className="mt-2 text-sm text-gray-600">
