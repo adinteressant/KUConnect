@@ -10,7 +10,7 @@ export const getAllPosts = async (req, res) => {
     res.json(posts);
   } catch (error) {
     console.error('Error fetching posts:', error);
-    res.status(500).json({ message: 'Internal Server Error', error });
+    res.status(500).json({ message: 'Failed to fetch posts. Please try again later.', error });
   }
 };
 
@@ -30,16 +30,17 @@ export const createPost = async (req, res) => {
   try {
     // Create a new post using the provided data
     const newPost = new Post({
+      pfp_id: userInfo.pfp_id,
       userId: userInfo.user_id,
       username: userInfo.username,
       email: userInfo.email, // Store email
       content,
-      tags: tags || [], // Optional: If no tags provided, default to empty array
+      tags: tags || [],
     });
 
     // Save the post in the database
     const savedPost = await newPost.save();
-    res.status(201).json({ post: savedPost });
+    res.status(201).json({ message: 'Post created successfully!', post: savedPost });
   } catch (error) {
     console.error('Error creating post:', error);
     res.status(500).json({ message: 'Internal Server Error', error });
@@ -55,7 +56,7 @@ export const toggleLike = async (req, res) => {
     const post = await Post.findById(postId)
 
     if (!post) {
-      return res.status(404).json({ message: 'Post not found!' })
+      return res.status(404).json({ message: 'Post not found!' });
     }
 
     //Check if user has already liked the post
@@ -76,7 +77,7 @@ export const toggleLike = async (req, res) => {
     console.error('Error toggling like: ', error)
     res.status(500).json({ message: 'Internal Server Error: ', error })
   }
-}
+};
 
 // Add a comment to a post
 export const addComment = async (req, res) => {
@@ -105,4 +106,32 @@ export const addComment = async (req, res) => {
 // Share a post
 export const sharePost = async (req, res) => {
   // implement sharing functionality as required
+};
+
+//Search post using tags
+
+export const searchPostsByTag = async (req, res) => {
+  try {
+    const { tag } = req.query;
+
+    // If no tag is provided, return an error
+    if (!tag) {
+      return res.status(400).json({ message: 'Tag is required for search' });
+    }
+
+    // Case-insensitive search for posts containing the tag
+    const posts = await Post.find({ 
+      tags: { $regex: tag, $options: 'i' } 
+    }).sort({ createdAt: -1 }); // Sort by most recent first
+
+    // If no posts found
+    if (posts.length === 0) {
+      return res.status(404).json({ message: 'No posts found with this tag' });
+    }
+
+    res.status(200).json(posts);
+  } catch (error) {
+    console.error('Error searching posts by tag:', error);
+    res.status(500).json({ message: 'Server error while searching posts' });
+  }
 };
