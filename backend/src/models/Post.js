@@ -5,13 +5,6 @@ const likeSchema = new mongoose.Schema({
   username: {type: String, required: true}
 })
 
-const commentSchema = new mongoose.Schema({
-  content: { type: String, required: true },
-  userId: { type: String, required: true },
-  username: { type: String, required: true },
-  createdAt: { type: Date, default: Date.now },
-});
-
 const postSchema = new mongoose.Schema({
   pfp_id: { type:Number, required:true, unique:false,},
   userId: { type: String, required: true },
@@ -21,7 +14,7 @@ const postSchema = new mongoose.Schema({
   tags: { type: [String], default: [] }, // Array of tags
   likes: { type: [likeSchema], default: [] },
   shares: { type: Number, default: 0 },
-  comments: { type: [commentSchema], default: [] },
+  comments: { type: Number, default: 0 },
   createdAt: { type: Date, default: Date.now },
 });
 
