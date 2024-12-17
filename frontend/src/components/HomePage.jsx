@@ -111,7 +111,7 @@ const HomePage = () => {
             setTagValue('');
             setTagList([]);
             setPosts([data.post, ...posts]);
-            setShowCommentBox([...showCommentBox, {postId: data.post._id, value:false} ]);
+            setShowCommentBox([...showCommentBox, {postId: data.post._id, value:false, content: '', display:''} ]);
             setShowLikeOverlay([...showLikeOverlay, {postId: data.post._id, value:false}]);
             console.log('Post submitted:', data.post);
           }
@@ -230,17 +230,61 @@ const HomePage = () => {
 
   const createArrayForCommentBox = (postsArray) => {
     const updatedArray = postsArray.map((p) => {
-      return {postId: p._id, value: false}
+      return {postId: p._id, value: false, content: '', display: ''}
     })
     setShowCommentBox(() => updatedArray)
   }
 
-  function toggleCommentBox(post) {
+  const toggleCommentBox = (post) => {
     setShowCommentBox((prevArray) => {
       return prevArray.map((p) => {
-        return p.postId===post._id ? {postId: p.postId, value: !p.value} : {postId: p.postId, value: p.value}
+        return p.postId===post._id ? {postId: p.postId, value: !p.value, content:p.content, display:p.display} : {postId: p.postId, value: p.value, content: p.content, display:p.display}
       })
     })
+  }
+
+  const handleNewComment = async(post) =>
+  {
+    if (!user && !googleUser) {
+      alert('You must be logged in to comment on the post.');
+      return;
+    }
+    
+    try {
+      const response = await fetch(`/api/posts/${post._id.toString()}/users/${userProfile.user_id.toString()}/add-comment`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          content: showCommentBox.find(p => p.postId === post._id).content
+        })
+      })
+
+      const updatedPost = await response.json()
+      if(response.ok)
+      {
+        setPosts((prevPosts) =>
+          prevPosts.map((p) =>
+            p._id === updatedPost.post._id ? { ...updatedPost.post, isUpdating: true } : p
+          )
+        )
+        setTimeout(() => {
+          setPosts((prevPosts) =>
+            prevPosts.map((p) =>
+              p._id === updatedPost.post._id ? { ...p, isUpdating: false } : p
+            )
+          )
+        }, 300) 
+      }
+      else
+      {
+        console.error('Error commenting on the post:', updatedPost.message)
+      }
+    }
+    catch(error) {
+      console.error('Error commenting on the post:', error)
+    }
   }
 
   const handleTextareaFocus = () => {
@@ -467,13 +511,18 @@ const HomePage = () => {
                   {/* Comment Input Section */}
                   <div className={`transition-all duration-1000 overflow-hidden ease-in-out ${showCommentBox.find(obj => obj.postId===post._id).value? 'opacity-100 max-h-screen mt-2' : 'opacity-0 max-h-0 mt-0'}`}>
                     <hr className='absolute left-0 right-0'/>
-                    <textarea
+                    <textarea onChange={(e) => 
+                      setShowCommentBox((prev) => 
+                        prev.map((p) => p.postId===post._id? {...p, content: e.target.value} : {...p}
+                        ))
+                    }
                       placeholder="Add a comment..."
                       className="mt-4 w-full p-2 border rounded-lg bg-gray-100 focus:outline-none focus:ring-2 focus:ring-cyan-600"
                     />
                     <button
-                      className="bg-cyan-600 text-white px-4 py-2 rounded-lg mt-2 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-600"
-                      disabled
+                      onClick={() => handleNewComment(post)}
+                      className="bg-gray-600 text-white px-4 py-2 rounded-lg mt-2 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-600"
+                      
                     >
                       Comment
                     </button>
