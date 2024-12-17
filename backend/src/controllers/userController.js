@@ -67,6 +67,7 @@ export const getUserProfileController = async (req, res) => {
 
     // Return a combined profile response with username, role, and email
     return res.json({
+      _id: privateProfile._id,
       user_id: publicProfile.user_id,
       username: publicProfile.username,
       email: privateProfile.email,  // Email is fetched from PrivateInfo model
