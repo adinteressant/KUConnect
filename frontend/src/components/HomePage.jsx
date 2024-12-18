@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { Link, useOutletContext } from 'react-router-dom'
 import formatTimeAgo from '../utils/generateTimeAgo'
+import ShowComments from './subcomponents/CommentOverlay.jsx'
 import Fuse from 'fuse.js';
 
 const HomePage = () => {
@@ -15,6 +16,7 @@ const HomePage = () => {
   const [tagList, setTagList] = useState([]);
   const [showLikeOverlay, setShowLikeOverlay] = useState([]);
   const [showCommentBox, setShowCommentBox] = useState([]);
+  const [showCommentOverlay, setShowCommentOverlay] = useState('')
   const [isTextareaFocused, setIsTextareaFocused] = useState(false);
   const [isTagsInputFocused, setIsTagsInputFocused] = useState(false);
   const {searchTrait,setSearchTrait} = useOutletContext();
@@ -297,6 +299,18 @@ const HomePage = () => {
     }
   }
 
+  const openCommentOverlay = (postId) =>
+  {
+    setShowCommentOverlay(() => postId)
+    document.body.classList.toggle('overflow-hidden', true)
+  }
+
+   const closeCommentOverlay = () =>
+  {
+    setShowCommentOverlay(() => '')
+    document.body.classList.toggle('overflow-hidden', false)
+  }
+
   const handleTextareaFocus = () => {
     setIsTextareaFocused(true);
     setShowTags(true);
@@ -441,7 +455,7 @@ const HomePage = () => {
                       
                         {/* comment information */}
                         {post.comments>0 &&
-                          <button className="text-sm text-gray-600 hover:text-cyan-600 transition-all duration-300">  
+                          <button onClick={() => openCommentOverlay(post._id)} className="text-sm text-gray-600 hover:text-cyan-600 transition-all duration-300">  
                             {post.comments} comments
                           </button>
                         }
@@ -588,7 +602,7 @@ const HomePage = () => {
                   {showLikeOverlay.find(obj => obj.postId===post._id).value && (
                     /* like overlay background*/
                     <div onClick={closeLikeOverlay}
-                          className='fixed top-0 left-0 right-0 bottom-0 inset-0 z-60
+                          className='fixed inset-0 z-50
                                     flex items-center justify-center
                                     bg-black bg-opacity-50'
                     >
@@ -634,6 +648,29 @@ const HomePage = () => {
             )}
           </div>
         </div>
+
+        {/* Comment Overlay */}
+        {showCommentOverlay &&
+          (<div className='fixed inset-0 z-50
+                        flex items-center justify-center
+                        bg-black bg-opacity-50'      
+                        onClick={closeCommentOverlay}
+          >
+            <div onClick={(e) => e.stopPropagation()} 
+                className='relative bg-white w-[50%] h-[50%] rounded-lg shadow-2xl'
+            >
+              <button onClick={closeCommentOverlay} className='absolute top-2 right-2 p-2 rounded-full hover:bg-gray-200 transition-all duration-300'>
+                <svg width='24' height='24' viewBox='0 0 24 24'
+                  className='stroke-gray-600 fill-none'
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+                </svg>
+              </button>
+              <ShowComments postId={showCommentOverlay}/>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );

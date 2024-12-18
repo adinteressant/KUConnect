@@ -53,7 +53,7 @@ export const getComments = async(req, res) =>
 
   try
   {
-    const rawCommentArray = await Comment.find({ postId })
+    const rawCommentArray = await Comment.find({ postId }).sort({ createdAt: -1 })
     const commentArray = await Promise.all(
       rawCommentArray.map(async(comment) => {
         const user = await PublicInfo.findOne({user_id: comment.userId})
