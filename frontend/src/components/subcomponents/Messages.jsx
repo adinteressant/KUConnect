@@ -3,8 +3,7 @@ import Message from './Message.jsx'
 
 export default function Messages(){
   const {loading,messages} = useGetMessage()
-  console.log('messages areeeeeeeee')
-  console.log(messages)
+  
   return <div className="h-[484px] overflow-auto scrollbar-custom">
     {loading && 
       (

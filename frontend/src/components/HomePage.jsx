@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useOutletContext } from 'react-router-dom'
 import Fuse from 'fuse.js';
-import useAuth from '../zustand/useAuthUser'
 
 const HomePage = () => {
   const [user, setUser] = useState(null);
@@ -18,7 +17,6 @@ const HomePage = () => {
   const [isTextareaFocused, setIsTextareaFocused] = useState(false);
   const [isTagsInputFocused, setIsTagsInputFocused] = useState(false);
   const {searchTrait,setSearchTrait} = useOutletContext();
-  const {setAuthUserId} = useAuth()
 
   // Check for logged-in user based on isAuthenticated
   useEffect(() => {
@@ -45,7 +43,7 @@ const HomePage = () => {
       .then((response) => response.json())
       .then((data) => {
         setUserProfile(data);
-        setAuthUserId(data._id)
+        localStorage.setItem('authUser',JSON.stringify(data._id))
       })
       .catch((e) => {
         console.error('Error fetching user profile:', e);

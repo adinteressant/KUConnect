@@ -47,8 +47,9 @@ export const getMessageController = async (req,res) => {
       participants:{$all:[senderId,receiverId]}
     }).populate('messages')
   
-    if(!conversation) return res.send(200).json([])
-  
+    if(!conversation) {
+      return res.status(200).json([])
+    }
     return res.status(200).json(conversation.messages)
   
   }catch(e){
@@ -61,24 +62,36 @@ export const getUsersWithMessageController = async(req,res) => {
   try{
     const { senderId } = req
 
-    const objectsWithSenderId = await Conversation.find({ 'participants': senderId },{ 'participants':1 })
-    const arrayOfOtherParticipant = objectsWithSenderId.map((matchingConv) => 
-      (matchingConv.participants[0].toString() === senderId.toString()? matchingConv.participants[1] : matchingConv.participants[0]))
+    const participants = await PrivateInfo.find({ _id: { $ne: senderId   } },{password:0})
 
-    const participants = await PrivateInfo.find({ _id: { $in: arrayOfOtherParticipant } },
-      { password_hash: 0 })
-
-      const updatedParticipants = await Promise.all(participants.map(async (participant) => {
-        const publicInfo = await PublicInfo.findOne({ user_id: participant.user_id })
-      
-        return {
-          ...participant.toObject(), // Convert Mongoose document to plain object
-          username: publicInfo ? publicInfo.username : null
-        }
-      }))
-
-    
+    const updatedParticipants = await Promise.all(participants.map(async (participant) => {
+          const publicInfo = await PublicInfo.findOne({ user_id: participant.user_id })
+        
+          return {
+            ...participant.toObject(), // Convert Mongoose document to plain object
+            username: publicInfo ? publicInfo.username : null
+          }
+        }))
     res.send(updatedParticipants)
+
+    // const objectsWithSenderId = await Conversation.find({ 'participants': senderId },{ 'participants':1 })
+    // const arrayOfOtherParticipant = objectsWithSenderId.map((matchingConv) => 
+    //   (matchingConv.participants[0].toString() === senderId.toString()? matchingConv.participants[1] : matchingConv.participants[0]))
+
+    // const participants = await PrivateInfo.find({ _id: { $in: arrayOfOtherParticipant } },
+    //   { password_hash: 0 })
+
+    //   const updatedParticipants = await Promise.all(participants.map(async (participant) => {
+    //     const publicInfo = await PublicInfo.findOne({ user_id: participant.user_id })
+      
+    //     return {
+    //       ...participant.toObject(), // Convert Mongoose document to plain object
+    //       username: publicInfo ? publicInfo.username : null
+    //     }
+    //   }))
+    // res.send(updatedParticipants)
+    
+    
 
   }catch(e){
     console.log('error in get users with messages '+e)
