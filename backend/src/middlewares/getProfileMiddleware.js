@@ -7,7 +7,8 @@ const getProfileMiddleware = async (req,res,next) => {
     const publicInfo = await PublicInfo.findOne({username}) 
     const info = {
       role:publicInfo.role,
-      pfp_id: publicInfo.pfp_id
+      pfp_id: publicInfo.pfp_id,
+      user_id: publicInfo.user_id
     }
     req.info = info
   }
