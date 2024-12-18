@@ -1,9 +1,8 @@
-import useAuth from '../../zustand/useAuthUser'
 import useConversation from '../../zustand/useConversation'
 
 export default function Message({message}) {
   //logged in user
-  const {authUserId} = useAuth()
+  const authUserId = JSON.parse(localStorage.getItem('authUser'))
   const {selectedConversation} = useConversation() //needed for further customization
   const fromMe = message.senderId == authUserId
   const positionClass = fromMe ? 'items-end justify-end' : 'items-start justify-start'
