@@ -1,5 +1,7 @@
 import Conversation from '../models/conversation.model.js'
 import Message from '../models/message.model.js'
+import PrivateInfo from '../models/PrivateInfo.js'
+import PublicInfo from '../models/PublicInfo.js'
 
 export const sendMessageController = async (req,res) => {
   try{
@@ -63,8 +65,20 @@ export const getUsersWithMessageController = async(req,res) => {
     const arrayOfOtherParticipant = objectsWithSenderId.map((matchingConv) => 
       (matchingConv.participants[0].toString() === senderId.toString()? matchingConv.participants[1] : matchingConv.participants[0]))
 
+    const participants = await PrivateInfo.find({ _id: { $in: arrayOfOtherParticipant } },
+      { password_hash: 0 })
 
-    res.send(arrayOfOtherParticipant)
+      const updatedParticipants = await Promise.all(participants.map(async (participant) => {
+        const publicInfo = await PublicInfo.findOne({ user_id: participant.user_id })
+      
+        return {
+          ...participant.toObject(), // Convert Mongoose document to plain object
+          username: publicInfo ? publicInfo.username : null
+        }
+      }))
+
+    
+    res.send(updatedParticipants)
 
   }catch(e){
     console.log('error in get users with messages '+e)

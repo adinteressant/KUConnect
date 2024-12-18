@@ -29,8 +29,7 @@ const verifyOTP = async (req,res) => {
       role: role, // Save the role in PublicInfo
     })
 
-      await privateInfo.save()
-      await publicInfo.save()
+     await Promise.all([privateInfo.save(), publicInfo.save()])
 
     // req.userId = userId
     res.status(201).json({
