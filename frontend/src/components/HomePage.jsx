@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Link, useOutletContext } from 'react-router-dom'
+import formatTimeAgo from '../utils/generateTimeAgo'
 import Fuse from 'fuse.js';
 
 const HomePage = () => {
@@ -111,7 +112,7 @@ const HomePage = () => {
             setTagValue('');
             setTagList([]);
             setPosts([data.post, ...posts]);
-            setShowCommentBox([...showCommentBox, {postId: data.post._id, value:false, content: '', display:''} ]);
+            setShowCommentBox([...showCommentBox, {postId: data.post._id, value:false, content: '', display:[]} ]);
             setShowLikeOverlay([...showLikeOverlay, {postId: data.post._id, value:false}]);
             console.log('Post submitted:', data.post);
           }
@@ -230,7 +231,7 @@ const HomePage = () => {
 
   const createArrayForCommentBox = (postsArray) => {
     const updatedArray = postsArray.map((p) => {
-      return {postId: p._id, value: false, content: '', display: ''}
+      return {postId: p._id, value: false, content: '', display: []}
     })
     setShowCommentBox(() => updatedArray)
   }
@@ -238,7 +239,7 @@ const HomePage = () => {
   const toggleCommentBox = (post) => {
     setShowCommentBox((prevArray) => {
       return prevArray.map((p) => {
-        return p.postId===post._id ? {postId: p.postId, value: !p.value, content:p.content, display:p.display} : {postId: p.postId, value: p.value, content: p.content, display:p.display}
+        return p.postId===post._id ? {...p, value: !p.value} : p
       })
     })
   }
@@ -264,6 +265,15 @@ const HomePage = () => {
       const updatedPost = await response.json()
       if(response.ok)
       {
+        setShowCommentBox((prev) => 
+          prev.map((p) => p.postId===post._id? {...p, content: '', display: p.display.concat({
+            pfp: updatedPost.pfp,
+            username: updatedPost.username,
+            role: updatedPost.role,
+            comment: updatedPost.comment,
+            created: updatedPost.created
+          })} : p
+        ))
         setPosts((prevPosts) =>
           prevPosts.map((p) =>
             p._id === updatedPost.post._id ? { ...updatedPost.post, isUpdating: true } : p
@@ -275,14 +285,7 @@ const HomePage = () => {
               p._id === updatedPost.post._id ? { ...p, isUpdating: false } : p
             )
           )
-        }, 300) 
-        setShowCommentBox((prev) => 
-          prev.map((p) => p.postId===post._id? {...p, content: '', display: p.display+`
-            <div className="">
-              
-            </div>
-            `} : {...p}
-        ))
+        }, 300)
       }
       else
       {
@@ -518,24 +521,67 @@ const HomePage = () => {
                     </button>
                   </div>
 
-                  {/* Comment Input Section */}
+                  {/* comment button thichda dekhauney */}
                   <div className={`transition-all duration-1000 overflow-hidden ease-in-out ${showCommentBox.find(obj => obj.postId===post._id).value? 'opacity-100 max-h-screen mt-2' : 'opacity-0 max-h-0 mt-0'}`}>
                     <hr className='absolute left-0 right-0'/>
-                    <textarea onChange={(e) => 
-                      setShowCommentBox((prev) => 
-                        prev.map((p) => p.postId===post._id? {...p, content: e.target.value} : {...p}
-                        ))
-                    }
-                      placeholder="Add a comment..."
-                      className="mt-4 w-full p-2 border rounded-lg bg-gray-100 focus:outline-none focus:ring-2 focus:ring-cyan-600"
-                    />
-                    <button
-                      onClick={() => handleNewComment(post)}
-                      className="bg-gray-600 text-white px-4 py-2 rounded-lg mt-2 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-600"
+
+                    {/* Bhakhar gareko comment bhayo hai bhanera display garna ko lagi (ani overall comments chai paxi xuttai overlay maa dekhauney) */}
+                    <div className={`transition-all duration-300 overflow-hidden ease-in-out ${showCommentBox.find(p => p.postId === post._id).display?'opacity-100 max-h-screen flex flex-col':'opacity-0 max-h-0'}`}>
                       
-                    >
-                      Comment
-                    </button>
+                      {showCommentBox.find(p => p.postId === post._id).display.map((d, index) => 
+                        <div key={index} className='flex mt-4'>
+                          <Link className='mt-2 shrink-0' to={'/myprofile'}>
+                            <img src={`/api/get-pfp?id=${d.pfp}`} alt="profile" className="w-8 h-8 rounded-full object-cover"/>
+                          </Link>
+                          <div className='ml-2'>
+                              <div className='bg-gray-100 p-2 rounded-xl'>
+                                <div className='flex gap-2 items-center'>
+                                  <Link to={'/myprofile'} className='text-gray-800 font-semibold text-sm'>
+                                    {d.username}
+                                  </Link>
+                                  <div className='text-gray-600 text-xs'>
+                                    {d.role}
+                                  </div>
+                                </div>
+                                <div className='text-gray-800 break-all whitespace-normal'>
+                                  {d.comment}
+                                </div>
+                              </div>
+                            <div className='flex items-center gap-4 ml-2 text-gray-600 text-xs'>
+                              {formatTimeAgo(d.created)} ago
+                            </div>                      
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Comment Input Section */}
+                    <div className='mt-4 flex flex-col gap-2'>
+                      <div className='flex'>
+                        <textarea
+                          onChange={(e) => 
+                            setShowCommentBox((prev) => 
+                              prev.map((p) => p.postId===post._id? {...p, content: e.target.value} : {...p}
+                              ))
+                          }
+                          value={showCommentBox.find(obj => obj.postId===post._id).content}
+                          placeholder="Add a comment..."
+                          className='flex-1 transition-all duration-300 p-2 border rounded-lg bg-gray-100 focus:m-1 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:ring-offset-1
+                                    resize-none overflow-auto leading-6'
+                          rows='2'
+                        />
+                      </div>
+                      <button
+                        disabled={!showCommentBox.find(obj => obj.postId===post._id).content.trim()}
+                        onClick={() => handleNewComment(post)}
+                        className="transition-all duration-300
+                        mr-auto bg-cyan-600 text-white px-4 py-2 rounded-lg disabled:bg-gray-400
+                        hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:ring-offset-2 focus:ml-1 focus:mb-1 focus:mt-1"
+                        
+                      >
+                        Comment
+                      </button>
+                    </div>
                   </div>
 
                   {/* like overlay*/}
