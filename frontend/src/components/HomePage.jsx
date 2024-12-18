@@ -17,6 +17,7 @@ const HomePage = () => {
   const [showLikeOverlay, setShowLikeOverlay] = useState([]);
   const [showCommentBox, setShowCommentBox] = useState([]);
   const [showCommentOverlay, setShowCommentOverlay] = useState('')
+  const [overlayTransitionState, setOverlayTransitionState] = useState(false)
   const [isTextareaFocused, setIsTextareaFocused] = useState(false);
   const [isTagsInputFocused, setIsTagsInputFocused] = useState(false);
   const {searchTrait,setSearchTrait} = useOutletContext();
@@ -303,11 +304,17 @@ const HomePage = () => {
   {
     setShowCommentOverlay(() => postId)
     document.body.classList.toggle('overflow-hidden', true)
+    setTimeout(() => {
+      setOverlayTransitionState(true)
+    }, 1)
   }
 
    const closeCommentOverlay = () =>
   {
-    setShowCommentOverlay(() => '')
+    setTimeout(() => {
+      setShowCommentOverlay(() => '')
+    }, 300)
+    setOverlayTransitionState(false)
     document.body.classList.toggle('overflow-hidden', false)
   }
 
@@ -651,13 +658,18 @@ const HomePage = () => {
 
         {/* Comment Overlay */}
         {showCommentOverlay &&
-          (<div className='fixed inset-0 z-50
+          (<div className={`fixed inset-0 z-50
                         flex items-center justify-center
-                        bg-black bg-opacity-50'      
+                        bg-black transition-all duration-300
+                        ${overlayTransitionState?'bg-opacity-50':'bg-opacity-0'}
+                        `}      
                         onClick={closeCommentOverlay}
           >
             <div onClick={(e) => e.stopPropagation()} 
-                className='relative bg-white w-[50%] h-[50%] rounded-lg shadow-2xl'
+                className={`relative bg-white w-[50%] h-[50%] rounded-lg shadow-2xl
+                  transition-all duration-300
+                  ${overlayTransitionState?'opacity-100 scale-100':'opacity-0 scale-50'}
+                  `}
             >
               <button onClick={closeCommentOverlay} className='absolute top-2 right-2 p-2 rounded-full hover:bg-gray-200 transition-all duration-300'>
                 <svg width='24' height='24' viewBox='0 0 24 24'

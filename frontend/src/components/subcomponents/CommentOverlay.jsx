@@ -122,6 +122,7 @@ function ShowComments(props) {
                             </div>
                        )
                     })}
+                    {((category === 'faculty' && faculty === 0) || (category === 'student' && student === 0)) && <div className="m-auto text-gray-600">No comments</div>}
                 </div>
             </div>
         );
