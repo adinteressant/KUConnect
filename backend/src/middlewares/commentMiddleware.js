@@ -4,9 +4,9 @@ export const validateComment = (req, res, next) => {
     {
         return res.status(400).json({ message: 'Comment cannot be empty' })
     }
-    if(content.length > 200)
+    if(content.length > 400)
     {
-        return res.status(400).json({ message: 'Comment cannot exceed the maximum length of 200 characters' })
+        return res.status(400).json({ message: 'Comment cannot exceed the maximum length of 400 characters' })
     }
     next()
 }

@@ -1,5 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Link, useOutletContext } from 'react-router-dom'
+import formatTimeAgo from '../utils/generateTimeAgo'
+import ShowComments from './subcomponents/CommentOverlay.jsx'
 import Fuse from 'fuse.js';
 
 const HomePage = () => {
@@ -14,6 +16,7 @@ const HomePage = () => {
   const [tagList, setTagList] = useState([]);
   const [showLikeOverlay, setShowLikeOverlay] = useState([]);
   const [showCommentBox, setShowCommentBox] = useState([]);
+  const [showCommentOverlay, setShowCommentOverlay] = useState('')
   const [isTextareaFocused, setIsTextareaFocused] = useState(false);
   const [isTagsInputFocused, setIsTagsInputFocused] = useState(false);
   const {searchTrait,setSearchTrait} = useOutletContext();
@@ -112,7 +115,7 @@ const HomePage = () => {
             setTagValue('');
             setTagList([]);
             setPosts([data.post, ...posts]);
-            setShowCommentBox([...showCommentBox, {postId: data.post._id, value:false, content: '', display:''} ]);
+            setShowCommentBox([...showCommentBox, {postId: data.post._id, value:false, content: '', display:[]} ]);
             setShowLikeOverlay([...showLikeOverlay, {postId: data.post._id, value:false}]);
             console.log('Post submitted:', data.post);
           }
@@ -231,7 +234,7 @@ const HomePage = () => {
 
   const createArrayForCommentBox = (postsArray) => {
     const updatedArray = postsArray.map((p) => {
-      return {postId: p._id, value: false, content: '', display: ''}
+      return {postId: p._id, value: false, content: '', display: []}
     })
     setShowCommentBox(() => updatedArray)
   }
@@ -239,7 +242,7 @@ const HomePage = () => {
   const toggleCommentBox = (post) => {
     setShowCommentBox((prevArray) => {
       return prevArray.map((p) => {
-        return p.postId===post._id ? {postId: p.postId, value: !p.value, content:p.content, display:p.display} : {postId: p.postId, value: p.value, content: p.content, display:p.display}
+        return p.postId===post._id ? {...p, value: !p.value} : p
       })
     })
   }
@@ -265,6 +268,15 @@ const HomePage = () => {
       const updatedPost = await response.json()
       if(response.ok)
       {
+        setShowCommentBox((prev) => 
+          prev.map((p) => p.postId===post._id? {...p, content: '', display: p.display.concat({
+            pfp: updatedPost.pfp,
+            username: updatedPost.username,
+            role: updatedPost.role,
+            comment: updatedPost.comment,
+            created: updatedPost.created
+          })} : p
+        ))
         setPosts((prevPosts) =>
           prevPosts.map((p) =>
             p._id === updatedPost.post._id ? { ...updatedPost.post, isUpdating: true } : p
@@ -276,7 +288,7 @@ const HomePage = () => {
               p._id === updatedPost.post._id ? { ...p, isUpdating: false } : p
             )
           )
-        }, 300) 
+        }, 300)
       }
       else
       {
@@ -286,6 +298,18 @@ const HomePage = () => {
     catch(error) {
       console.error('Error commenting on the post:', error)
     }
+  }
+
+  const openCommentOverlay = (postId) =>
+  {
+    setShowCommentOverlay(() => postId)
+    document.body.classList.toggle('overflow-hidden', true)
+  }
+
+   const closeCommentOverlay = () =>
+  {
+    setShowCommentOverlay(() => '')
+    document.body.classList.toggle('overflow-hidden', false)
   }
 
   const handleTextareaFocus = () => {
@@ -386,24 +410,27 @@ const HomePage = () => {
                     post.isUpdating ? 'scale-105' : 'scale-100'
                   }`}
                 >
-                  <Link 
-                  to={post.username === userProfile.username?'/myprofile':`/${post.username}`}>
-                 <img src={`/api/get-pfp?id=${post.pfp_id}`}
-                      className="h-8 w-8 rounded-full object-cover"
-                />
-                <div className="text-gray-800 font-semibold">{post.username}</div>
+                <div className='flex gap-2 items-center'>
+                  <Link to={post.username === userProfile.username?'/myprofile':`/${post.username}`}>
+                    <img src={`/api/get-pfp?id=${post.pfp_id}`} className="h-8 w-8 rounded-full object-cover"/>
                   </Link>
-                   {/* Display username */}
-                  <div className="text-gray-600 text-sm">
-                    {new Date(post.createdAt).toLocaleDateString('en-US', { 
-                      day: '2-digit', 
-                      month: 'long', 
-                      year: 'numeric' 
-                    })}, {new Date(post.createdAt).toLocaleTimeString([], { 
-                      hour: '2-digit', 
-                      minute: '2-digit' 
-                    })}
+                  <div>
+                    <Link to={post.username === userProfile.username?'/myprofile':`/${post.username}`} 
+                              className="text-gray-800 font-semibold">
+                                {post.username}
+                    </Link>
+                    <div className="text-gray-600 text-sm">
+                      {new Date(post.createdAt).toLocaleDateString('en-US', { 
+                        day: '2-digit', 
+                        month: 'long', 
+                        year: 'numeric' 
+                      })}, {new Date(post.createdAt).toLocaleTimeString([], { 
+                        hour: '2-digit', 
+                        minute: '2-digit' 
+                      })}
+                    </div>
                   </div>
+                </div>
                   <p className="mt-2 text-gray-800">{post.content}</p>
                   {post.tags.length > 0 && (
                     <div className="mt-2 text-sm text-gray-600">
@@ -429,7 +456,7 @@ const HomePage = () => {
                       
                         {/* comment information */}
                         {post.comments>0 &&
-                          <button className="text-sm text-gray-600 hover:text-cyan-600 transition-all duration-300">  
+                          <button onClick={() => openCommentOverlay(post._id)} className="text-sm text-gray-600 hover:text-cyan-600 transition-all duration-300">  
                             {post.comments} comments
                           </button>
                         }
@@ -509,31 +536,74 @@ const HomePage = () => {
                     </button>
                   </div>
 
-                  {/* Comment Input Section */}
+                  {/* comment button thichda dekhauney */}
                   <div className={`transition-all duration-1000 overflow-hidden ease-in-out ${showCommentBox.find(obj => obj.postId===post._id).value? 'opacity-100 max-h-screen mt-2' : 'opacity-0 max-h-0 mt-0'}`}>
                     <hr className='absolute left-0 right-0'/>
-                    <textarea onChange={(e) => 
-                      setShowCommentBox((prev) => 
-                        prev.map((p) => p.postId===post._id? {...p, content: e.target.value} : {...p}
-                        ))
-                    }
-                      placeholder="Add a comment..."
-                      className="mt-4 w-full p-2 border rounded-lg bg-gray-100 focus:outline-none focus:ring-2 focus:ring-cyan-600"
-                    />
-                    <button
-                      onClick={() => handleNewComment(post)}
-                      className="bg-gray-600 text-white px-4 py-2 rounded-lg mt-2 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-600"
+
+                    {/* Bhakhar gareko comment bhayo hai bhanera display garna ko lagi (ani overall comments chai paxi xuttai overlay maa dekhauney) */}
+                    <div className={`transition-all duration-300 overflow-hidden ease-in-out ${showCommentBox.find(p => p.postId === post._id).display?'opacity-100 max-h-screen flex flex-col':'opacity-0 max-h-0'}`}>
                       
-                    >
-                      Comment
-                    </button>
+                      {showCommentBox.find(p => p.postId === post._id).display.map((d, index) => 
+                        <div key={index} className='flex mt-4'>
+                          <Link className='mt-2 shrink-0' to={'/myprofile'}>
+                            <img src={`/api/get-pfp?id=${d.pfp}`} alt="profile" className="w-8 h-8 rounded-full object-cover"/>
+                          </Link>
+                          <div className='ml-2'>
+                              <div className='bg-gray-100 p-2 rounded-xl'>
+                                <div className='flex gap-2 items-center'>
+                                  <Link to={'/myprofile'} className='text-gray-800 font-semibold text-sm'>
+                                    {d.username}
+                                  </Link>
+                                  <div className='text-gray-600 text-xs'>
+                                    {d.role}
+                                  </div>
+                                </div>
+                                <div className='text-gray-800 break-all whitespace-normal'>
+                                  {d.comment}
+                                </div>
+                              </div>
+                            <div className='flex items-center gap-4 ml-2 text-gray-600 text-xs'>
+                              {formatTimeAgo(d.created)} ago
+                            </div>                      
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Comment Input Section */}
+                    <div className='mt-4 flex flex-col gap-2'>
+                      <div className='flex'>
+                        <textarea
+                          onChange={(e) => 
+                            setShowCommentBox((prev) => 
+                              prev.map((p) => p.postId===post._id? {...p, content: e.target.value} : {...p}
+                              ))
+                          }
+                          value={showCommentBox.find(obj => obj.postId===post._id).content}
+                          placeholder="Add a comment..."
+                          className='flex-1 transition-all duration-300 p-2 border rounded-lg bg-gray-100 focus:m-1 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:ring-offset-1
+                                    resize-none overflow-auto leading-6'
+                          rows='2'
+                        />
+                      </div>
+                      <button
+                        disabled={!showCommentBox.find(obj => obj.postId===post._id).content.trim()}
+                        onClick={() => handleNewComment(post)}
+                        className="transition-all duration-300
+                        mr-auto bg-cyan-600 text-white px-4 py-2 rounded-lg disabled:bg-gray-400
+                        hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:ring-offset-2 focus:ml-1 focus:mb-1 focus:mt-1"
+                        
+                      >
+                        Comment
+                      </button>
+                    </div>
                   </div>
 
                   {/* like overlay*/}
                   {showLikeOverlay.find(obj => obj.postId===post._id).value && (
                     /* like overlay background*/
                     <div onClick={closeLikeOverlay}
-                          className='fixed top-0 left-0 right-0 bottom-0 inset-0 z-60
+                          className='fixed inset-0 z-50
                                     flex items-center justify-center
                                     bg-black bg-opacity-50'
                     >
@@ -579,6 +649,29 @@ const HomePage = () => {
             )}
           </div>
         </div>
+
+        {/* Comment Overlay */}
+        {showCommentOverlay &&
+          (<div className='fixed inset-0 z-50
+                        flex items-center justify-center
+                        bg-black bg-opacity-50'      
+                        onClick={closeCommentOverlay}
+          >
+            <div onClick={(e) => e.stopPropagation()} 
+                className='relative bg-white w-[50%] h-[50%] rounded-lg shadow-2xl'
+            >
+              <button onClick={closeCommentOverlay} className='absolute top-2 right-2 p-2 rounded-full hover:bg-gray-200 transition-all duration-300'>
+                <svg width='24' height='24' viewBox='0 0 24 24'
+                  className='stroke-gray-600 fill-none'
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+                </svg>
+              </button>
+              <ShowComments postId={showCommentOverlay}/>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );
