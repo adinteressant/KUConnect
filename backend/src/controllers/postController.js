@@ -31,6 +31,7 @@ export const createPost = async (req, res) => {
     // Create a new post using the provided data
     const newPost = new Post({
       pfp_id: userInfo.pfp_id || 0,
+      role: userInfo.role,
       userId: userInfo.user_id,
       username: userInfo.username,
       email: userInfo.email, // Store email

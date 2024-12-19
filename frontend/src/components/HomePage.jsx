@@ -416,24 +416,31 @@ const HomePage = () => {
                     post.isUpdating ? 'scale-105' : 'scale-100'
                   }`}
                 >
-                <div className='flex gap-2 items-center'>
+                <div className='flex gap-2 items-end'>
                   <Link to={post.username === userProfile.username?'/myprofile':`/${post.username}`}>
-                    <img src={`/api/get-pfp?id=${post.pfp_id}`} className="h-8 w-8 rounded-full object-cover"/>
+                    <img src={`/api/get-pfp?id=${post.pfp_id}`} className="h-9 w-9 rounded-full object-cover"/>
                   </Link>
                   <div>
                     <Link to={post.username === userProfile.username?'/myprofile':`/${post.username}`} 
-                              className="text-gray-800 font-semibold">
-                                {post.username}
+                      className="text-gray-800 font-semibold">
+                      {post.username}
                     </Link>
-                    <div className="text-gray-600 text-sm">
-                      {new Date(post.createdAt).toLocaleDateString('en-US', { 
-                        day: '2-digit', 
-                        month: 'long', 
-                        year: 'numeric' 
-                      })}, {new Date(post.createdAt).toLocaleTimeString([], { 
-                        hour: '2-digit', 
-                        minute: '2-digit' 
-                      })}
+                    <div className='flex gap-1 items-center text-gray-600 text-xs'>
+                      <div>
+                        {post.role.charAt(0).toUpperCase() + post.role.slice(1)}
+                      </div>
+                      &#183;
+                      <div>
+                        {formatTimeAgo(post.createdAt)} ago
+                        {/*new Date(post.createdAt).toLocaleDateString('en-US', { 
+                          day: '2-digit', 
+                          month: 'long', 
+                          year: 'numeric' 
+                        })}, {new Date(post.createdAt).toLocaleTimeString([], { 
+                          hour: '2-digit', 
+                          minute: '2-digit' 
+                        })*/}
+                      </div>
                     </div>
                   </div>
                 </div>
