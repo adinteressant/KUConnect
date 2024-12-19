@@ -1,5 +1,5 @@
 import express from 'express';
-import { createPost, getAllPosts, toggleLike, sharePost } from '../controllers/postController.js';
+import { createPost, getAllPosts, toggleLike, sharePost, searchPostsByTag } from '../controllers/postController.js';
 import { validatePost } from '../middlewares/postMiddleware.js';
 
 const router = express.Router();
@@ -15,5 +15,9 @@ router.post('/api/posts/:postId/toggle-like', toggleLike);
 
 // Share a post
 router.post('/api/posts/:postId/share', sharePost);
+
+//Search a post by tag
+router.get('/api/posts/search', searchPostsByTag);
+
 
 export default router;

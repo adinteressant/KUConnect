@@ -11,6 +11,7 @@ import getPictureRouter from '../routes/getPictureRoutes.js';
 import updatePictureRouter from '../routes/updatePictureRouter.js';
 import profileRouter from '../routes/profileRoute.js'
 import messageRouter from '../routes/messageRoutes.js'
+import friendRouter from '../routes/friendRoutes.js'
 
 const router = Router();
 
@@ -25,5 +26,6 @@ router.use(getPictureRouter);
 router.use(updatePictureRouter);
 router.use(profileRouter)
 router.use(messageRouter)
+router.use(friendRouter)
 
 export default router;
