@@ -550,11 +550,11 @@ const HomePage = () => {
                   </div>
 
                   {/* comment button thichda dekhauney */}
-                  <div className={`transition-all duration-1000 overflow-hidden ease-in-out ${showCommentBox.find(obj => obj.postId===post._id).value? 'opacity-100 max-h-screen mt-2' : 'opacity-0 max-h-0 mt-0'}`}>
+                  <div className={`transition-all duration-1000 overflow-y-auto ease-in-out ${showCommentBox.find(obj => obj.postId===post._id).value? 'opacity-100 max-h-screen mt-2' : 'opacity-0 max-h-0 mt-0'}`}>
                     <hr className='absolute left-0 right-0'/>
 
                     {/* Bhakhar gareko comment bhayo hai bhanera display garna ko lagi (ani overall comments chai paxi xuttai overlay maa dekhauney) */}
-                    <div className={`transition-all duration-300 overflow-hidden ease-in-out ${showCommentBox.find(p => p.postId === post._id).display?'opacity-100 max-h-screen flex flex-col':'opacity-0 max-h-0'}`}>
+                    <div className={`transition-all duration-300 ease-in-out flex flex-col`}>
                       
                       {showCommentBox.find(p => p.postId === post._id).display.map((d, index) => 
                         <div key={index} className='flex mt-4'>
@@ -568,7 +568,7 @@ const HomePage = () => {
                                     {d.username}
                                   </Link>
                                   <div className='text-gray-600 text-xs'>
-                                    {d.role}
+                                    {d.role.charAt(0).toUpperCase() + d.role.slice(1)}
                                   </div>
                                 </div>
                                 <div className='text-gray-800 break-all whitespace-normal'>
@@ -673,7 +673,7 @@ const HomePage = () => {
                         onClick={closeCommentOverlay}
           >
             <div onClick={(e) => e.stopPropagation()} 
-                className={`relative bg-white w-[50%] h-[50%] rounded-lg shadow-2xl
+                className={`relative bg-white w-[50%] h-[60%] rounded-lg shadow-2xl
                   transition-all duration-300
                   ${overlayTransitionState?'opacity-100 scale-100':'opacity-0 scale-50'}
                   `}

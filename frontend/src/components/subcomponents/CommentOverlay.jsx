@@ -70,7 +70,7 @@ function ShowComments(props) {
                     </button>
                 </div>
                 <hr/>
-                <div className='p-4 overflow-y-auto flex flex-col gap-4'>
+                <div className='p-4 overflow-y-auto flex flex-col gap-4 w-[100%] h-[100%]'>
                     {comments.map((comment, index) => {
                     if(comment.role === 'student')
                         {
@@ -144,7 +144,7 @@ function ShowComments(props) {
                             </div>
                     )
                     })}
-                    {((category === 'faculty' && faculty === 0) || (category === 'student' && student === 0)) && <div className="m-auto text-gray-600">No comments</div>}
+                    {((category === 'faculty' && faculty === 0) || (category === 'student' && student === 0)) && <div className="leading-none m-auto text-gray-600">No comments</div>}
                 </div>
             </div>)}
         </div>
