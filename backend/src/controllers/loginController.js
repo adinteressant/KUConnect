@@ -42,11 +42,16 @@ export default async function loginController(req, res) {
     res.cookie('REFRESH_TOKEN',refresh_token,{
       httpOnly:true,
     });
+
+
+      // Dear suyog, yo tala ko code prevents logging in manually
+      // dont know the fix, so I commented it lol
+
       // Store `sender_id` in the session
-      req.session.user = {
-        user_id: user.user_id,
-        username: publicInfo.username,
-      };
+      // req.session.user = {
+      //   user_id: user.user_id,
+      //   username: publicInfo.username,
+      // };
     return res.status(200).json({
       message: 'Login Successful',
       user: {
