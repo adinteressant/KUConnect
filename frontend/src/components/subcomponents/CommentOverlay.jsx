@@ -49,7 +49,7 @@ function ShowComments(props) {
                 </div>
                 <hr/>
                 <div className='p-4 overflow-y-auto flex flex-col gap-4'>
-                    {comments.map((comment) => {
+                    {comments.map((comment, index) => {
                        if(comment.role === 'student')
                         {
                             
@@ -67,7 +67,7 @@ function ShowComments(props) {
                             }
                        }
                        return (
-                            <div className='flex'>
+                            <div key={index} className='flex'>
                                 <Link className='mt-2 shrink-0' to={`/${comment.username}`}>
                                         <img src={`/api/get-pfp?id=${comment.pfp}`} alt="profile" className="w-8 h-8 rounded-full object-cover"/>
                                 </Link>
@@ -97,7 +97,7 @@ function ShowComments(props) {
                                                     <path d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/>
                                                 </svg>
                                             </button>
-                                            <button class='group'>
+                                            <button className='group'>
                                                 <svg width='18' height='18' viewBox='0 0 24 24'
                                                 className = {`transition-all duration-300 fill-none
                                                         ${false
