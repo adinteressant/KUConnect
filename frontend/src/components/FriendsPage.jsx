@@ -16,11 +16,17 @@ const FriendsPage = () => {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include', // Include cookies with requests
       })
-        .then((res) => res.json())
-        .then((data) => setFriends(data.friends || [])) // Ensure it's an array
+        .then((res) => {
+          if (!res.ok) throw new Error('Failed to fetch friends');
+          return res.json();
+        })
+        .then((data) => {
+          setFriends(data.friends || []);
+        })
         .catch((err) => {
-          console.error(err);
+          console.error('Error fetching friends:', err);
           setError('Error loading friends');
         }),
 
@@ -30,14 +36,18 @@ const FriendsPage = () => {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include', // Include cookies if necessary
       })
-        .then((res) => res.json())
+        .then((res) => {
+          if (!res.ok) throw new Error('Failed to fetch requests');
+          return res.json();
+        })
         .then((data) => {
-          setIncomingRequests(data.incoming || []); // Ensure it's an array
-          setSentRequests(data.sent || []); // Ensure it's an array
+          setIncomingRequests(data.incoming || []);
+          setSentRequests(data.sent || []);
         })
         .catch((err) => {
-          console.error(err);
+          console.error('Error fetching requests:', err);
           setError('Error loading requests');
         }),
     ])
@@ -52,7 +62,10 @@ const FriendsPage = () => {
       },
       body: JSON.stringify({ requestId }),
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) throw new Error('Failed to accept request');
+        return response.json();
+      })
       .then(() => {
         setIncomingRequests((prev) => prev.filter((req) => req._id !== requestId));
         setFriends((prev) => [
@@ -71,6 +84,9 @@ const FriendsPage = () => {
       },
       body: JSON.stringify({ requestId }),
     })
+      .then((response) => {
+        if (!response.ok) throw new Error('Failed to deny request');
+      })
       .then(() => {
         setIncomingRequests((prev) => prev.filter((req) => req._id !== requestId));
       })
