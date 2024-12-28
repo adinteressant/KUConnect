@@ -1,6 +1,34 @@
 import FriendRequest from '../models/friendRequest.js';
 import PublicInfo from '../models/PublicInfo.js';
 
+export const checkFriendRequestStatus = async (req, res) => {
+  const { sender_id, receiver_id } = req.body;
+
+  try {
+    // Check if there is a friend request between the two users
+    const request = await FriendRequest.findOne({
+      $or: [
+        { sender_id, receiver_id },
+        { sender_id: receiver_id, receiver_id: sender_id },
+      ],
+    });
+
+    if (request) {
+      if (request.status === 'pending') {
+        return res.status(200).json({ status: 'sent' });
+      } else if (request.status === 'accepted') {
+        return res.status(200).json({ status: 'accepted' });
+      }
+    }
+
+    // If no friend request is found
+    return res.status(200).json({ status: 'none' });
+  } catch (error) {
+    console.error('Error checking friend request status:', error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
 export const sendFriendRequest = async (req, res) => {
   const { sender_id, receiver_id } = req.body;
   try {
