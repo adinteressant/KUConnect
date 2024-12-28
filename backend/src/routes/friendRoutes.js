@@ -1,22 +1,28 @@
 import express from 'express';
-import { 
-  sendFriendRequest, 
-  getFriends, 
-  getFriendRequests, 
-  acceptFriendRequest, 
-  denyFriendRequest 
+import {
+  sendFriendRequest,
+  getFriends,
+  getIncomingFriendRequests,
+  getSentFriendRequests,
+  acceptFriendRequest,
+  denyFriendRequest,
 } from '../controllers/friendsController.js';
-
+import getProfileByUserId from '../middlewares/friendMiddleware.js';
 import authenticateJWT from '../middlewares/authenticateJWT.js';
 
 const router = express.Router();
 
 // Route to send a friend request
-router.post('/api/add-friend', authenticateJWT, sendFriendRequest);
+router.post('/api/add-friend', sendFriendRequest);
 
-// Route to fetch friends, incoming, and sent requests
-router.get('/api/view-friends', authenticateJWT, getFriends);
-router.get('/api/view-requests', authenticateJWT, getFriendRequests);
+// Route to fetch friends
+router.get('/api/view-friends', authenticateJWT, getProfileByUserId, getFriends);
+
+// Route to fetch incoming friend requests with usernames
+router.get('/api/view-incoming-requests',authenticateJWT, getProfileByUserId, getIncomingFriendRequests);
+
+// Route to fetch sent friend requests with usernames
+router.get('/api/view-sent-requests',authenticateJWT, getProfileByUserId, getSentFriendRequests);
 
 // Route to accept a friend request
 router.post('/api/accept-request', authenticateJWT, acceptFriendRequest);
