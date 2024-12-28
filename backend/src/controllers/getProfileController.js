@@ -1,11 +1,12 @@
 const getProfileController = (req,res)=>{
   
-  const {info:{role, pfp_id}} = req
+  const {info:{role, user_id, pfp_id}} = req
 
   res.json({
     role:role,
     pfp_id: pfp_id,
-    msg:'success'
+    msg:'success',
+    user_id: user_id,
   })
 }
 

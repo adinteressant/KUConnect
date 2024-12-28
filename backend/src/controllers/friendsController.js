@@ -2,8 +2,7 @@ import FriendRequest from '../models/friendRequest.js';
 import PublicInfo from '../models/PublicInfo.js';
 
 export const sendFriendRequest = async (req, res) => {
-  const { receiver_id } = req.body;
-  const sender_id = req.session?.user?.user_id;
+  const { sender_id, receiver_id } = req.body;
   try {
     const existingRequest = await FriendRequest.findOne({ sender_id, receiver_id });
     if (existingRequest) {

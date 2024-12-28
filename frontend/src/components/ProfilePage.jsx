@@ -1,5 +1,6 @@
-import { useEffect,useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
 
 export default function ProfilePage() {
   const { username } = useParams();
@@ -8,35 +9,63 @@ export default function ProfilePage() {
     role: '',
     user_id: '',
   });
+  const [userProfile, setUserProfile] = useState({});
   const [isFriendRequestSent, setIsFriendRequestSent] = useState(false);
 
   useEffect(() => {
-    fetch(`/api/get-profile?username=${username}`)
-      .then((response) => response.json())
+    // Fetch profile data
+    fetch(`/api/get-profile?username=${username}`, {
+      credentials: 'same-origin',
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Error fetching profile: ${response.statusText}`);
+        }
+        return response.json();
+      })
       .then((data) => setProfileData(data))
-      .catch((e) => {
-        console.log(e);
+      .catch((error) => {
+        console.error('Error fetching profile data:', error);
       });
   }, [username]);
 
+  useEffect(() => {
+    // Fetch user profile
+    (async () => {
+      try {
+        const response = await axios.get('/api/get-user-profile/', {
+          withCredentials: true,
+        });
+        if (response.data) {
+          setUserProfile(response.data);
+        }
+      } catch (error) {
+        console.error('Error fetching user profile:', error);
+      }
+    })();
+  }, []);
+
   const handleAddFriend = () => {
     const receiver_id = profileData.user_id;
+    const sender_id = userProfile.user_id;
 
-    fetch('/api/send-request', {
+    fetch('/api/add-friend', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ receiver_id, 
-        credentials: 'same-origin'
-      }),
+      credentials: 'same-origin', // Ensure cookies are sent for authentication
+      body: JSON.stringify({ sender_id, receiver_id }),
     })
       .then((response) => {
+        console.log('Sender ID:', userProfile.user_id);
+console.log('Receiver ID:', profileData.user_id);
+
         if (response.ok) {
           setIsFriendRequestSent(true);
         } else {
           return response.json().then((data) => {
-            throw new Error(data.message);
+            throw new Error(data.message || 'Failed to send friend request');
           });
         }
       })
@@ -64,7 +93,7 @@ export default function ProfilePage() {
             <span className="text-gray-500">No Profile Picture</span>
           )}
         </div>
-        
+
         {/* Rest of the profile content */}
         <div className="text-center mt-4">
           <h1 className="text-3xl font-serif font-bold text-gray-800">
