@@ -98,3 +98,15 @@ export const getUsersWithMessageController = async(req,res) => {
     res.status(500).json({error:'error in get users with messages'})
   }
 }
+
+export const changeStatus = async (req,res) => {
+  const { receiverId } = req.params
+  const { senderId } = req
+  console.log(receiverId,senderId)
+ 
+  await Message.updateMany(
+    { senderId: receiverId, receiverId: senderId, read: false }, // Find unread conversations
+    { $set: { read: true } } // Update the 'read' field to true
+  )
+  res.send('success')
+}

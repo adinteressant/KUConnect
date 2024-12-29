@@ -6,6 +6,22 @@ export default function Conversations(){
   const  {loading,conversations} = useGetConversations()
   const {selectedConversation,setSelectedConversation} = useConversation()
 
+  const changeMessageStatus = (id) => {
+    fetch(`/api/change-message-status/${id}`,{
+      method:'PATCH',
+      headers:{
+        'Content-Type':'application/json',
+      }
+    })
+    .then(response => response.json)
+    .then(data =>{
+      console.log(data)
+    })
+    .catch((e) => {
+      console.log(e)
+    })
+  }
+
   return <div className="flex flex-col gap-4 mt-5">
 
     {
@@ -18,6 +34,7 @@ export default function Conversations(){
         `}
         onClick={()=>{
             setSelectedConversation(conversation)
+            changeMessageStatus(conversation._id)
         }}
         >
             {conversation.username}

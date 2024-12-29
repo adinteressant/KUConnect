@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { sendMessageController } from '../controllers/messageController.js'
+import { changeStatus, sendMessageController } from '../controllers/messageController.js'
 import { messageMiddleware } from '../middlewares/messageMiddleware.js'
 import authenticateJWT from '../middlewares/authenticateJWT.js'
 import { getMessageController } from '../controllers/messageController.js'
@@ -12,5 +12,7 @@ router.post('/api/message/send/:receiverId',authenticateJWT,messageMiddleware,se
 router.get('/api/message/:receiverId',authenticateJWT,messageMiddleware,getMessageController)
 
 router.get('/api/users-message',authenticateJWT,messageMiddleware,getUsersWithMessageController)
+
+router.patch('/api/change-message-status/:receiverId',authenticateJWT,messageMiddleware,changeStatus)
 
 export default router
