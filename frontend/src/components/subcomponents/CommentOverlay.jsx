@@ -42,14 +42,14 @@ function ShowComments(props) {
             {loading?
             (<div className='flex flex-col w-[100%] h-[100%]'>
                 <div className='p-2 flex gap-2'>
-                    {[1,2,3].map(() => (
-                        <button className={`pl-8 pr-8 pt-4 pb-4 rounded-2xl bg-gray-200 animate-pulse`}>
+                    {[1,2,3].map((_,index) => (
+                        <button key={index} className={`pl-8 pr-8 pt-4 pb-4 rounded-2xl bg-gray-200 animate-pulse`}>
                         </button>
                     ))}
                 </div>
                 <hr/>
                 <div className='p-4 overflow-hidden flex flex-col gap-8 w-[100%] h-[100%]'>
-                    {[1,2,3,4].map(() => (<div className='flex'>
+                    {[1,2,3,4].map((_,index) => (<div key={index} className='flex'>
                         <div className='mt-2 shrink-0 w-8 h-8 rounded-full object-cover bg-gray-200 animate-pulse'>
                         </div>
                         <div className='ml-2 bg-gray-200 w-[50%] h-[120%] rounded-xl animate-pulse object-cover'>
