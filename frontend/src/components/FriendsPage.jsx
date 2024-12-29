@@ -1,22 +1,44 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 const FriendsPage = () => {
-  const [friends, setFriends] = useState([]); // Default as empty array
-  const [incomingRequests, setIncomingRequests] = useState([]); // Default as empty array
-  const [sentRequests, setSentRequests] = useState([]); // Default as empty array
+  const [friends, setFriends] = useState([]);
+  const [incomingRequests, setIncomingRequests] = useState([]);
+  const [sentRequests, setSentRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [userProfile, setUserProfile] = useState({});
 
+  // Fetch user profile
   useEffect(() => {
+    (async () => {
+      try {
+        const response = await axios.get('/api/get-user-profile/', {
+          withCredentials: true,
+        });
+        if (response.data) {
+          setUserProfile(response.data);
+        }
+      } catch (error) {
+        console.error('Error fetching user profile:', error);
+      }
+    })();
+  }, []);
+
+  const user_id = userProfile.user_id;
+
+  // Fetch data after userProfile has been fetched and user_id is available
+  useEffect(() => {
+    if (!user_id) return;
+
     setLoading(true);
     Promise.all([
-      // Fetch friends
-      fetch('/api/view-friends', {
+      fetch(`/api/view-friends?user_id=${user_id}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'include', // Include cookies with requests
+        credentials: 'include',
       })
         .then((res) => {
           if (!res.ok) throw new Error('Failed to fetch friends');
@@ -30,29 +52,46 @@ const FriendsPage = () => {
           setError('Error loading friends');
         }),
 
-      // Fetch friend requests
-      fetch('/api/view-requests', {
+      fetch(`/api/view-incoming-requests?user_id=${user_id}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'include', // Include cookies if necessary
+        credentials: 'include',
       })
         .then((res) => {
-          if (!res.ok) throw new Error('Failed to fetch requests');
+          if (!res.ok) throw new Error('Failed to fetch incoming requests');
           return res.json();
         })
         .then((data) => {
           setIncomingRequests(data.incoming || []);
+        })
+        .catch((err) => {
+          console.error('Error fetching incoming requests:', err);
+          setError('Error loading incoming requests');
+        }),
+
+      fetch(`/api/view-sent-requests?user_id=${user_id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+      })
+        .then((res) => {
+          if (!res.ok) throw new Error('Failed to fetch sent requests');
+          return res.json();
+        })
+        .then((data) => {
           setSentRequests(data.sent || []);
         })
         .catch((err) => {
-          console.error('Error fetching requests:', err);
-          setError('Error loading requests');
+          console.error('Error fetching sent requests:', err);
+          setError('Error loading sent requests');
         }),
     ])
       .finally(() => setLoading(false));
-  }, []);
+  }, [user_id]);
 
   const acceptRequest = (requestId) => {
     fetch('/api/accept-request', {
@@ -108,14 +147,10 @@ const FriendsPage = () => {
         <h2 className="text-xl font-semibold">Your Friends</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
           {friends.length > 0 ? (
-            friends.map((friend) => (
-              <div key={friend.user_id} className="p-4 bg-white shadow rounded">
-                <img
-                  src={`/api/get-pfp?id=${friend.pfp_id}`}
-                  alt={friend.username}
-                  className="w-12 h-12 rounded-full"
-                />
-                <p className="text-lg font-medium">{friend.username}</p>
+            friends.map((friend, index) => (
+              <div key={friend.user_id || index} className="p-4 bg-white shadow rounded">
+                <p>{friend.username}</p>
+                <img src={`https://example.com/profile-pics/${friend.pfp_id}`} alt="Profile" />
               </div>
             ))
           ) : (
@@ -129,7 +164,7 @@ const FriendsPage = () => {
         {incomingRequests.length > 0 ? (
           incomingRequests.map((req) => (
             <div key={req._id} className="flex items-center justify-between p-4 bg-gray-100 rounded mb-2">
-              <p>{req.sender_id}</p>
+              <p>{req.sender_username}</p>
               <div className="flex">
                 <button
                   onClick={() => acceptRequest(req._id)}
@@ -156,7 +191,7 @@ const FriendsPage = () => {
         {sentRequests.length > 0 ? (
           sentRequests.map((req) => (
             <div key={req._id} className="p-4 bg-gray-100 rounded mb-2">
-              <p>{req.receiver_id}</p>
+              <p>{req.receiver_username}</p>
             </div>
           ))
         ) : (
