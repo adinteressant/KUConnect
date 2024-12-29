@@ -75,7 +75,6 @@ const HomePage = () => {
       .then((response) => response.json())
       .then((data) => {
         setLikedPosts(() => data.likedPosts)
-        console.log(data.likedPosts)
       })
       .catch((e) => {
         console.error('Error fetching liked posts:', e);
