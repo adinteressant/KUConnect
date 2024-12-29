@@ -1,7 +1,10 @@
 import express from 'express'
-import { toggleLike, getLikes } from '../controllers/likeController.js'
+import { toggleLike, getLikes, userLikedPosts } from '../controllers/likeController.js'
 
 const router = express.Router()
+
+// Get user liked posts data
+router.get('/api/users/:userId/get-user-liked-posts-data', userLikedPosts)
 
 // Toggle like on a post
 router.post('/api/posts/:postId/users/:userId/toggle-like', toggleLike)

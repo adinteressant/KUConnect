@@ -2,6 +2,24 @@ import Post from "../models/Post.js";
 import Like from "../models/like.js";
 import PublicInfo from "../models/PublicInfo.js";
 
+//Get user liked posts data
+export const userLikedPosts = async (req, res) => {
+    const userId = req.params.userId
+
+    try
+    {
+        const likedPosts = await Like.find({ userId: { $in: [userId] } }, { postId: 1 })
+        res.json({
+            likedPosts
+        })
+    }
+    catch(error)
+    {
+        console.error('Error getting liked posts')
+        res.status(500).json({ message: 'Error getting liked posts', error})
+    }
+}
+
 // Toggle like on a post
 export const toggleLike = async (req, res) => {
     const postId = req.params.postId

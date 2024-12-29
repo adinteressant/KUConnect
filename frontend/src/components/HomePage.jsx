@@ -10,11 +10,13 @@ const HomePage = () => {
   const [googleUser, setGoogleUser] = useState('');
   const [userProfile, setUserProfile] = useState({});
   const [posts, setPosts] = useState([]);
+  const [likedPosts, setLikedPosts] = useState([])
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [showTags, setShowTags] = useState(false);
   const [tagValue, setTagValue] = useState('');
   const [tagList, setTagList] = useState([]);
-  const [showCommentBox, setShowCommentBox] = useState([]);
+  const [liked, setLiked] = useState('false')
+  const [showCommentBox, setShowCommentBox] = useState([])
   const [showCommentOverlay, setShowCommentOverlay] = useState('')
   const [overlayTransitionState, setOverlayTransitionState] = useState(false)
   const [isTextareaFocused, setIsTextareaFocused] = useState(false);
@@ -66,6 +68,19 @@ const HomePage = () => {
         console.error('Error fetching posts:', e);
       }); ///AHHHHHHHHHHHH WHERE IS MY COMMENT, I HATE AI
   }, []);
+
+  //Fetch user liked posts data
+  useEffect(() => {
+    fetch(`/api/users/${userProfile.user_id}/get-user-liked-posts-data`)
+      .then((response) => response.json())
+      .then((data) => {
+        setLikedPosts(() => data.likedPosts)
+        console.log(data.likedPosts)
+      })
+      .catch((e) => {
+        console.error('Error fetching liked posts:', e);
+      });
+  }, [userProfile, liked])
 
   useEffect(() => {
     const options = {
@@ -164,6 +179,8 @@ const HomePage = () => {
       const updatedPost = await response.json()
       if(response.ok)
       {
+        setLiked((prev) => !prev)
+
         setPosts((prevPosts) => 
           prevPosts.map((p) =>
             p._id === updatedPost.post._id ? { ...updatedPost.post, isUpdating: true } : p
@@ -190,7 +207,7 @@ const HomePage = () => {
   }
 
   const isLiked = (post) => {
-    return true
+    return likedPosts.some((p) => p.postId === post._id)
   }
 
   const isInfoDisplayed = (post) => {
