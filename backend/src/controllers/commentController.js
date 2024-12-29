@@ -1,6 +1,5 @@
 import Post from '../models/Post.js';
 import PublicInfo from '../models/PublicInfo.js';
-import comment from '../models/comment.js';
 import Comment from '../models/comment.js';
 
 // Add a comment to a post

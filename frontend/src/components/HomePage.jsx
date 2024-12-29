@@ -14,7 +14,6 @@ const HomePage = () => {
   const [showTags, setShowTags] = useState(false);
   const [tagValue, setTagValue] = useState('');
   const [tagList, setTagList] = useState([]);
-  const [showLikeOverlay, setShowLikeOverlay] = useState([]);
   const [showCommentBox, setShowCommentBox] = useState([]);
   const [showCommentOverlay, setShowCommentOverlay] = useState('')
   const [overlayTransitionState, setOverlayTransitionState] = useState(false)
@@ -62,7 +61,6 @@ const HomePage = () => {
         setPosts(data);
         setFilteredPosts(data);
         createArrayForCommentBox(data);
-        createArrayForLikeOverlay(data);
       })
       .catch((e) => {
         console.error('Error fetching posts:', e);
@@ -117,7 +115,6 @@ const HomePage = () => {
             setTagList([]);
             setPosts([data.post, ...posts]);
             setShowCommentBox([...showCommentBox, {postId: data.post._id, value:false, content: '', display:[]} ]);
-            setShowLikeOverlay([...showLikeOverlay, {postId: data.post._id, value:false}]);
             console.log('Post submitted:', data.post);
           }
         })
@@ -160,15 +157,8 @@ const HomePage = () => {
     }
     
     try {
-      const response = await fetch(`/api/posts/${post._id.toString()}/toggle-like`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          userId: (userProfile.user_id || googleUser.user_id),
-          username: (userProfile.username || googleUser.username)
-        })
+      const response = await fetch(`/api/posts/${post._id.toString()}/users/${userProfile.user_id.toString()}/toggle-like`, {
+        method: 'POST'
       })
 
       const updatedPost = await response.json()
@@ -200,37 +190,11 @@ const HomePage = () => {
   }
 
   const isLiked = (post) => {
-    return post.likes.some((like) => like && (like.userId === (userProfile.user_id || googleUser.user_id)))
+    return true
   }
 
   const isInfoDisplayed = (post) => {
-    return (post.likes.length>0||post.comments>0||post.shares.length>0)
-  }
-
-  const createArrayForLikeOverlay = (postsArray) => {
-    const updatedArray = postsArray.map((p) => {
-      return {postId: p._id, value: false}
-    })
-    setShowLikeOverlay(() => updatedArray)
-  }
-
-  const toggleLikeOverlay = (post) => {
-    setShowLikeOverlay((prevArray) => {
-      return prevArray.map((p) => {
-        return p.postId===post._id ? {postId: p.postId, value: true} : {postId: p.postId, value: false}
-      })
-    })
-    document.body.classList.toggle('overflow-hidden', true)
-  }
-
-  const closeLikeOverlay = () =>
-  {
-    setShowLikeOverlay((prevArray) => {
-      return prevArray.map((p) => {
-        return {postId: p.postId, value: false}
-      })
-    })
-    document.body.classList.toggle('overflow-hidden', false)
+    return (post.likes>0||post.comments>0||post.shares.length>0)
   }
 
   const createArrayForCommentBox = (postsArray) => {
@@ -457,11 +421,14 @@ const HomePage = () => {
                   {/* Likes, Comments, Shares Information */}
                   <div className={`mt-6 flex items-center gap-4 transition-all duration-300 ${isInfoDisplayed(post)?'opacity-100 h-max-screen':'opacity-0 h-max-0'}`}>
                     {/* like information */}
-                      {post.likes.length>0 &&
-                        <button onClick={() => toggleLikeOverlay(post)} className="text-sm text-gray-600 hover:text-cyan-600 transition-all duration-300">  
-                          {(post.likes.length<3
-                            ? `Liked by ${post.likes.map(user => user.username).join(', ')}`
-                            : `Liked by ${post.likes.map(user => user.username).slice(-2).join(', ')} and ${post.likes.length-2} more`
+                      {post.likes>0 &&
+                        <button 
+                          //onClick={() => toggleLikeOverlay(post)} 
+                          className="text-sm text-gray-600 hover:text-cyan-600 transition-all duration-300"
+                        >  
+                          {(post.likes<3
+                            ? `Liked by ${post.recentLikes.join(' and ')}`
+                            : `Liked by ${post.recentLikes.join(', ')} and ${post.likes-2} more`
                           )}
                         </button>
                       }
@@ -612,48 +579,6 @@ const HomePage = () => {
                       </button>
                     </div>
                   </div>
-
-                  {/* like overlay*/}
-                  {showLikeOverlay.find(obj => obj.postId===post._id).value && (
-                    /* like overlay background*/
-                    <div onClick={closeLikeOverlay}
-                          className='fixed inset-0 z-50
-                                    flex items-center justify-center
-                                    bg-black bg-opacity-50'
-                    >
-                      {/* like overlay panel */}
-                      <div onClick={(e) => e.stopPropagation()} 
-                            className='bg-white w-80 h-96 rounded-lg shadow-2xl flex flex-col'
-                      >
-                        {/* view by categories */}
-                        <div className='p-2 flex'>
-                          <button className='p-2 rounded hover:bg-gray-200 transition-all duration-200'>
-                            All({post.likes.length})
-                          </button>
-                          <button className='p-2 rounded hover:bg-gray-200 transition-all duration-200'>
-                            Students
-                          </button>
-                          <button className='p-2 rounded hover:bg-gray-200 transition-all duration-200'>
-                            Faculty
-                          </button>
-                          <button onClick={closeLikeOverlay} className='ml-auto p-2 rounded-full hover:bg-gray-200 transition-all duration-200'>
-                            <svg width='24' height='24' viewBox='0 0 24 24'
-                                className='stroke-gray-600 fill-none'
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
-                              </svg>
-                          </button>
-                        </div>
-                        <hr/>
-                        {/* liked users list*/}
-                        <div className='pl-4 pr-4 pt-2 pb-2 overflow-y-auto flex flex-col gap-2'>
-                          {post.likes.map(user => <div key={user.user_id}>{user.username}</div>)}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
                 </div>
               ))
             ) : (

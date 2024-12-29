@@ -1,10 +1,5 @@
 import mongoose from 'mongoose';
 
-const likeSchema = new mongoose.Schema({
-  userId: {type: String, required: true},
-  username: {type: String, required: true}
-})
-
 const postSchema = new mongoose.Schema({
   pfp_id: { type:Number, required:true, unique:false,},
   role: { type: String, required: true, enum: ['student', 'faculty'], },
@@ -13,7 +8,8 @@ const postSchema = new mongoose.Schema({
   email: { type: String, required: true },
   content: { type: String, required: true, maxlength: 500 },
   tags: { type: [String], default: [] }, // Array of tags
-  likes: { type: [likeSchema], default: [] },
+  likes: { type: Number, default: 0 },
+  recentLikes: { type: [String], default:[] },
   shares: { type: Number, default: 0 },
   comments: { type: Number, default: 0 },
   createdAt: { type: Date, default: Date.now },
