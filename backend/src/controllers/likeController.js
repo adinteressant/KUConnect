@@ -54,10 +54,15 @@ export const toggleLike = async (req, res) => {
 
         const usernames = await PublicInfo.find(
             { user_id: { $in: like.userId.slice(-2) } },
-            { username: 1}
+            { user_id: 1, username: 1}
         ).limit(2)
 
-        post.recentLikes = usernames.map((user) => user.username)
+        post.recentLikes = like.userId.slice(-2).reverse()
+            .map((id) => {
+                const matched = usernames.find(user => user.user_id === id)
+                return matched.username
+            } 
+        )
 
         //Save the liked post
         await Promise.all([
@@ -76,12 +81,29 @@ export const toggleLike = async (req, res) => {
 };
 
 //Get all the likes for the post
-export const getLikes = () => {
+export const getLikes = async(req, res) => {
     const postId = req.params.postId
 
     try 
     {
-        console.log(postId)
+        const likes = await Like.find({ postId })
+        
+        if (!likes) {
+            return res.status(404).json({ message: 'Cannot find the likes for this post!' });
+        }
+
+        const userInfo = await PublicInfo.find({ user_id: {$in: likes[0].userId } },
+                                                { user_id: 1, username: 1, role: 1, pfp_id: 1  })
+
+        const likeArray = likes[0].userId.reverse()
+            .map((id) => {
+                const matched = userInfo.find((user) => user.user_id === id)
+                return matched
+        })
+
+        res.status(201).json({ 
+            message: 'Likes fetched sucessfully', 
+            likeArray: likeArray })
     } 
     catch(error)
     {
