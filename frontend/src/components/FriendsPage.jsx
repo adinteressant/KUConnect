@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 const FriendsPage = () => {
@@ -132,6 +133,23 @@ const FriendsPage = () => {
       .catch((err) => console.error('Error denying request:', err));
   };
 
+  const cancelRequest = (requestId) => {
+    fetch('/api/cancel-request', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ requestId }),
+    })
+      .then((response) => {
+        if (!response.ok) throw new Error('Failed to cancel request');
+      })
+      .then(() => {
+        setSentRequests((prev) => prev.filter((req) => req._id !== requestId));
+      })
+      .catch((err) => console.error('Error canceling request:', err));
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -143,13 +161,16 @@ const FriendsPage = () => {
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">Friends</h1>
+
       <div className="mb-8">
         <h2 className="text-xl font-semibold">Your Friends</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
           {friends.length > 0 ? (
-            friends.map((friend, index) => (
-              <div key={friend.user_id || index} className="p-4 bg-white shadow rounded">
-                <p>{friend.username}</p>
+            friends.map((friend) => (
+              <div key={friend._id} className="p-4 bg-white shadow rounded">
+                <Link to={`/profile/${friend.username}`}>
+                  <p>{friend.username}</p>
+                </Link>
                 <img src={`https://example.com/profile-pics/${friend.pfp_id}`} alt="Profile" />
               </div>
             ))
@@ -163,14 +184,16 @@ const FriendsPage = () => {
         <h2 className="text-xl font-semibold">Incoming Requests</h2>
         {incomingRequests.length > 0 ? (
           incomingRequests.map((req) => (
-            <div key={req._id} className="flex items-center justify-between p-4 bg-gray-100 rounded mb-2">
-              <p>{req.sender_username}</p>
+            <div key={req.sender_username} className="flex items-center justify-between p-4 bg-gray-100 rounded mb-2">
+              <Link to={`/profile/${req.sender_username}`}>
+                <p>{req.sender_username}</p>
+              </Link>
               <div className="flex">
                 <button
                   onClick={() => acceptRequest(req._id)}
                   className="bg-green-500 text-white px-4 py-2 rounded mr-2"
                 >
-                  Accept
+                  Confirm
                 </button>
                 <button
                   onClick={() => denyRequest(req._id)}
@@ -186,12 +209,20 @@ const FriendsPage = () => {
         )}
       </div>
 
-      <div>
+      <div className="mb-8">
         <h2 className="text-xl font-semibold">Sent Requests</h2>
         {sentRequests.length > 0 ? (
           sentRequests.map((req) => (
-            <div key={req._id} className="p-4 bg-gray-100 rounded mb-2">
-              <p>{req.receiver_username}</p>
+            <div key={req.receiver_username} className="flex items-center justify-between p-4 bg-gray-100 rounded mb-2">
+              <Link to={`/api/profile/${req.receiver_username}`}>
+                <p>{req.receiver_username}</p>
+              </Link>
+              <button
+                onClick={() => cancelRequest(req._id)}
+                className="bg-yellow-500 text-white px-4 py-2 rounded"
+              >
+                Cancel
+              </button>
             </div>
           ))
         ) : (
