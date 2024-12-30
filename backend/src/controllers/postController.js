@@ -1,6 +1,6 @@
 //Controller
 import Post from '../models/Post.js'; // Post model 
-
+import PrivateInfo from '../models/PrivateInfo.js';
 
 // Get all posts
 export const getAllPosts = async (req, res) => {
@@ -37,6 +37,13 @@ export const createPost = async (req, res) => {
       content,
       tags: tags || [],
     });
+    let privateProfile = [];
+
+      tags.forEach(async (element) => {
+        privateProfile =  await PrivateInfo.find( { tags :  element  }) ;
+      });    
+    console.log(privateProfile);
+
 
     // Save the post in the database
     const savedPost = await newPost.save();

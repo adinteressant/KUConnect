@@ -2,7 +2,7 @@ import {
   Home as HomeIcon, 
   MessageCircle as MessagesIcon, 
   Users as FriendsIcon, 
-  Bell as NotificationsIcon, 
+  BellDot as NotificationsIcon,
 } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 

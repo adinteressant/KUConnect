@@ -14,6 +14,7 @@ export const getUserProfileController = async (req, res) => {
       //console.log("private profile: "+ privateProfile);
       if(!privateProfile){
         return res.status(200).json({
+          unread_count:0,
           pfp_id: 1,
           tags:[],
           user_id: '',
@@ -31,6 +32,7 @@ export const getUserProfileController = async (req, res) => {
     //console.log(+' '+publicProfile.username+' '+privateProfile.email
     //  +' '+publicProfile.role)
     return res.status(200).json({
+      unread_count:privateProfile.unread_count,
       _id: privateProfile._id,
       tags: publicProfile.tags,
       pfp_id:publicProfile.pfp_id,
@@ -70,6 +72,7 @@ export const getUserProfileController = async (req, res) => {
 
     // Return a combined profile response with username, role, and email
     return res.json({
+      unread_count:privateProfile.unread_count,
       _id: privateProfile._id,
       tags: publicProfile.tags,
       pfp_id:publicProfile.pfp_id,

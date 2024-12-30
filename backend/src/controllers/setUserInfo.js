@@ -32,7 +32,8 @@ export const setUserInfo = async (req,res) => {
     user_id: userId,
     email: gmail,
     password_hash: 'password',
-    role: role
+    role: role,
+    unread_count: 0,
   })
   try{
     await privateInfo.save()
