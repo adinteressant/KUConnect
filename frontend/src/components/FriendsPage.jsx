@@ -94,13 +94,14 @@ const FriendsPage = () => {
       .finally(() => setLoading(false));
   }, [user_id]);
 
-  const acceptRequest = (requestId) => {
+  const acceptRequest = (_id) => {
     fetch('/api/accept-request', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ requestId }),
+      body: JSON.stringify({ _id }),
+      credentials: 'same-origin'
     })
       .then((response) => {
         if (!response.ok) throw new Error('Failed to accept request');

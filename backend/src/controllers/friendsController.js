@@ -47,8 +47,15 @@ export const checkFriendRequestStatus = async (req, res) => {
       ],
     });
 
+    const incomingRequest = await FriendRequest.findOne(
+      { sender_id: user2_id, receiver_id: user1_id },
+    );
+
     if (!request) {
       return res.status(200).json({ status: 'none' });
+    }
+    if(incomingRequest){
+      return res.status(200).json({ status: 'incoming' });
     }
 
     res.status(200).json({ status: request.status, sender_id: request.sender_id });

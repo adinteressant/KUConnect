@@ -45,6 +45,22 @@ export default function ProfilePage() {
     })();
   }, []);
 
+  const cancelRequest = (requestId) => {
+    fetch('/api/cancel-request', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ requestId }),
+    })
+      .then((response) => {
+        if (!response.ok) throw new Error('Failed to cancel request');
+      })
+      .then(() => {
+        setSentRequests((prev) => prev.filter((req) => req._id !== requestId));
+      })
+      .catch((err) => console.error('Error canceling request:', err));
+  };
 
   const checkRequestStatus = async (user1_id, user2_id) => {
     try {
@@ -144,7 +160,21 @@ export default function ProfilePage() {
               ) : status === 'pending' ? (
                 <p className="mt-6 text-green-600">Friend Request Sent!</p>
               ) : status === 'accepted' ? (
-                <p className="mt-6 text-green-600">You are friends!</p>
+                <p className="mt-6 text-green-600">You are already friends!</p>
+                ) : status ==='incoming' ? (
+                  <>
+                  <p className="mt-6 text-green-600">User has sent you a friend request!</p><br />
+                  <button
+                  onClick={handleAddFriend}
+                  className="mt-6 bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-blue-600 transition"
+                >
+                  Confirm Request
+                </button>
+                <button onClick={cancelRequest} 
+                className='mt-6 bg-red-500 text-white px-6 py-2 rounded-full hover:bg-red-700 transition'>
+                  Cancel Request
+                </button>
+                </>
                 ) : null
             }
 
