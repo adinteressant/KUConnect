@@ -3,13 +3,20 @@ import { Link, useOutletContext } from 'react-router-dom'
 import formatTimeAgo from '../utils/generateTimeAgo'
 import ShowComments from './subcomponents/CommentOverlay.jsx'
 import Fuse from 'fuse.js';
-
+import { useMemo } from 'react';
 const HomePage = () => {
   const [user, setUser] = useState(null);
   const [content, setContent] = useState('');
+
   const [googleUser, setGoogleUser] = useState('');
   const [userProfile, setUserProfile] = useState({});
   const [posts, setPosts] = useState([]);
+
+  const options = {
+    keys: ['content', 'username'],
+    useExtendedSearch: true,
+  }
+  const fuse = useMemo(() => new Fuse(posts, options), [posts]);
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [showTags, setShowTags] = useState(false);
   const [tagValue, setTagValue] = useState('');
@@ -69,12 +76,6 @@ const HomePage = () => {
   }, []);
 
   useEffect(() => {
-    const options = {
-      keys: ['content', 'username'],
-      useExtendedSearch: true,
-    }
-
-    const fuse = new Fuse(posts, options);
     
     const result = fuse.search(`'${searchTrait}`);
     
