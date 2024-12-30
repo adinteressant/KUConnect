@@ -81,6 +81,29 @@ export default function ProfilePage() {
     }
   };  
 
+  const acceptRequest = (_id) => {
+    fetch('/api/accept-request', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ _id }),
+      credentials: 'same-origin'
+    })
+      .then((response) => {
+        if (!response.ok) throw new Error('Failed to accept request');
+        return response.json();
+      })
+      .then(() => {
+        setIncomingRequests((prev) => prev.filter((req) => req._id !== requestId));
+        setFriends((prev) => [
+          ...prev,
+          incomingRequests.find((req) => req._id === requestId),
+        ]);
+      })
+      .catch((err) => console.error('Error accepting request:', err));
+  };
+
   useEffect(() => {
     // Check friend request status once both userProfile and profileData are loaded
     if (userProfile.user_id && profileData.user_id) {
@@ -165,7 +188,7 @@ export default function ProfilePage() {
                   <>
                   <p className="mt-6 text-green-600">User has sent you a friend request!</p><br />
                   <button
-                  onClick={handleAddFriend}
+                  onClick={acceptRequest}
                   className="mt-6 bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-blue-600 transition"
                 >
                   Confirm Request
