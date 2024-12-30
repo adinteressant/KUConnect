@@ -126,9 +126,7 @@ export default function ProfilePage() {
 
       fetchStatus();
     }
-  }, [userProfile, profileData]); 
-  console.log(status);
-  const handleAddFriend = () => {
+  }, [userProfile, profileData]);   const handleAddFriend = () => {
     const receiver_id = profileData.user_id;
     const sender_id = userProfile.user_id;
 

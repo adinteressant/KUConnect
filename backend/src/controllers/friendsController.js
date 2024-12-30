@@ -248,9 +248,6 @@ export const acceptFriendRequestfromProfile = async (req, res) => {
     // Mark the request as accepted
     await request.updateOne({ status: 'accepted' });
 
-    // Add to friends list if needed
-    await User.findByIdAndUpdate(receiver_id, { $addToSet: { friends: sender_id } });
-    await User.findByIdAndUpdate(sender_id, { $addToSet: { friends: receiver_id } });
 
     res.status(200).json({ message: 'Friend request accepted' });
   } catch (err) {

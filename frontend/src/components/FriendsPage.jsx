@@ -172,7 +172,6 @@ const FriendsPage = () => {
   if (error) {
     return <div>{error}</div>;
   }
-  console.log(friends)
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">Friends</h1>
