@@ -168,7 +168,7 @@ const FriendsPage = () => {
           {friends.length > 0 ? (
             friends.map((friend) => (
               <div key={friend._id} className="p-4 bg-white shadow rounded">
-                <Link to={`/profile/${friend.username}`}>
+                <Link to={`/${friend.username}`}>
                   <p>{friend.username}</p>
                 </Link>
                 <img src={`https://example.com/profile-pics/${friend.pfp_id}`} alt="Profile" />
@@ -185,7 +185,7 @@ const FriendsPage = () => {
         {incomingRequests.length > 0 ? (
           incomingRequests.map((req) => (
             <div key={req.sender_username} className="flex items-center justify-between p-4 bg-gray-100 rounded mb-2">
-              <Link to={`/profile/${req.sender_username}`}>
+              <Link to={`/${req.sender_username}`}>
                 <p>{req.sender_username}</p>
               </Link>
               <div className="flex">
@@ -214,7 +214,7 @@ const FriendsPage = () => {
         {sentRequests.length > 0 ? (
           sentRequests.map((req) => (
             <div key={req.receiver_username} className="flex items-center justify-between p-4 bg-gray-100 rounded mb-2">
-              <Link to={`/api/profile/${req.receiver_username}`}>
+              <Link to={`/${req.receiver_username}`}>
                 <p>{req.receiver_username}</p>
               </Link>
               <button

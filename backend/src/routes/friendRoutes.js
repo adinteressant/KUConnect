@@ -16,6 +16,7 @@ const router = express.Router();
 
 //Route to check friend request status
 router.get('/api/check-status', authenticateJWT, checkFriendRequestStatus);
+
 // Route to send a friend request
 router.post('/api/add-friend', authenticateJWT, sendFriendRequest);
 
