@@ -10,7 +10,7 @@ export default function ProfilePage() {
     user_id: '',
   });
   const [userProfile, setUserProfile] = useState({});
-  const [isFriendRequestSent, setIsFriendRequestSent] = useState(false);
+  const [status, setStatus] = useState('none');
 
   useEffect(() => {
     // Fetch profile data
@@ -45,6 +45,54 @@ export default function ProfilePage() {
     })();
   }, []);
 
+  const cancelRequest = (requestId) => {
+    fetch('/api/cancel-request', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ requestId }),
+    })
+      .then((response) => {
+        if (!response.ok) throw new Error('Failed to cancel request');
+      })
+      .then(() => {
+        setSentRequests((prev) => prev.filter((req) => req._id !== requestId));
+      })
+      .catch((err) => console.error('Error canceling request:', err));
+  };
+
+  const checkRequestStatus = async (user1_id, user2_id) => {
+    try {
+      const response = await fetch(`/api/check-status?user1_id=${user1_id}&user2_id=${user2_id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+      });
+  
+      if (!response.ok) throw new Error('Failed to check request status');
+      const data = await response.json();
+      return data.status; // 'pending', 'accepted', 'none', etc.
+    } catch (error) {
+      console.error('Error checking request status:', error);
+      return 'error'; // Handle error case
+    }
+  };  
+
+  useEffect(() => {
+    // Check friend request status once both userProfile and profileData are loaded
+    if (userProfile.user_id && profileData.user_id) {
+      const fetchStatus = async () => {
+        const requestStatus = await checkRequestStatus(userProfile.user_id, profileData.user_id);
+        setStatus(requestStatus);
+      };
+
+      fetchStatus();
+    }
+  }, [userProfile, profileData]); 
+  console.log(status);
   const handleAddFriend = () => {
     const receiver_id = profileData.user_id;
     const sender_id = userProfile.user_id;
@@ -59,10 +107,10 @@ export default function ProfilePage() {
     })
       .then((response) => {
         console.log('Sender ID:', userProfile.user_id);
-console.log('Receiver ID:', profileData.user_id);
+        console.log('Receiver ID:', profileData.user_id);
 
         if (response.ok) {
-          setIsFriendRequestSent(true);
+          setStatus('pending');
         } else {
           return response.json().then((data) => {
             throw new Error(data.message || 'Failed to send friend request');
@@ -102,16 +150,34 @@ console.log('Receiver ID:', profileData.user_id);
           <h2 className="text-2xl font-serif font-semibold">Role: {profileData.role}</h2>
 
           {/* Add Friend button */}
-          {!isFriendRequestSent ? (
-            <button
-              onClick={handleAddFriend}
-              className="mt-6 bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-blue-600 transition"
-            >
-              Add Friend
-            </button>
-          ) : (
-            <p className="mt-6 text-green-600">Friend Request Sent!</p>
-          )}
+          {status === 'none' ? (
+                <button
+                  onClick={handleAddFriend}
+                  className="mt-6 bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-blue-600 transition"
+                >
+                  Add Friend
+                </button>
+              ) : status === 'pending' ? (
+                <p className="mt-6 text-green-600">Friend Request Sent!</p>
+              ) : status === 'accepted' ? (
+                <p className="mt-6 text-green-600">You are already friends!</p>
+                ) : status ==='incoming' ? (
+                  <>
+                  <p className="mt-6 text-green-600">User has sent you a friend request!</p><br />
+                  <button
+                  onClick={handleAddFriend}
+                  className="mt-6 bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-blue-600 transition"
+                >
+                  Confirm Request
+                </button>
+                <button onClick={cancelRequest} 
+                className='mt-6 bg-red-500 text-white px-6 py-2 rounded-full hover:bg-red-700 transition'>
+                  Cancel Request
+                </button>
+                </>
+                ) : null
+            }
+
         </div>
       </div>
     </div>
