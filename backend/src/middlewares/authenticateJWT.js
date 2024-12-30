@@ -15,7 +15,7 @@ const authenticateJWT = async (req, res, next) => {
       }
       return next()
     }
-    console.log('control reached here jwt')
+    // console.log('control reached here jwt')
     jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decoded) => {
       if (err) {
         // Handle token expiration

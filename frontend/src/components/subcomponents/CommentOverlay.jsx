@@ -4,40 +4,62 @@ import formatTimeAgo from "../../utils/generateTimeAgo.js"
 
 function ShowComments(props) {
 
-        const [comments, setComments] = useState([])
-        const [category, setCategory] = useState('all')
-        const [student, setStudent] = useState(0)
-        const [faculty, setFaculty] = useState(0)
+    const [comments, setComments] = useState([])
+    const [category, setCategory] = useState('all')
+    const [student, setStudent] = useState(0)
+    const [faculty, setFaculty] = useState(0)
+    const [loading, setLoading] = useState(true)
 
-        useEffect(() => {
-            fetch(`/api/posts/${props.postId}/get-comments`)
-            .then(response => response.json())
-            .then(data => {
-                setComments(() => data.commentArray)
-                let s=0,f=0
-                data.commentArray.forEach((comment) => {
-                    if(comment.role === 'student')
-                    {
-                        s++
-                    }
-                    if(comment.role === 'faculty')
-                    {
-                        f++
-                    }
-                })
-                setStudent(() => s)
-                setFaculty(() => f)
+    useEffect(() => {
+        setLoading(() => true)
+        fetch(`/api/posts/${props.postId}/get-comments`)
+        .then(response => response.json())
+        .then(data => {
+            setComments(() => data.commentArray)
+            let s=0,f=0
+            data.commentArray.forEach((comment) => {
+                if(comment.role === 'student')
+                {
+                    s++
+                }
+                if(comment.role === 'faculty')
+                {
+                    f++
+                }
             })
-            .catch((error) =>
-            {
-                console.error('Error getting comments: ', error)
-            })
-        }, [])
+            setStudent(() => s)
+            setFaculty(() => f)
+            setLoading(() => false)
+        })
+        .catch((error) =>
+        {
+            console.error('Error getting comments: ', error)
+        })
+    }, [])
 
-        return(
-            <div className = 'flex flex-col w-[100%] h-[100%]'>
+    return(
+        <div className = 'flex flex-col w-[100%] h-[100%]'>
+            {loading?
+            (<div className='flex flex-col w-[100%] h-[100%]'>
                 <div className='p-2 flex gap-2'>
-                    <button onClick={() => setCategory(() => 'all')} className={`p-2 rounded hover:bg-gray-100 transition-all duration-300 ${category==='all'?'bg-gray-200':'bg-none'}`}>
+                    {[1,2,3].map((_,index) => (
+                        <button key={index} className={`pl-8 pr-8 pt-4 pb-4 rounded-2xl bg-gray-200 animate-pulse`}>
+                        </button>
+                    ))}
+                </div>
+                <hr/>
+                <div className='p-4 overflow-hidden flex flex-col gap-8 w-[100%] h-[100%]'>
+                    {[1,2,3,4].map((_,index) => (<div key={index} className='flex'>
+                        <div className='mt-2 shrink-0 w-8 h-8 rounded-full object-cover bg-gray-200 animate-pulse'>
+                        </div>
+                        <div className='ml-2 bg-gray-200 w-[50%] h-[120%] rounded-xl animate-pulse object-cover'>
+                        </div>
+                    </div>))}
+                </div>
+            </div>):
+            (<div className='flex flex-col w-[100%] h-[100%]'>
+                <div className='p-2 flex gap-2'>
+                    <button onClick={() => setCategory(() => 'all')} className={`p-2 rounded hover:bg-gray-100 transition-bg duration-300 ${category==='all'?'bg-gray-200':'bg-none'}`}>
                     All({student+faculty})
                     </button>
                     <button onClick={() => setCategory(() => 'student')} className={`p-2 rounded hover:bg-gray-100 transition-all duration-300 ${category==='student'?'bg-gray-200':'bg-none'}`}>
@@ -48,9 +70,9 @@ function ShowComments(props) {
                     </button>
                 </div>
                 <hr/>
-                <div className='p-4 overflow-y-auto flex flex-col gap-4'>
-                    {comments.map((comment) => {
-                       if(comment.role === 'student')
+                <div className='p-4 overflow-y-auto flex flex-col gap-4 w-[100%] h-[100%]'>
+                    {comments.map((comment, index) => {
+                    if(comment.role === 'student')
                         {
                             
                             if(category === 'faculty')
@@ -58,16 +80,16 @@ function ShowComments(props) {
                                 return;
                             }
                         }
-                       if(comment.role === 'faculty')
-                       {
+                    if(comment.role === 'faculty')
+                    {
                             
                             if(category === 'student')
                             {
                                 return;
                             }
-                       }
-                       return (
-                            <div className='flex'>
+                    }
+                    return (
+                            <div key={index} className='flex'>
                                 <Link className='mt-2 shrink-0' to={`/${comment.username}`}>
                                         <img src={`/api/get-pfp?id=${comment.pfp}`} alt="profile" className="w-8 h-8 rounded-full object-cover"/>
                                 </Link>
@@ -97,7 +119,7 @@ function ShowComments(props) {
                                                     <path d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/>
                                                 </svg>
                                             </button>
-                                            <button class='group'>
+                                            <button className='group'>
                                                 <svg width='18' height='18' viewBox='0 0 24 24'
                                                 className = {`transition-all duration-300 fill-none
                                                         ${false
@@ -120,11 +142,13 @@ function ShowComments(props) {
                                     </div>
                                 </div>
                             </div>
-                       )
+                    )
                     })}
+                    {((category === 'faculty' && faculty === 0) || (category === 'student' && student === 0)) && <div className="leading-none m-auto text-gray-600">No comments</div>}
                 </div>
-            </div>
-        );
+            </div>)}
+        </div>
+    );
 }
 
 export default ShowComments

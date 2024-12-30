@@ -10,6 +10,7 @@ export default function ProfilePage() {
     user_id: '',
   });
   const [userProfile, setUserProfile] = useState({});
+    const [incomingRequests, setIncomingRequests] = useState([]);
   const [status, setStatus] = useState('none');
 
   useEffect(() => {
@@ -45,22 +46,56 @@ export default function ProfilePage() {
     })();
   }, []);
 
-  const cancelRequest = (requestId) => {
-    fetch('/api/cancel-request', {
+  const confirmRequest = () => {
+    const receiver_id = userProfile.user_id;
+    const sender_id = profileData.user_id; 
+  
+    fetch('/api/confirm-request', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ requestId }),
+      body: JSON.stringify({ sender_id, receiver_id }),
+      credentials: 'same-origin',
     })
       .then((response) => {
-        if (!response.ok) throw new Error('Failed to cancel request');
+        if (!response.ok) throw new Error('Failed to accept request');
+        return response.json();
       })
       .then(() => {
-        setSentRequests((prev) => prev.filter((req) => req._id !== requestId));
+        setStatus('accepted');
+        setIncomingRequests((prev) =>
+          prev.filter((req) => req.sender_id !== sender_id)
+        );
       })
-      .catch((err) => console.error('Error canceling request:', err));
+      .catch((err) => console.error('Error accepting request:', err));
   };
+  
+  const rejectRequest = () => {
+    const receiver_id = userProfile.user_id;
+    const sender_id = profileData.user_id;
+  
+    fetch('/api/reject-request', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ sender_id, receiver_id }),
+      credentials: 'same-origin',
+    })
+      .then((response) => {
+        if (!response.ok) throw new Error('Failed to deny request');
+        return response.json();
+      })
+      .then(() => {
+        setStatus('none');
+        setIncomingRequests((prev) =>
+          prev.filter((req) => req.sender_id !== sender_id)
+        );
+      })
+      .catch((err) => console.error('Error denying request:', err));
+  };
+  
 
   const checkRequestStatus = async (user1_id, user2_id) => {
     try {
@@ -165,12 +200,12 @@ export default function ProfilePage() {
                   <>
                   <p className="mt-6 text-green-600">User has sent you a friend request!</p><br />
                   <button
-                  onClick={handleAddFriend}
+                  onClick={confirmRequest}
                   className="mt-6 bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-blue-600 transition"
                 >
                   Confirm Request
                 </button>
-                <button onClick={cancelRequest} 
+                <button onClick={rejectRequest} 
                 className='mt-6 bg-red-500 text-white px-6 py-2 rounded-full hover:bg-red-700 transition'>
                   Cancel Request
                 </button>

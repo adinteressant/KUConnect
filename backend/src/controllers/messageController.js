@@ -104,9 +104,32 @@ export const changeStatus = async (req,res) => {
   const { senderId } = req
   console.log(receiverId,senderId)
  
-  await Message.updateMany(
-    { senderId: receiverId, receiverId: senderId, read: false }, // Find unread conversations
-    { $set: { read: true } } // Update the 'read' field to true
-  )
+  try{
+    await Message.updateMany(
+      { senderId: receiverId, receiverId: senderId, read: false }, // Find unread conversations
+      { $set: { read: true } } // Update the 'read' field to true
+    )
+  }
+  catch(e){
+    console.log(e)
+  }
+  
   res.send('success')
+}
+
+export const getStatus = async (req,res) => {
+  const { senderId } = req
+
+  let newMessages;
+  try{
+    newMessages = await Message.find(
+      { receiverId: senderId, read: false }
+    )
+  }
+  catch(e){
+    console.log(e)
+    return res.status(500).json({error:'error getting number of new messages'})
+  }
+
+  return res.status(200).json({newMessages:newMessages})
 }

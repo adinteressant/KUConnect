@@ -2,6 +2,7 @@ import PrivateInfo from '../models/PrivateInfo.js'
 import PublicInfo from '../models/PublicInfo.js'
 import { v4 as uuidv4 } from 'uuid'
 import { KU_DOMAIN } from '../constants.js'
+import { hashPassword } from '../utils/hashPassword.js'
 
 export const setUserInfo = async (req,res) => {
   console.log('set user info')
