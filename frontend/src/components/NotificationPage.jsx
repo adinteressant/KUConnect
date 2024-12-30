@@ -7,18 +7,27 @@ const NotificationPage = () => {
   const [userProfile, setUserProfile] = useState({});
   const [userPosts,setUserPosts] = useState([]);
   const [userFilteredPosts,setFilteredPosts] = useState([]);
-  
 
   useEffect(() => {
     fetch('/api/get-user-profile')
       .then((response) => response.json())
       .then((data) => {
         setUserProfile(data);
+        console.log(userProfile);
       })
       .catch((e) => {
         console.error('Error fetching user profile:', e);
       });
   }, []);
+  
+  useEffect(()=>{
+    const tags = userProfile.tags;
+    const filteredPosts = tags.map((userProfileTag)=>
+    userPosts.tags.includes(userProfileTag)
+    ) 
+    //console.log(filteredPosts);  
+    //console.log(userPosts);
+  },[userProfile])    
 
   useEffect(()=>{
     const fetchFunction = (async()=>{
@@ -27,18 +36,6 @@ const NotificationPage = () => {
     })();
   },[])
 
-  useEffect(()=>{
-    
-    const options = {
-      keys: ['tags',],
-      useExtendedSearch: true,
-    }
-
-    const fuse = new Fuse(userPosts, options);
-    
-    const result = fuse.search(`'${userProfile.tags}`);
-    console.log(userProfile);
-  },[userPosts])
 
   return (
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-full h-full max-h-full">

@@ -96,7 +96,7 @@ const myprofile = () => {
 
   async function handleTagSubmitButtom(){
       try {
-        await axios.post('/api/update-tags', { tags: usertags}, { withCredentials: true });
+        await axios.post('/api/update-tags', {tags: usertags,user_id:userprofile.user_id}, { withCredentials: true });
       } catch (error) {
         console.error('Error updating tags:', error);
         alert('Failed to update tags');

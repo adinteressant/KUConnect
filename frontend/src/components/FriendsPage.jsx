@@ -191,7 +191,7 @@ const FriendsPage = () => {
               </Link>
               <div className="flex">
                 <button
-                  onClick={() => acceptRequest(req._id)}
+                  onClick={() => {acceptRequest(req._id);}}friends
                   className="bg-green-500 text-white px-4 py-2 rounded mr-2"
                 >
                   Confirm
