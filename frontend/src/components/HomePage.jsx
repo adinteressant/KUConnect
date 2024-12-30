@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { Link, useOutletContext } from 'react-router-dom'
 import formatTimeAgo from '../utils/generateTimeAgo'
+import ShowLikes from './subcomponents/LikeOverlay.jsx'
 import ShowComments from './subcomponents/CommentOverlay.jsx'
 import Fuse from 'fuse.js';
 
@@ -16,6 +17,7 @@ const HomePage = () => {
   const [tagValue, setTagValue] = useState('');
   const [tagList, setTagList] = useState([]);
   const [liked, setLiked] = useState('false')
+  const [showLikeOverlay, setShowLikeOverlay] = useState('')
   const [showCommentBox, setShowCommentBox] = useState([])
   const [showCommentOverlay, setShowCommentOverlay] = useState('')
   const [overlayTransitionState, setOverlayTransitionState] = useState(false)
@@ -63,6 +65,7 @@ const HomePage = () => {
         setPosts(data);
         setFilteredPosts(data);
         createArrayForCommentBox(data);
+        document.body.classList.toggle('overflow-hidden', false)
       })
       .catch((e) => {
         console.error('Error fetching posts:', e);
@@ -207,6 +210,24 @@ const HomePage = () => {
 
   const isLiked = (post) => {
     return likedPosts.some((p) => p.postId === post._id)
+  }
+
+  const openLikeOverlay = (postId) =>
+  {
+    setShowLikeOverlay(() => postId)
+    document.body.classList.toggle('overflow-hidden', true)
+    setTimeout(() => {
+      setOverlayTransitionState(true)
+    }, 1)
+  }
+
+  const closeLikeOverlay = () =>
+  {
+    setTimeout(() => {
+      setShowLikeOverlay(() => '')
+    }, 300)
+    setOverlayTransitionState(false)
+    document.body.classList.toggle('overflow-hidden', false)
   }
 
   const isInfoDisplayed = (post) => {
@@ -439,7 +460,7 @@ const HomePage = () => {
                     {/* like information */}
                       {post.likes>0 &&
                         <button 
-                          //onClick={() => toggleLikeOverlay(post)} 
+                          onClick={() => openLikeOverlay(post._id)} 
                           className="text-sm text-gray-600 hover:text-cyan-600 transition-all duration-300"
                         >  
                           {(post.likes<3
@@ -605,6 +626,34 @@ const HomePage = () => {
           </div>
         </div>
 
+        {/* Like Overlay */}
+        {showLikeOverlay &&
+          (<div className={`fixed inset-0 z-50
+                        flex items-center justify-center
+                        bg-black transition-all duration-300
+                        ${overlayTransitionState?'bg-opacity-50':'bg-opacity-0'}
+                        `}      
+                        onClick={closeLikeOverlay}
+          >
+            <div onClick={(e) => e.stopPropagation()} 
+                className={`relative bg-white w-80 h-96 rounded-lg shadow-2xl
+                  transition-all duration-300
+                  ${overlayTransitionState?'opacity-100 scale-100':'opacity-0 scale-50'}
+                  `}
+            >
+              <button onClick={closeLikeOverlay} className='absolute top-2 right-2 p-2 rounded-full hover:bg-gray-200 transition-all duration-300'>
+                <svg width='24' height='24' viewBox='0 0 24 24'
+                  className='stroke-gray-600 fill-none'
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+                </svg>
+              </button>
+              <ShowLikes postId={showLikeOverlay}/>
+            </div>
+          </div>
+        )}
+
         {/* Comment Overlay */}
         {showCommentOverlay &&
           (<div className={`fixed inset-0 z-50
@@ -615,7 +664,7 @@ const HomePage = () => {
                         onClick={closeCommentOverlay}
           >
             <div onClick={(e) => e.stopPropagation()} 
-                className={`relative bg-white w-[50%] h-[60%] rounded-lg shadow-2xl
+                className={`relative bg-white min-w-80 w-[50%] h-[60%] rounded-lg shadow-2xl
                   transition-all duration-300
                   ${overlayTransitionState?'opacity-100 scale-100':'opacity-0 scale-50'}
                   `}
