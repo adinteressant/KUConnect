@@ -17,10 +17,19 @@ export default async function registerMiddleware(req,res,next){
   } 
   const data = matchedData(req)
  
-  const { username, email, password, rePassword, role } = data;
+  const { username, email, password, rePassword,  } = data;
+  let role;
   if(!email.includes(KU_DOMAIN)){
     return res.status(400).json({message:'must be a KU-domain.'})
   }
+  else {
+  if (email.endsWith('@student.ku.edu.np')) {
+    role = 'student';
+  } else if (email.endsWith('@ku.edu.np')) {
+    role = 'faculty';
+  }
+}
+
   // Check if passwords match
   if (password !== rePassword) {
     return res.status(400).json({

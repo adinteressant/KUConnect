@@ -1,10 +1,23 @@
 import PrivateInfo from '../models/PrivateInfo.js'
 import PublicInfo from '../models/PublicInfo.js'
 import { v4 as uuidv4 } from 'uuid'
+import { KU_DOMAIN } from '../constants.js'
 
 export const setUserInfo = async (req,res) => {
   console.log('set user info')
-  const {gmail,username,role} = req.body
+  const {gmail,username} = req.body
+  let role;
+  if(!gmail.includes(KU_DOMAIN)){
+      return res.status(400).json({message:'must be a KU-domain.'})
+    }
+    else {
+    if (gmail.endsWith('@student.ku.edu.np')) {
+      role = 'student';
+    } else if (gmail.endsWith('@ku.edu.np')) {
+      role = 'faculty';
+    }
+  }
+  
   console.log('role is '+role)
   const userId = uuidv4()
 
