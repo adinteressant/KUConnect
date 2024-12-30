@@ -51,7 +51,7 @@ export const checkFriendRequestStatus = async (req, res) => {
     });
 
     const incomingRequest = await FriendRequest.findOne(
-      { sender_id: user2_id, receiver_id: user1_id },
+      { sender_id: user2_id, receiver_id: user1_id, status: 'pending' },
     );
 
     if (!request) {
@@ -62,6 +62,7 @@ export const checkFriendRequestStatus = async (req, res) => {
     }
 
     res.status(200).json({ status: request.status, sender_id: request.sender_id, request_id: request.request_id });
+    console.log(request.status);
   } catch (error) {
     console.error('Error checking friend request status:', error);
     res.status(500).json({ message: 'Internal server error' });
