@@ -1,6 +1,6 @@
 //Middleware
 
-// Middleware to validate post content
+//Middleware to validate post content
 export const validatePost = (req, res, next) => {
   const { content } = req.body;
 

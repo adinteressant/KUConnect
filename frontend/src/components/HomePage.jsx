@@ -1,5 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Link, useOutletContext } from 'react-router-dom'
+import formatTimeAgo from '../utils/generateTimeAgo'
+import ShowComments from './subcomponents/CommentOverlay.jsx'
 import Fuse from 'fuse.js';
 import { useMemo } from 'react';
 const HomePage = () => {
@@ -19,7 +21,9 @@ const HomePage = () => {
   const [showTags, setShowTags] = useState(false);
   const [tagValue, setTagValue] = useState('');
   const [tagList, setTagList] = useState([]);
-  const [showCommentBox, setShowCommentBox] = useState(false);
+  const [showLikeOverlay, setShowLikeOverlay] = useState([]);
+  const [showCommentBox, setShowCommentBox] = useState([]);
+  const [showCommentOverlay, setShowCommentOverlay] = useState('')
   const [isTextareaFocused, setIsTextareaFocused] = useState(false);
   const [isTagsInputFocused, setIsTagsInputFocused] = useState(false);
   const {searchTrait,setSearchTrait} = useOutletContext();
@@ -49,6 +53,7 @@ const HomePage = () => {
       .then((response) => response.json())
       .then((data) => {
         setUserProfile(data);
+        localStorage.setItem('authUser',JSON.stringify(data._id))
       })
       .catch((e) => {
         console.error('Error fetching user profile:', e);
@@ -62,6 +67,8 @@ const HomePage = () => {
       .then((data) => {
         setPosts(data);
         setFilteredPosts(data);
+        createArrayForCommentBox(data);
+        createArrayForLikeOverlay(data);
       })
       .catch((e) => {
         console.error('Error fetching posts:', e);
@@ -109,6 +116,8 @@ const HomePage = () => {
             setTagValue('');
             setTagList([]);
             setPosts([data.post, ...posts]);
+            setShowCommentBox([...showCommentBox, {postId: data.post._id, value:false, content: '', display:[]} ]);
+            setShowLikeOverlay([...showLikeOverlay, {postId: data.post._id, value:false}]);
             console.log('Post submitted:', data.post);
           }
         })
@@ -194,8 +203,114 @@ const HomePage = () => {
     return post.likes.some((like) => like && (like.userId === (userProfile.user_id || googleUser.user_id)))
   }
 
-  function toggleCommentBox() {
-    setShowCommentBox((prev) => !prev)
+  const isInfoDisplayed = (post) => {
+    return (post.likes.length>0||post.comments>0||post.shares.length>0)
+  }
+
+  const createArrayForLikeOverlay = (postsArray) => {
+    const updatedArray = postsArray.map((p) => {
+      return {postId: p._id, value: false}
+    })
+    setShowLikeOverlay(() => updatedArray)
+  }
+
+  const toggleLikeOverlay = (post) => {
+    setShowLikeOverlay((prevArray) => {
+      return prevArray.map((p) => {
+        return p.postId===post._id ? {postId: p.postId, value: true} : {postId: p.postId, value: false}
+      })
+    })
+    document.body.classList.toggle('overflow-hidden', true)
+  }
+
+  const closeLikeOverlay = () =>
+  {
+    setShowLikeOverlay((prevArray) => {
+      return prevArray.map((p) => {
+        return {postId: p.postId, value: false}
+      })
+    })
+    document.body.classList.toggle('overflow-hidden', false)
+  }
+
+  const createArrayForCommentBox = (postsArray) => {
+    const updatedArray = postsArray.map((p) => {
+      return {postId: p._id, value: false, content: '', display: []}
+    })
+    setShowCommentBox(() => updatedArray)
+  }
+
+  const toggleCommentBox = (post) => {
+    setShowCommentBox((prevArray) => {
+      return prevArray.map((p) => {
+        return p.postId===post._id ? {...p, value: !p.value} : p
+      })
+    })
+  }
+
+  const handleNewComment = async(post) =>
+  {
+    if (!user && !googleUser) {
+      alert('You must be logged in to comment on the post.');
+      return;
+    }
+    
+    try {
+      const response = await fetch(`/api/posts/${post._id.toString()}/users/${userProfile.user_id.toString()}/add-comment`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          content: showCommentBox.find(p => p.postId === post._id).content
+        })
+      })
+
+      const updatedPost = await response.json()
+      if(response.ok)
+      {
+        setShowCommentBox((prev) => 
+          prev.map((p) => p.postId===post._id? {...p, content: '', display: p.display.concat({
+            pfp: updatedPost.pfp,
+            username: updatedPost.username,
+            role: updatedPost.role,
+            comment: updatedPost.comment,
+            created: updatedPost.created
+          })} : p
+        ))
+        setPosts((prevPosts) =>
+          prevPosts.map((p) =>
+            p._id === updatedPost.post._id ? { ...updatedPost.post, isUpdating: true } : p
+          )
+        )
+        setTimeout(() => {
+          setPosts((prevPosts) =>
+            prevPosts.map((p) =>
+              p._id === updatedPost.post._id ? { ...p, isUpdating: false } : p
+            )
+          )
+        }, 300)
+      }
+      else
+      {
+        console.error('Error commenting on the post:', updatedPost.message)
+      }
+    }
+    catch(error) {
+      console.error('Error commenting on the post:', error)
+    }
+  }
+
+  const openCommentOverlay = (postId) =>
+  {
+    setShowCommentOverlay(() => postId)
+    document.body.classList.toggle('overflow-hidden', true)
+  }
+
+   const closeCommentOverlay = () =>
+  {
+    setShowCommentOverlay(() => '')
+    document.body.classList.toggle('overflow-hidden', false)
   }
 
   const handleTextareaFocus = () => {
@@ -296,24 +411,27 @@ const HomePage = () => {
                     post.isUpdating ? 'scale-105' : 'scale-100'
                   }`}
                 >
-                  <Link 
-                  to={post.username === userProfile.username?'/myprofile':`/${post.username}`}>
-                 <img src={`/api/get-pfp?id=${post.pfp_id}`}
-                      className="h-8 w-8 rounded-full object-cover"
-                />
-                <div className="text-gray-800 font-semibold">{post.username}</div>
+                <div className='flex gap-2 items-center'>
+                  <Link to={post.username === userProfile.username?'/myprofile':`/${post.username}`}>
+                    <img src={`/api/get-pfp?id=${post.pfp_id}`} className="h-8 w-8 rounded-full object-cover"/>
                   </Link>
-                   {/* Display username */}
-                  <div className="text-gray-600 text-sm">
-                    {new Date(post.createdAt).toLocaleDateString('en-US', { 
-                      day: '2-digit', 
-                      month: 'long', 
-                      year: 'numeric' 
-                    })}, {new Date(post.createdAt).toLocaleTimeString([], { 
-                      hour: '2-digit', 
-                      minute: '2-digit' 
-                    })}
+                  <div>
+                    <Link to={post.username === userProfile.username?'/myprofile':`/${post.username}`} 
+                              className="text-gray-800 font-semibold">
+                                {post.username}
+                    </Link>
+                    <div className="text-gray-600 text-sm">
+                      {new Date(post.createdAt).toLocaleDateString('en-US', { 
+                        day: '2-digit', 
+                        month: 'long', 
+                        year: 'numeric' 
+                      })}, {new Date(post.createdAt).toLocaleTimeString([], { 
+                        hour: '2-digit', 
+                        minute: '2-digit' 
+                      })}
+                    </div>
                   </div>
+                </div>
                   <p className="mt-2 text-gray-800">{post.content}</p>
                   {post.tags.length > 0 && (
                     <div className="mt-2 text-sm text-gray-600">
@@ -321,14 +439,13 @@ const HomePage = () => {
                     </div>
                   )}
 
-                  <hr className='mt-2'/>
+                  <hr className='absolute left-0 right-0 mt-4'/>
                   
                   {/* Likes, Comments, Shares Information */}
-                  <div className='mt-2 flex items-center gap-4'>
-
+                  <div className={`mt-6 flex items-center gap-4 transition-all duration-300 ${isInfoDisplayed(post)?'opacity-100 h-max-screen':'opacity-0 h-max-0'}`}>
                     {/* like information */}
                       {post.likes.length>0 &&
-                        <button className="text-sm text-gray-600 hover:text-cyan-600 transition-all duration-200">  
+                        <button onClick={() => toggleLikeOverlay(post)} className="text-sm text-gray-600 hover:text-cyan-600 transition-all duration-300">  
                           {(post.likes.length<3
                             ? `Liked by ${post.likes.map(user => user.username).join(', ')}`
                             : `Liked by ${post.likes.map(user => user.username).slice(-2).join(', ')} and ${post.likes.length-2} more`
@@ -339,40 +456,42 @@ const HomePage = () => {
                     <div className='ml-auto flex items-center gap-4'>
                       
                         {/* comment information */}
-                        {post.comments.length>0 &&
-                          <button className="text-sm text-gray-600 hover:text-cyan-600 transition-all duration-200">  
-                            {post.comments.length} comments
+                        {post.comments>0 &&
+                          <button onClick={() => openCommentOverlay(post._id)} className="text-sm text-gray-600 hover:text-cyan-600 transition-all duration-300">  
+                            {post.comments} comments
                           </button>
                         }
 
                         {/* share information */}
                         {post.shares.length>0 &&
-                          <button className="text-sm text-gray-600 hover:text-cyan-600 transition-all duration-200">  
+                          <button className="text-sm text-gray-600 hover:text-cyan-600 transition-all duration-300">  
                             {post.shares.length} shares
                           </button>
                         }
                     </div>
                   </div>
 
+                  <hr className={`transition-all duration-300 ${isInfoDisplayed(post)?'opacity-100 h-max-screen mt-2':'opacity-0 h-max-0 mt-0'}`}/>
+
                   {/* Like, Comment, Share Button */}
-                  <div className='flex items-center gap-4 mt-2'>
+                  <div className={`transition-all duration-1000 flex justify-evenly items-center gap-2 ${(!isInfoDisplayed(post)&&showCommentBox.find(obj => obj.postId===post._id).value)?'mt-0':'mt-2'}`}>
 
                     {/* like button */}
-                    <button onClick = {() => handleLike(post)} className = 'flex items-center gap-2 group'>
+                    <button onClick = {() => handleLike(post)} className = 'flex justify-center items-center gap-2 group'>
                       <svg width='24' height='24' viewBox='0 0 24 24'
-                      className= {isLiked(post)
-                        ? 'stroke-cyan-600 fill-cyan-600 group-hover:fill-cyan-700 group-hover:stroke-cyan-700 transition-all duration-100'
-                        : 'stroke-gray-600 fill-none group-hover:stroke-cyan-600 transition-all duration-200'}
+                      className= {`transition-all duration-300 ${isLiked(post)
+                        ? 'stroke-cyan-600 fill-cyan-600 group-hover:fill-cyan-700 group-hover:stroke-cyan-700'
+                        : 'stroke-gray-600 fill-none group-hover:stroke-cyan-600'}`}
                       xmlns='http://www.w3.org/2000/svg'
                       >
                         <path d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/>
                       </svg>
                       
-                      <span className = {
-                          isLiked(post)
-                          ? 'text-cyan-600 group-hover:text-cyan-700 transition-all duration-100'
-                          : 'text-gray-600 group-hover:text-cyan-600 transition-all duration-200'
-                      }>
+                      <span className = {`transition-all duration-300
+                          ${isLiked(post)
+                          ? 'text-cyan-600 group-hover:text-cyan-700'
+                          : 'text-gray-600 group-hover:text-cyan-600'
+                      }`}>
                         {isLiked(post)
                         ? 'Liked' 
                         : 'Like'
@@ -381,48 +500,146 @@ const HomePage = () => {
                     </button>
 
                     {/* comment button */}
-                    <button onClick={toggleCommentBox} className='ml-auto flex items-center gap-2 group'>
+                    <button onClick={() => toggleCommentBox(post)} className='flex justify-center items-center gap-2 group'>
                       <svg width='24' height='24' viewBox='0 0 24 24'
-                        className='stroke-gray-600 fill-none group-hover:stroke-cyan-600 transition-all duration-200'
+                        className = {`transition-all duration-300 fill-none
+                          ${showCommentBox.find(obj => obj.postId===post._id).value
+                          ? 'stroke-cyan-600 group-hover:stroke-cyan-700'
+                          : 'stroke-gray-600 group-hover:stroke-cyan-600'
+                        }`}
                         xmlns="http://www.w3.org/2000/svg"
                       >
                         <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>
                       </svg>
 
-                      <span className='text-gray-600 group-hover:text-cyan-600 transition-all duration-200'>
+                      <span className = {`transition-all duration-300
+                          ${showCommentBox.find(obj => obj.postId===post._id).value
+                          ? 'text-cyan-600 group-hover:text-cyan-700'
+                          : 'text-gray-600 group-hover:text-cyan-600'
+                        }`}>
                         Comment
                       </span>
                     </button>
 
                     {/* share button */}
-                    <button className='ml-auto flex items-center gap-2 group'>
+                    <button className='flex justify-center items-center gap-2 group'>
                       <svg width='24' height='24' viewBox='0 0 24 24'
-                        className='stroke-gray-600 fill-none group-hover:stroke-cyan-600 transition-all duration-200'
+                        className='stroke-gray-600 fill-none group-hover:stroke-cyan-600 transition-all duration-300'
                         xmlns="http://www.w3.org/2000/svg"
                       >
                         <path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/>
                         <path d="m21.854 2.147-10.94 10.939"/>
                       </svg>
 
-                      <span className='text-gray-600 group-hover:text-cyan-600 transition-all duration-200'>
+                      <span className='text-gray-600 group-hover:text-cyan-600 transition-all duration-300'>
                         Share
                       </span>
                     </button>
                   </div>
 
-                  {/* Comment Input Section */}
-                  {showCommentBox && (<div className="mt-4">
-                    <textarea
-                      placeholder="Add a comment..."
-                      className="w-full p-2 border rounded-lg bg-gray-100 focus:outline-none focus:ring-2 focus:ring-cyan-600"
-                    />
-                    <button
-                      className="bg-cyan-600 text-white px-4 py-2 rounded-lg mt-2 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-600"
-                      disabled
+                  {/* comment button thichda dekhauney */}
+                  <div className={`transition-all duration-1000 overflow-hidden ease-in-out ${showCommentBox.find(obj => obj.postId===post._id).value? 'opacity-100 max-h-screen mt-2' : 'opacity-0 max-h-0 mt-0'}`}>
+                    <hr className='absolute left-0 right-0'/>
+
+                    {/* Bhakhar gareko comment bhayo hai bhanera display garna ko lagi (ani overall comments chai paxi xuttai overlay maa dekhauney) */}
+                    <div className={`transition-all duration-300 overflow-hidden ease-in-out ${showCommentBox.find(p => p.postId === post._id).display?'opacity-100 max-h-screen flex flex-col':'opacity-0 max-h-0'}`}>
+                      
+                      {showCommentBox.find(p => p.postId === post._id).display.map((d, index) => 
+                        <div key={index} className='flex mt-4'>
+                          <Link className='mt-2 shrink-0' to={'/myprofile'}>
+                            <img src={`/api/get-pfp?id=${d.pfp}`} alt="profile" className="w-8 h-8 rounded-full object-cover"/>
+                          </Link>
+                          <div className='ml-2'>
+                              <div className='bg-gray-100 p-2 rounded-xl'>
+                                <div className='flex gap-2 items-center'>
+                                  <Link to={'/myprofile'} className='text-gray-800 font-semibold text-sm'>
+                                    {d.username}
+                                  </Link>
+                                  <div className='text-gray-600 text-xs'>
+                                    {d.role}
+                                  </div>
+                                </div>
+                                <div className='text-gray-800 break-all whitespace-normal'>
+                                  {d.comment}
+                                </div>
+                              </div>
+                            <div className='flex items-center gap-4 ml-2 text-gray-600 text-xs'>
+                              {formatTimeAgo(d.created)} ago
+                            </div>                      
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Comment Input Section */}
+                    <div className='mt-4 flex flex-col gap-2'>
+                      <div className='flex'>
+                        <textarea
+                          onChange={(e) => 
+                            setShowCommentBox((prev) => 
+                              prev.map((p) => p.postId===post._id? {...p, content: e.target.value} : {...p}
+                              ))
+                          }
+                          value={showCommentBox.find(obj => obj.postId===post._id).content}
+                          placeholder="Add a comment..."
+                          className='flex-1 transition-all duration-300 p-2 border rounded-lg bg-gray-100 focus:m-1 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:ring-offset-1
+                                    resize-none overflow-auto leading-6'
+                          rows='2'
+                        />
+                      </div>
+                      <button
+                        disabled={!showCommentBox.find(obj => obj.postId===post._id).content.trim()}
+                        onClick={() => handleNewComment(post)}
+                        className="transition-all duration-300
+                        mr-auto bg-cyan-600 text-white px-4 py-2 rounded-lg disabled:bg-gray-400
+                        hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:ring-offset-2 focus:ml-1 focus:mb-1 focus:mt-1"
+                        
+                      >
+                        Comment
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* like overlay*/}
+                  {showLikeOverlay.find(obj => obj.postId===post._id).value && (
+                    /* like overlay background*/
+                    <div onClick={closeLikeOverlay}
+                          className='fixed inset-0 z-50
+                                    flex items-center justify-center
+                                    bg-black bg-opacity-50'
                     >
-                      Comment
-                    </button>
-                  </div>)}
+                      {/* like overlay panel */}
+                      <div onClick={(e) => e.stopPropagation()} 
+                            className='bg-white w-80 h-96 rounded-lg shadow-2xl flex flex-col'
+                      >
+                        {/* view by categories */}
+                        <div className='p-2 flex'>
+                          <button className='p-2 rounded hover:bg-gray-200 transition-all duration-200'>
+                            All({post.likes.length})
+                          </button>
+                          <button className='p-2 rounded hover:bg-gray-200 transition-all duration-200'>
+                            Students
+                          </button>
+                          <button className='p-2 rounded hover:bg-gray-200 transition-all duration-200'>
+                            Faculty
+                          </button>
+                          <button onClick={closeLikeOverlay} className='ml-auto p-2 rounded-full hover:bg-gray-200 transition-all duration-200'>
+                            <svg width='24' height='24' viewBox='0 0 24 24'
+                                className='stroke-gray-600 fill-none'
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+                              </svg>
+                          </button>
+                        </div>
+                        <hr/>
+                        {/* liked users list*/}
+                        <div className='pl-4 pr-4 pt-2 pb-2 overflow-y-auto flex flex-col gap-2'>
+                          {post.likes.map(user => <div key={user.user_id}>{user.username}</div>)}
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
                 </div>
               ))
@@ -433,6 +650,29 @@ const HomePage = () => {
             )}
           </div>
         </div>
+
+        {/* Comment Overlay */}
+        {showCommentOverlay &&
+          (<div className='fixed inset-0 z-50
+                        flex items-center justify-center
+                        bg-black bg-opacity-50'      
+                        onClick={closeCommentOverlay}
+          >
+            <div onClick={(e) => e.stopPropagation()} 
+                className='relative bg-white w-[50%] h-[50%] rounded-lg shadow-2xl'
+            >
+              <button onClick={closeCommentOverlay} className='absolute top-2 right-2 p-2 rounded-full hover:bg-gray-200 transition-all duration-300'>
+                <svg width='24' height='24' viewBox='0 0 24 24'
+                  className='stroke-gray-600 fill-none'
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+                </svg>
+              </button>
+              <ShowComments postId={showCommentOverlay}/>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );

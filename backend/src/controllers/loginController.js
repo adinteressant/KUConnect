@@ -42,7 +42,6 @@ export default async function loginController(req, res) {
     res.cookie('REFRESH_TOKEN',refresh_token,{
       httpOnly:true,
     });
-
     return res.status(200).json({
       message: 'Login Successful',
       user: {

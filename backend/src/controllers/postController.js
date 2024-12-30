@@ -79,37 +79,6 @@ export const toggleLike = async (req, res) => {
   }
 };
 
-// Add a comment to a post
-export const addComment = async (req, res) => {
-  const { postId } = req.params;
-  const { content, userId, username } = req.body;
-
-  if (!content || content.trim() === '') {
-    return res.status(400).json({ message: 'Comment content is required!' });
-  }
-
-  if (!userId || !username) {
-    return res.status(400).json({ message: 'User ID and username are required to comment!' });
-  }
-
-  try {
-    const post = await Post.findById(postId);
-
-    if (!post) {
-      return res.status(404).json({ message: 'Post not found!' });
-    }
-
-    const comment = { content, userId, username, createdAt: new Date() };
-    post.comments.push(comment);
-
-    const updatedPost = await post.save();
-    res.json({ message: 'Comment added successfully!', post: updatedPost });
-  } catch (error) {
-    console.error('Error adding comment:', error);
-    res.status(500).json({ message: 'Failed to add comment. Please try again later.', error });
-  }
-};
-
 // Share a post
 export const sharePost = async (req, res) => {
   // implement sharing functionality as required
