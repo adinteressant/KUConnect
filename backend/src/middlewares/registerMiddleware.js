@@ -38,11 +38,11 @@ export default async function registerMiddleware(req,res,next){
   }
 
   // Validate role (it should be 'student' or 'faculty')
-  if (!['student', 'faculty'].includes(role)) {
-    return res.status(400).json({
-      message: 'Invalid role. Role must be either "student" or "faculty".',
-    });
-  }
+  // if (!['student', 'faculty'].includes(role)) {
+  //   return res.status(400).json({
+  //     message: 'Invalid role. Role must be either "student" or "faculty".',
+  //   });
+  // }
 
   // Generate unique user ID
   const userId = uuidv4()

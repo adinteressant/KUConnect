@@ -7,7 +7,6 @@ export default function RegisterPage() {
     email: "",
     rePassword: "",
     password: "",
-    role: "" // Added role field
   });
 
   const [errors, setErrors] = useState({
@@ -15,7 +14,6 @@ export default function RegisterPage() {
     email: "",
     rePassword: "",
     password: "",
-    role: "" // Added role error field
   });
 
   const handleSubmit = async (e) => {
@@ -35,7 +33,6 @@ export default function RegisterPage() {
           email: formData.email,
           password: formData.password,
           rePassword: formData.rePassword,
-          role: formData.role, // Ensure role is included
         }),
       });
   
