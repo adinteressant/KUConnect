@@ -178,8 +178,15 @@ const FriendsPage = () => {
             friends.map((friend) => (
               <div key={friend.username} className="p-4 bg-white shadow rounded">
                 <div className='flex gap-2 items-center'>
-                <img src={`/api/get-pfp?id=${friend.pfp_id}`}  className="h-8 w-8 rounded-full object-cover" alt="Profile" />
-                <Link to={`/${friend.username}`}>
+                {friend.pfp_id ? (
+          <img
+            src={`/api/get-pfp?id=${friend.pfp_id}`}
+            className="h-8 w-8 rounded-full object-cover"
+            alt="Profile"
+          />
+        ) : (
+          <img src = 'www.example.com' alt = "ProfilePic"></img>
+        )}                <Link to={`/${friend.username}`}>
                   <p>{friend.username}</p>
                 </Link>
                 </div>
