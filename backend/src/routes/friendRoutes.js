@@ -8,6 +8,8 @@ import {
   denyFriendRequest,
   checkFriendRequestStatus,
   cancelFriendRequest,
+  acceptFriendRequestfromProfile,
+  denyFriendRequestfromProfile,
 } from '../controllers/friendsController.js';
 import getProfileByUserId from '../middlewares/friendMiddleware.js';
 import authenticateJWT from '../middlewares/authenticateJWT.js';
@@ -28,6 +30,12 @@ router.get('/api/view-friends', authenticateJWT, getProfileByUserId, getFriends)
 
 // Route to fetch incoming friend requests with usernames
 router.get('/api/view-incoming-requests',authenticateJWT, getProfileByUserId, getIncomingFriendRequests);
+
+// Route to accept request from profile
+router.post('/api/confirm-request', authenticateJWT, acceptFriendRequestfromProfile);
+
+//Route to reject request from profile
+router.post('/api/reject-request', authenticateJWT, denyFriendRequestfromProfile);
 
 // Route to fetch sent friend requests with usernames
 router.get('/api/view-sent-requests',authenticateJWT, getProfileByUserId, getSentFriendRequests);

@@ -103,29 +103,7 @@ export const getFriends = async (req, res) => {
   }
 };
 
-/**
- * Cancel a sent friend request
- */
-export const cancelFriendRequest = async (req, res) => {
-  const { request_id } = req.body;
 
-  try {
-    const friendRequest = await FriendRequest.findOne(request_id);
-    if (!friendRequest) {
-      return res.status(404).json({ message: 'Friend request not found' });
-    }
-
-    if (friendRequest.status !== 'pending') {
-      return res.status(400).json({ message: 'Friend request already processed' });
-    }
-
-    await FriendRequest.deleteOne({ _id: request_id });
-    res.status(200).json({ message: 'Friend request canceled!' });
-  } catch (error) {
-    console.error('Error canceling friend request:', error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
-};
 
 /**
  * Fetch incoming friend requests with usernames
@@ -184,7 +162,6 @@ export const getSentFriendRequests = async (req, res) => {
 /**
  * Accept a friend request
  */
-// Accept a friend request
 export const acceptFriendRequest = async (req, res) => {
   const { request_id } = req.body;
 
@@ -209,13 +186,13 @@ export const acceptFriendRequest = async (req, res) => {
 };
 
 /**
- * Deny a friend request
+ * Cancel a sent friend request
  */
-export const denyFriendRequest = async (req, res) => {
+export const cancelFriendRequest = async (req, res) => {
   const { request_id } = req.body;
 
   try {
-    const friendRequest = await FriendRequest.findOne(request_id);
+    const friendRequest = await FriendRequest.findOne({ request_id }); 
     if (!friendRequest) {
       return res.status(404).json({ message: 'Friend request not found' });
     }
@@ -224,12 +201,81 @@ export const denyFriendRequest = async (req, res) => {
       return res.status(400).json({ message: 'Friend request already processed' });
     }
 
-    friendRequest.status = 'denied';
-    await friendRequest.save();
+    await FriendRequest.deleteOne({ request_id }); 
+    res.status(200).json({ message: 'Friend request canceled!' });
+  } catch (error) {
+    console.error('Error canceling friend request:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+/**
+ * Deny a friend request
+ */
+export const denyFriendRequest = async (req, res) => {
+  const { request_id } = req.body;
+
+  try {
+    const friendRequest = await FriendRequest.findOne({ request_id }); 
+    if (!friendRequest) {
+      return res.status(404).json({ message: 'Friend request not found' });
+    }
+
+    if (friendRequest.status !== 'pending') {
+      return res.status(400).json({ message: 'Friend request already processed' });
+    }
+    await FriendRequest.deleteOne({ request_id }); 
+
 
     res.status(200).json({ message: 'Friend request denied!' });
   } catch (error) {
     console.error('Error denying friend request:', error);
     res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+export const acceptFriendRequestfromProfile = async (req, res) => {
+  const { sender_id, receiver_id } = req.body;
+
+  try {
+    // Find the friend request
+    const request = await FriendRequest.findOne({ sender_id, receiver_id });
+
+    if (!request) {
+      return res.status(404).json({ message: 'Friend request not found' });
+    }
+
+    // Mark the request as accepted
+    await request.updateOne({ status: 'accepted' });
+
+    // Add to friends list if needed
+    await User.findByIdAndUpdate(receiver_id, { $addToSet: { friends: sender_id } });
+    await User.findByIdAndUpdate(sender_id, { $addToSet: { friends: receiver_id } });
+
+    res.status(200).json({ message: 'Friend request accepted' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Failed to accept request' });
+  }
+};
+
+export const denyFriendRequestfromProfile = async (req,res) => {
+  const { sender_id, receiver_id } = req.body;
+
+  try {
+    // Find the friend request
+    const request = await FriendRequest.findOne({ sender_id, receiver_id });
+
+    if (!request) {
+      return res.status(404).json({ message: 'Friend request not found' });
+    }
+
+    // Remove or mark the request as denied
+    await request.deleteOne();
+
+    res.status(200).json({ message: 'Friend request denied' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Failed to deny request' });
   }
 };

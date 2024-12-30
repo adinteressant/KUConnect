@@ -66,7 +66,6 @@ const FriendsPage = () => {
         })
         .then((data) => {
           setIncomingRequests(data.incoming || []);
-          console.log(data)
         })
         .catch((err) => {
           console.error('Error fetching incoming requests:', err);
@@ -86,7 +85,6 @@ const FriendsPage = () => {
         })
         .then((data) => {
           setSentRequests(data.sent || []);
-          console.log(data)
         })
         .catch((err) => {
           console.error('Error fetching sent requests:', err);
@@ -103,21 +101,26 @@ const FriendsPage = () => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ request_id }),
-      credentials: 'same-origin'
+      credentials: 'same-origin',
     })
       .then((response) => {
         if (!response.ok) throw new Error('Failed to accept request');
         return response.json();
       })
       .then(() => {
-        setIncomingRequests((prev) => prev.filter((req) => req._id !== request_id));
-        setFriends((prev) => [
-          ...prev,
-          incomingRequests.find((req) => req._id === request_id),
-        ]);
+        // Update state dynamically
+        const acceptedRequest = incomingRequests.find((req) => req.request_id === request_id);
+        setIncomingRequests((prev) => prev.filter((req) => req.request_id !== request_id));
+        if (acceptedRequest) {
+          setFriends((prev) => [
+            ...prev,
+            { username: acceptedRequest.sender_username, pfp_id: acceptedRequest.pfp_id },
+          ]);
+          window.location.reload();
+        }
       })
       .catch((err) => console.error('Error accepting request:', err));
-  };
+  };  
 
   const denyRequest = (request_id) => {
     fetch('/api/deny-request', {
@@ -126,15 +129,22 @@ const FriendsPage = () => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ request_id }),
+      credentials: 'same-origin',
     })
       .then((response) => {
-        if (!response.ok) throw new Error('Failed to deny request');
+        if (!response.ok) {
+          return response.json().then((error) => {
+            console.error('Server error:', error);
+            throw new Error(error.message || 'Failed to deny request');
+          });
+        }
+        return response.json();
       })
       .then(() => {
-        setIncomingRequests((prev) => prev.filter((req) => req._id !== request_id));
+        setIncomingRequests((prev) => prev.filter((req) => req.request_id !== request_id));
       })
       .catch((err) => console.error('Error denying request:', err));
-  };
+  };  
 
   const cancelRequest = (request_id) => {
     fetch('/api/cancel-request', {
@@ -143,17 +153,17 @@ const FriendsPage = () => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ request_id }),
+      credentials: 'same-origin',
     })
       .then((response) => {
         if (!response.ok) throw new Error('Failed to cancel request');
+        return response.json();
       })
       .then(() => {
-        setSentRequests((prev) => prev.filter((req) => req._id !== request_id));
+        setSentRequests((prev) => prev.filter((req) => req.request_id !== request_id));
       })
       .catch((err) => console.error('Error canceling request:', err));
   };
-  console.log(incomingRequests)
-  console.log(sentRequests)
 
   if (loading) {
     return <div>Loading...</div>;
@@ -162,11 +172,7 @@ const FriendsPage = () => {
   if (error) {
     return <div>{error}</div>;
   }
-
-  console.log(incomingRequests)
-  console.log(sentRequests)
   console.log(friends)
-
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">Friends</h1>
@@ -174,81 +180,91 @@ const FriendsPage = () => {
       <div className="mb-8">
         <h2 className="text-xl font-semibold">Your Friends</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-          {friends.length > 0 ? (
-            friends.map((friend) => (
-              <div key={friend.username} className="p-4 bg-white shadow rounded">
-                <div className='flex gap-2 items-center'>
-                {friend.pfp_id ? (
+        {friends.length > 0 ? (
+  friends.map((friend) => (
+    <div key={friend.username} className="p-4 bg-white shadow rounded">
+      <div className="flex gap-2 items-center">
+        {friend.pfp_id ? (
           <img
             src={`/api/get-pfp?id=${friend.pfp_id}`}
             className="h-8 w-8 rounded-full object-cover"
             alt="Profile"
           />
         ) : (
-          <img src = 'www.example.com' alt = "ProfilePic"></img>
-        )}                <Link to={`/${friend.username}`}>
-                  <p>{friend.username}</p>
-                </Link>
-                </div>
-              </div>
-            ))
-          ) : (
-            <p>No friends found.</p>
-          )}
+          <img
+            src="https://example.com/default-profile.png"
+            className="h-8 w-8 rounded-full object-cover"
+            alt="Default Profile"
+          />
+        )}
+        <Link to={`/${friend.username}`}>
+          <p>{friend.username}</p>
+        </Link>
+      </div>
+    </div>
+  ))
+) : (
+  <p>No friends found.</p>
+)}
+
         </div>
       </div>
 
       <div className="mb-8">
-  <h2 className="text-xl font-semibold">Incoming Requests</h2>
-  {incomingRequests.length > 0 ? (
-    incomingRequests.map((req) => (
-      <div key={req.sender_username} className="flex items-center justify-between p-4 bg-gray-100 rounded mb-2">
-        <Link to={`/${req.sender_username}`}>
-          <p>{req.sender_username}</p>
-        </Link>
-        <div className="flex">
-          <button
-            onClick={() => acceptRequest(req.request_id)}  
-            className="bg-green-500 text-white px-4 py-2 rounded mr-2"
-          >
-            Confirm
-          </button>
-          <button
-            onClick={() => denyRequest(req.request_id)}
-            className="bg-red-500 text-white px-4 py-2 rounded"
-          >
-            Deny
-          </button>
-        </div>
+        <h2 className="text-xl font-semibold">Incoming Requests</h2>
+        {incomingRequests.length > 0 ? (
+          incomingRequests.map((req) => (
+            <div
+              key={req.sender_username}
+              className="flex items-center justify-between p-4 bg-gray-100 rounded mb-2"
+            >
+              <Link to={`/${req.sender_username}`}>
+                <p>{req.sender_username}</p>
+              </Link>
+              <div className="flex">
+                <button
+                  onClick={() => acceptRequest(req.request_id)}
+                  className="bg-green-500 text-white px-4 py-2 rounded mr-2"
+                >
+                  Confirm Request
+                </button>
+                <button
+                  onClick={() => denyRequest(req.request_id)}
+                  className="bg-red-500 text-white px-4 py-2 rounded"
+                >
+                  Reject Request
+                </button>
+              </div>
+            </div>
+          ))
+        ) : (
+          <p>No incoming requests.</p>
+        )}
       </div>
-    ))
-  ) : (
-    <p>No incoming requests.</p>
-  )}
-</div>
 
-
-          <div className="mb-8">
-            <h2 className="text-xl font-semibold">Sent Requests</h2>
-            {sentRequests.length > 0 ? (
-              sentRequests.map((req) => (
-                <div key={req.receiver_username} className="flex items-center justify-between p-4 bg-gray-100 rounded mb-2">
-                  <Link to={`/${req.receiver_username}`}>
-                    <p>{req.receiver_username}</p>
-                  </Link>
-                  <button
-                    onClick={() => cancelRequest(req.request_id)}  
-                    className="bg-yellow-500 text-white px-4 py-2 rounded"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              ))
-            ) : (
-              <p>No sent requests.</p>
-            )}
-          </div>
-
+      <div className="mb-8">
+        <h2 className="text-xl font-semibold">Sent Requests</h2>
+        {sentRequests.length > 0 ? (
+          sentRequests.map((req) => (
+            <div
+              key={req.receiver_username}
+              className="flex items-center justify-between p-4 bg-gray-100 rounded mb-2"
+            >
+              <Link to={`/${req.receiver_username}`}>
+                <p>{req.receiver_username}</p>
+              </Link>
+              <button
+                onClick={() => cancelRequest(req.request_id)}
+                className="bg-yellow-500 text-white px-4 py-2 rounded"
+              >
+                Cancel
+              </button>
+            </div>
+          ))
+        ) : (
+          <p>No sent requests.</p>
+        )}
+      </div>
     </div>
   );
 };
