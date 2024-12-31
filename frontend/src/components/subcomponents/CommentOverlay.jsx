@@ -90,14 +90,20 @@ function ShowComments(props) {
                     }
                     return (
                             <div key={index} className='flex'>
-                                <Link className='mt-2 shrink-0' to={`/${comment.username}`}>
+                                <Link onClick={() => {
+                                                        document.body.classList.toggle('overflow-hidden', false)
+                                                        window.scrollTo(0,0)
+                                                    }} className='mt-2 shrink-0' to={`/${comment.username}`}>
                                         <img src={`/api/get-pfp?id=${comment.pfp}`} alt="profile" className="w-8 h-8 rounded-full object-cover"/>
                                 </Link>
                                 <div className='ml-2'>
                                     <div className='flex'>
                                         <div className='bg-gray-100 p-2 rounded-xl'>
                                             <div className='flex gap-2 items-center'>
-                                                <Link to={`/${comment.username}`} className='text-gray-800 font-semibold text-sm'>
+                                                <Link onClick={() => {
+                                                        document.body.classList.toggle('overflow-hidden', false)
+                                                        window.scrollTo(0,0)
+                                                    }} to={`/${comment.username}`} className='text-gray-800 font-semibold text-sm'>
                                                     {comment.username}
                                                 </Link>
                                                 <div className='text-gray-600 text-xs'>
