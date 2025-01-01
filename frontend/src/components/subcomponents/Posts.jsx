@@ -241,11 +241,11 @@ function Posts(props) {
                   }`}
                 >
                 <div className='flex gap-2 items-end'>
-                  <Link to={post.username === userProfile.username?'/myprofile':`/${post.username}`}>
+                  <Link to={`/${post.username}`}>
                     <img src={`/api/get-pfp?id=${post.pfp_id}`} className="h-9 w-9 rounded-full object-cover"/>
                   </Link>
                   <div>
-                    <Link to={post.username === userProfile.username?'/myprofile':`/${post.username}`} 
+                    <Link to={`/${post.username}`} 
                       className="text-gray-800 font-semibold">
                       {post.username}
                     </Link>
