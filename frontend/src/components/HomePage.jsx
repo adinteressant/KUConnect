@@ -242,6 +242,7 @@ const HomePage = () => {
     email={userProfile.email || googleUser}
     username={userProfile.username || (userProfile.email || googleUser)?.split('@')[0]}
     onClose={() => setShowWelcomeModal(false)}
+    pfp_id = {userProfile.pfp_id}
   />
 )}
         </div>
