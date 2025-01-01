@@ -8,7 +8,6 @@ export default async function updatePictureController(req,res){
   const  new_pfp_id = req.query.id;
   const user_id = req.body.user_id;
   let userInfo = await PublicInfo.findOne({user_id});
-  console.log(userInfo);
   userInfo.pfp_id = new_pfp_id;
   
   await userInfo.save();

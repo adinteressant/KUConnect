@@ -54,7 +54,7 @@ const HomePage = () => {
       .then((response) => response.json())
       .then((data) => {
         setUserProfile(data);
-        localStorage.setItem('authUser',JSON.stringify(data._id))
+        localStorage.setItem('authUser',JSON.stringify(data.user_id))
       })
       .catch((e) => {
         console.error('Error fetching user profile:', e);

@@ -3,7 +3,9 @@ import axios from 'axios';
 import formatTimeAgo from '../utils/generateTimeAgo.js';
 
 const NotificationPage = () => {
-  const [userProfile, setUserProfile] = useState({tags:[]});
+  const [userProfiletags, setUserProfile] = useState({tags:[]});
+  const [userProfile, setUserProfileFunc] = useState({});
+  
   const [userPosts, setUserPosts] = useState([]);
   const [userFilteredPosts, setFilteredPosts] = useState([]);
 
@@ -12,7 +14,7 @@ const NotificationPage = () => {
 
     fetch('/api/get-user-profile',)
       .then((response) => response.json())
-      .then((data) => setUserProfile(data))
+      .then((data) => {setUserProfile(data); setUserProfileFunc(data);})
       .catch((e) => {
         if (e.name !== 'AbortError') {
           console.error('Error fetching user profile:', e);
@@ -40,19 +42,35 @@ const NotificationPage = () => {
 
   // Filter posts based on tags
   useEffect(() => {
-    const tags = userProfile.tags || []; 
+    const tags = userProfiletags.tags || []; 
     const filteredPosts = userPosts.filter(post => 
       post.tags?.some(tag => tags.includes(tag))
     );
-
     setFilteredPosts(filteredPosts);
-  }, [userProfile.tags, userPosts]);
+  }, [userProfiletags.tags, userPosts]);
 
-  useEffect(() => {
-    async function clearNotification(){
-
+useEffect(() => {
+  async function clearNotification() {
+    try {
+      const response = await axios.post(
+        '/api/clear-notifications/',
+        {
+          user_id: userProfile.user_id,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+      console.log("Clear notifications response:", response);
+    } catch (e) {
+      if (e.name !== 'AbortError') {
+        console.error("Error in clearing notifications", e);
+      }
     }
-  }, []);
+  }
+  clearNotification();
+}, [userProfile]);
+
 
 
   return (
