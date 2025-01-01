@@ -72,7 +72,7 @@ const HomePage = () => {
       .catch((e) => {
         console.error('Error fetching posts:', e);
       }); ///AHHHHHHHHHHHH WHERE IS MY COMMENT, I HATE AI
-  }, [posts]);
+  }, []);
 
   useEffect(() => {
     const options = {
