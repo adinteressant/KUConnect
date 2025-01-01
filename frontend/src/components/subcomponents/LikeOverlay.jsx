@@ -88,7 +88,7 @@ function ShowLikes(props) {
                             <div key={index} className='flex'>
                                 <Link onClick={() => {
                                                         document.body.classList.toggle('overflow-hidden', false)
-                                                        window.scrollTo(0,0)
+                                                        props.closeLikeOverlay()
                                                     }}
                                          className='mt-2 shrink-0' to={`/${like.username}`}>
                                         <img src={`/api/get-pfp?id=${like.pfp_id}`} alt="profile" className="w-8 h-8 rounded-full object-cover"/>
@@ -96,7 +96,7 @@ function ShowLikes(props) {
                                 <div className='ml-2'>
                                     <Link onClick={() => {
                                                         document.body.classList.toggle('overflow-hidden', false)
-                                                        window.scrollTo(0,0)
+                                                        props.closeLikeOverlay()
                                                     }} 
                                         to={`/${like.username}`} className='text-gray-800 font-semibold text-sm'>
                                         {like.username}

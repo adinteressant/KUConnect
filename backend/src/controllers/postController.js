@@ -97,14 +97,9 @@ export const userPosts = async(req, res) => {
   {
     const userId = req.params.userId
 
-    const posts = await Post.find({ userId })
+    const posts = await Post.find({ userId }).sort({ createdAt: -1 })
 
-    if(!posts)
-    {
-      res.status(200).json({ postFound: false })
-    }
-
-    res.status(200).json({ postFound: true , posts })
+    res.status(200).json({ message:"Posts fetched successfully", posts })
   }
   catch(error)
   {

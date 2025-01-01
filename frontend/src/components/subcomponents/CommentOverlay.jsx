@@ -92,7 +92,7 @@ function ShowComments(props) {
                             <div key={index} className='flex'>
                                 <Link onClick={() => {
                                                         document.body.classList.toggle('overflow-hidden', false)
-                                                        window.scrollTo(0,0)
+                                                        props.closeCommentOverlay()
                                                     }} className='mt-2 shrink-0' to={`/${comment.username}`}>
                                         <img src={`/api/get-pfp?id=${comment.pfp}`} alt="profile" className="w-8 h-8 rounded-full object-cover"/>
                                 </Link>
@@ -102,7 +102,7 @@ function ShowComments(props) {
                                             <div className='flex gap-2 items-center'>
                                                 <Link onClick={() => {
                                                         document.body.classList.toggle('overflow-hidden', false)
-                                                        window.scrollTo(0,0)
+                                                        props.closeCommentOverlay()
                                                     }} to={`/${comment.username}`} className='text-gray-800 font-semibold text-sm'>
                                                     {comment.username}
                                                 </Link>

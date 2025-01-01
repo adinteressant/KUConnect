@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import Posts from './subcomponents/Posts.jsx'
 
 export default function ProfilePage() {
   const { username } = useParams();
@@ -10,8 +11,9 @@ export default function ProfilePage() {
     user_id: '',
   });
   const [userProfile, setUserProfile] = useState({});
-    const [incomingRequests, setIncomingRequests] = useState([]);
-  const [status, setStatus] = useState('none');
+  const [incomingRequests, setIncomingRequests] = useState([]);
+  const [status, setStatus] = useState('none')
+  const [posts, setPosts] = useState([])
 
   useEffect(() => {
     // Fetch profile data
@@ -45,6 +47,20 @@ export default function ProfilePage() {
       }
     })();
   }, []);
+
+  useEffect(() => {
+    if(profileData.user_id)
+    {
+      fetch(`/api/posts/user/${profileData.user_id}/get-user-posts`)
+      .then((response) => response.json())
+      .then(data => {
+        setPosts(() => data.posts)
+      })
+      .catch(error =>
+        console.error('Error fetching user posts:', error)
+      )
+    }
+  }, [profileData])
 
   const confirmRequest = () => {
     const receiver_id = userProfile.user_id;
@@ -156,8 +172,8 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-md">
+    <div className="flex-1 min-h-screen bg-gray-100 p-6 overflow-y-auto">
+      <div className="max-w-2xl mx-auto space-y-4 bg-white p-8 rounded-lg shadow-md mb-4">
         {/* Profile picture with hover effect */}
         <div
           className="w-32 h-32 md:w-40 md:h-40 rounded-full bg-gray-300
@@ -213,6 +229,9 @@ export default function ProfilePage() {
 
         </div>
       </div>
+
+      {/* Displaying Posts */}
+      <Posts posts={posts} setPosts={setPosts}/>
     </div>
   );
 }
