@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useEffect, useState, useRef } from 'react';
+import { useParams, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import Posts from './subcomponents/Posts.jsx'
 
@@ -14,6 +14,13 @@ export default function ProfilePage() {
   const [incomingRequests, setIncomingRequests] = useState([]);
   const [status, setStatus] = useState('none')
   const [posts, setPosts] = useState([])
+
+  const scrollContainerRef = useRef(null)
+  const location = useLocation()
+
+  useEffect(() => {
+    window.scrollTo(0,0)
+  }, [location.pathname])
 
   useEffect(() => {
     // Fetch profile data
@@ -172,7 +179,7 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="flex-1 min-h-screen bg-gray-100 p-6 overflow-y-auto">
+    <div className="flex-1 min-h-screen bg-gray-100 p-6 overflow-y-auto" ref={scrollContainerRef}>
       <div className="max-w-2xl mx-auto space-y-4 bg-white p-8 rounded-lg shadow-md mb-4">
         {/* Profile picture with hover effect */}
         <div
