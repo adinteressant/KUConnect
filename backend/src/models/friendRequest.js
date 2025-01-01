@@ -8,6 +8,7 @@ const FriendRequestSchema = new mongoose.Schema({
     required: true,
     enum: ['pending', 'accepted', 'denied'], 
   },
+  request_id: {type: String, required: true, unique:true },
   createdAt: { type: Date, default: Date.now },
 });
 

@@ -26,8 +26,8 @@ router.use(commentRouter);
 router.use(userChangePasswordRoute);
 router.use(getPictureRouter);
 router.use(updatePictureRouter);
-router.use(profileRouter)
-router.use(messageRouter)
-router.use(friendRouter)
+router.use(profileRouter);
+router.use(messageRouter);
+router.use(friendRouter);
 
 export default router;

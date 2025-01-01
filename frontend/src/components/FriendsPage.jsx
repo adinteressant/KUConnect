@@ -1,80 +1,168 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 const FriendsPage = () => {
-  const [friends, setFriends] = useState([]); // Default as empty array
-  const [incomingRequests, setIncomingRequests] = useState([]); // Default as empty array
-  const [sentRequests, setSentRequests] = useState([]); // Default as empty array
+  const [friends, setFriends] = useState([]);
+  const [incomingRequests, setIncomingRequests] = useState([]);
+  const [sentRequests, setSentRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [userProfile, setUserProfile] = useState({});
 
+  // Fetch user profile
   useEffect(() => {
+    (async () => {
+      try {
+        const response = await axios.get('/api/get-user-profile/', {
+          withCredentials: true,
+        });
+        if (response.data) {
+          setUserProfile(response.data);
+        }
+      } catch (error) {
+        console.error('Error fetching user profile:', error);
+      }
+    })();
+  }, []);
+
+  const user_id = userProfile.user_id;
+
+  // Fetch data after userProfile has been fetched and user_id is available
+  useEffect(() => {
+    if (!user_id) return;
+
     setLoading(true);
     Promise.all([
-      // Fetch friends
-      fetch('/api/view-friends', {
+      fetch(`/api/view-friends?user_id=${user_id}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
       })
-        .then((res) => res.json())
-        .then((data) => setFriends(data.friends || [])) // Ensure it's an array
+        .then((res) => {
+          if (!res.ok) throw new Error('Failed to fetch friends');
+          return res.json();
+        })
+        .then((data) => {
+          setFriends(data.friends || []);
+        })
         .catch((err) => {
-          console.error(err);
+          console.error('Error fetching friends:', err);
           setError('Error loading friends');
         }),
 
-      // Fetch friend requests
-      fetch('/api/view-requests', {
+      fetch(`/api/view-incoming-requests?user_id=${user_id}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
       })
-        .then((res) => res.json())
+        .then((res) => {
+          if (!res.ok) throw new Error('Failed to fetch incoming requests');
+          return res.json();
+        })
         .then((data) => {
-          setIncomingRequests(data.incoming || []); // Ensure it's an array
-          setSentRequests(data.sent || []); // Ensure it's an array
+          setIncomingRequests(data.incoming || []);
         })
         .catch((err) => {
-          console.error(err);
-          setError('Error loading requests');
+          console.error('Error fetching incoming requests:', err);
+          setError('Error loading incoming requests');
+        }),
+
+      fetch(`/api/view-sent-requests?user_id=${user_id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+      })
+        .then((res) => {
+          if (!res.ok) throw new Error('Failed to fetch sent requests');
+          return res.json();
+        })
+        .then((data) => {
+          setSentRequests(data.sent || []);
+        })
+        .catch((err) => {
+          console.error('Error fetching sent requests:', err);
+          setError('Error loading sent requests');
         }),
     ])
       .finally(() => setLoading(false));
-  }, []);
+  }, [user_id]);
 
-  const acceptRequest = (requestId) => {
+  const acceptRequest = (request_id) => {
     fetch('/api/accept-request', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ requestId }),
+      body: JSON.stringify({ request_id }),
+      credentials: 'same-origin',
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) throw new Error('Failed to accept request');
+        return response.json();
+      })
       .then(() => {
-        setIncomingRequests((prev) => prev.filter((req) => req._id !== requestId));
-        setFriends((prev) => [
-          ...prev,
-          incomingRequests.find((req) => req._id === requestId),
-        ]);
+        // Update state dynamically
+        const acceptedRequest = incomingRequests.find((req) => req.request_id === request_id);
+        setIncomingRequests((prev) => prev.filter((req) => req.request_id !== request_id));
+        if (acceptedRequest) {
+          setFriends((prev) => [
+            ...prev,
+            { username: acceptedRequest.sender_username, pfp_id: acceptedRequest.pfp_id },
+          ]);
+          // window.location.reload();
+        }
       })
       .catch((err) => console.error('Error accepting request:', err));
-  };
+  };  
 
-  const denyRequest = (requestId) => {
+  const denyRequest = (request_id) => {
     fetch('/api/deny-request', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ requestId }),
+      body: JSON.stringify({ request_id }),
+      credentials: 'same-origin',
     })
+      .then((response) => {
+        if (!response.ok) {
+          return response.json().then((error) => {
+            console.error('Server error:', error);
+            throw new Error(error.message || 'Failed to deny request');
+          });
+        }
+        return response.json();
+      })
       .then(() => {
-        setIncomingRequests((prev) => prev.filter((req) => req._id !== requestId));
+        setIncomingRequests((prev) => prev.filter((req) => req.request_id !== request_id));
       })
       .catch((err) => console.error('Error denying request:', err));
+  };  
+
+  const cancelRequest = (request_id) => {
+    fetch('/api/cancel-request', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ request_id }),
+      credentials: 'same-origin',
+    })
+      .then((response) => {
+        if (!response.ok) throw new Error('Failed to cancel request');
+        return response.json();
+      })
+      .then(() => {
+        setSentRequests((prev) => prev.filter((req) => req.request_id !== request_id));
+      })
+      .catch((err) => console.error('Error canceling request:', err));
   };
 
   if (loading) {
@@ -84,27 +172,40 @@ const FriendsPage = () => {
   if (error) {
     return <div>{error}</div>;
   }
-
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">Friends</h1>
+
       <div className="mb-8">
         <h2 className="text-xl font-semibold">Your Friends</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-          {friends.length > 0 ? (
-            friends.map((friend) => (
-              <div key={friend.user_id} className="p-4 bg-white shadow rounded">
-                <img
-                  src={`/api/get-pfp?id=${friend.pfp_id}`}
-                  alt={friend.username}
-                  className="w-12 h-12 rounded-full"
-                />
-                <p className="text-lg font-medium">{friend.username}</p>
-              </div>
-            ))
-          ) : (
-            <p>No friends found.</p>
-          )}
+        {friends.length > 0 ? (
+  friends.map((req) => (
+    <div key={req.username} className="p-4 bg-white shadow rounded">
+      <div className="flex gap-2 items-center">
+        {req.pfp_id ? (
+          <img
+            src={`/api/get-pfp?id=${req.pfp_id}`}
+            className="h-8 w-8 rounded-full object-cover"
+            alt="Profile"
+          />
+        ) : (
+          <img
+            src="https://example.com/default-profile.png"
+            className="h-8 w-8 rounded-full object-cover"
+            alt="Default Profile"
+          />
+        )}
+        <Link to={`/${req.username}`}>
+          <p>{req.username}</p>
+        </Link>
+      </div>
+    </div>
+  ))
+) : (
+  <p>No friends found.</p>
+)}
+
         </div>
       </div>
 
@@ -112,20 +213,40 @@ const FriendsPage = () => {
         <h2 className="text-xl font-semibold">Incoming Requests</h2>
         {incomingRequests.length > 0 ? (
           incomingRequests.map((req) => (
-            <div key={req._id} className="flex items-center justify-between p-4 bg-gray-100 rounded mb-2">
-              <p>{req.sender_id}</p>
+            <div
+              key={req.sender_username}
+              className="flex items-center justify-between p-4 bg-gray-100 rounded mb-2"
+            >
+                      <div className="flex gap-2 items-center">
+      {req.pfp_id ? (
+            <img
+              src={`/api/get-pfp?id=${req.pfp_id}`}
+              className="h-8 w-8 rounded-full object-cover"
+              alt="Profile"
+            />
+          ) : (
+            <img
+              src="https://example.com/default-profile.png"
+              className="h-8 w-8 rounded-full object-cover"
+              alt="Default Profile"
+            />
+          )}
+              <Link to={`/${req.sender_username}`}>
+                <p>{req.sender_username}</p>
+              </Link>
+              </div>
               <div className="flex">
                 <button
-                  onClick={() => acceptRequest(req._id)}
+                  onClick={() => acceptRequest(req.request_id)}
                   className="bg-green-500 text-white px-4 py-2 rounded mr-2"
                 >
-                  Accept
+                  Confirm Request
                 </button>
                 <button
-                  onClick={() => denyRequest(req._id)}
+                  onClick={() => denyRequest(req.request_id)}
                   className="bg-red-500 text-white px-4 py-2 rounded"
                 >
-                  Deny
+                  Reject Request
                 </button>
               </div>
             </div>
@@ -135,18 +256,44 @@ const FriendsPage = () => {
         )}
       </div>
 
-      <div>
-        <h2 className="text-xl font-semibold">Sent Requests</h2>
-        {sentRequests.length > 0 ? (
-          sentRequests.map((req) => (
-            <div key={req._id} className="p-4 bg-gray-100 rounded mb-2">
-              <p>{req.receiver_id}</p>
-            </div>
-          ))
-        ) : (
-          <p>No sent requests.</p>
-        )}
+      <div className="mb-8">
+  <h2 className="text-xl font-semibold">Sent Requests</h2>
+  {sentRequests.length > 0 ? (
+    sentRequests.map((req) => (
+      <div
+        key={req.receiver_username}
+        className="flex items-center justify-between p-4 bg-gray-100 rounded mb-2"
+      >
+        <div className="flex gap-2 items-center">
+          {req.pfp_id ? (
+            <img
+              src={`/api/get-pfp?id=${req.pfp_id}`}
+              className="h-8 w-8 rounded-full object-cover"
+              alt="Profile"
+            />
+          ) : (
+            <img
+              src="https://example.com/default-profile.png"
+              className="h-8 w-8 rounded-full object-cover"
+              alt="Default Profile"
+            />
+          )}
+          <Link to={`/${req.receiver_username}`}>
+            <p>{req.receiver_username}</p>
+          </Link>
+        </div>
+        <button
+          onClick={() => cancelRequest(req.request_id)}
+          className="bg-yellow-500 text-white px-4 py-2 rounded"
+        >
+          Cancel
+        </button>
       </div>
+    ))
+  ) : (
+    <p>No sent requests.</p>
+  )}
+</div>
     </div>
   );
 };

@@ -1,27 +1,49 @@
 import express from 'express';
-import { 
-  sendFriendRequest, 
-  getFriends, 
-  getFriendRequests, 
-  acceptFriendRequest, 
-  denyFriendRequest 
+import {
+  sendFriendRequest,
+  getFriends,
+  getIncomingFriendRequests,
+  getSentFriendRequests,
+  acceptFriendRequest,
+  denyFriendRequest,
+  checkFriendRequestStatus,
+  cancelFriendRequest,
+  acceptFriendRequestfromProfile,
+  denyFriendRequestfromProfile,
 } from '../controllers/friendsController.js';
-
-import { verifyUser } from '../middlewares/friendsMiddleware.js';
+import getProfileByUserId from '../middlewares/friendMiddleware.js';
+import authenticateJWT from '../middlewares/authenticateJWT.js';
 
 const router = express.Router();
 
-// Route to send a friend request
-router.post('/api/send-request', verifyUser, sendFriendRequest);
+//Route to check friend request status
+router.get('/api/check-status', authenticateJWT, checkFriendRequestStatus);
 
-// Route to fetch friends, incoming, and sent requests
-router.get('/api/view-friends', verifyUser, getFriends);
-router.get('/api/view-requests', verifyUser, getFriendRequests);
+// Route to send a friend request
+router.post('/api/add-friend', authenticateJWT, sendFriendRequest);
+
+//Route to cancel friend request
+router.post('/api/cancel-request', authenticateJWT, cancelFriendRequest );
+
+// Route to fetch friends
+router.get('/api/view-friends', authenticateJWT, getProfileByUserId, getFriends);
+
+// Route to fetch incoming friend requests with usernames
+router.get('/api/view-incoming-requests',authenticateJWT, getProfileByUserId, getIncomingFriendRequests);
+
+// Route to accept request from profile
+router.post('/api/confirm-request', authenticateJWT, acceptFriendRequestfromProfile);
+
+//Route to reject request from profile
+router.post('/api/reject-request', authenticateJWT, denyFriendRequestfromProfile);
+
+// Route to fetch sent friend requests with usernames
+router.get('/api/view-sent-requests',authenticateJWT, getProfileByUserId, getSentFriendRequests);
 
 // Route to accept a friend request
-router.post('/api/accept-request', verifyUser, acceptFriendRequest);
+router.post('/api/accept-request', authenticateJWT, acceptFriendRequest);
 
 // Route to deny a friend request
-router.post('/api/deny-request', verifyUser, denyFriendRequest);
+router.post('/api/deny-request', authenticateJWT, denyFriendRequest);
 
 export default router;

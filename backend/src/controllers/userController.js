@@ -11,10 +11,12 @@ export const getUserProfileController = async (req, res) => {
     try{
       
       privateProfile = await PrivateInfo.findOne({email:email});
-      console.log("private profile: "+ privateProfile);
+      //console.log("private profile: "+ privateProfile);
       if(!privateProfile){
         return res.status(200).json({
+          unread_count:0,
           pfp_id: 1,
+          tags:[],
           user_id: '',
           username: '',
           email: email,  
@@ -22,7 +24,7 @@ export const getUserProfileController = async (req, res) => {
         });
       }
       publicProfile = await PublicInfo.findOne({ user_id: privateProfile.user_id });
-      console.log("public profile:"+publicProfile);
+      //console.log("public profile:"+publicProfile);
       
     }catch(e){
       console.log('error in getting the public/private info '+e)
@@ -30,7 +32,9 @@ export const getUserProfileController = async (req, res) => {
     //console.log(+' '+publicProfile.username+' '+privateProfile.email
     //  +' '+publicProfile.role)
     return res.status(200).json({
+      unread_count:privateProfile.unread_count,
       _id: privateProfile._id,
+      tags: publicProfile.tags,
       pfp_id:publicProfile.pfp_id,
       user_id: publicProfile.user_id,
       username: publicProfile.username,
@@ -68,7 +72,9 @@ export const getUserProfileController = async (req, res) => {
 
     // Return a combined profile response with username, role, and email
     return res.json({
+      unread_count:privateProfile.unread_count,
       _id: privateProfile._id,
+      tags: publicProfile.tags,
       pfp_id:publicProfile.pfp_id,
       user_id: publicProfile.user_id,
       username: publicProfile.username,

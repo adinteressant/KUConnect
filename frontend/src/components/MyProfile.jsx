@@ -46,8 +46,9 @@ const myprofile = () => {
 
     try {
       await axios.post('/api/change-password', {
-        currentpassword: passwordform.currentpassword,
-        newpassword: passwordform.newpassword
+        currentPassword: passwordform.currentpassword,
+        newPassword: passwordform.newpassword,
+        user_id: userprofile.user_id
       }, { withCredentials: true });
 
       alert('password changed successfully');
@@ -96,7 +97,7 @@ const myprofile = () => {
 
   async function handleTagSubmitButtom(){
       try {
-        await axios.post('/api/update-tags', { tags: usertags}, { withCredentials: true });
+        await axios.post('/api/update-tags', {tags: usertags,user_id:userprofile.user_id}, { withCredentials: true });
       } catch (error) {
         console.error('Error updating tags:', error);
         alert('Failed to update tags');
