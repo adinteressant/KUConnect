@@ -33,7 +33,15 @@ function Posts(props) {
     useEffect(() => {
       setPosts(() => props.posts)
       const updatedArray = props.posts.map((p) => {
-          return {postId: p._id, value: false, content: '', display: []}
+          const alreadyExists = showCommentBox.find((c) => c.postId === p._id)
+          if(alreadyExists)
+          {
+            return alreadyExists
+          }
+          else
+          {
+            return {postId: p._id, value: false, content: '', display: []}
+          }
       })
       setShowCommentBox(() => updatedArray)
     }, [props.posts])
