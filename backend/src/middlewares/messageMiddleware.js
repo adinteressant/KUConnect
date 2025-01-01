@@ -4,8 +4,8 @@ export const messageMiddleware = async (req,res,next) => {
   let senderId
   if(req.user.googleId){
     try{
-        const {_id} = await PrivateInfo.findOne({email:req.user.email})
-        senderId = _id
+        const {user_id} = await PrivateInfo.findOne({email:req.user.email})
+        senderId = user_id
 
        }
        catch(e){
@@ -13,8 +13,7 @@ export const messageMiddleware = async (req,res,next) => {
         return res.status(500).json({error:e})
        }
   }else{
-    const {_id} = await PrivateInfo.findOne({user_id:req.user})
-    senderId = _id
+    senderId = req.user
   }
    req.senderId = senderId
   
