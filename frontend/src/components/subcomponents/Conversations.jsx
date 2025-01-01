@@ -1,9 +1,7 @@
 import useConversation from '../../zustand/useConversation'
-import { useGetConversations } from '../hooks/useGetConversations'
 import { useGetUnreadMessage } from '../hooks/useGetUnreadMessage'
 
-export default function Conversations(){
-  const  {loading,conversations} = useGetConversations()
+export default function Conversations({conversations,loading}){
   const {selectedConversation,setSelectedConversation} = useConversation()
   const unreadMessages = useGetUnreadMessage()
   
