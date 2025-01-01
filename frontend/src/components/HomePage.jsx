@@ -232,7 +232,7 @@ const HomePage = () => {
           )}
         </div>
 
-        <Posts posts={filteredPosts} userProfile={userProfile}/>
+        <Posts posts={filteredPosts} setPosts={setPosts}/>
 
       </main>
     </div>

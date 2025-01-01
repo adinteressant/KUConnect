@@ -5,8 +5,8 @@ import ShowLikes from './LikeOverlay.jsx'
 import ShowComments from './CommentOverlay.jsx'
 
 //Props include:
-//User ko profile (object) jasle chalairako cha
 //Posts (array) jun dekhauna parney cha
+//Also send the setPosts function for state variable posts
 function Posts(props) {
 
     const [userProfile, setUserProfile] = useState({})
@@ -19,15 +19,19 @@ function Posts(props) {
     const [overlayTransitionState, setOverlayTransitionState] = useState(false)
 
     useEffect(() => {
-      setPosts(() => props.posts)
-    }, [props.posts])
-
-    useEffect(() => {
-      setUserProfile(() => props.userProfile)
-    }, [props.userProfile])
+      fetch('/api/get-user-profile')
+        .then((response) => response.json())
+        .then((data) => {
+          setUserProfile(data);
+        })
+        .catch((e) => {
+          console.error('Error fetching user profile:', e);
+        });
+    }, []);
 
     //For separate comments for separate posts
     useEffect(() => {
+      setPosts(() => props.posts)
       const updatedArray = props.posts.map((p) => {
           return {postId: p._id, value: false, content: '', display: []}
       })
@@ -36,7 +40,7 @@ function Posts(props) {
 
     //Fetch user liked posts data
     useEffect(() => {
-        fetch(`/api/users/${props.userProfile.user_id}/get-user-liked-posts-data`)
+        fetch(`/api/users/${userProfile.user_id}/get-user-liked-posts-data`)
         .then((response) => response.json())
         .then((data) => {
             setLikedPosts(() => data.likedPosts)
@@ -44,7 +48,7 @@ function Posts(props) {
         .catch((e) => {
             console.error('Error fetching liked posts:', e);
         });
-    }, [props.userProfile, props.posts, liked])
+    }, [userProfile, liked])
 
     //Handle like in post
     const handleLike = async(post) => {
@@ -63,11 +67,17 @@ function Posts(props) {
             {
                 setLiked((prev) => !prev)
 
-                setPosts((prevPosts) => 
+                props.setPosts((prevPosts) => 
                     prevPosts.map((p) =>
                         p._id === updatedPost.post._id ? { ...updatedPost.post, isUpdating: true } : p
                     )
                 )
+
+               setPosts((prevPosts) => 
+                  prevPosts.map((p) =>
+                      p._id === updatedPost.post._id ? { ...updatedPost.post, isUpdating: true } : p
+                  )
+              )
             
                 // Reset the isUpdating state after animation
                 setTimeout(() => {
@@ -76,6 +86,11 @@ function Posts(props) {
                             p._id === updatedPost.post._id ? { ...p, isUpdating: false } : p
                         )
                     )
+                    props.setPosts((prevPosts) => 
+                      prevPosts.map((p) =>
+                          p._id === updatedPost.post._id ? { ...updatedPost.post, isUpdating: false } : p
+                      )
+                  )
                 }, 300) // Match this with the animation duration
             }
             else
@@ -134,12 +149,23 @@ function Posts(props) {
                 created: updatedPost.created
             })} : p
             ))
+            props.setPosts((prevPosts) =>
+              prevPosts.map((p) =>
+                  p._id === updatedPost.post._id ? { ...updatedPost.post, isUpdating: true } : p
+              ))
             setPosts((prevPosts) =>
             prevPosts.map((p) =>
                 p._id === updatedPost.post._id ? { ...updatedPost.post, isUpdating: true } : p
             )
             )
             setTimeout(() => {
+
+              props.setPosts((prevPosts) =>
+                prevPosts.map((p) =>
+                p._id === updatedPost.post._id ? { ...p, isUpdating: false } : p
+                )
+            )
+              
             setPosts((prevPosts) =>
                 prevPosts.map((p) =>
                 p._id === updatedPost.post._id ? { ...p, isUpdating: false } : p
