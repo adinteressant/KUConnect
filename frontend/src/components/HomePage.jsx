@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from 'react'
 import { useOutletContext } from 'react-router-dom'
 import Fuse from 'fuse.js'
 import Posts from './subcomponents/Posts.jsx'
+import WelcomeModal from './subcomponents/WelcomeModal.jsx';
 
 const HomePage = () => {
   const [user, setUser] = useState(null)
@@ -15,6 +16,7 @@ const HomePage = () => {
   const [isTextareaFocused, setIsTextareaFocused] = useState(false)
   const [isTagsInputFocused, setIsTagsInputFocused] = useState(false)
   const [filteredPosts, setFilteredPosts] = useState([])
+  const [showWelcomeModal, setShowWelcomeModal] = useState(false);
   const {searchTrait,setSearchTrait} = useOutletContext()
 
   // Check for logged-in user based on isAuthenticated
@@ -22,12 +24,22 @@ const HomePage = () => {
     let isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
     if (isAuthenticated) {
       setUser({ email: 'user@example.com' });
+      const isNewLogin = sessionStorage.getItem('newLogin') === 'true';
+      if (isNewLogin) {
+        setShowWelcomeModal(true);
+        sessionStorage.removeItem('newLogin');
+      }
     } else {
       fetch('/api/google/status')
         .then((response) => response.json())
         .then((googleUserInfo) => {
           if (googleUserInfo?.email) {
             setGoogleUser(googleUserInfo.email);
+            const isNewGoogleLogin = sessionStorage.getItem('newGoogleLogin') === 'true';
+          if (isNewGoogleLogin) {
+            setShowWelcomeModal(true);
+            sessionStorage.removeItem('newGoogleLogin');
+          }
           }
         })
         .catch((error) => {
@@ -225,11 +237,14 @@ const HomePage = () => {
           )}
 
           {/* Displaying user profile */}
-          {(user || googleUser) && (
-            <div className="flex justify-between items-center mt-6 p-4 bg-gray-100 rounded-lg shadow-md">
-              <div className="text-gray-800">Welcome, {userProfile.username || userProfile.email?.split('@')[0]}</div>
-            </div>
-          )}
+          {(user || googleUser) && showWelcomeModal && (
+  <WelcomeModal
+    email={userProfile.email || googleUser}
+    username={userProfile.username || (userProfile.email || googleUser)?.split('@')[0]}
+    onClose={() => setShowWelcomeModal(false)}
+    pfp_id = {userProfile.pfp_id}
+  />
+)}
         </div>
 
         <Posts posts={filteredPosts} setPosts={setPosts}/>
