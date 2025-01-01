@@ -86,7 +86,7 @@ export const changeStatus = async (req,res) => {
     console.log(e)
   }
   
-  res.send('success')
+  res.send({msg:'success'})
 }
 
 export const getStatus = async (req,res) => {
