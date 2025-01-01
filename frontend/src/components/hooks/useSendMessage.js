@@ -8,7 +8,7 @@ const useSendMessage = () => {
   const sendMessage = async (message) => {
     setLoading(true)
     try {
-      const response = await fetch(`/api/message/send/${selectedConversation._id}`,
+      const response = await fetch(`/api/message/send/${selectedConversation.user_id}`,
         {
           method:'POST',
           headers:{

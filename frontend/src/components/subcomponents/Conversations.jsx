@@ -1,9 +1,7 @@
 import useConversation from '../../zustand/useConversation'
-import { useGetConversations } from '../hooks/useGetConversations'
 import { useGetUnreadMessage } from '../hooks/useGetUnreadMessage'
 
-export default function Conversations(){
-  const  {loading,conversations} = useGetConversations()
+export default function Conversations({conversations,loading}){
   const {selectedConversation,setSelectedConversation} = useConversation()
   const unreadMessages = useGetUnreadMessage()
   
@@ -32,17 +30,17 @@ export default function Conversations(){
       conversations.map((conversation,index)=>{
         let count = 0
           unreadMessages.forEach(unreadMessage => {
-            if(unreadMessage.senderId == conversation._id)  count++ 
+            if(unreadMessage.senderId == conversation.user_id)  count++ 
           })
-          if(selectedConversation?._id === conversation._id) count=0
+          if(selectedConversation?.user_id === conversation.user_id) count=0
         return (
         <div key={index} className={`hover:bg-slate-500 cursor-pointer flex justify-between
           px-3
-        ${ selectedConversation?._id === conversation._id ? `bg-slate-500` :``}
+        ${ selectedConversation?.user_id === conversation.user_id ? `bg-slate-500` :``}
         `}
         onClick={()=>{
             setSelectedConversation(conversation)
-            changeMessageStatus(conversation._id)
+            changeMessageStatus(conversation.user_id)
         }}
         >
             <div>{conversation.username}</div>

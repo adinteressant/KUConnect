@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import useConversation from '../../zustand/useConversation.js'
 import MessageHeader from './MessageHeader.jsx'
 import Messages from './Messages.jsx'
