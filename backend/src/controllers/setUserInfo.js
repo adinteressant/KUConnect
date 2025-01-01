@@ -32,7 +32,7 @@ export const setUserInfo = async (req,res) => {
   const privateInfo = new PrivateInfo({
     user_id: userId,
     email: gmail,
-    password_hash: 'password',
+    password_hash: hashPassword('password'),
     role: role,
     unread_count: 0,
   })

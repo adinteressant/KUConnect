@@ -1,7 +1,7 @@
 //Controller
 import Post from '../models/Post.js'; // Post model 
+import PublicInfo from '../models/PublicInfo.js';
 import PrivateInfo from '../models/PrivateInfo.js';
-
 // Get all posts
 export const getAllPosts = async (req, res) => {
   try {
@@ -38,14 +38,18 @@ export const createPost = async (req, res) => {
       content,
       tags: tags || [],
     });
-    let privateProfile = [];
 
-      tags.forEach(async (element) => {
-        privateProfile =  await PrivateInfo.find( { tags :  element  }) ;
-      });    
-    console.log(privateProfile);
-
-
+  const UsersWithTags = await PublicInfo.find({ tags: { $in: tags } });
+  const publicUid = UsersWithTags.map((e)=>e.user_id);
+  const PrivUsersWithTags = await PrivateInfo.find({user_id:{$in:publicUid}});
+  
+  await PrivateInfo.updateMany(
+  { user_id: { $in: publicUid } }, 
+  { $inc: { unread_count: 1  } } 
+  );
+  console.log("Incremented by 1!");
+//console.log(PrivUsersWithTags);   
+      //await PrivUsersWithTags.save(); 
     // Save the post in the database
     const savedPost = await newPost.save();
     res.status(201).json({ message: 'Post created successfully!', post: savedPost });
@@ -54,6 +58,7 @@ export const createPost = async (req, res) => {
     res.status(500).json({ message: 'Internal Server Error', error });
   }
 };
+
 
 // Share a post
 export const sharePost = async (req, res) => {
