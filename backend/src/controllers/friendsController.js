@@ -121,6 +121,7 @@ export const getIncomingFriendRequests = async (req, res) => {
         return {
           sender_username: senderInfo?.username || 'Unknown', // Sender's username
           request_id: request.request_id, // Friend request ID
+          pfp_id: senderInfo.pfp_id,    // Include profile picture ID
         };
       })
     );
@@ -147,7 +148,8 @@ export const getSentFriendRequests = async (req, res) => {
         const receiverInfo = await PublicInfo.findOne({ user_id: request.receiver_id });
         return {
           receiver_username: receiverInfo?.username || 'Unknown', // Receiver's username
-          request_id: request.request_id || 1, // Friend request ID
+          request_id: request.request_id, // Friend request ID
+          pfp_id: receiverInfo.pfp_id,    // Include profile picture ID
         };
       })
     );
@@ -248,9 +250,6 @@ export const acceptFriendRequestfromProfile = async (req, res) => {
     // Mark the request as accepted
     await request.updateOne({ status: 'accepted' });
 
-    // Add to friends list if needed
-    await User.findByIdAndUpdate(receiver_id, { $addToSet: { friends: sender_id } });
-    await User.findByIdAndUpdate(sender_id, { $addToSet: { friends: receiver_id } });
 
     res.status(200).json({ message: 'Friend request accepted' });
   } catch (err) {
