@@ -116,7 +116,7 @@ const FriendsPage = () => {
             ...prev,
             { username: acceptedRequest.sender_username, pfp_id: acceptedRequest.pfp_id },
           ]);
-          window.location.reload();
+          // window.location.reload();
         }
       })
       .catch((err) => console.error('Error accepting request:', err));
@@ -180,12 +180,12 @@ const FriendsPage = () => {
         <h2 className="text-xl font-semibold">Your Friends</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
         {friends.length > 0 ? (
-  friends.map((friend) => (
-    <div key={friend.username} className="p-4 bg-white shadow rounded">
+  friends.map((req) => (
+    <div key={req.username} className="p-4 bg-white shadow rounded">
       <div className="flex gap-2 items-center">
-        {friend.pfp_id ? (
+        {req.pfp_id ? (
           <img
-            src={`/api/get-pfp?id=${friend.pfp_id}`}
+            src={`/api/get-pfp?id=${req.pfp_id}`}
             className="h-8 w-8 rounded-full object-cover"
             alt="Profile"
           />
@@ -196,8 +196,8 @@ const FriendsPage = () => {
             alt="Default Profile"
           />
         )}
-        <Link to={`/${friend.username}`}>
-          <p>{friend.username}</p>
+        <Link to={`/${req.username}`}>
+          <p>{req.username}</p>
         </Link>
       </div>
     </div>
@@ -217,9 +217,24 @@ const FriendsPage = () => {
               key={req.sender_username}
               className="flex items-center justify-between p-4 bg-gray-100 rounded mb-2"
             >
+                      <div className="flex gap-2 items-center">
+      {req.pfp_id ? (
+            <img
+              src={`/api/get-pfp?id=${req.pfp_id}`}
+              className="h-8 w-8 rounded-full object-cover"
+              alt="Profile"
+            />
+          ) : (
+            <img
+              src="https://example.com/default-profile.png"
+              className="h-8 w-8 rounded-full object-cover"
+              alt="Default Profile"
+            />
+          )}
               <Link to={`/${req.sender_username}`}>
                 <p>{req.sender_username}</p>
               </Link>
+              </div>
               <div className="flex">
                 <button
                   onClick={() => acceptRequest(req.request_id)}
@@ -242,28 +257,43 @@ const FriendsPage = () => {
       </div>
 
       <div className="mb-8">
-        <h2 className="text-xl font-semibold">Sent Requests</h2>
-        {sentRequests.length > 0 ? (
-          sentRequests.map((req) => (
-            <div
-              key={req.receiver_username}
-              className="flex items-center justify-between p-4 bg-gray-100 rounded mb-2"
-            >
-              <Link to={`/${req.receiver_username}`}>
-                <p>{req.receiver_username}</p>
-              </Link>
-              <button
-                onClick={() => cancelRequest(req.request_id)}
-                className="bg-yellow-500 text-white px-4 py-2 rounded"
-              >
-                Cancel
-              </button>
-            </div>
-          ))
-        ) : (
-          <p>No sent requests.</p>
-        )}
+  <h2 className="text-xl font-semibold">Sent Requests</h2>
+  {sentRequests.length > 0 ? (
+    sentRequests.map((req) => (
+      <div
+        key={req.receiver_username}
+        className="flex items-center justify-between p-4 bg-gray-100 rounded mb-2"
+      >
+        <div className="flex gap-2 items-center">
+          {req.pfp_id ? (
+            <img
+              src={`/api/get-pfp?id=${req.pfp_id}`}
+              className="h-8 w-8 rounded-full object-cover"
+              alt="Profile"
+            />
+          ) : (
+            <img
+              src="https://example.com/default-profile.png"
+              className="h-8 w-8 rounded-full object-cover"
+              alt="Default Profile"
+            />
+          )}
+          <Link to={`/${req.receiver_username}`}>
+            <p>{req.receiver_username}</p>
+          </Link>
+        </div>
+        <button
+          onClick={() => cancelRequest(req.request_id)}
+          className="bg-yellow-500 text-white px-4 py-2 rounded"
+        >
+          Cancel
+        </button>
       </div>
+    ))
+  ) : (
+    <p>No sent requests.</p>
+  )}
+</div>
     </div>
   );
 };

@@ -121,6 +121,7 @@ export const getIncomingFriendRequests = async (req, res) => {
         return {
           sender_username: senderInfo?.username || 'Unknown', // Sender's username
           request_id: request.request_id, // Friend request ID
+          pfp_id: senderInfo.pfp_id,    // Include profile picture ID
         };
       })
     );
@@ -147,7 +148,8 @@ export const getSentFriendRequests = async (req, res) => {
         const receiverInfo = await PublicInfo.findOne({ user_id: request.receiver_id });
         return {
           receiver_username: receiverInfo?.username || 'Unknown', // Receiver's username
-          request_id: request.request_id || 1, // Friend request ID
+          request_id: request.request_id, // Friend request ID
+          pfp_id: receiverInfo.pfp_id,    // Include profile picture ID
         };
       })
     );
