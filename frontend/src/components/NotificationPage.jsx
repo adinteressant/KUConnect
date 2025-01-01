@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import formatTimeAgo from '../utils/generateTimeAgo.js';
 
 const NotificationPage = () => {
   const [userProfile, setUserProfile] = useState({tags:[]});
@@ -48,6 +49,13 @@ const NotificationPage = () => {
     setFilteredPosts(filteredPosts);
   }, [userProfile.tags, userPosts]);
 
+  useEffect(() => {
+    async function clearNotification(){
+
+    }
+  }, []);
+
+
   return (
     <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-full h-full max-h-full">
       <h1 className="text-4xl font-serif text-gray-800 mb-6">Notifications</h1>
@@ -64,7 +72,7 @@ const NotificationPage = () => {
                   </h3>
                   <p className="text-gray-600">{post.content}</p>
                 </div>
-                <div className="text-gray-400">{post.createdAt}</div>
+                <div className="text-gray-400">{formatTimeAgo(post.createdAt)}</div>
               </div>
             </div>
           ))}
