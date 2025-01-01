@@ -16,4 +16,7 @@ router.post('/api/posts/:postId/share', sharePost)
 //Search a post by tag
 router.get('/api/posts/search', searchPostsByTag)
 
+//To get posts of specific user
+router.get('/api/posts/user/:userId/get-user-posts')
+
 export default router;
