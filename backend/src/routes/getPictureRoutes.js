@@ -1,5 +1,5 @@
 import express from 'express';
-import getPictureController from '../controllers/getPicutreController.js';
+import getPictureController from '../controllers/getPictureController.js';
 
 const router = express.Router();
 
