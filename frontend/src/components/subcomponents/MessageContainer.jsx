@@ -15,7 +15,10 @@ export default function MessageContainer(){
     ) : 
     (
       <>
-      <MessageHeader username={selectedConversation.username}/>
+      <MessageHeader 
+        username={selectedConversation.username} 
+        userId={selectedConversation.userId} // Make sure this matches one of your image IDs (1-5)
+      />      
       <Messages/>
       <SendMessage/>
       </>
