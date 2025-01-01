@@ -1,68 +1,10 @@
-// import useConversation from '../../zustand/useConversation'
-// import { useGetUnreadMessage } from '../hooks/useGetUnreadMessage'
-
-// export default function Conversations({conversations,loading}){
-//   const {selectedConversation,setSelectedConversation} = useConversation()
-//   const unreadMessages = useGetUnreadMessage()
-  
-//   const changeMessageStatus = (id) => {
-//     fetch(`/api/change-message-status/${id}`,{
-//       method:'PATCH',
-//       headers:{
-//         'Content-Type':'application/json',
-//       }
-//     })
-//     .then(response => response.json())
-//     .then(data =>{
-//       console.log(data)
-//     })
-//     .catch((e) => {
-//       console.log(e)
-//     })
-//   }
-
-//   return <div className="flex flex-col gap-4 mt-5">
-
-//     {
-//       loading?
-//         <div>Loading...</div>
-//       :
-//       conversations.map((conversation,index)=>{
-//         let count = 0
-//           unreadMessages.forEach(unreadMessage => {
-//             if(unreadMessage.senderId == conversation.user_id)  count++ 
-//           })
-//           if(selectedConversation?.user_id === conversation.user_id) count=0
-//         return (
-//         <div key={index} className={`hover:bg-slate-500 cursor-pointer flex justify-between
-//           px-3
-//         ${ selectedConversation?.user_id === conversation.user_id ? `bg-slate-500` :``}
-//         `}
-//         onClick={()=>{
-//             setSelectedConversation(conversation)
-//             changeMessageStatus(conversation.user_id)
-//         }}
-//         >
-//             <div>{conversation.username}</div>
-//             {
-//               count!=0 && (
-//                 <div className="px-1 rounded-full text-white bg-red-600">{count}</div>
-//               )
-//             }
-            
-//         </div>
-//       )}
-//     )
-//     }
-//   </div>
-// }
-import { useMemo } from 'react';
-import useConversation from '../../zustand/useConversation';
-import { useGetUnreadMessage } from '../hooks/useGetUnreadMessage';
+import { useMemo } from 'react'
+import useConversation from '../../zustand/useConversation'
+import { useGetUnreadMessage } from '../hooks/useGetUnreadMessage'
 
 export default function Conversations({ conversations, loading }) {
-  const { selectedConversation, setSelectedConversation } = useConversation();
-  const unreadMessages = useGetUnreadMessage();
+  const { selectedConversation, setSelectedConversation } = useConversation()
+  const unreadMessages = useGetUnreadMessage()
 
   // Memoize the count calculation for better performance
   const enhancedConversations = useMemo(() => {
@@ -71,11 +13,11 @@ export default function Conversations({ conversations, loading }) {
         (unreadMessage) => unreadMessage.senderId === conversation.user_id
       ).length;
 
-      if (selectedConversation?.user_id === conversation.user_id) count = 0;
+      if (selectedConversation?.user_id === conversation.user_id) count = 0
 
-      return { ...conversation, count };
-    });
-  }, [conversations, unreadMessages, selectedConversation]);
+      return { ...conversation, count }
+    })
+  }, [conversations, unreadMessages, selectedConversation])
 
   const changeMessageStatus = (id) => {
     fetch(`/api/change-message-status/${id}`, {
@@ -86,10 +28,10 @@ export default function Conversations({ conversations, loading }) {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
+        console.log(data)
       })
       .catch((e) => {
-        console.log(e);
+        console.log(e)
       });
   };
 
@@ -107,8 +49,8 @@ export default function Conversations({ conversations, loading }) {
                 : ``
             }`}
             onClick={() => {
-              setSelectedConversation(conversation);
-              changeMessageStatus(conversation.user_id);
+              setSelectedConversation(conversation)
+              changeMessageStatus(conversation.user_id)
             }}
           >
             <div>{conversation.username}</div>
@@ -121,5 +63,5 @@ export default function Conversations({ conversations, loading }) {
         ))
       )}
     </div>
-  );
+  )
 }
