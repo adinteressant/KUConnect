@@ -27,15 +27,15 @@ const WelcomeModal = ({ email, username, onClose, pfp_id }) => {
           </div>
           
           <div className="text-center">
-            <h2 className="text-2xl font-bold text-teal-600 mb-2">Welcome to KUConnect</h2>
+            <h2 className="text-2xl font-bold text-cyan-600 mb-2">Welcome to KUConnect</h2>
             <p className="text-gray-600 mb-4">You are now connected with the email: <br /> {email}<br />
             You are visible to other users with the username</p>
-            <h3 className="text-xl font-semibold mb-4">{username}!</h3>
+            <h3 className="text-xl font-semibold mb-4">{username}</h3>
           </div>
           
           <button 
             onClick={onClose}
-            className="bg-teal-600 text-white px-8 py-2 rounded-full hover:bg-teal-700 transition-colors"
+            className="bg-cyan-600 text-white px-8 py-2 rounded-full hover:bg-cyan-700 transition-colors"
           >
             Next
           </button>
