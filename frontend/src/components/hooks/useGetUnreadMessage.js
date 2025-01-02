@@ -1,16 +1,17 @@
-import { useState,useEffect } from 'react'
+import { useEffect } from 'react'
+import useNewMessages from '../../zustand/useNewMessages'
 
 export const useGetUnreadMessage = () => {
-  const [newMessages,setNewMessages] = useState([])
+  const {newMessages,setNewMessages} = useNewMessages()
   useEffect(()=>{
     fetch(`/api/get-message-status/`)
     .then(response => response.json())
-    .then(data => {
+    .then(data => { 
       setNewMessages(data.newMessages)
     })
     .catch(e => {
       console.log(e)
     })
-  },[])
-  return newMessages
+  },[newMessages.length]) 
+  // return newMessages
 }
