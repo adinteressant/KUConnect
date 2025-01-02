@@ -181,10 +181,19 @@ const HomePage = () => {
 
   return (
     <div className="flex-1 flex flex-col min-h-screen bg-gray-100">
+      {/* Displaying user profile */}
+      {(user || googleUser) && showWelcomeModal && (
+            <WelcomeModal
+              email={userProfile.email || googleUser}
+              username={userProfile.username || (userProfile.email || googleUser)?.split('@')[0]}
+              onClose={() => setShowWelcomeModal(false)}
+              pfp_id = {userProfile.pfp_id}
+            />
+      )}
       <main className="flex-1 p-6 overflow-y-auto">
         <div className="max-w-2xl mx-auto space-y-4">
           {/* Post creation section */}
-          {(user || googleUser) ? (
+          {searchTrait.length===0 && ((user || googleUser) ? (
             <div
               className={`bg-white p-4 rounded-lg shadow-md transition-all duration-300 h-auto`}
             >
@@ -234,17 +243,8 @@ const HomePage = () => {
             <div className="bg-yellow-100 text-yellow-800 p-4 rounded-lg shadow-md">
               Please <a href="/login" className="text-cyan-600">log in</a> to post.
             </div>
-          )}
+          ))}
 
-          {/* Displaying user profile */}
-          {(user || googleUser) && showWelcomeModal && (
-  <WelcomeModal
-    email={userProfile.email || googleUser}
-    username={userProfile.username || (userProfile.email || googleUser)?.split('@')[0]}
-    onClose={() => setShowWelcomeModal(false)}
-    pfp_id = {userProfile.pfp_id}
-  />
-)}
         </div>
 
         <Posts posts={filteredPosts} setPosts={setPosts}/>

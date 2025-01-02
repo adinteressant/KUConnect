@@ -91,3 +91,18 @@ export const searchPostsByTag = async (req, res) => {
     res.status(500).json({ message: 'Server error while searching posts' });
   }
 };
+
+export const userPosts = async(req, res) => {
+  try
+  {
+    const userId = req.params.userId
+
+    const posts = await Post.find({ userId }).sort({ createdAt: -1 })
+
+    res.status(200).json({ message:"Posts fetched successfully", posts })
+  }
+  catch(error)
+  {
+    res.status(500).json("Error in getting user's posts: ", error)
+  }
+}
