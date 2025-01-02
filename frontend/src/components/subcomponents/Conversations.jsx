@@ -46,9 +46,9 @@ export default function Conversations({ conversations, loading }) {
         enhancedConversations.map((conversation, index) => (
           <div
             key={index}
-            className={`hover:bg-slate-500 cursor-pointer flex justify-between px-3 ${
+            className={`hover:bg-gray-200 cursor-pointer rounded-md flex justify-between px-3 ${
               selectedConversation?.user_id === conversation.user_id
-                ? `bg-slate-500`
+                ? `bg-gray-200`
                 : ``
             }`}
             onClick={() => {
@@ -57,7 +57,13 @@ export default function Conversations({ conversations, loading }) {
               setNewMessages([])
             }}
           >
-            <div>{conversation.username}</div>
+        <div className="flex items-center gap-3 p-2">
+            <div>
+           <img src = "images/light.svg" className="w-10 h-10 rounded-full object-cover border border-gray-200" />
+           </div>
+           <div>
+            {conversation.username}</div>
+            </div>
             {conversation.count !== 0 && (
               <div className="px-1 rounded-full text-white bg-red-600">
                 {conversation.count}

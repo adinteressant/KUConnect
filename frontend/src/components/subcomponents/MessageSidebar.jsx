@@ -22,15 +22,15 @@ export default function MessageSidebar() {
     }
   }
   return (
-    <div className="fixed top-14 bottom-0 w-72 border-r border-cyan-600/20 bg-white shadow-lg">
-      <div className="p-4">
+    <div className="sticky bg-white">
+      <div className="p-4 fixed h-screen">
         {/* Search Section */}
         <div className="relative">
           <input
             type="text"
             placeholder="Search conversations..."
             onChange={handleChange}
-            className="w-full px-4 py-2 pr-10 text-sm rounded-lg border border-cyan-200 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-200 focus:outline-none transition-all placeholder:text-gray-400"
+            className="w-full px-4 py-2 pr-10 text-sm rounded-lg border border-gray-200 focus:border-gray-300 focus:ring-2 focus:ring-gray-300 focus:outline-none transition-all placeholder:text-gray-400"
           />
           <button 
             type="submit"
