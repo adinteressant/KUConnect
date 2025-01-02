@@ -22,8 +22,8 @@ export default function MessageSidebar() {
     }
   }
   return (
-    <div className="fixed top-14 bottom-0 w-72 border-r border-cyan-600/20 bg-white shadow-lg">
-      <div className="p-4">
+    <div className="sticky bg-white ">
+      <div className="p-4 fixed h-screen">
         {/* Search Section */}
         <div className="relative">
           <input
