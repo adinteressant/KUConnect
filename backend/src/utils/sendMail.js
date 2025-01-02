@@ -5,8 +5,8 @@ const transporter = nodemailer.createTransport({
   port: 465,
   secure: true,
   auth: {
-    user: "kuconnect2002@gmail.com",
-    pass: "rtmydajroygnhbfk",
+    user: `${process.env.EMAIL}`,
+    pass: `${process.env.SENDMAIL_PASSWORD}`,
   },
 })
 
@@ -15,7 +15,7 @@ export default async function sendMail(to,otp) {
   try{
     // send mail with defined transport object
     const info = await transporter.sendMail({
-      from: '"KUConnect" <kuconnect2002@gmail.com>', //sender
+      from: `"KUConnect" <${process.env.EMAIL}>`, //sender
       to,  //receiver
       subject:'Your OTP for Account Registration', 
       text:'',
