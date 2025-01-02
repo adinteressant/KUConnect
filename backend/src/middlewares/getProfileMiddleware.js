@@ -2,6 +2,17 @@ import PublicInfo from '../models/PublicInfo.js'
 
 const getProfileMiddleware = async (req,res,next) => {
   const {username} = req.query
+
+  if(!username){
+    try{
+      const publicInfo = await PublicInfo.find()
+      return res.status(200).json(publicInfo)
+    }
+    catch(e){
+      return res.status(500).json({error:e})
+    }
+    
+  }
   
   try{
     const publicInfo = await PublicInfo.findOne({username}) 
