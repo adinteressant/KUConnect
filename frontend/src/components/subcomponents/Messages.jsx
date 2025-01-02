@@ -7,7 +7,7 @@ export default function Messages(){
   const {loading,messages} = useGetMessage()
   
   return (
-    <div className="flex-1 overflow-y-auto p-4 space-y-4">
+    <div className="flex-1 overflow-hidden p-4 space-y-4">
       {loading ? (
         <div className="flex items-center justify-center h-full">
           <Loader2 className="w-6 h-6 text-indigo-600 animate-spin" />
@@ -17,7 +17,7 @@ export default function Messages(){
           <Message key={message._id} message={message} /> 
         ))
       ) : (
-        <div className="flex items-center overflow-y-auto justify-center h-full text-gray-500">
+        <div className="flex items-center overflow-hidden justify-center h-full text-gray-500">
           Start a conversation
         </div>
       )}
