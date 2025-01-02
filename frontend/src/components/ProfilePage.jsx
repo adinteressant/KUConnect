@@ -209,7 +209,11 @@ export default function ProfilePage() {
               ) : status === 'pending' ? (
                 <p className="mt-6 text-green-600">Friend Request Sent!</p>
               ) : status === 'accepted' ? (
-                <p className="mt-6 text-green-600">You are already friends!</p>
+                <button
+                  className="mt-6 bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-blue-600 transition"
+                >
+                  Friends
+                </button>
                 ) : status ==='incoming' ? (
                   <>
                   <p className="mt-6 text-green-600">User has sent you a friend request!</p><br />
