@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Search, User, ChevronDown, LogOut, LogIn, UserPlus, UserCircle } from 'lucide-react';
 import axios from 'axios';
+import { useRequestCount } from '../zustand/useRequestCount';
 
 const Navigation = ({ setVisibility, setPadding,searchTrait,setSearchTrait}) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);

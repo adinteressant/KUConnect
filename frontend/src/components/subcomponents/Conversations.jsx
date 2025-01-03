@@ -2,22 +2,31 @@ import { useMemo } from 'react'
 import useConversation from '../../zustand/useConversation'
 import { useGetUnreadMessage } from '../hooks/useGetUnreadMessage'
 import useNewMessages from '../../zustand/useNewMessages'
+import useGetProfile from '../hooks/useGetProfile'
 
 export default function Conversations({ conversations, loading }) {
   const { selectedConversation, setSelectedConversation } = useConversation()
   useGetUnreadMessage()
+  const userProfiles = useGetProfile()
   const {newMessages,setNewMessages} = useNewMessages()
 
   // Memoize the count calculation for better performance
     const enhancedConversations = useMemo(() => {
       return conversations.map((conversation) => {
+        let pfp_id
+        userProfiles.forEach((userProfile)=>{
+          if(userProfile.user_id == conversation.user_id){
+            pfp_id = userProfile.pfp_id
+            return
+          }
+        })
         let count = newMessages.filter(
           (unreadMessage) => unreadMessage.senderId === conversation.user_id
         ).length;
   
         if (selectedConversation?.user_id === conversation.user_id) count = 0
   
-        return { ...conversation, count }
+        return { ...conversation, count,pfp_id }
       })
     }, [conversations, newMessages, selectedConversation])
   
@@ -39,36 +48,46 @@ export default function Conversations({ conversations, loading }) {
   
 
   return (
-    <div className="flex flex-col gap-4 mt-5">
+    <div className="flex flex-col mt-5">
       {loading ? (
         <div>Loading...</div>
       ) : (
         enhancedConversations.map((conversation, index) => (
           <div
             key={index}
-            className={`hover:bg-gray-200 cursor-pointer rounded-md flex justify-between px-3 ${
-              selectedConversation?.user_id === conversation.user_id
+            className={`hover:bg-gray-200 cursor-pointer hover:rounded-md flex justify-between
+               px-3 border-gray-200 border-b text-gray-800
+               ${selectedConversation?.user_id === conversation.user_id
                 ? `bg-gray-200`
-                : ``
-            }`}
+                : ``}
+                ${conversation.count ? `font-semibold`: ``}
+                `
+              }
             onClick={() => {
               setSelectedConversation(conversation)
               changeMessageStatus(conversation.user_id)
-              setNewMessages([])
+              if(conversation.count) setNewMessages([])
             }}
           >
-        <div className="flex items-center gap-3 p-2">
+        <div className="flex items-center gap-4 p-2 w-full ">
             <div>
-           <img src = "images/light.svg" className="w-10 h-10 rounded-full object-cover border border-gray-200" />
-           </div>
-           <div>
-            {conversation.username}</div>
+            <img src={`/api/get-pfp?id=${conversation.pfp_id}`}
+            alt={`${conversation.username}'s profile`} className="rounded-full object-cover border border-gray-200 h-10 w-14" />
             </div>
-            {conversation.count !== 0 && (
-              <div className="px-1 rounded-full text-white bg-red-600">
-                {conversation.count}
+            <div className="flex items-center justify-between w-full">
+              <div>
+                {conversation.username}
               </div>
-            )}
+              {conversation.count !== 0 && (
+              <div className="px-1 h-5 w-5 rounded-full text-white bg-red-600 flex
+              justify-center items-center
+              ">
+                <div className="text-sm">{conversation.count}</div>
+                
+              </div>
+              )}
+              </div>
+            </div>
           </div>
         ))
       )}

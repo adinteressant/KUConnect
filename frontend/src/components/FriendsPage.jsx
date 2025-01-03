@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { Users, UserPlus, Clock } from 'lucide-react';
+import { useRequestCount } from '../zustand/useRequestCount';
 
 const FriendsPage = () => {
   const [activeTab, setActiveTab] = useState('friends');
@@ -11,8 +12,9 @@ const FriendsPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [userProfile, setUserProfile] = useState({});
+  const { unviewedRequestCount, setUnviewedRequestCount, viewedRequestCount, setViewedRequestCount } = useRequestCount();
 
-  // Keeping all your existing useEffect and API calls exactly the same
+  // Fetch user profile
   useEffect(() => {
     (async () => {
       try {
@@ -30,6 +32,7 @@ const FriendsPage = () => {
 
   const user_id = userProfile.user_id;
 
+  // Fetch friends, incoming requests, and sent requests
   useEffect(() => {
     if (!user_id) return;
 
@@ -67,6 +70,7 @@ const FriendsPage = () => {
         })
         .then((data) => {
           setIncomingRequests(data.incoming || []);
+          setUnviewedRequestCount(data.incoming.length || 0);
         })
         .catch((err) => {
           console.error('Error fetching incoming requests:', err);
@@ -95,7 +99,7 @@ const FriendsPage = () => {
       .finally(() => setLoading(false));
   }, [user_id]);
 
-  // Keeping all your existing request handling functions
+  // Accept request
   const acceptRequest = (request_id) => {
     fetch('/api/accept-request', {
       method: 'POST',
@@ -119,9 +123,10 @@ const FriendsPage = () => {
           ]);
         }
       })
-      .catch((err) => console.error('Error accepting request:', err));
+      .catch((err) => console.error('Error accepting request:', err))
   };
 
+  // Deny request
   const denyRequest = (request_id) => {
     fetch('/api/deny-request', {
       method: 'POST',
@@ -138,9 +143,10 @@ const FriendsPage = () => {
       .then(() => {
         setIncomingRequests((prev) => prev.filter((req) => req.request_id !== request_id));
       })
-      .catch((err) => console.error('Error denying request:', err));
+      .catch((err) => console.error('Error denying request:', err))
   };
 
+  // Cancel sent request
   const cancelRequest = (request_id) => {
     fetch('/api/cancel-request', {
       method: 'POST',
@@ -157,8 +163,18 @@ const FriendsPage = () => {
       .then(() => {
         setSentRequests((prev) => prev.filter((req) => req.request_id !== request_id));
       })
-      .catch((err) => console.error('Error canceling request:', err));
+      .catch((err) => console.error('Error canceling request:', err))
   };
+
+  // Handle tab change
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    if (tab === 'requests') {
+    setViewedRequestCount(incomingRequests.length);
+    setUnviewedRequestCount(0);
+  }
+      console.log(`viewed request count ${viewedRequestCount} unviewed request count ${unviewedRequestCount} incoming request count ${incomingRequests.length}`);
+    }
 
   if (loading) {
     return (
@@ -183,7 +199,7 @@ const FriendsPage = () => {
         
         <div className="flex space-x-2 mb-6 border-b">
           <button
-            onClick={() => setActiveTab('friends')}
+            onClick={() => handleTabChange('friends')}
             className={`flex items-center gap-2 px-4 py-2 font-medium transition-colors ${
               activeTab === 'friends'
                 ? 'text-blue-600 border-b-2 border-blue-600'
@@ -194,7 +210,7 @@ const FriendsPage = () => {
             Friends ({friends.length})
           </button>
           <button
-            onClick={() => setActiveTab('requests')}
+            onClick={() => handleTabChange('requests')}
             className={`flex items-center gap-2 px-4 py-2 font-medium transition-colors ${
               activeTab === 'requests'
                 ? 'text-blue-600 border-b-2 border-blue-600'
@@ -205,7 +221,7 @@ const FriendsPage = () => {
             Requests ({incomingRequests.length})
           </button>
           <button
-            onClick={() => setActiveTab('sent')}
+            onClick={() => handleTabChange('sent')}
             className={`flex items-center gap-2 px-4 py-2 font-medium transition-colors ${
               activeTab === 'sent'
                 ? 'text-blue-600 border-b-2 border-blue-600'

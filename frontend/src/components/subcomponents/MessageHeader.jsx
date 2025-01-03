@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 export default function MessageHeader({ username }) {
   const [profileData, setProfileData] = useState({
@@ -126,7 +127,14 @@ export default function MessageHeader({ username }) {
     </span>
   </div>
 )}
-        <div className="font-medium text-gray-900">{username}</div>
+
+        <div className="font-medium text-gray-900">
+        <Link 
+                    to={`/${username}`}
+                    className="font-medium hover:text-blue-600 hover:underline"
+                  >{username}
+                  </Link>
+                  </div>
       </div>
     
   </div>
