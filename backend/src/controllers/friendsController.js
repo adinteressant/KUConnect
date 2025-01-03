@@ -278,3 +278,26 @@ export const denyFriendRequestfromProfile = async (req,res) => {
     res.status(500).json({ message: 'Failed to deny request' });
   }
 };
+
+export const cancelFriendRequestfromProfile = async (req,res) => {
+  console.log('Cancel request received:', req.body);
+
+  const { sender_id, receiver_id } = req.body;
+
+  try {
+    // Find the friend request
+    const request = await FriendRequest.findOne({ sender_id, receiver_id });
+    
+    if (!request) {
+      return res.status(404).json({ message: 'Friend request not found' });
+    }
+
+    // Remove or mark the request as cancelled
+    await request.deleteOne();
+
+    res.status(200).json({ message: 'Friend request cancelled' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Failed to cancel request' });
+  }
+};

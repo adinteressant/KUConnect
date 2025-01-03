@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import Posts from './subcomponents/Posts.jsx'
+import useRequestCount from '../zustand/useRequestCount.js';
 
 export default function ProfilePage() {
   const { username } = useParams();
@@ -12,8 +13,11 @@ export default function ProfilePage() {
   });
   const [userProfile, setUserProfile] = useState({});
   const [incomingRequests, setIncomingRequests] = useState([]);
+  const [sentRequests, setSentRequests] = useState([]);
   const [status, setStatus] = useState('none')
   const [posts, setPosts] = useState([])
+  const { incomingRequestsCount, setIncomingRequestsCount } = useRequestCount();
+
 
   useEffect(() => {
     // Fetch profile data
@@ -80,12 +84,36 @@ export default function ProfilePage() {
       })
       .then(() => {
         setStatus('accepted');
+        setIncomingRequestsCount(incomingRequestsCount-1);
         setIncomingRequests((prev) =>
           prev.filter((req) => req.sender_id !== sender_id)
         );
       })
       .catch((err) => console.error('Error accepting request:', err));
   };
+
+    // Cancel sent request
+    const cancelRequest = () => {
+          const sender_id = userProfile.user_id;
+    const receiver_id = profileData.user_id; 
+      fetch('/api/cancel-sent-request', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ sender_id, receiver_id }),
+        credentials: 'same-origin',
+      })
+        .then((response) => {
+          setStatus('none');
+          if (!response.ok) throw new Error('Failed to cancel request');
+          return response.json();
+        })
+        .then(() => {
+          setSentRequests((prev) => prev.filter((req) => req.request_id !== request_id));
+        })
+        .catch((err) => console.error('Error canceling request:', err))
+    };
   
   const rejectRequest = () => {
     const receiver_id = userProfile.user_id;
@@ -105,6 +133,7 @@ export default function ProfilePage() {
       })
       .then(() => {
         setStatus('none');
+        setIncomingRequestsCount(incomingRequestsCount-1);
         setIncomingRequests((prev) =>
           prev.filter((req) => req.sender_id !== sender_id)
         );
@@ -206,8 +235,15 @@ export default function ProfilePage() {
                 >
                   Add Friend
                 </button>
-              ) : status === 'pending' ? (
+              ) : status === 'pending' ? (<>
                 <p className="mt-6 text-green-600">Friend Request Sent!</p>
+                <button
+                    onClick={cancelRequest}
+                    className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  </>
               ) : status === 'accepted' ? (
                 <button
                   className="mt-6 bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-blue-600 transition"

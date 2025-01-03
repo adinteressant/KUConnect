@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { Users, UserPlus, Clock } from 'lucide-react';
+import useRequestCount from '../zustand/useRequestCount';
 
 const FriendsPage = () => {
   const [activeTab, setActiveTab] = useState('friends');
@@ -11,6 +12,7 @@ const FriendsPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [userProfile, setUserProfile] = useState({});
+  const { incomingRequestsCount, setIncomingRequestsCount } = useRequestCount();
 
   // Fetch user profile
   useEffect(() => {
@@ -68,6 +70,7 @@ const FriendsPage = () => {
         })
         .then((data) => {
           setIncomingRequests(data.incoming || []);
+          setIncomingRequestsCount(data.incoming.length || 0);
         })
         .catch((err) => {
           console.error('Error fetching incoming requests:', err);
@@ -113,6 +116,7 @@ const FriendsPage = () => {
       .then(() => {
         const acceptedRequest = incomingRequests.find((req) => req.request_id === request_id);
         setIncomingRequests((prev) => prev.filter((req) => req.request_id !== request_id));
+        setIncomingRequestsCount(incomingRequestsCount - 1);
         if (acceptedRequest) {
           setFriends((prev) => [
             ...prev,
@@ -139,6 +143,7 @@ const FriendsPage = () => {
       })
       .then(() => {
         setIncomingRequests((prev) => prev.filter((req) => req.request_id !== request_id));
+        setIncomingRequestsCount(incomingRequestsCount - 1);
       })
       .catch((err) => console.error('Error denying request:', err))
   };
