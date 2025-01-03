@@ -7,38 +7,54 @@ import {
 import { NavLink } from 'react-router-dom';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import { useRequestCount } from '../zustand/useRequestCount';
 
 export default function Sidebar() {
   const [userProfile, setUserProfile] = useState({});
-  const { unviewedRequestCount, setUnviewedRequestCount, viewedRequestCount } = useRequestCount();
+  const [requestsCount, setRequestsCount] = useState(0);
 
-  // Fetch user profile and incoming request count on component mount
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        // Get user profile data
-        const profileResponse = await axios.get('/api/get-user-profile/');
-        setUserProfile(profileResponse.data);
+    // Fetch user profile
+    useEffect(() => {
+      (async () => {
+        try {
+          const response = await axios.get('/api/get-user-profile/', {
+            withCredentials: true,
+          });
+          if (response.data) {
+            setUserProfile(response.data);
+          }
+        } catch (error) {
+          console.error('Error fetching user profile:', error);
+        }
+      })();
+    }, []);
+  
+    const user_id = userProfile.user_id;
 
-        // Fetch incoming requests
-        const incomingRequestsResponse = await axios.get('/api/view-incoming-requests?user_id=' + profileResponse.data.user_id);
-        setUnviewedRequestCount(incomingRequestsResponse.data.incoming.length-viewedRequestCount); // Update the request count in Zustand state
-
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    }
-
-    fetchData();
-
-    // Poll every 10 seconds to keep the data updated
-    const intervalId = setInterval(fetchData, 10000);
-
-    // Cleanup interval on component unmount
-    return () => clearInterval(intervalId);
-  }, [setUnviewedRequestCount]);
-
+    // Fetch friends, incoming requests, and sent requests
+    useEffect(() => {
+      if (!user_id) return;
+      Promise.all([
+        fetch(`/api/view-incoming-requests?user_id=${user_id}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+        })
+          .then((res) => {
+            if (!res.ok) throw new Error('Failed to fetch incoming requests');
+            return res.json();
+          })
+          .then((data) => {
+            setRequestsCount(data.incoming.length || 0 );
+          })
+          .catch((err) => {
+            console.error('Error fetching incoming requests:', err);
+            setError('Error loading incoming requests');
+          }),
+  
+      ])
+    }, [user_id, requestsCount]);
   return (
     <div className="w-64 bg-white shadow-md p-4 fixed z-10 bottom-0 top-14">
       <nav>
@@ -69,9 +85,9 @@ export default function Sidebar() {
               <div className="flex items-center gap-2">
                 <div className="relative">
                   <FriendsIcon className="h-5 w-5 text-muted-foreground text-cyan-600" />
-                  {unviewedRequestCount > 0 && (
+                  {requestsCount > 0 && (
                     <div className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-medium text-white">
-                      {unviewedRequestCount}
+                      {requestsCount}
                     </div>
                   )}
                 </div>

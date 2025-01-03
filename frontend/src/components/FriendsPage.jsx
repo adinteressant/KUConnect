@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { Users, UserPlus, Clock } from 'lucide-react';
-import { useRequestCount } from '../zustand/useRequestCount';
 
 const FriendsPage = () => {
   const [activeTab, setActiveTab] = useState('friends');
@@ -12,7 +11,6 @@ const FriendsPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [userProfile, setUserProfile] = useState({});
-  const { unviewedRequestCount, setUnviewedRequestCount, viewedRequestCount, setViewedRequestCount } = useRequestCount();
 
   // Fetch user profile
   useEffect(() => {
@@ -70,7 +68,6 @@ const FriendsPage = () => {
         })
         .then((data) => {
           setIncomingRequests(data.incoming || []);
-          setUnviewedRequestCount(data.incoming.length || 0);
         })
         .catch((err) => {
           console.error('Error fetching incoming requests:', err);
@@ -166,16 +163,6 @@ const FriendsPage = () => {
       .catch((err) => console.error('Error canceling request:', err))
   };
 
-  // Handle tab change
-  const handleTabChange = (tab) => {
-    setActiveTab(tab);
-    if (tab === 'requests') {
-    setViewedRequestCount(incomingRequests.length);
-    setUnviewedRequestCount(0);
-  }
-      console.log(`viewed request count ${viewedRequestCount} unviewed request count ${unviewedRequestCount} incoming request count ${incomingRequests.length}`);
-    }
-
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -199,7 +186,7 @@ const FriendsPage = () => {
         
         <div className="flex space-x-2 mb-6 border-b">
           <button
-            onClick={() => handleTabChange('friends')}
+            onClick={() => setActiveTab('friends')}
             className={`flex items-center gap-2 px-4 py-2 font-medium transition-colors ${
               activeTab === 'friends'
                 ? 'text-blue-600 border-b-2 border-blue-600'
@@ -210,7 +197,7 @@ const FriendsPage = () => {
             Friends ({friends.length})
           </button>
           <button
-            onClick={() => handleTabChange('requests')}
+            onClick={() => setActiveTab('requests')}
             className={`flex items-center gap-2 px-4 py-2 font-medium transition-colors ${
               activeTab === 'requests'
                 ? 'text-blue-600 border-b-2 border-blue-600'
@@ -221,7 +208,7 @@ const FriendsPage = () => {
             Requests ({incomingRequests.length})
           </button>
           <button
-            onClick={() => handleTabChange('sent')}
+            onClick={() => setActiveTab('sent')}
             className={`flex items-center gap-2 px-4 py-2 font-medium transition-colors ${
               activeTab === 'sent'
                 ? 'text-blue-600 border-b-2 border-blue-600'
@@ -245,7 +232,7 @@ const FriendsPage = () => {
                   />
                   <Link 
                     to={`/${friend.username}`}
-                    className="font-medium hover:text-blue-600 hover:underline"
+                    className="font-medium"
                   >
                     {friend.username}
                   </Link>
@@ -273,7 +260,7 @@ const FriendsPage = () => {
                     />
                     <Link 
                       to={`/${req.sender_username}`}
-                      className="font-medium hover:text-blue-600 hover:underline"
+                      className="font-medium"
                     >
                       {req.sender_username}
                     </Link>
@@ -316,7 +303,7 @@ const FriendsPage = () => {
                     />
                     <Link 
                       to={`/${req.receiver_username}`}
-                      className="font-medium hover:text-blue-600 hover:underline"
+                      className="font-medium"
                     >
                       {req.receiver_username}
                     </Link>

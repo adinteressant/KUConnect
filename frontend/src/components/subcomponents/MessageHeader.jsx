@@ -131,7 +131,7 @@ export default function MessageHeader({ username }) {
         <div className="font-medium text-gray-900">
         <Link 
                     to={`/${username}`}
-                    className="font-medium hover:text-blue-600 hover:underline"
+                    className="font-medium"
                   >{username}
                   </Link>
                   </div>
