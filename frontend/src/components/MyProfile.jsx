@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { X } from 'lucide-react'; // Import the X icon for delete button
 
 const myprofile = () => {
   const [userprofile, setuserprofile] = useState({});
@@ -12,6 +13,7 @@ const myprofile = () => {
   });
   const [usertags, setusertags] = useState([]);
   const [tagInput, setTagInput] = useState(''); // Add state for tag input
+  const [hoveredTag, setHoveredTag] = useState(null); // Add state for tag hover
 
   // sample profile pictures (you can replace with your own array)
   const profilepictures = [
@@ -46,8 +48,9 @@ const myprofile = () => {
 
     try {
       await axios.post('/api/change-password', {
-        currentpassword: passwordform.currentpassword,
-        newpassword: passwordform.newpassword
+        currentPassword: passwordform.currentpassword,
+        newPassword: passwordform.newpassword,
+        user_id: userprofile.user_id
       }, { withCredentials: true });
 
       alert('password changed successfully');
@@ -94,13 +97,21 @@ const myprofile = () => {
     }
   };
 
-  async function handleTagSubmitButtom(){
-      try {
-        await axios.post('/api/update-tags', { tags: usertags}, { withCredentials: true });
-      } catch (error) {
-        console.error('Error updating tags:', error);
-        alert('Failed to update tags');
+  async function handleTagSubmitButtom() {
+    try {
+      if (tagInput.trim() !== '') {
+        const newTag = tagInput.trim();
+        const updatedTags = [...usertags, newTag];
+        setusertags(updatedTags);
+        setTagInput('');
       }
+
+      await axios.post('/api/update-tags', { tags: usertags, user_id: userprofile.user_id }, { withCredentials: true });
+      alert('Tags updated successfully');
+    } catch (error) {
+      console.error('Error updating tags:', error);
+      alert('Failed to update tags');
+    }
   }
 
   return (
@@ -183,8 +194,24 @@ const myprofile = () => {
             </div>
             <div className="mt-2 flex flex-wrap gap-2">
               {usertags.map((tag, index) => (
-                <span key={index} className="bg-gray-200 px-2 py-1 rounded">
+                <span
+                  key={index}
+                  className="bg-gray-200 px-2 py-1 rounded relative group"
+                  onMouseEnter={() => setHoveredTag(index)}
+                  onMouseLeave={() => setHoveredTag(null)}
+                >
                   {tag}
+                  {hoveredTag === index && (
+                    <button
+                      className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1 transform translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity"
+                      onClick={() => {
+                        const updatedTags = usertags.filter((_, i) => i !== index);
+                        setusertags(updatedTags);
+                      }}
+                    >
+                      <X size={12} />
+                    </button>
+                  )}
                 </span>
               ))}
             </div>

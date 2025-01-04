@@ -1,26 +1,25 @@
-import useGetMessage from '../hooks/useGetMessage.js'
-import Message from './Message.jsx'
+import useGetMessage from '../hooks/useGetMessage.js';
+import Message from './Message.jsx';
+import { Loader2 } from 'lucide-react';
 
-export default function Messages(){
-  const {loading,messages} = useGetMessage()
-  
-  return <div className="h-[484px] overflow-auto scrollbar-custom">
-    {loading && 
-      (
-        <div>Loading... use loading skeleton please...</div>
-      )
-    }
-    {
-      !loading && messages.length>0 && 
-      messages.map((message)=>(
-        <Message key={message._id} message={message}/>
-      ))
-    }
-    {!loading && messages.length === 0 &&
-      (
-        <div>Start the conversation</div>
-      )
-    }
+export default function Messages() {
+  const { loading, messages } = useGetMessage();
 
-  </div>
+  return (
+    <div className="space-y-4">
+      {loading ? (
+        <div className="flex items-center justify-center h-full">
+          <Loader2 className="w-6 h-6 text-indigo-600 animate-spin" />
+        </div>
+      ) : messages.length > 0 ? (
+        messages.map((message) => (
+          <Message key={message._id} message={message} />
+        ))
+      ) : (
+        <div className="flex items-center justify-center h-full text-gray-500">
+          Start a conversation
+        </div>
+      )}
+    </div>
+  );
 }

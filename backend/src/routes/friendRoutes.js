@@ -6,20 +6,40 @@ import {
   getSentFriendRequests,
   acceptFriendRequest,
   denyFriendRequest,
+  checkFriendRequestStatus,
+  cancelFriendRequest,
+  acceptFriendRequestfromProfile,
+  denyFriendRequestfromProfile,
+  cancelFriendRequestfromProfile,
 } from '../controllers/friendsController.js';
 import getProfileByUserId from '../middlewares/friendMiddleware.js';
 import authenticateJWT from '../middlewares/authenticateJWT.js';
 
 const router = express.Router();
 
+//Route to check friend request status
+router.get('/api/check-status', authenticateJWT, checkFriendRequestStatus);
+
 // Route to send a friend request
-router.post('/api/add-friend', sendFriendRequest);
+router.post('/api/add-friend', authenticateJWT, sendFriendRequest);
+
+//Route to cancel friend request
+router.post('/api/cancel-request', authenticateJWT, cancelFriendRequest );
 
 // Route to fetch friends
 router.get('/api/view-friends', authenticateJWT, getProfileByUserId, getFriends);
 
 // Route to fetch incoming friend requests with usernames
 router.get('/api/view-incoming-requests',authenticateJWT, getProfileByUserId, getIncomingFriendRequests);
+
+// Route to accept request from profile
+router.post('/api/confirm-request', authenticateJWT, acceptFriendRequestfromProfile);
+
+//Route to reject request from profile
+router.post('/api/reject-request', authenticateJWT, denyFriendRequestfromProfile);
+
+//Route to cancel request from profile
+router.post('/api/cancel-sent-request', authenticateJWT, cancelFriendRequestfromProfile)
 
 // Route to fetch sent friend requests with usernames
 router.get('/api/view-sent-requests',authenticateJWT, getProfileByUserId, getSentFriendRequests);

@@ -1,45 +1,96 @@
+import { useMemo } from 'react'
 import useConversation from '../../zustand/useConversation'
-import { useGetConversations } from '../hooks/useGetConversations'
+import { useGetUnreadMessage } from '../hooks/useGetUnreadMessage'
+import useNewMessages from '../../zustand/useNewMessages'
+import useGetProfile from '../hooks/useGetProfile'
 
-export default function Conversations(){
+export default function Conversations({ conversations, loading }) {
+  const { selectedConversation, setSelectedConversation } = useConversation()
+  useGetUnreadMessage()
+  const userProfiles = useGetProfile()
+  const {newMessages,setNewMessages} = useNewMessages()
 
-  const  {loading,conversations} = useGetConversations()
-  const {selectedConversation,setSelectedConversation} = useConversation()
-
-  const changeMessageStatus = (id) => {
-    fetch(`/api/change-message-status/${id}`,{
-      method:'PATCH',
-      headers:{
-        'Content-Type':'application/json',
-      }
-    })
-    .then(response => response.json)
-    .then(data =>{
-      console.log(data)
-    })
-    .catch((e) => {
-      console.log(e)
-    })
-  }
-
-  return <div className="flex flex-col gap-4 mt-5">
-
-    {
-      loading?
-        <div>Loading...</div>
-      :
-      conversations.map((conversation,index)=>(
-        <div key={index} className={`hover:bg-slate-500 cursor-pointer
-        ${ selectedConversation?._id === conversation._id ? `bg-slate-500` :``}
-        `}
-        onClick={()=>{
-            setSelectedConversation(conversation)
-            changeMessageStatus(conversation._id)
-        }}
-        >
-            {conversation.username}
-        </div>
-      ))
+  // Memoize the count calculation for better performance
+    const enhancedConversations = useMemo(() => {
+      return conversations.map((conversation) => {
+        let pfp_id
+        userProfiles.forEach((userProfile)=>{
+          if(userProfile.user_id == conversation.user_id){
+            pfp_id = userProfile.pfp_id
+            return
+          }
+        })
+        let count = newMessages.filter(
+          (unreadMessage) => unreadMessage.senderId === conversation.user_id
+        ).length;
+  
+        if (selectedConversation?.user_id === conversation.user_id) count = 0
+  
+        return { ...conversation, count,pfp_id }
+      })
+    }, [conversations, newMessages, selectedConversation])
+  
+    const changeMessageStatus = (id) => {
+      fetch(`/api/change-message-status/${id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data)
+        })
+        .catch((e) => {
+          console.log(e)
+        })
     }
-  </div>
+  
+
+  return (
+    <div className="flex flex-col mt-5">
+      {loading ? (
+        <div>Loading...</div>
+      ) : (
+        enhancedConversations.map((conversation, index) => (
+          <div
+            key={index}
+            className={`hover:bg-gray-200 cursor-pointer hover:rounded-md flex justify-between
+               px-3 border-gray-200 border-b text-gray-800
+               ${selectedConversation?.user_id === conversation.user_id
+                ? `bg-gray-200`
+                : ``}
+                ${conversation.count ? `font-semibold`: ``}
+                `
+              }
+            onClick={() => {
+              setSelectedConversation(conversation)
+              changeMessageStatus(conversation.user_id)
+              if(conversation.count) setNewMessages([])
+            }}
+          >
+        <div className="flex items-center gap-4 p-2 w-full ">
+            <div>
+            <img src={`/api/get-pfp?id=${conversation.pfp_id}`}
+            alt={`${conversation.username}'s profile`} className="rounded-full object-cover border border-gray-200 h-10 w-14" />
+            </div>
+            <div className="flex items-center justify-between w-full">
+              <div>
+                {conversation.username}
+              </div>
+              {conversation.count !== 0 && (
+              <div className="px-1 h-5 w-5 rounded-full text-white bg-red-600 flex
+              justify-center items-center
+              ">
+                <div className="text-sm">{conversation.count}</div>
+                
+              </div>
+              )}
+              </div>
+            </div>
+          </div>
+        ))
+      )}
+    </div>
+  )
 }

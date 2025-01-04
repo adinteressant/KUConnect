@@ -7,7 +7,7 @@ export default function Message({message}) {
   const fromMe = message.senderId == authUserId
   const positionClass = fromMe ? 'items-end justify-end' : 'items-start justify-start'
   const colorClass = fromMe ? 'bg-cyan-500 text-white':'bg-gray-200 text-gray-900'
-  return <div className="overflow-auto">
+  return <div className="overflow-auto scrollbar-custom">
   <div className="flex flex-col space-y-4 w-full"> 
   
   <div className={`flex ${positionClass} space-x-4`}>

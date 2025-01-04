@@ -1,25 +1,49 @@
-import { useEffect } from 'react'
-import useConversation from '../../zustand/useConversation.js'
-import MessageHeader from './MessageHeader.jsx'
-import Messages from './Messages.jsx'
-import NoChatSelected from './NoChatSelected.jsx'
-import SendMessage from './SendMessage.jsx'
-export default function MessageContainer(){
-  const {selectedConversation} = useConversation()
+import { useEffect, useRef } from 'react';
+import useConversation from '../../zustand/useConversation.js';
+import MessageHeader from './MessageHeader.jsx';
+import Messages from './Messages.jsx';
+import NoChatSelected from './NoChatSelected.jsx';
+import SendMessage from './SendMessage.jsx';
 
-  return <div className="p-4 ml-64">
-  {
-  !selectedConversation ? 
-    (
-      <NoChatSelected/>
-    ) : 
-    (
-      <>
-      <MessageHeader username={selectedConversation.username}/>
-      <Messages/>
-      <SendMessage/>
-      </>
-    )  
-  }
-  </div>
+export default function MessageContainer() {
+  const { selectedConversation } = useConversation();
+
+  // Ref to scroll to the latest message
+  const messagesEndRef = useRef(null);
+
+  // Scroll to the bottom when messages change
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [selectedConversation]);
+
+  return (
+    <div className="h-screen flex flex-col relative">
+      {!selectedConversation ? (
+        <NoChatSelected />
+      ) : (
+        <>
+          {/* Fixed Header */}
+          <div className=" w-full z-10 bg-white fixed">
+            <MessageHeader username={selectedConversation.username} />
+          </div>
+
+          {/* Scrollable Messages Section */}
+          <div className="flex-1 bg-gray-50 pt-16 pb-16 border-l border-gray-200">
+            <div className="p-4 space-y-4">
+              <Messages />
+              {/* Empty div for scrolling to the bottom */}
+              <div ref={messagesEndRef}></div>
+            </div>
+          </div>
+
+          {/* Fixed SendMessage */}
+          <div className="fixed bottom-0 left-[520px] right-0 z-20 bg-white border-t border-gray-200">
+            <SendMessage />
+          </div>
+        </>
+      )}
+    </div>
+  );
 }

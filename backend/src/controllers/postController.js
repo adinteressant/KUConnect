@@ -1,7 +1,7 @@
 //Controller
 import Post from '../models/Post.js'; // Post model 
-
-
+import PublicInfo from '../models/PublicInfo.js';
+import PrivateInfo from '../models/PrivateInfo.js';
 // Get all posts
 export const getAllPosts = async (req, res) => {
   try {
@@ -30,7 +30,8 @@ export const createPost = async (req, res) => {
   try {
     // Create a new post using the provided data
     const newPost = new Post({
-      pfp_id: userInfo.pfp_id,
+      pfp_id: userInfo.pfp_id || 0,
+      role: userInfo.role,
       userId: userInfo.user_id,
       username: userInfo.username,
       email: userInfo.email, // Store email
@@ -38,6 +39,17 @@ export const createPost = async (req, res) => {
       tags: tags || [],
     });
 
+  const UsersWithTags = await PublicInfo.find({ tags: { $in: tags } });
+  const publicUid = UsersWithTags.map((e)=>e.user_id);
+  const PrivUsersWithTags = await PrivateInfo.find({user_id:{$in:publicUid}});
+  
+  await PrivateInfo.updateMany(
+  { user_id: { $in: publicUid } }, 
+  { $inc: { unread_count: 1  } } 
+  );
+  console.log("Incremented by 1!");
+//console.log(PrivUsersWithTags);   
+      //await PrivUsersWithTags.save(); 
     // Save the post in the database
     const savedPost = await newPost.save();
     res.status(201).json({ message: 'Post created successfully!', post: savedPost });
@@ -47,37 +59,6 @@ export const createPost = async (req, res) => {
   }
 };
 
-// Toggle like on a post
-export const toggleLike = async (req, res) => {
-  const { postId } = req.params
-  const { userId, username } = req.body
-
-  try {
-    const post = await Post.findById(postId)
-
-    if (!post) {
-      return res.status(404).json({ message: 'Post not found!' });
-    }
-
-    //Check if user has already liked the post
-    const existingLikedIndex = post.likes.findIndex((like) => like.userId === userId)
-    //returns the index if matched otherwise gives -1
-
-    if (existingLikedIndex !== -1) {
-      post.likes.splice(existingLikedIndex, 1) //removes the like
-    } else {
-      post.likes.push({ userId, username }) //add the new like
-    }
-
-    //Save the liked post
-    const updatedPost = await post.save()
-    res.json({message:"Liked post successfully", post: updatedPost})
-  } 
-  catch (error) {
-    console.error('Error toggling like: ', error)
-    res.status(500).json({ message: 'Internal Server Error: ', error })
-  }
-};
 
 // Share a post
 export const sharePost = async (req, res) => {
@@ -85,7 +66,6 @@ export const sharePost = async (req, res) => {
 };
 
 //Search post using tags
-
 export const searchPostsByTag = async (req, res) => {
   try {
     const { tag } = req.query;
@@ -111,3 +91,18 @@ export const searchPostsByTag = async (req, res) => {
     res.status(500).json({ message: 'Server error while searching posts' });
   }
 };
+
+export const userPosts = async(req, res) => {
+  try
+  {
+    const userId = req.params.userId
+
+    const posts = await Post.find({ userId }).sort({ createdAt: -1 })
+
+    res.status(200).json({ message:"Posts fetched successfully", posts })
+  }
+  catch(error)
+  {
+    res.status(500).json("Error in getting user's posts: ", error)
+  }
+}

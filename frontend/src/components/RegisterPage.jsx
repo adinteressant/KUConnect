@@ -7,7 +7,6 @@ export default function RegisterPage() {
     email: "",
     rePassword: "",
     password: "",
-    role: "" // Added role field
   });
 
   const [errors, setErrors] = useState({
@@ -15,7 +14,6 @@ export default function RegisterPage() {
     email: "",
     rePassword: "",
     password: "",
-    role: "" // Added role error field
   });
 
   const handleSubmit = async (e) => {
@@ -35,7 +33,6 @@ export default function RegisterPage() {
           email: formData.email,
           password: formData.password,
           rePassword: formData.rePassword,
-          role: formData.role, // Ensure role is included
         }),
       });
   
@@ -110,20 +107,6 @@ export default function RegisterPage() {
               required
             />
             {errors.rePassword && <p className="text-sm text-red-500">{errors.rePassword}</p>}
-          </div>
-
-          {/* Dropdown for selecting role */}
-          <div className="w-full space-y-2">
-            <select
-              value={formData.role}
-              onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-              className="w-full px-4 py-3 rounded-md text-base transition-colors bg-gray-100 focus:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-cyan-500"
-            >
-              <option value="">Select Role (Student or Faculty)</option>
-              <option value="student">Student</option>
-              <option value="faculty">Faculty</option>
-            </select>
-            {errors.role && <p className="text-sm text-red-500">{errors.role}</p>}
           </div>
 
           <div className="pt-2">

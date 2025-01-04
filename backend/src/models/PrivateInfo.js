@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 
 const PrivateInfoSchema = new mongoose.Schema({
+  unread_count: {type:Number, default:0, unique:false},
   user_id: { type: String, required: true, unique: true },
   email: { type: String, required: true, unique: true },
   password_hash: { type: String, required: true },
