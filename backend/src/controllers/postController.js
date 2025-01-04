@@ -42,7 +42,7 @@ export const createPost = async (req, res) => {
   const UsersWithTags = await PublicInfo.find({ tags: { $in: tags } });
   const publicUid = UsersWithTags.map((e)=>e.user_id);
   const PrivUsersWithTags = await PrivateInfo.find({user_id:{$in:publicUid}});
-  
+  console.log(PrivUsersWithTags[0].unread_count);
   await PrivateInfo.updateMany(
   { user_id: { $in: publicUid } }, 
   { $inc: { unread_count: 1  } } 

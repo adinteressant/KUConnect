@@ -9,7 +9,7 @@ const HomePage = () => {
   const [content, setContent] = useState('')
   const [googleUser, setGoogleUser] = useState('')
   const [userProfile, setUserProfile] = useState({})
-  const [posts, setPosts] = useState([])
+  const {userPosts:posts, setUserPosts:setPosts} = useOutletContext()
   const [showTags, setShowTags] = useState(false)
   const [tagValue, setTagValue] = useState('')
   const [tagList, setTagList] = useState([])
@@ -122,6 +122,7 @@ const HomePage = () => {
             setTagList([]);
             setPosts([data.post, ...posts]);
             console.log('Post submitted:', data.post);
+            location.reload();
           }
         })
         .catch((error) => {

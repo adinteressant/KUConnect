@@ -9,11 +9,12 @@ import axios from 'axios';
 import { useState, useEffect } from 'react';
 import useRequestCount from '../zustand/useRequestCount';
 
-export default function Sidebar() {
-  const [userProfile, setUserProfile] = useState({});
-  const {incomingRequestsCount, setIncomingRequestsCount} = useRequestCount();
 
-    // Fetch user profile
+export default function Sidebar({userProfile,setUserProfile}) {
+  const [userUnreadCount, setUserUnreadCount] = useState(userProfile.unread_count);
+  const {incomingRequestsCount, setIncomingRequestsCount} = useRequestCount(); 
+
+     //Fetch user profile
     useEffect(() => {
       (async () => {
         try {
@@ -22,18 +23,18 @@ export default function Sidebar() {
           });
           if (response.data) {
             setUserProfile(response.data);
+            setUserUnreadCount(userProfile.unread_count);
           }
         } catch (error) {
           console.error('Error fetching user profile:', error);
         }
       })();
-    }, []);
+    }, [userProfile.unread_count]);
   
     useEffect(() => {
       const fetchIncomingRequestsCount = async () => {
         const user_id = userProfile.user_id;
-        if (!user_id) return;
-  
+        if (!user_id) return; 
         try {
           const response = await axios.get(`/api/view-incoming-requests?user_id=${user_id}`, {
             withCredentials: true,
@@ -48,6 +49,11 @@ export default function Sidebar() {
   
       fetchIncomingRequestsCount();
     }, [userProfile.user_id, setIncomingRequestsCount]);
+
+  //useEffect(()=>{
+  //  setUserUnreadCount(userProfile.unread_count);
+  //},[]);
+
 
   return (
     <div className="w-64 bg-white shadow-md p-4 fixed z-10 bottom-0 top-14">
@@ -97,9 +103,9 @@ export default function Sidebar() {
               <div className="flex items-center gap-2">
                 <div className="relative">
                   <Bell className="h-5 w-5 text-muted-foreground text-cyan-600" />
-                  {userProfile.unread_count > 0 && (
+                  {userUnreadCount> 0 && (
                     <div className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-medium text-white">
-                      {userProfile.unread_count}
+                      {userUnreadCount}
                     </div>
                   )}
                 </div>

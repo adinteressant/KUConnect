@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useOutletContext } from 'react-router-dom';
 import { Search, User, ChevronDown, LogOut, LogIn, UserPlus, UserCircle } from 'lucide-react';
 import axios from 'axios';
 
-const Navigation = ({ setVisibility, setPadding,searchTrait,setSearchTrait}) => {
+const Navigation = ({ setVisibility, setPadding,searchTrait,setSearchTrait, userProfile,setUserProfile}) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem('isAuthenticated') == 'true');  
-  const [userProfile,setUserProfile] = useState({});
   const navigate = useNavigate();
   let timeout = null;
   

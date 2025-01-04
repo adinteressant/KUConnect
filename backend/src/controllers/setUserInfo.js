@@ -30,11 +30,11 @@ export const setUserInfo = async (req,res) => {
     role:role,
   })
   const privateInfo = new PrivateInfo({
+    unread_count: 0,
     user_id: userId,
     email: gmail,
     password_hash: hashPassword('password'),
     role: role,
-    unread_count: 0,
   })
   try{
     await privateInfo.save()
