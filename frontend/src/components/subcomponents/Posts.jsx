@@ -445,7 +445,7 @@ function Posts(props) {
                 </div>
               ))
             ) : (
-              <div className="bg-gray-100 p-4 rounded-lg shadow-md text-center">
+              <div className="bg-white p-4 rounded-lg shadow-md text-center">
                 No posts available.
               </div>
             )}
