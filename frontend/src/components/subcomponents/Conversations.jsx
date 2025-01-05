@@ -2,12 +2,13 @@ import { useMemo } from 'react'
 import useConversation from '../../zustand/useConversation'
 import { useGetUnreadMessage } from '../hooks/useGetUnreadMessage'
 import useNewMessages from '../../zustand/useNewMessages'
-import useGetProfile from '../hooks/useGetProfile'
+import useGetFriends from '../hooks/useGetFriends'
 
 export default function Conversations({ conversations, loading }) {
   const { selectedConversation, setSelectedConversation } = useConversation()
   useGetUnreadMessage()
-  const userProfiles = useGetProfile()
+  const userProfiles = useGetFriends(JSON.parse(localStorage.getItem('authUser')))
+  // const userProfiles = useGetProfile()
   const {newMessages,setNewMessages} = useNewMessages()
 
   // Memoize the count calculation for better performance
