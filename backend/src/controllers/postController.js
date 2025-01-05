@@ -40,6 +40,7 @@ export const createPost = async (req, res) => {
     });
   if (tags.length != 0){
   let UsersWithTags = await PublicInfo.find({ tags: { $in: tags } });
+  if (UsersWithTags.length>0){
   const publicUid = UsersWithTags.map((e)=>e.user_id); 
   const PrivUsersWithTags = await PrivateInfo.find({user_id:{$in:publicUid}});
 
@@ -47,11 +48,12 @@ export const createPost = async (req, res) => {
   await PrivateInfo.updateMany(
   { user_id: { $in: publicUid } }, 
   { $inc: { unread_count: 1  } } 
-  );
-  }
+  ); 
   console.log("Incremented by 1!");
-//console.log(PrivUsersWithTags);   
-      //await PrivUsersWithTags.save(); 
+      }
+  }
+    //console.log(PrivUsersWithTags);   
+    //await PrivUsersWithTags.save(); 
     // Save the post in the database
     const savedPost = await newPost.save();
     res.status(201).json({ message: 'Post created successfully!', post: savedPost });
