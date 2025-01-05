@@ -59,7 +59,7 @@ export default function Conversations({ conversations, loading }) {
             className={`hover:bg-gray-200 cursor-pointer hover:rounded-md flex justify-between
                px-3 border-gray-200 border-b text-gray-800
                ${selectedConversation?.user_id === conversation.user_id
-                ? `bg-gray-200`
+                ? `bg-gray-200 rounded-md`
                 : ``}
                 ${conversation.count ? `font-semibold`: ``}
                 `
