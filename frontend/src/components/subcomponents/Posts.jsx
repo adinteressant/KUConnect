@@ -241,11 +241,13 @@ function Posts(props) {
                   }`}
                 >
                 <div className='flex gap-2 items-end'>
-                  <Link to={`/${post.username}`}>
+                  <Link to={post.username != userProfile.username ?`/${post.username}`:
+                `/myprofile`}>
                     <img src={`/api/get-pfp?id=${post.pfp_id}`} className="h-9 w-9 rounded-full object-cover"/>
                   </Link>
                   <div>
-                    <Link to={`/${post.username}`} 
+                    <Link to={post.username != userProfile.username ?`/${post.username}`:
+                `/myprofile`} 
                       className="text-gray-800 font-semibold">
                       {post.username}
                     </Link>
@@ -385,13 +387,15 @@ function Posts(props) {
                       
                       {showCommentBox.find(p => p.postId === post._id).display.map((d, index) => 
                         <div key={index} className='flex mt-4'>
-                          <Link className='mt-2 shrink-0' to={`/${userProfile.username}`}>
+                          <Link className='mt-2 shrink-0' to={post.username != userProfile.username ?`/${post.username}`:
+                `/myprofile`}>
                             <img src={`/api/get-pfp?id=${d.pfp}`} alt="profile" className="w-8 h-8 rounded-full object-cover"/>
                           </Link>
                           <div className='ml-2'>
                               <div className='bg-gray-100 p-2 rounded-xl'>
                                 <div className='flex gap-2 items-center'>
-                                  <Link to={`/${userProfile.username}`} className='text-gray-800 font-semibold text-sm'>
+                                  <Link to={post.username != userProfile.username ?`/${post.username}`:
+                `/myprofile`} className='text-gray-800 font-semibold text-sm'>
                                     {d.username}
                                   </Link>
                                   <div className='text-gray-600 text-xs'>

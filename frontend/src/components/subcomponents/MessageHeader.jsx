@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 export default function MessageHeader({ username }) {
   const [profileData, setProfileData] = useState({
@@ -25,12 +26,12 @@ export default function MessageHeader({ username }) {
         setProfileData(data);
         setError(false);
 
-        // Fetch profile picture if pfp_id is available
-        if (data.pfp_id) {
-          setProfilePic(`/api/get-pfp?id=${data.pfp_id}`);
-        } else {
-          setProfilePic(null); // No profile picture available
-        }
+        // // Fetch profile picture if pfp_id is available
+        // if (data.pfp_id) {
+        //   setProfilePic(`/api/get-pfp?id=${data.pfp_id}`);
+        // } else {
+        //   setProfilePic(null); // No profile picture available
+        // }
       } catch (error) {
         console.error('Error loading profile data:', error);
         setError(true);
@@ -105,7 +106,7 @@ export default function MessageHeader({ username }) {
 
   
   return (
-    <div className="px-4 py-3 border-b border-gray-200">
+    <div className="px-4 py-3 border-b border-gray-200 sticky">
       <div className="flex items-center gap-3">
       {loading ? (
   <div className="w-10 h-10 rounded-full bg-gray-200 animate-pulse" />
@@ -116,7 +117,7 @@ export default function MessageHeader({ username }) {
     className="w-10 h-10 rounded-full object-cover border border-gray-200"
     onError={() => {
       setError(true);
-      setProfilePic(null);
+      // setProfilePic(null);
     }}
   />
 ) : (
@@ -126,7 +127,14 @@ export default function MessageHeader({ username }) {
     </span>
   </div>
 )}
-        <div className="font-medium text-gray-900">{username}</div>
+
+        <div className="font-medium text-gray-900">
+        <Link 
+                    to={`/${username}`}
+                    className="font-medium"
+                  >{username}
+                  </Link>
+                  </div>
       </div>
     
   </div>
