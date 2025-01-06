@@ -123,11 +123,13 @@ export const deletePost = async(req, res) => {
       let UsersWithTags = await PublicInfo.find({ tags: { $in: post.tags } });
       if (UsersWithTags.length>0){
       const publicUid = UsersWithTags.map((e)=>e.user_id); 
-      const PrivUsersWithTags = await PrivateInfo.find({user_id:{$in:publicUid}});
-    
-      console.log(PrivUsersWithTags[0].unread_count);
+      const PrivUsersWithTags = await PrivateInfo.find(
+        {$and: [{user_id:{$in:publicUid}},
+         {unread_count:{$gt:0}}]});
+      console.log("Priv-Values:",PrivUsersWithTags);
       await PrivateInfo.updateMany(
-      { user_id: { $in: publicUid } }, 
+      {$and: [{user_id:{$in:publicUid}}
+       ,{unread_count:{$gt:0}}]}, 
       { $inc: { unread_count: -1  } } 
       ); 
       console.log("Decremented by 1!");
