@@ -1,6 +1,5 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState} from 'react'
 import { useOutletContext } from 'react-router-dom'
-import Fuse from 'fuse.js'
 import Posts from './subcomponents/Posts.jsx'
 import WelcomeModal from './subcomponents/WelcomeModal.jsx';
 import { useGetUnreadMessage } from './hooks/useGetUnreadMessage.js';
@@ -16,7 +15,6 @@ const HomePage = () => {
   const [tagList, setTagList] = useState([])
   const [isTextareaFocused, setIsTextareaFocused] = useState(false)
   const [isTagsInputFocused, setIsTagsInputFocused] = useState(false)
-  const [filteredPosts, setFilteredPosts] = useState([])
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
   const {searchTrait,setSearchTrait} = useOutletContext()
   useGetUnreadMessage()
@@ -68,31 +66,11 @@ const HomePage = () => {
       .then((response) => response.json())
       .then((data) => {
         setPosts(data);
-        setFilteredPosts(data);
       })
       .catch((e) => {
         console.error('Error fetching posts:', e);
       }); ///AHHHHHHHHHHHH WHERE IS MY COMMENT, I HATE AI
   }, []);
-
-  useEffect(() => {
-    const options = {
-      keys: ['content', 'username'],
-      useExtendedSearch: true,
-    }
-
-    const fuse = new Fuse(posts, options);
-    
-    const result = fuse.search(`'${searchTrait}`);
-    
-    let filResult = result.map(item => item.item); // FILTERED RESULT
-    
-    if (!searchTrait.length) {
-      setFilteredPosts(posts);
-      filResult = posts; //IF THE SEARCH BAR IS EMPTY ALL POSTS APPEAR
-    }
-    setFilteredPosts(filResult); // ELSE FILTERED POSTS
-  }, [searchTrait, posts]);
 
   // Handle Post Submit
   const handlePostSubmit = () => {
@@ -254,7 +232,7 @@ const HomePage = () => {
 
         </div>
 
-        <Posts posts={filteredPosts} setPosts={setPosts}/>
+        <Posts posts={posts} setPosts={setPosts}/>
 
       </main>
     </div>
