@@ -180,7 +180,7 @@ const HomePage = () => {
             >
               <textarea
                 placeholder="What's on your mind?"
-                className={`w-full p-2 border rounded-lg mb-4 bg-gray-100 focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-600 transition-all duration-300 ${
+                className={`w-full p-2 border rounded-lg mb-2 bg-gray-100 focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-600 transition-all duration-300 ${
                   isTextareaFocused || isTagsInputFocused ? 'h-28' : 'h-20'
                 }`}
                 value={content}
@@ -189,18 +189,18 @@ const HomePage = () => {
                 onBlur={handleTextareaBlur}
               />
 
-              <div className={`transition-all duration-300 overflow-y-auto ease-in-out ${isTextareaFocused || isTagsInputFocused || content.trim() || tagValue.trim() ? 'opacity-100 max-h-screen' : 'opacity-0 max-h-0'}`}>
+              <div className={`flex flex-col transition-all duration-300 overflow-y-auto ease-in-out ${isTextareaFocused || isTagsInputFocused || content.trim() || tagValue.trim() ? 'opacity-100 max-h-screen' : 'opacity-0 max-h-0'}`}>
                 <input
                   type="text"
                   placeholder="Add tags (space-separated)"
-                  className="w-full p-2 border rounded-lg mb-4 bg-gray-100 focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-600 transition-all duration-300"
+                  className="flex-1 p-2 border rounded-lg mt-2 mb-4 bg-gray-100 focus:mx-1 focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-600 transition-all duration-300"
                   value={tagValue}
                   onChange={handleTagInputChange}
                   onKeyDown={handleTagInputKeyDown}
                   onFocus={handleTagsInputFocus}
                   onBlur={handleTagsInputBlur}
                 />
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2 mb-2">
                   {tagList.map((tag, index) => (
                     <span
                       key={index}
@@ -213,8 +213,12 @@ const HomePage = () => {
               </div>
               
               {/* Images Upload Section */}
-              <div>
-              </div>
+              {/* <div>
+                <input
+                  type = 'file'
+                  accept = 'images*'
+                />
+              </div> */}
               
               <button
                 disabled={!content.trim()}

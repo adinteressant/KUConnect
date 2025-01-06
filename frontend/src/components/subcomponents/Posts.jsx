@@ -479,6 +479,8 @@ function Posts(props) {
                       </button>
                     </div>
                   </div>
+
+                  {/* Post Options */}
                   {(post.userId === userProfile.user_id) &&
                     <div className='absolute top-3 right-3 flex flex-col items-end'>
                       <button className='rounded-full p-1 transition-all duration-300 hover:bg-gray-100' onClick={() => setPostOptions((prev) => (prev===post._id)?'':post._id)}>
