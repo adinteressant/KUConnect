@@ -3,13 +3,14 @@ import { Link } from 'react-router-dom'
 import formatTimeAgo from '../../utils/generateTimeAgo.js'
 import ShowLikes from './LikeOverlay.jsx'
 import ShowComments from './CommentOverlay.jsx'
-
+import { useOutletContext } from 'react-router-dom'
 //Props include:
 //Posts (array) jun dekhauna parney cha
 //Also send the setPosts function for state variable posts
+
 function Posts(props) {
 
-    const [userProfile, setUserProfile] = useState({})
+    const {userProfile, setUserProfile} = useOutletContext();
     const [posts, setPosts] = useState([])
     const [likedPosts, setLikedPosts] = useState([])
     const [liked, setLiked] = useState('false')
@@ -256,6 +257,13 @@ function Posts(props) {
               p._id !== deletedPost.deletedPost._id
             )
           )
+          console.log(deletedPost+ "Unread Count!:"+userProfile.unread_count);
+          deletedPost.deletedPost.tags.forEach(e => {
+            if (userProfile.tags.includes(e) && userProfile.unread_count>0){
+              userProfile.unread_count--;
+              return;
+            } 
+          });
         }
         else
         {

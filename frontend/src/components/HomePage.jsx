@@ -8,7 +8,7 @@ const HomePage = () => {
   const [user, setUser] = useState(null)
   const [content, setContent] = useState('')
   const [googleUser, setGoogleUser] = useState('')
-  const {userProfile, setUserProfile} = useOutletContext({})
+  const {userProfile, setUserProfile} = useOutletContext()
   const {userPosts:posts, setUserPosts:setPosts} = useOutletContext()
   const [showTags, setShowTags] = useState(false)
   const [tagValue, setTagValue] = useState('')
@@ -18,6 +18,20 @@ const HomePage = () => {
   const [filteredPosts, setFilteredPosts] = useState([])
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
   const {searchTrait,setSearchTrait} = useOutletContext()
+
+
+  // Fetch user profile on mount
+  useEffect(() => {
+    fetch('/api/get-user-profile')
+      .then((response) => response.json())
+      .then((data) => {
+        setUserProfile(data);
+        localStorage.setItem('authUser',JSON.stringify(data.user_id))
+      })
+      .catch((e) => {
+        console.error('Error fetching user profile:', e);
+      });
+  }, []);
 
   // Check for logged-in user based on isAuthenticated
   useEffect(() => {
@@ -48,18 +62,6 @@ const HomePage = () => {
     }
   }, []);
 
-  // Fetch user profile on mount
-  useEffect(() => {
-    fetch('/api/get-user-profile')
-      .then((response) => response.json())
-      .then((data) => {
-        setUserProfile(data);
-        localStorage.setItem('authUser',JSON.stringify(data.user_id))
-      })
-      .catch((e) => {
-        console.error('Error fetching user profile:', e);
-      });
-  }, []);
 
   // Fetch all posts on mount
   useEffect(() => {
@@ -72,6 +74,8 @@ const HomePage = () => {
       .catch((e) => {
         console.error('Error fetching posts:', e);
       }); ///AHHHHHHHHHHHH WHERE IS MY COMMENT, I HATE AI
+
+      //console.log('unread_count:',userProfile.unread_count);
   }, []);
 
   useEffect(() => {
@@ -121,7 +125,7 @@ const HomePage = () => {
             setTagValue('');
             setTagList([]);
             setPosts([data.post, ...posts]);
-            setUserProfile(userProfile.unread_count++);
+            setUserProfile(++userProfile.unread_count);
             console.log('Post submitted:', data.post);
             //location.reload();
           }

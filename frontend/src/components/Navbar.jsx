@@ -30,14 +30,15 @@ const Navigation = ({ setVisibility, setPadding,searchTrait,setSearchTrait, user
 
     checkAuthentication();
   
-    fetch('/api/get-user-profile')
-      .then((response) => response.json())
-      .then((data) => {
-        setUserProfile(data); // Ensure user_id is fetched and set properly
-      })
-      .catch((e) => {
-        console.error('Error fetching user profile:', e);
-      });}, []);
+    //fetch('/api/get-user-profile')
+    //  .then((response) => response.json())
+    //  .then((data) => {
+    //    setUserProfile(data); // Ensure user_id is fetched and set properly
+    //  })
+    //  .catch((e) => {
+    //    console.error('Error fetching user profile:', e);
+    //  });
+  }, []);
 
   const checkLoginOrRegister = (path) => {
     if (path === '/login' || path === '/register' || path.startsWith('/verifyotp')) {
@@ -144,7 +145,7 @@ const Navigation = ({ setVisibility, setPadding,searchTrait,setSearchTrait, user
             >
               <button className="p-2 rounded-full hover:bg-gray-100 transition-colors flex items-center">
     {isAuthenticated?<img
-            src={`/api/get-pfp?id=${userProfile.pfp_id}`}
+            src={`/api/get-pfp?id=${userProfile.pfp_id?userProfile.pfp_id:5}`}
             alt="Profile"
             className="h-8 w-8 rounded-full object-cover"
           />:<User
