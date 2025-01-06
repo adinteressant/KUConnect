@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { X } from 'lucide-react';
 
-const customizemyprofile = () => {
+const CustomizeMyProfile = () => {
   const [userprofile, setuserprofile] = useState({});
   const [showprofilepicoverlay, setshowprofilepicoverlay] = useState(false);
   const [showpasswordmodal, setshowpasswordmodal] = useState(false);
@@ -259,5 +259,5 @@ const customizemyprofile = () => {
   );
 };
 
-export default customizemyprofile;
+export default CustomizeMyProfile;
 
