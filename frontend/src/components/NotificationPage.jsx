@@ -1,17 +1,38 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import formatTimeAgo from '../utils/generateTimeAgo.js';
+import { useOutletContext } from 'react-router-dom';
 
 const NotificationPage = () => {
   const [userProfiletags, setUserProfile] = useState({tags:[]});
-  const [userProfile, setUserProfileFunc] = useState({});
+  const {userProfile, setUserProfile:setUserProfileFunc} = useOutletContext();
   
-  const [userPosts, setUserPosts] = useState([]);
+  const {userPosts, setUserPosts} = useOutletContext()
   const [userFilteredPosts, setFilteredPosts] = useState([]);
 
+  useEffect(() => {
+    async function clearNotification() {
+      try {
+        const response = await axios.post(
+          '/api/clear-notifications/',
+          {
+            user_id: userProfile.user_id,
+          },
+          {
+            withCredentials: true,
+          }
+        );
+        console.log("Clear notifications response:", response);
+      } catch (e) {
+        if (e.name !== 'AbortError') {
+          console.error("Error in clearing notifications", e);
+        }
+      }
+    }
+    clearNotification();
+  },[,]);
   // Fetch user profile
   useEffect(() => {
-
     fetch('/api/get-user-profile',)
       .then((response) => response.json())
       .then((data) => {setUserProfile(data); setUserProfileFunc(data);})
@@ -47,29 +68,8 @@ const NotificationPage = () => {
       post.tags?.some(tag => tags.includes(tag))
     );
     setFilteredPosts(filteredPosts);
-  }, [userProfiletags.tags, userPosts]);
+  }, [userProfiletags.tags,userPosts]);
 
-useEffect(() => {
-  async function clearNotification() {
-    try {
-      const response = await axios.post(
-        '/api/clear-notifications/',
-        {
-          user_id: userProfile.user_id,
-        },
-        {
-          withCredentials: true,
-        }
-      );
-      console.log("Clear notifications response:", response);
-    } catch (e) {
-      if (e.name !== 'AbortError') {
-        console.error("Error in clearing notifications", e);
-      }
-    }
-  }
-  clearNotification();
-}, [userProfile]);
 
 
 

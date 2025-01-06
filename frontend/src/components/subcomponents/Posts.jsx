@@ -532,7 +532,7 @@ function Posts(props) {
                       <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
                     </svg>
                   </button>
-                  <ShowLikes postId={showLikeOverlay} closeLikeOverlay={closeLikeOverlay}/>
+                  <ShowLikes postId={showLikeOverlay} userProfile = {userProfile} closeLikeOverlay={closeLikeOverlay}/>
                 </div>
               </div>
             )}
@@ -560,7 +560,7 @@ function Posts(props) {
                       <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
                     </svg>
                   </button>
-                  <ShowComments postId={showCommentOverlay} closeCommentOverlay={closeCommentOverlay}/>
+                  <ShowComments postId={showCommentOverlay} userProfile= {userProfile} closeCommentOverlay={closeCommentOverlay}/>
                 </div>
               </div>
             )}

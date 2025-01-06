@@ -22,7 +22,7 @@ export default async function loginController(req, res) {
     const isValidPassword = comparePassword(password, privateInfo.password_hash);
     if (!isValidPassword) {
       console.error("Invalid password attempt for:", email);
-      return res.status(401).json({ message: 'Invalid password' });
+      return res.status(401).json({ message: 'Incorrect password' });
     }
 
     const jwt_token = generate_jwt_token(

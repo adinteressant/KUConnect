@@ -1,7 +1,5 @@
 import Conversation from '../models/conversation.model.js'
 import Message from '../models/message.model.js'
-import PrivateInfo from '../models/PrivateInfo.js'
-import PublicInfo from '../models/PublicInfo.js'
 
 export const sendMessageController = async (req,res) => {
   try{
@@ -55,19 +53,6 @@ export const getMessageController = async (req,res) => {
   }catch(e){
     console.log('error in get message '+e)
     res.send(500).json({error:'error in get message'})
-  }
-}
-
-export const getUsersWithMessageController = async(req,res) => {
-  try{
-    const { senderId } = req
-
-    const participants = await PublicInfo.find({ user_id: { $ne: senderId   } })
-    res.send(participants)
-
-  }catch(e){
-    console.log('error in get users with messages '+e)
-    res.status(500).json({error:'error in get users with messages'})
   }
 }
 

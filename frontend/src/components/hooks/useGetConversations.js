@@ -5,15 +5,16 @@ export const useGetConversations = () => {
   const [conversations,setConversations] = useState([])
 
   useEffect(()=>{
+    const user_id = JSON.parse(localStorage.getItem('authUser'))
     const getConversations = async () => {
       setLoading(true)
       try{
-        const res = await fetch('/api/users-message')
+        const res = await fetch(`/api/view-friends?user_id=${user_id}`)
         const data = await res.json()
         if(data.error){
           throw new Error(data.error)
         }
-        setConversations(data)
+        setConversations(data.friends)
 
       }catch(e){
         console.log(e)

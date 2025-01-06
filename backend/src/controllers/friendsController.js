@@ -92,6 +92,7 @@ export const getFriends = async (req, res) => {
 
     // Add usernames to the friend details
     const friendsWithUsernames = friendDetails.map((friend) => ({
+      user_id:friend.user_id,     //Include user_id
       username: friend.username, // Include username
       pfp_id: friend.pfp_id,    // Include profile picture ID
     }));

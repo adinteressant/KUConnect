@@ -12,10 +12,9 @@ export default async function clearNotification(req,res) {
   }
   //console.log("Deleting the notifications for:",privateProfile);
   
-  if(privateProfile.unread_count !== 0) {
+  if(privateProfile.unread_count >= 0) {
   await privateProfile.updateOne({unread_count:0});
   //await privateProfile.save();  
-  }
-  
+  } 
   return res.status(200).json({message:"Success!"});
 }

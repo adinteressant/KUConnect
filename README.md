@@ -1,1 +1,1 @@
-we have just begun working
+KUConnect is a social media platform designed specifically for Kathmandu University students and faculty. Built using Node.js, it facilitates communication, collaboration, and engagement within the university community.

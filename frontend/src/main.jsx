@@ -16,7 +16,7 @@ import SetInfoGoogle from './components/SetInfoGoogle.jsx'
 import ProfilePage from './components/ProfilePage.jsx'
 import ResultPage from './components/ResultPage.jsx'
 import SearchResults from './components/SearchResults.jsx'
-
+import VideoCall from './components/VideoCall.jsx'
 
 const router = createBrowserRouter([
   {
@@ -70,8 +70,14 @@ const router = createBrowserRouter([
       {
         path:'/search',
         element:<SearchResults/>
+      },
+      {
       }
     ]
+  },
+  {
+      path:'/call',
+      element:<VideoCall/>,
   }
 ])
 
