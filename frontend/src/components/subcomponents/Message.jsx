@@ -24,11 +24,14 @@ export default function Message({message}) {
   const displayMessageInfo = () => {
     setShowMessageInfo(showMessageInfo => !showMessageInfo)
   }
+  const removeMessageInfo = () => {
+    setShowMessageInfo(false)
+  }
 
   return <div className="overflow-auto scrollbar-custom">
     <div className="flex flex-col w-full "> 
       
-      <div className={`flex ${positionClass} space-x-4 items-center`}>
+      <div className={`flex ${positionClass} space-x-4 items-center group`}>
         {!fromMe &&
           (
           <div>
@@ -40,11 +43,12 @@ export default function Message({message}) {
         {
           fromMe &&
           (
-            <div className="flex flex-col items-end">
+            <div className="flex flex-col items-end"
+            onMouseLeave={removeMessageInfo}>
               <div>
                 <MessageInfo isVisible={showMessageInfo}/>
               </div>
-              <div className={`${!timeDisplay?`hidden`:``} cursor-pointer
+              <div className={`hidden affected-class group-hover:block cursor-pointer
                 hover:bg-gray-300 rounded-full`}
                 onClick={displayMessageInfo}  
               >
@@ -54,7 +58,9 @@ export default function Message({message}) {
           )
         }
         <div className="flex flex-col items-end">
-          <div className={`${colorClass} p-3 rounded-lg max-w-xs cursor-pointer`}
+          <div className={`${colorClass} p-3 rounded-lg max-w-xs cursor-pointer
+            ${fromMe && `hovered-class`}
+          `}
             onClick={displayTime}
           >
             {message.message}
