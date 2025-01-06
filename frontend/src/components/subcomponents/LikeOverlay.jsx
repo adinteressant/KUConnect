@@ -90,7 +90,7 @@ function ShowLikes(props) {
                                                         document.body.classList.toggle('overflow-hidden', false)
                                                         props.closeLikeOverlay()
                                                     }}
-                                         className='mt-2 shrink-0' to={`/${like.username}`}>
+                                         className='mt-2 shrink-0' to={like.username != props.userProfile.username ? `/${like.username}`: `/myprofile`}>
                                         <img src={`/api/get-pfp?id=${like.pfp_id}`} alt="profile" className="w-8 h-8 rounded-full object-cover"/>
                                 </Link>
                                 <div className='ml-2'>
@@ -98,7 +98,7 @@ function ShowLikes(props) {
                                                         document.body.classList.toggle('overflow-hidden', false)
                                                         props.closeLikeOverlay()
                                                     }} 
-                                        to={`/${like.username}`} className='text-gray-800 font-semibold text-sm'>
+                                        to={like.username != props.userProfile.username ? `/${like.username}`: `/myprofile` }  className='text-gray-800 font-semibold text-sm'>
                                         {like.username}
                                     </Link>
                                     <div className='text-gray-600 text-xs'>
