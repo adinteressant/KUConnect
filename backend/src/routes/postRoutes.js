@@ -1,5 +1,5 @@
 import express from 'express';
-import { createPost, getAllPosts, sharePost, searchPostsByTag, userPosts } from '../controllers/postController.js';
+import { createPost, getAllPosts, sharePost, searchPostsByTag, userPosts, searchPostsByContent } from '../controllers/postController.js';
 import { validatePost } from '../middlewares/postMiddleware.js';
 
 const router = express.Router()
@@ -13,8 +13,11 @@ router.post('/api/create-post', validatePost, createPost)
 // Share a post
 router.post('/api/posts/:postId/share', sharePost)
 
-//Search a post by tag
-router.get('/api/posts/search', searchPostsByTag)
+//Search a post by content
+router.get('/api/posts/search/content', searchPostsByContent)
+
+// Search a post by tags
+router.get('/api/posts/search/tag', searchPostsByTag);
 
 //To get posts of specific user
 router.get('/api/posts/user/:userId/get-user-posts', userPosts)

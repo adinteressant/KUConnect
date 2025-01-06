@@ -65,32 +65,50 @@ export const sharePost = async (req, res) => {
   // implement sharing functionality as required
 };
 
-//Search post using tags
-export const searchPostsByTag = async (req, res) => {
+
+// Search posts by content
+export const searchPostsByContent = async (req, res) => {
   try {
-    const { tag } = req.query;
+    const { query } = req.query;
 
-    // If no tag is provided, return an error
-    if (!tag) {
-      return res.status(400).json({ message: 'Tag is required for search' });
+    if (!query) {
+      return res.status(400).json({ message: 'Search query is required' });
     }
 
-    // Case-insensitive search for posts containing the tag
+    // Case-insensitive full-text search for posts containing the query in content
     const posts = await Post.find({ 
-      tags: { $regex: tag, $options: 'i' } 
-    }).sort({ createdAt: -1 }); // Sort by most recent first
-
-    // If no posts found
-    if (posts.length === 0) {
-      return res.status(404).json({ message: 'No posts found with this tag' });
-    }
+      content: { $regex: query, $options: 'i' } 
+    }).sort({ createdAt: -1 });
 
     res.status(200).json(posts);
   } catch (error) {
-    console.error('Error searching posts by tag:', error);
+    console.error('Error searching posts by content:', error);
     res.status(500).json({ message: 'Server error while searching posts' });
   }
 };
+
+export const searchPostsByTag = async (req, res) => {
+  try {
+    const { query } = req.query;
+
+  console.log('Received query: ', query)
+
+  if (!query) {
+    return res.status(400).json({ message: 'Query parameter is required' });
+  }
+  
+    const posts = await Post.find({
+      tags: { $regex: query, $options: 'i' }, // Case-insensitive partial match for tags
+    });
+
+    res.status(200).json(posts);
+  } catch (error) {
+    console.error('Error searching posts by content:', error);
+    res.status(500).json({ message: 'Server error while searching posts' });
+  }
+};
+
+
 
 export const userPosts = async(req, res) => {
   try
