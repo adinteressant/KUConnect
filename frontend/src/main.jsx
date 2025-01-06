@@ -16,6 +16,7 @@ import SetInfoGoogle from './components/SetInfoGoogle.jsx'
 import ProfilePage from './components/ProfilePage.jsx'
 import ResultPage from './components/ResultPage.jsx'
 import SearchPage from './components/SearchPage.jsx'
+import SearchResults from './components/SearchResults.jsx'
 import VideoCall from './components/VideoCall.jsx'
 
 const router = createBrowserRouter([
