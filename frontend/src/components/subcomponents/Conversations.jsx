@@ -80,10 +80,10 @@ export default function Conversations({ conversations, loading }) {
                 {conversation.username}
               </div>
               {conversation.count !== 0 && (
-              <div className="px-1 h-5 w-5 rounded-full text-white bg-red-600 flex
+              <div className="px-1 h-5 w-5 rounded-full text-white bg-red-500 flex
               justify-center items-center
               ">
-                <div className="text-sm">{conversation.count}</div>
+                <div className="text-sm font-normal">{conversation.count}</div>
                 
               </div>
               )}
