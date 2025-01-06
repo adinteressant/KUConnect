@@ -4,7 +4,7 @@ export function getHours(stringTime){
   const offsetMinutes = 5 * 60 + 45
   const nepaliTime = new Date(time.getTime() + offsetMinutes * 60 * 1000)
 
-  return nepaliTime.getUTCHours()
+  return nepaliTime.getUTCHours().toString().length<2?`0${nepaliTime.getUTCHours()}`:nepaliTime.getUTCHours()
 }
 
 export function getMinutes(stringTime){
@@ -13,5 +13,5 @@ export function getMinutes(stringTime){
   const offsetMinutes = 5 * 60 + 45
   const nepaliTime = new Date(time.getTime() + offsetMinutes * 60 * 1000)
 
-  return nepaliTime.getUTCMinutes()
+  return nepaliTime.getUTCMinutes().toString().length<2?`0${nepaliTime.getUTCMinutes()}`:nepaliTime.getUTCMinutes()
 }

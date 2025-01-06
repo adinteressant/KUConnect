@@ -1,4 +1,5 @@
 import useConversation from '../../zustand/useConversation'
+import MessageInfo from './MessageInfo'
 
 import { getHours,getMinutes } from '../../utils/timeConversion'
 import { useState } from 'react'
@@ -8,9 +9,10 @@ export default function Message({message}) {
   //logged in user
 
   const [timeDisplay,setTimeDisplay] = useState(false)
+  const [showMessageInfo,setShowMessageInfo] = useState(false)
 
   const authUserId = JSON.parse(localStorage.getItem('authUser'))
-  const {selectedConversation} = useConversation() //needed for further customization
+  const {selectedConversation} = useConversation()
   const fromMe = message.senderId == authUserId
   const positionClass = fromMe ? 'items-end justify-end' : 'items-start justify-start'
   const colorClass = fromMe ? `${!timeDisplay?`bg-cyan-500`:`bg-cyan-600`} text-white`:`${!timeDisplay?`bg-gray-200`:`bg-gray-300`} text-gray-900`
@@ -18,6 +20,9 @@ export default function Message({message}) {
 
   const displayTime = () => {
     setTimeDisplay(timeDisplay => !timeDisplay)
+  }
+  const displayMessageInfo = () => {
+    setShowMessageInfo(showMessageInfo => !showMessageInfo)
   }
 
   return <div className="overflow-auto scrollbar-custom">
@@ -35,11 +40,16 @@ export default function Message({message}) {
         {
           fromMe &&
           (
-            <div className={`${!timeDisplay?`hidden`:``} cursor-pointer
-              hover:bg-gray-300 rounded-full`}
-              onClick={()=>{console.log('three dots')}}  
-            >
-              <MoreHorizontal color="gray"/>
+            <div className="flex flex-col items-end">
+              <div>
+                <MessageInfo isVisible={showMessageInfo}/>
+              </div>
+              <div className={`${!timeDisplay?`hidden`:``} cursor-pointer
+                hover:bg-gray-300 rounded-full`}
+                onClick={displayMessageInfo}  
+              >
+                <MoreHorizontal color="gray"/>
+              </div>
             </div>
           )
         }
