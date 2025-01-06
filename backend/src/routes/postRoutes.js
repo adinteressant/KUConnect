@@ -1,5 +1,5 @@
 import express from 'express';
-import { createPost, getAllPosts, sharePost, searchPostsByTag, searchPostsByContent, userPosts, deletePost } from '../controllers/postController.js';
+import { createPost, getAllPosts, sharePost, searchPostsByTag, userPosts,  searchPostsByContent, deletePost } from '../controllers/postController.js';
 import { validatePost, validatePostDeletion } from '../middlewares/postMiddleware.js';
 
 const router = express.Router()

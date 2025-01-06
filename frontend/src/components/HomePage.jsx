@@ -2,6 +2,7 @@ import { useEffect, useState} from 'react'
 import { useOutletContext } from 'react-router-dom'
 import Posts from './subcomponents/Posts.jsx'
 import WelcomeModal from './subcomponents/WelcomeModal.jsx';
+import { useGetUnreadMessage } from './hooks/useGetUnreadMessage.js';
 
 const HomePage = () => {
   const [user, setUser] = useState(null)
@@ -16,7 +17,7 @@ const HomePage = () => {
   const [isTagsInputFocused, setIsTagsInputFocused] = useState(false)
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
   const {searchTrait,setSearchTrait} = useOutletContext()
-
+  useGetUnreadMessage()
   // Check for logged-in user based on isAuthenticated
   useEffect(() => {
     let isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
@@ -188,7 +189,7 @@ const HomePage = () => {
                 onBlur={handleTextareaBlur}
               />
 
-              <div className={`transition-all duration-300 ${isTextareaFocused || isTagsInputFocused || content.trim() || tagValue.trim() ? 'opacity-100' : 'opacity-0'}`}>
+              <div className={`transition-all duration-300 overflow-y-auto ease-in-out ${isTextareaFocused || isTagsInputFocused || content.trim() || tagValue.trim() ? 'opacity-100 max-h-screen' : 'opacity-0 max-h-0'}`}>
                 <input
                   type="text"
                   placeholder="Add tags (space-separated)"
@@ -209,6 +210,10 @@ const HomePage = () => {
                     </span>
                   ))}
                 </div>
+              </div>
+              
+              {/* Images Upload Section */}
+              <div>
               </div>
               
               <button
