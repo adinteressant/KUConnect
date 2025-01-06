@@ -85,9 +85,14 @@ export default function LoginPage() {
           <button
             type="button"
             onClick={handleGoogleLogin}
-            className="w-full px-4 py-3 rounded-md text-base font-medium transition-colors bg-gray-200 hover:bg-gray-300 text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+            className="w-full flex items-center justify-center gap-4 px-4 py-3 rounded-md text-base font-medium transition-colors bg-gray-200 hover:bg-gray-300 text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
           >
+            <div className="w-8 h-8">
+            <img src = "/images/googleLogo.png" alt = "google logo" />
+            </div>
+            <div>
             Login with Google
+            </div>
           </button>
         </form>
       </div>

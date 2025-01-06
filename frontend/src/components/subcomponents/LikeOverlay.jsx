@@ -98,7 +98,7 @@ function ShowLikes(props) {
                                                         document.body.classList.toggle('overflow-hidden', false)
                                                         props.closeLikeOverlay()
                                                     }} 
-                                        to={`/${like.username}`} className='text-gray-800 font-semibold text-sm'>
+                                        to={`/${like.username}`}  className='text-gray-800 font-semibold text-sm'>
                                         {like.username}
                                     </Link>
                                     <div className='text-gray-600 text-xs'>

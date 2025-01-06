@@ -17,6 +17,7 @@ function Posts(props) {
     const [showCommentBox, setShowCommentBox] = useState([])
     const [showCommentOverlay, setShowCommentOverlay] = useState('')
     const [overlayTransitionState, setOverlayTransitionState] = useState(false)
+    const [postOptions, setPostOptions] = useState('')
 
     useEffect(() => {
       fetch('/api/get-user-profile')
@@ -225,7 +226,47 @@ function Posts(props) {
         }, 300)
         setOverlayTransitionState(false)
         document.body.classList.toggle('overflow-hidden', false)
-    }      
+    }
+
+    const deletePost = async(post) =>
+    {
+      try
+      {
+        const response = await fetch(`/api/post/user/${userProfile.user_id}/delete-post`,{
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            post
+          })
+        })
+
+        const deletedPost = await response.json()
+
+        if(response.ok)
+        {
+          props.setPosts((prevPosts) =>
+            prevPosts.filter((p) =>
+              p._id !== deletedPost.deletedPost._id
+            )
+          )
+          setPosts((prevPosts) =>
+            prevPosts.filter((p) =>
+              p._id !== deletedPost.deletedPost._id
+            )
+          )
+        }
+        else
+        {
+          console.error('Error deleting post:', deletedPost.message)
+        }
+      }
+      catch(error)
+      {
+        console.error('Error deleting post:', error)
+      }
+    }
 
     return(
 
@@ -236,40 +277,38 @@ function Posts(props) {
               posts.map((post) => (
                 <div
                   key={post._id}
-                  className={`bg-white p-4 rounded-lg shadow-md mb-4 transition-all duration-300 ${
+                  className={`relative bg-white p-4 rounded-lg shadow-md mb-4 transition-all duration-300 ${
                     post.isUpdating ? 'scale-105' : 'scale-100'
                   }`}
                 >
-                <div className='flex gap-2 items-end'>
-                  <Link to={post.username != userProfile.username ?`/${post.username}`:
-                `/myprofile`}>
-                    <img src={`/api/get-pfp?id=${post.pfp_id}`} className="h-9 w-9 rounded-full object-cover"/>
-                  </Link>
-                  <div>
-                    <Link to={post.username != userProfile.username ?`/${post.username}`:
-                `/myprofile`} 
-                      className="text-gray-800 font-semibold">
-                      {post.username}
+                  <div className='flex gap-2 items-center'>
+                    <Link to={`/${post.username}`}>
+                      <img src={`/api/get-pfp?id=${post.pfp_id}`} className="h-9 w-9 rounded-full object-cover"/>
                     </Link>
-                    <div className='flex gap-1 items-center text-gray-600 text-xs'>
-                      <div>
-                        {post.role.charAt(0).toUpperCase() + post.role.slice(1)}
-                      </div>
-                      &#183;
-                      <div>
-                        {formatTimeAgo(post.createdAt)} ago
-                        {/*new Date(post.createdAt).toLocaleDateString('en-US', { 
-                          day: '2-digit', 
-                          month: 'long', 
-                          year: 'numeric' 
-                        })}, {new Date(post.createdAt).toLocaleTimeString([], { 
-                          hour: '2-digit', 
-                          minute: '2-digit' 
-                        })*/}
+                    <div>
+                      <Link to={`/${post.username}`}
+                        className="text-gray-800 font-semibold">
+                        {post.username}
+                      </Link>
+                      <div className='flex gap-1 items-center text-gray-600 text-xs'>
+                        <div>
+                          {post.role.charAt(0).toUpperCase() + post.role.slice(1)}
+                        </div>
+                        &#183;
+                        <div>
+                          {formatTimeAgo(post.createdAt)} ago
+                          {/*new Date(post.createdAt).toLocaleDateString('en-US', { 
+                            day: '2-digit', 
+                            month: 'long', 
+                            year: 'numeric' 
+                          })}, {new Date(post.createdAt).toLocaleTimeString([], { 
+                            hour: '2-digit', 
+                            minute: '2-digit' 
+                          })*/}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
                   <p className="mt-2 text-gray-800">{post.content}</p>
                   {post.tags.length > 0 && (
                     <div className="mt-2 text-sm text-gray-600">
@@ -387,15 +426,13 @@ function Posts(props) {
                       
                       {showCommentBox.find(p => p.postId === post._id).display.map((d, index) => 
                         <div key={index} className='flex mt-4'>
-                          <Link className='mt-2 shrink-0' to={post.username != userProfile.username ?`/${post.username}`:
-                `/myprofile`}>
+                          <Link className='mt-2 shrink-0' to={`/${userProfile.username}`}>
                             <img src={`/api/get-pfp?id=${d.pfp}`} alt="profile" className="w-8 h-8 rounded-full object-cover"/>
                           </Link>
                           <div className='ml-2'>
                               <div className='bg-gray-100 p-2 rounded-xl'>
                                 <div className='flex gap-2 items-center'>
-                                  <Link to={post.username != userProfile.username ?`/${post.username}`:
-                `/myprofile`} className='text-gray-800 font-semibold text-sm'>
+                                  <Link to={`/${userProfile.username}`} className='text-gray-800 font-semibold text-sm'>
                                     {d.username}
                                   </Link>
                                   <div className='text-gray-600 text-xs'>
@@ -442,6 +479,27 @@ function Posts(props) {
                       </button>
                     </div>
                   </div>
+                  {(post.userId === userProfile.user_id) &&
+                    <div className='absolute top-3 right-3 flex flex-col items-end'>
+                      <button className='rounded-full p-1 transition-all duration-300 hover:bg-gray-100' onClick={() => setPostOptions((prev) => (prev===post._id)?'':post._id)}>
+                        <svg width="16" height="16" viewBox="0 0 24 24" 
+                          className = 'stroke-1 stroke-gray-600'>
+                          <circle cx="12" cy="12" r="1"/>
+                          <circle cx="19" cy="12" r="1"/>
+                          <circle cx="5" cy="12" r="1"/>
+                        </svg>
+                      </button>
+                      
+                      {postOptions === post._id &&
+                        <div className='rounded-lg shadow-lg'>  
+                          <button onClick={() => deletePost(post)} className='flex items-center gap-2 rounded-lg p-2 text-red-400 hover:bg-gray-100 transition-all duration-300'>
+                            <svg className='stroke-red-400 fill-none stroke-2' width="20" height="20" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                            <div>Delete</div>
+                          </button>
+                        </div>
+                      }
+                    </div>
+                  } 
                 </div>
               ))
             ) : (
@@ -474,7 +532,7 @@ function Posts(props) {
                       <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
                     </svg>
                   </button>
-                  <ShowLikes postId={showLikeOverlay} closeLikeOverlay={closeLikeOverlay}/>
+                  <ShowLikes postId={showLikeOverlay} userProfile = {userProfile} closeLikeOverlay={closeLikeOverlay}/>
                 </div>
               </div>
             )}
@@ -502,7 +560,7 @@ function Posts(props) {
                       <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
                     </svg>
                   </button>
-                  <ShowComments postId={showCommentOverlay} closeCommentOverlay={closeCommentOverlay}/>
+                  <ShowComments postId={showCommentOverlay} userProfile= {userProfile} closeCommentOverlay={closeCommentOverlay}/>
                 </div>
               </div>
             )}

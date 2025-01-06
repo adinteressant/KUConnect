@@ -1,30 +1,33 @@
 //Controller
-import Post from '../models/Post.js'; // Post model 
-import PublicInfo from '../models/PublicInfo.js';
-import PrivateInfo from '../models/PrivateInfo.js';
+import Post from '../models/Post.js' // Post model
+import Like from '../models/like.js'
+import Comment from '../models/comment.js'
+import PublicInfo from '../models/PublicInfo.js'
+import PrivateInfo from '../models/PrivateInfo.js'
+
 // Get all posts
 export const getAllPosts = async (req, res) => {
   try {
     // Retrieve all posts from the database, sorted by createdAt (most recent first)
-    const posts = await Post.find().sort({ createdAt: -1 });
-    res.json(posts);
+    const posts = await Post.find().sort({ createdAt: -1 })
+    res.json(posts)
   } catch (error) {
-    console.error('Error fetching posts:', error);
-    res.status(500).json({ message: 'Failed to fetch posts. Please try again later.', error });
+    console.error('Error fetching posts:', error)
+    res.status(500).json({ message: 'Failed to fetch posts. Please try again later.', error })
   }
-};
+}
 
 // Create a new post
 export const createPost = async (req, res) => {
-  const { content, userInfo, tags } = req.body;
+  const { content, userInfo, tags } = req.body
 
   // Validate content
   if (!content || content.trim() === '') {
-    return res.status(400).json({ message: 'Post content is required!' });
+    return res.status(400).json({ message: 'Post content is required!' })
   }
 
   if (!userInfo) {
-    return res.status(400).json({ message: 'User information is required!' });
+    return res.status(400).json({ message: 'User information is required!' })
   }
 
   try {
@@ -55,46 +58,46 @@ export const createPost = async (req, res) => {
     //console.log(PrivUsersWithTags);   
     //await PrivUsersWithTags.save(); 
     // Save the post in the database
-    const savedPost = await newPost.save();
-    res.status(201).json({ message: 'Post created successfully!', post: savedPost });
+    const savedPost = await newPost.save()
+    res.status(201).json({ message: 'Post created successfully!', post: savedPost })
   } catch (error) {
-    //console.error('Error creating post:', error);
-    res.status(500).json({ message: 'Internal Server Error', error });
+    console.error('Error creating post:', error)
+    res.status(500).json({ message: 'Internal Server Error', error })
   }
-};
+}
 
 
 // Share a post
 export const sharePost = async (req, res) => {
   // implement sharing functionality as required
-};
+}
 
 //Search post using tags
 export const searchPostsByTag = async (req, res) => {
   try {
-    const { tag } = req.query;
+    const { tag } = req.query
 
     // If no tag is provided, return an error
     if (!tag) {
-      return res.status(400).json({ message: 'Tag is required for search' });
+      return res.status(400).json({ message: 'Tag is required for search' })
     }
 
     // Case-insensitive search for posts containing the tag
     const posts = await Post.find({ 
       tags: { $regex: tag, $options: 'i' } 
-    }).sort({ createdAt: -1 }); // Sort by most recent first
+    }).sort({ createdAt: -1 }) // Sort by most recent first
 
     // If no posts found
     if (posts.length === 0) {
-      return res.status(404).json({ message: 'No posts found with this tag' });
+      return res.status(404).json({ message: 'No posts found with this tag' })
     }
 
-    res.status(200).json(posts);
+    res.status(200).json(posts)
   } catch (error) {
-    console.error('Error searching posts by tag:', error);
-    res.status(500).json({ message: 'Server error while searching posts' });
+    console.error('Error searching posts by tag:', error)
+    res.status(500).json({ message: 'Server error while searching posts' })
   }
-};
+}
 
 export const userPosts = async(req, res) => {
   try
@@ -107,6 +110,44 @@ export const userPosts = async(req, res) => {
   }
   catch(error)
   {
-    res.status(500).json("Error in getting user's posts: ", error)
+    res.status(500).json({ message: `Error in getting user's posts: `, error })
+  }
+}
+
+export const deletePost = async(req, res) => {
+  try
+  {
+    const { post } = req.body
+
+    if (post.tags && post.tags.length > 0) {
+      let UsersWithTags = await PublicInfo.find({ tags: { $in: post.tags } });
+      if (UsersWithTags.length>0){
+      const publicUid = UsersWithTags.map((e)=>e.user_id); 
+      const PrivUsersWithTags = await PrivateInfo.find({user_id:{$in:publicUid}});
+    
+      console.log(PrivUsersWithTags[0].unread_count);
+      await PrivateInfo.updateMany(
+      { user_id: { $in: publicUid } }, 
+      { $inc: { unread_count: -1  } } 
+      ); 
+      console.log("Decremented by 1!");
+          }
+      }
+    const [deletedPost] = await Promise.all([
+      Post.findByIdAndDelete(post._id),
+      Like.deleteMany({ postId: post._id }),
+      Comment.deleteMany({ postId: post._id })
+    ])
+
+    if(!deletedPost)
+    {
+      return res.status(404).json({ message: 'Post not found for deletion' })
+    }
+
+    return res.status(200).json({ message: 'Post deleted successfully' , deletedPost })
+  }
+  catch(error)
+  {
+    res.status(500).json({ message: 'Error in deleting post:', error })
   }
 }
