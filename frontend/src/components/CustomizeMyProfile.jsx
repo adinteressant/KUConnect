@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { X } from 'lucide-react'; // Import the X icon for delete button
 
-const myprofile = () => {
+const customizemyprofile = () => {
   const [userprofile, setuserprofile] = useState({});
   const [showprofilepicoverlay, setshowprofilepicoverlay] = useState(false);
   const [showpasswordmodal, setshowpasswordmodal] = useState(false);
@@ -292,5 +292,5 @@ const myprofile = () => {
   );
 };
 
-export default myprofile;
+export default customizemyprofile;
 

@@ -163,8 +163,8 @@ const Navigation = ({ setVisibility, setPadding,searchTrait,setSearchTrait}) => 
                   {isAuthenticated && (
                     <>
                       <Link
-                        to="/myprofile"
-                        onClick={() => checkLoginOrRegister('/myprofile')}
+                        to={`/${userProfile.username}`}
+                        onClick={() => checkLoginOrRegister(`/${userProfile.username}`)}
                         className="flex items-center px-4 py-2 hover:bg-gray-100 transition-colors"
                       >
                         <UserCircle className="h-4 w-4 mr-2" /> My Profile
