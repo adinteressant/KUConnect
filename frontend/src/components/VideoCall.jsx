@@ -1,22 +1,16 @@
-import { document } from "postcss"
+import ReactWebcam from "react-webcam";
+
 
 export default function VideoCall(){
 
-  function videoPlayer() {
-  const video = document.querySelector('#videoElement');
-    if(navigator.mediaDevices.getUserMedia){
-      navigator.mediaDevices.getUserMedia({video:true})
-        .then((stream)=>{
-          video.srcObj = stream;
-        })
-        .catch((error)=>{
-          console.log("Something went wrong!");
-        });
-    }
-  }
-  videoPlayer();
+  const videoConstraints = {
+    facingMode: "user",
+    disablePictureInPicture:true,
+  };
+
   return (
-    <video autoplay="true" id="userVideoElement" className="bg-gray-200 w-500 b-375">
-    </video>
+    <div className="w-auto h-auto bg-gray-300 m-0"> 
+    <ReactWebcam height={600} width={600} className="h-auto w-auto" videoConstraints={videoConstraints}/>
+    </div>
   )
 }

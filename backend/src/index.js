@@ -6,20 +6,25 @@ import session from 'express-session'
 import MongoStore from 'connect-mongo'
 import mongoose from 'mongoose'
 import passport from 'passport'
-
+import {Server } from 'socket.io'
 import router from './routes/index.js';
-
+import http from  'http';
+//old package
 import { connectToDB } from './db/index.js'
+import handleWebRTC from './controllers/handleWebRTC.js';
 
 dotenv.config({path: './.env'});
 
 
 const app = express();
+const video_app = express();
+const server = http.createServer(app);
+const io = new Server(server);
+
 //middleware attachments
 app.use(express.json());
 
 app.use("/public",express.static("../public/"))
-
 app.use(
   cors({
     origin: 'http://localhost:5173', // Frontend URL
@@ -31,11 +36,14 @@ app.use(
 app.use(cookieParser());
 
 const PORT = process.env.PORT || 3000
-
+const VIDEO_PORT = 3056
 connectToDB()
 .then(()=>{
   app.listen(PORT,()=>{
     console.log(`Server is running on port ${PORT}`)
+  })
+  server.listen(VIDEO_PORT,()=>{
+    console.log(`WebRTC Server is up on port ${VIDEO_PORT}`)
   })
 })
 .catch((error)=>{
@@ -62,6 +70,6 @@ app.use(session({
 
 app.use(passport.initialize())
 app.use(passport.session())
-
+handleWebRTC(io);
 app.use(router)
 
