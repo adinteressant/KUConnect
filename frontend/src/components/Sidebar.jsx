@@ -13,10 +13,9 @@ import useRequestCount from '../zustand/useRequestCount';
 export default function Sidebar({userProfile,setUserProfile}) {
   const [userUnreadCount, setUserUnreadCount] = useState(userProfile.unread_count);
   const {incomingRequestsCount, setIncomingRequestsCount} = useRequestCount(); 
-
      //Fetch user profile
     useEffect(() => {
-      (async () => {
+      async function fetchProfile ()  {
         try {
           const response = await axios.get('/api/get-user-profile/', {
             withCredentials: true,
@@ -28,7 +27,7 @@ export default function Sidebar({userProfile,setUserProfile}) {
         } catch (error) {
           console.error('Error fetching user profile:', error);
         }
-      })();
+      }fetchProfile();
     }, [userProfile.unread_count]);
   
     useEffect(() => {

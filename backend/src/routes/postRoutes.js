@@ -1,6 +1,6 @@
 import express from 'express';
-import { createPost, getAllPosts, sharePost, searchPostsByTag, userPosts, searchPostsByContent } from '../controllers/postController.js';
-import { validatePost } from '../middlewares/postMiddleware.js';
+import { createPost, getAllPosts, sharePost, searchPostsByTag, searchPostsByContent, userPosts, deletePost } from '../controllers/postController.js';
+import { validatePost, validatePostDeletion } from '../middlewares/postMiddleware.js';
 
 const router = express.Router()
 
@@ -21,5 +21,8 @@ router.get('/api/posts/search/tag', searchPostsByTag);
 
 //To get posts of specific user
 router.get('/api/posts/user/:userId/get-user-posts', userPosts)
+
+// Delete a post
+router.post('/api/post/user/:userId/delete-post', validatePostDeletion, deletePost)
 
 export default router;

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { X } from 'lucide-react';
 
-const MyProfile = () => {
+const CustomizeMyProfile = () => {
   const [userprofile, setuserprofile] = useState({});
   const [showprofilepicoverlay, setshowprofilepicoverlay] = useState(false);
   const [showpasswordmodal, setshowpasswordmodal] = useState(false);
@@ -113,7 +113,10 @@ const MyProfile = () => {
               <span className="text-gray-500">add photo</span>
             )}
           </div>
-          <div className="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity cursor-pointer">
+          <div 
+            className="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity cursor-pointer"
+            onClick={() => setshowprofilepicoverlay(true)}
+          >
             <span className="text-white text-sm">change picture</span>
           </div>
         </div>
@@ -121,8 +124,14 @@ const MyProfile = () => {
         {/* Profile picture overlay */}
         {showprofilepicoverlay && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white p-6 rounded-lg">
-              <h2 className="text-2xl mb-4">choose profile picture</h2>
+            <div className="bg-white p-6 rounded-lg relative">
+              <button
+                className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+                onClick={() => setshowprofilepicoverlay(false)}
+              >
+                <X size={24} />
+              </button>
+              <h2 className="text-2xl mb-4 font-semibold">Choose Profile Picture</h2>
               <div className="grid grid-cols-3 gap-4">
                 {profilepictures.map((pic, index) => (
                   <img
@@ -134,12 +143,6 @@ const MyProfile = () => {
                   />
                 ))}
               </div>
-              <button
-                className="mt-4 w-full bg-gray-200 py-2 rounded hover:bg-gray-300 transition-colors"
-                onClick={() => setshowprofilepicoverlay(false)}
-              >
-                cancel
-              </button>
             </div>
           </div>
         )}
@@ -190,7 +193,13 @@ const MyProfile = () => {
         {/* Password change modal */}
         {showpasswordmodal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white p-6 rounded-lg w-full max-w-md mx-4">
+            <div className="bg-white p-6 rounded-lg w-full max-w-md mx-4 relative">
+              <button
+                className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+                onClick={() => setshowpasswordmodal(false)}
+              >
+                <X size={24} />
+              </button>
               <h2 className="text-2xl mb-4 font-semibold">Change Password</h2>
               <form onSubmit={handlepasswordchange}>
                 <input
@@ -250,5 +259,5 @@ const MyProfile = () => {
   );
 };
 
-export default MyProfile;
+export default CustomizeMyProfile;
 

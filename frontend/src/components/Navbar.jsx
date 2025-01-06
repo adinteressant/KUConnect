@@ -142,7 +142,7 @@ const Navigation = ({ setVisibility, setPadding,searchTrait,setSearchTrait, user
             <input
                 type="text"
                 placeholder="Search"
-                className="w-full pl-10 pr-4 py-2 rounded-full bg-gray-100 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:bg-white transition-colors font-serif"
+                className="w-full pl-10 pr-4 py-2 rounded-full bg-gray-100 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:bg-white transition-colors"
                 value={searchTrait}
                 onChange={(e)=>{setSearchTrait(e.target.value)}}
               />
@@ -177,8 +177,8 @@ const Navigation = ({ setVisibility, setPadding,searchTrait,setSearchTrait, user
                   {isAuthenticated && (
                     <>
                       <Link
-                        to="/myprofile"
-                        onClick={() => checkLoginOrRegister('/myprofile')}
+                        to={`/${userProfile.username}`}
+                        onClick={() => checkLoginOrRegister(`/${userProfile.username}`)}
                         className="flex items-center px-4 py-2 hover:bg-gray-100 transition-colors"
                       >
                         <UserCircle className="h-4 w-4 mr-2" /> My Profile

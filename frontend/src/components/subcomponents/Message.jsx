@@ -1,21 +1,77 @@
 import useConversation from '../../zustand/useConversation'
+import MessageInfo from './MessageInfo'
+
+import { getHours,getMinutes } from '../../utils/timeConversion'
+import { useState } from 'react'
+import { MoreHorizontal } from 'lucide-react'
 
 export default function Message({message}) {
   //logged in user
+
+  const [timeDisplay,setTimeDisplay] = useState(false)
+  const [showMessageInfo,setShowMessageInfo] = useState(false)
+
   const authUserId = JSON.parse(localStorage.getItem('authUser'))
-  const {selectedConversation} = useConversation() //needed for further customization
+  const {selectedConversation} = useConversation()
   const fromMe = message.senderId == authUserId
   const positionClass = fromMe ? 'items-end justify-end' : 'items-start justify-start'
-  const colorClass = fromMe ? 'bg-cyan-500 text-white':'bg-gray-200 text-gray-900'
-  return <div className="overflow-auto scrollbar-custom">
-  <div className="flex flex-col space-y-4 w-full"> 
+  const colorClass = fromMe ? `${!timeDisplay?`bg-cyan-500`:`bg-cyan-600`} text-white`:`${!timeDisplay?`bg-gray-200`:`bg-gray-300`} text-gray-900`
   
-  <div className={`flex ${positionClass} space-x-4`}>
-    <div className={`${colorClass} p-3 rounded-lg max-w-xs`}>
-      {message.message}
-    </div>
-  </div>
 
-  </div>
-  </div>
+  const displayTime = () => {
+    setTimeDisplay(timeDisplay => !timeDisplay)
+  }
+  const displayMessageInfo = () => {
+    setShowMessageInfo(showMessageInfo => !showMessageInfo)
+  }
+  const removeMessageInfo = () => {
+    setShowMessageInfo(false)
+  }
+
+  return <div className="overflow-auto scrollbar-custom">
+    <div className="flex flex-col w-full "> 
+      
+      <div className={`flex ${positionClass} space-x-4 items-center group`}>
+        {!fromMe &&
+          (
+          <div>
+            <img className="w-10 h-10 rounded-full"
+            src={`/api/get-pfp?id=${selectedConversation.pfp_id}`} alt=""/>
+          </div>
+          )
+        }
+        {
+          fromMe &&
+          (
+            <div className="flex flex-col items-end"
+            onMouseLeave={removeMessageInfo}>
+              <div>
+                <MessageInfo isVisible={showMessageInfo}/>
+              </div>
+              <div className={`hidden affected-class group-hover:block cursor-pointer
+                hover:bg-gray-300 rounded-full`}
+                onClick={displayMessageInfo}  
+              >
+                <MoreHorizontal color="gray"/>
+              </div>
+            </div>
+          )
+        }
+        <div className="flex flex-col items-end">
+          <div className={`${colorClass} p-3 rounded-lg max-w-xs cursor-pointer
+            ${fromMe && `hovered-class`}
+          `}
+            onClick={displayTime}
+          >
+            {message.message}
+          </div>
+          <div className={`text-[0.6rem] text-gray-500 transition-all duration-150 ease-in-out
+             ${!timeDisplay ? `opacity-0 invisible max-h-0 overflow-hidden` : `opacity-100 visible`}`}>
+            {getHours(message.createdAt)} : {getMinutes(message.createdAt)}
+          </div>
+        </div>
+
+      </div>
+      </div>
+    </div>
  }

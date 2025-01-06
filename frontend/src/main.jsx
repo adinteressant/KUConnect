@@ -10,14 +10,13 @@ import HomePage from './components/HomePage.jsx'
 import MessagePage from './components/MessagePage.jsx'
 import FriendsPage from './components/FriendsPage.jsx'
 import NotificationPage from './components/NotificationPage.jsx'
-import MyProfile from './components/MyProfile.jsx'
+import CustomizeMyProfile from './components/CustomizeMyProfile.jsx'
 import VerifyOtp from './components/VerifyOtpPage.jsx'
 import SetInfoGoogle from './components/SetInfoGoogle.jsx'
 import ProfilePage from './components/ProfilePage.jsx'
 import ResultPage from './components/ResultPage.jsx'
 import SearchPage from './components/SearchPage.jsx'
-import SearchResults from './components/SearchResults.jsx'
-
+import VideoCall from './components/VideoCall.jsx'
 
 const router = createBrowserRouter([
   {
@@ -49,8 +48,8 @@ const router = createBrowserRouter([
         element:<NotificationPage/>
       },
       {
-        path:'/myprofile',
-        element:<MyProfile/>
+        path:'/customizemyprofile',
+        element:<CustomizeMyProfile/>
       },
       {
         path:'/verifyotp',
@@ -73,6 +72,10 @@ const router = createBrowserRouter([
         element:<SearchPage/>
       }
     ]
+  },
+  {
+      path:'/call',
+      element:<VideoCall/>,
   }
 ])
 

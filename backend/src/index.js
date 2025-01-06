@@ -53,7 +53,7 @@ app.use(session({
     httpOnly: true, // Prevent client-side access to cookies
     secure: process.env.NODE_ENV === 'production', // Set secure cookie for production
     sameSite: 'strict', // (strict or lax)
-    maxAge:60000*60
+    maxAge:60000*60*24
   },
   store:MongoStore.create({
     client:mongoose.connection.getClient()
