@@ -135,18 +135,30 @@ const Navigation = ({ setVisibility, setPadding,searchTrait,setSearchTrait, user
           </Link>
 
           <div className="w-full max-w-md mx-32">
-            {/* Search Section */}
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-            <form onSubmit={handleSearch}>  
-            <input
-                type="text"
-                placeholder="Search"
-                className="w-full pl-10 pr-4 py-2 rounded-full bg-gray-100 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:bg-white transition-colors"
-                value={searchTrait}
-                onChange={(e)=>{setSearchTrait(e.target.value)}}
-              />
-            </form>
+              <form onSubmit={handleSearch}>
+                <div className="w-full pl-10 pr-4 py-2 rounded-full bg-gray-100 focus-within:ring-2 focus-within:ring-cyan-500 focus-within:bg-white transition-colors flex items-center gap-2">
+                  {searchTrait.startsWith('#tag:') && (
+                    <span className="bg-cyan-100 text-cyan-800 px-2 py-1 rounded-full text-sm whitespace-nowrap">
+                      #tag:
+                    </span>
+                  )}
+                  <input
+                    type="text"
+                    placeholder="Search"
+                    className="flex-1 bg-transparent focus:outline-none"
+                    value={searchTrait.startsWith('#tag:') ? searchTrait.slice(5) : searchTrait}
+                    onChange={(e) => {
+                      if (searchTrait.startsWith('#tag:') || e.target.value.startsWith('#tag:')) {
+                        setSearchTrait('#tag:' + e.target.value.replace('#tag:', ''));
+                      } else {
+                        setSearchTrait(e.target.value);
+                      }
+                    }}
+                  />
+                </div>
+              </form>
             </div>
           </div>
 
