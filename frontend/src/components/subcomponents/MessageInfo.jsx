@@ -18,7 +18,7 @@ export default function MessageInfo({isVisible,id}){
       console.log(e)
     }
   }
-  return <div className={`flex shadow-sm flex-col border bg-white rounded-md border-gray-200 
+  return <div className={`mr-6 flex shadow-sm flex-col border bg-white rounded-md border-gray-200 
     ${isVisible?`absolute z-50`:`hidden`}
   `}>
     <div className="border-b border-gray-200 p-2 hover:bg-gray-200 cursor-pointer"
