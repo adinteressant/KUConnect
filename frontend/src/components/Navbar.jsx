@@ -55,6 +55,7 @@ const Navigation = ({ setVisibility, setPadding,searchTrait,setSearchTrait, user
       await axios.get('/api/user-logout', { withCredentials: true });
       localStorage.setItem('isAuthenticated', 'false');
       localStorage.removeItem('authUser')
+      localStorage.setItem('isLoggedIn',false)
       setIsAuthenticated(false);
       setVisibility(false);
       setPadding('');
@@ -77,40 +78,55 @@ const Navigation = ({ setVisibility, setPadding,searchTrait,setSearchTrait, user
     }, 300);
   };
 
-  const handleSearch = async (e)=>{
+
+  //Navbar handle search
+  const handleSearch = async (e) => {
     e.preventDefault();
   
-
-  const trimmedTag = searchTrait.trim();
-    if (!trimmedTag) {
-      alert('Please enter a tag to search');
+    const trimmedQuery = searchTrait.trim();
+    if (!trimmedQuery) {
+      alert('Please enter something to search');
       return;
     }
-
+  
     try {
-      // Make API call to search posts by tag
-      const response = await axios.get(`/api/posts/search?tag=${trimmedTag}`);
-      
+      let response;
+  
+      if (trimmedQuery.startsWith('#tag:')) {
+        // Tag search
+        const tagQuery = trimmedQuery.replace('#tag:', '').trim(); // Strip #tag:
+        console.log('Tag Search Query:', tagQuery); // Debugging line
+  
+        // Make the request with the stripped tag query
+        response = await axios.get(`/api/posts/search/tag?query=${tagQuery}`);
+      } else {
+        // Regular content search
+        console.log('Regular Search Query:', trimmedQuery); // Debugging line
+        response = await axios.get(`/api/posts/search/content?query=${trimmedQuery}`);
+      }
+  
       // Navigate to search results page and pass search results
       navigate('/search', { 
         state: { 
           posts: response.data, 
-          searchTag: trimmedTag 
+          searchQuery: trimmedQuery,
+          isTagSearch: trimmedQuery.startsWith('#tag:')
         } 
       });
-      
+  
       setSearchTrait('');
     } catch (error) {
       console.error('Error searching posts:', error);
-      
+  
       // Handle different error scenarios
       if (error.response?.status === 404) {
-        alert('No posts found with this tag');
+        alert('No posts found');
       } else {
         alert('An error occurred while searching');
       }
     }
-  }
+  };
+  
 
   return (
     <div className="w-full bg-white shadow-[0_10px_25px_-15px_rgba(0,255,255,0.2)] fixed z-20 top-0">

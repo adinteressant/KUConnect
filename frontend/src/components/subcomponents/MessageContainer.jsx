@@ -30,8 +30,8 @@ export default function MessageContainer() {
           </div>
 
           {/* Scrollable Messages Section */}
-          <div className="flex-1 bg-gray-50 pt-16 pb-16 border-l border-gray-200">
-            <div className="p-4 space-y-4">
+          <div className="flex-1 bg-gray-50 pt-16 pb-16 border-l border-gray-200 flex flex-col">
+            <div className="mt-auto p-4 space-y-4">
               <Messages />
               {/* Empty div for scrolling to the bottom */}
               <div ref={messagesEndRef}></div>

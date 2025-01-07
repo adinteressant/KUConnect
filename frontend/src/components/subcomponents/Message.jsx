@@ -46,7 +46,7 @@ export default function Message({message}) {
             <div className="flex flex-col items-end"
             onMouseLeave={removeMessageInfo}>
               <div>
-                <MessageInfo isVisible={showMessageInfo}/>
+                <MessageInfo isVisible={showMessageInfo} id={message._id}/>
               </div>
               <div className={`hidden affected-class group-hover:block cursor-pointer
                 hover:bg-gray-300 rounded-full`}

@@ -90,3 +90,26 @@ export const getStatus = async (req,res) => {
 
   return res.status(200).json({newMessages:newMessages})
 }
+
+export const deleteMessageController = async (req,res) => {
+
+  const { senderId } = req
+  const { receiverId } = req.query
+  const { messageId } = req.query
+  let conversation
+  try{
+    await Message.findByIdAndDelete(messageId)
+    conversation = await Conversation.findOne({
+      participants:{$all:[senderId,receiverId]}
+    }).populate('messages')
+  
+    if(!conversation) {
+      return res.status(200).json([])
+    }
+  }catch(error){
+    console.log(error)
+    return res.status(500).json({error})
+  }
+  
+  return res.status(200).json({messages:conversation.messages,msg:'success'})
+}

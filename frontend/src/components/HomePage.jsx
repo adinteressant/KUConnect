@@ -1,8 +1,8 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState} from 'react'
 import { useOutletContext } from 'react-router-dom'
-import Fuse from 'fuse.js'
 import Posts from './subcomponents/Posts.jsx'
 import WelcomeModal from './subcomponents/WelcomeModal.jsx';
+import { useGetUnreadMessage } from './hooks/useGetUnreadMessage.js'
 
 const HomePage = () => {
   const [user, setUser] = useState(null)
@@ -15,27 +15,14 @@ const HomePage = () => {
   const [tagList, setTagList] = useState([])
   const [isTextareaFocused, setIsTextareaFocused] = useState(false)
   const [isTagsInputFocused, setIsTagsInputFocused] = useState(false)
-  const [filteredPosts, setFilteredPosts] = useState([])
+  const [images, setImages] = useState([])
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
   const {searchTrait,setSearchTrait} = useOutletContext()
-
-
-  // Fetch user profile on mount
-  useEffect(() => {
-    fetch('/api/get-user-profile')
-      .then((response) => response.json())
-      .then((data) => {
-        setUserProfile(data);
-        localStorage.setItem('authUser',JSON.stringify(data.user_id))
-      })
-      .catch((e) => {
-        console.error('Error fetching user profile:', e);
-      });
-  }, []);
-
   // Check for logged-in user based on isAuthenticated
-  useEffect(() => {
-    let isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
+  if(localStorage.getItem('isLoggedIn') === 'true') useGetUnreadMessage()
+  
+    useEffect(() => {
+    let isAuthenticated = localStorage.getItem('isAuthenticated') === 'true'  
     if (isAuthenticated) {
       setUser({ email: 'user@example.com' });
       const isNewLogin = sessionStorage.getItem('newLogin') === 'true';
@@ -69,7 +56,6 @@ const HomePage = () => {
       .then((response) => response.json())
       .then((data) => {
         setPosts(data);
-        setFilteredPosts(data);
       })
       .catch((e) => {
         console.error('Error fetching posts:', e);
@@ -77,25 +63,6 @@ const HomePage = () => {
 
       //console.log('unread_count:',userProfile.unread_count);
   }, []);
-
-  useEffect(() => {
-    const options = {
-      keys: ['content', 'username'],
-      useExtendedSearch: true,
-    }
-
-    const fuse = new Fuse(posts, options);
-    
-    const result = fuse.search(`'${searchTrait}`);
-    
-    let filResult = result.map(item => item.item); // FILTERED RESULT
-    
-    if (!searchTrait.length) {
-      setFilteredPosts(posts);
-      filResult = posts; //IF THE SEARCH BAR IS EMPTY ALL POSTS APPEAR
-    }
-    setFilteredPosts(filResult); // ELSE FILTERED POSTS
-  }, [searchTrait, posts]);
 
   // Handle Post Submit
   const handlePostSubmit = () => {
@@ -185,6 +152,17 @@ const HomePage = () => {
     }
   };
 
+  const handleImageChange = (e) => 
+  {
+    const selectedImages = Array.from(e.target.files)
+    setImages((prev) => [...prev, ...selectedImages])
+  }
+
+  const handleImageRemove = (index) =>
+  {
+    setImages((prev) => prev.filter((_, i) => i!==index))
+  }
+
   return (
     <div className="flex-1 flex flex-col min-h-screen bg-gray-100">
       {/* Displaying user profile */}
@@ -205,7 +183,7 @@ const HomePage = () => {
             >
               <textarea
                 placeholder="What's on your mind?"
-                className={`w-full p-2 border rounded-lg mb-4 bg-gray-100 focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-600 transition-all duration-300 ${
+                className={`w-full p-2 border rounded-lg mb-2 bg-gray-100 focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-600 transition-all duration-300 ${
                   isTextareaFocused || isTagsInputFocused ? 'h-28' : 'h-20'
                 }`}
                 value={content}
@@ -214,18 +192,18 @@ const HomePage = () => {
                 onBlur={handleTextareaBlur}
               />
 
-              <div className={`transition-all duration-300 ${isTextareaFocused || isTagsInputFocused || content.trim() || tagValue.trim() ? 'opacity-100' : 'opacity-0'}`}>
+              <div className={`flex flex-col transition-all duration-300 overflow-y-auto ease-in-out ${isTextareaFocused || isTagsInputFocused || content.trim() || tagValue.trim() ? 'opacity-100 max-h-screen' : 'opacity-0 max-h-0'}`}>
                 <input
                   type="text"
                   placeholder="Add tags (space-separated)"
-                  className="w-full p-2 border rounded-lg mb-4 bg-gray-100 focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-600 transition-all duration-300"
+                  className="flex-1 p-2 border rounded-lg mt-2 mb-4 bg-gray-100 focus:mx-1 focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-600 transition-all duration-300"
                   value={tagValue}
                   onChange={handleTagInputChange}
                   onKeyDown={handleTagInputKeyDown}
                   onFocus={handleTagsInputFocus}
                   onBlur={handleTagsInputBlur}
                 />
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2 mb-2">
                   {tagList.map((tag, index) => (
                     <span
                       key={index}
@@ -233,6 +211,27 @@ const HomePage = () => {
                     >
                       {tag}
                     </span>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Images Upload Section */}
+              <div>
+                <input
+                  type = 'file'
+                  accept = 'image/*'
+                  multiple
+                  onChange = {(e) => handleImageChange(e)}
+                  className = {`mb-4 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-gray-600 file:bg-gray-50 hover:file:text-cyan-600 hover:file:bg-cyan-100 file:cursor-pointer`}
+                />
+                <div className='flex flex-wrap gap-2'>
+                  {images.map((image, index) => (
+                  <div key={index}>
+                    <img src={URL.createObjectURL(image)} alt='Preview' className='w-20 h-20 object-cover'/>
+                    <button onClick={() => handleImageRemove(index)} className='absolute top-2 right-2 p-2 rounded-full hover:bg-gray-200 transition-all duration-300'>
+
+                    </button>
+                  </div>
                   ))}
                 </div>
               </div>
@@ -253,7 +252,7 @@ const HomePage = () => {
 
         </div>
 
-        <Posts posts={filteredPosts} setPosts={setPosts}/>
+        <Posts posts={posts} setPosts={setPosts}/>
 
       </main>
     </div>
