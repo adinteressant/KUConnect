@@ -193,7 +193,7 @@ const HomePage = () => {
             >
               <textarea
                 placeholder="What's on your mind?"
-                className={`w-full p-2 border rounded-lg mb-2 bg-gray-100 focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-600 transition-all duration-300 ${
+                className={`w-full p-2 border rounded-lg bg-gray-100 focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-600 transition-all duration-300 ${
                   isTextareaFocused || isTagsInputFocused ? 'h-28' : 'h-20'
                 }`}
                 value={content}
@@ -202,18 +202,18 @@ const HomePage = () => {
                 onBlur={handleTextareaBlur}
               />
 
-              <div className={`flex flex-col transition-all duration-300 overflow-y-auto ease-in-out ${isTextareaFocused || isTagsInputFocused || content.trim() || tagValue.trim() ? 'opacity-100 max-h-screen' : 'opacity-0 max-h-0'}`}>
+              <div className={`flex flex-col transition-all duration-500 overflow-y-auto ease-in-out ${isTextareaFocused || isTagsInputFocused || content.trim() || tagValue.trim() || tagList.length>0 || images.length>0 ? 'opacity-100 max-h-screen' : 'opacity-0 max-h-0'}`}>
                 <input
                   type="text"
                   placeholder="Add tags (space-separated)"
-                  className="flex-1 p-2 border rounded-lg mt-2 mb-4 bg-gray-100 focus:mx-1 focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-600 transition-all duration-300"
+                  className="mt-4 flex-1 p-2 border rounded-lg bg-gray-100 focus:m-1 focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-600 transition-all duration-300"
                   value={tagValue}
                   onChange={handleTagInputChange}
                   onKeyDown={handleTagInputKeyDown}
                   onFocus={handleTagsInputFocus}
                   onBlur={handleTagsInputBlur}
                 />
-                <div className="flex flex-wrap gap-2 mb-2">
+                <div className="mt-2 flex flex-wrap gap-2">
                   {tagList.map((tag, index) => (
                     <span
                       key={index}
@@ -226,30 +226,42 @@ const HomePage = () => {
               </div>
               
               {/* Images Upload Section */}
-              <div>
+              <div className={`flex flex-col transition-all duration-500 ${isTextareaFocused || isTagsInputFocused || content.trim() || tagValue.trim() || tagList.length>0 || images.length>0 ? 'opacity-100 max-h-screen' : 'opacity-0 max-h-0'}`}>
                 <input
                   type = 'file'
                   accept = 'image/*'
                   multiple
                   onChange = {(e) => handleImageChange(e)}
-                  className = {`mb-4 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-gray-600 file:bg-gray-50 hover:file:text-cyan-600 hover:file:bg-cyan-100 file:cursor-pointer`}
+                  className = 'hidden'
+                  id = 'image-upload'
                 />
-                <div className='flex flex-wrap gap-2'>
+                <label 
+                  for='image-upload'
+                  className = 'mt-4 block mr-auto py-2 px-4 rounded-lg text-gray-600 bg-gray-50 hover:text-cyan-600 hover:bg-cyan-100 cursor-pointer transition-all duration-300'
+                >
+                  Add Images
+                </label>
+                {images.length === 0 ||
+                (<div className = 'mt-2 flex flex-wrap gap-2'>
                   {images.map((image, index) => (
-                  <div key={index}>
-                    <img src={URL.createObjectURL(image)} alt='Preview' className='w-20 h-20 object-cover'/>
-                    <button onClick={() => handleImageRemove(index)} className='absolute top-2 right-2 p-2 rounded-full hover:bg-gray-200 transition-all duration-300'>
-
+                  <div key={index} className='relative'>
+                    <img src={URL.createObjectURL(image)} alt='Preview' className='w-20 h-20 object-cover rounded-lg'/>
+                    <button onClick={() => handleImageRemove(index)} className='p-0.5 absolute top-0 right-0 rounded-full bg-red-500 hover:bg-red-600 transition-all duration-300'>
+                      <svg width='12' height='12' viewBox='0 0 24 24'
+                        className='stroke-2 stroke-gray-100'
+                      >
+                        <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+                      </svg>
                     </button>
                   </div>
                   ))}
-                </div>
+                </div>)}
               </div>
               
               <button
                 disabled={!content.trim()}
                 onClick={handlePostSubmit}
-                className="bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:ring-offset-2 disabled:bg-gray-400 transition-all duration-300"
+                className="mt-4 bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:ring-offset-2 disabled:bg-gray-400 transition-all duration-300"
               >
                 Post
               </button>
