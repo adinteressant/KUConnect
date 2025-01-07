@@ -230,14 +230,16 @@ const HomePage = () => {
                   type = 'file'
                   accept = 'image/*'
                   multiple
-                  onChange = {handleImageChange}
+                  onChange = {(e) => handleImageChange(e)}
                   className = {`mb-4 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-gray-600 file:bg-gray-50 hover:file:text-cyan-600 hover:file:bg-cyan-100 file:cursor-pointer`}
                 />
                 <div className='flex flex-wrap gap-2'>
                   {images.map((image, index) => (
                   <div key={index}>
-                    {/* <img src={URL.createObjectURL(image)} alt='Preview' className='w-20 h-20 object-cover'/> */}
-                    <button onClick={handleImageRemove(index)}>-</button>
+                    <img src={URL.createObjectURL(image)} alt='Preview' className='w-20 h-20 object-cover'/>
+                    <button onClick={() => handleImageRemove(index)} className='absolute top-2 right-2 p-2 rounded-full hover:bg-gray-200 transition-all duration-300'>
+
+                    </button>
                   </div>
                   ))}
                 </div>
