@@ -15,6 +15,7 @@ const HomePage = () => {
   const [tagList, setTagList] = useState([])
   const [isTextareaFocused, setIsTextareaFocused] = useState(false)
   const [isTagsInputFocused, setIsTagsInputFocused] = useState(false)
+  const [images, setImages] = useState([])
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
   const {searchTrait,setSearchTrait} = useOutletContext()
   useGetUnreadMessage()
@@ -160,6 +161,17 @@ const HomePage = () => {
     }
   };
 
+  const handleImageChange = (e) => 
+  {
+    const selectedImages = Array.from(e.target.files)
+    setImages((prev) => [...prev, ...selectedImages])
+  }
+
+  const handleImageRemove = (index) =>
+  {
+    setImages((prev) => prev.filter((_, i) => i!==index))
+  }
+
   return (
     <div className="flex-1 flex flex-col min-h-screen bg-gray-100">
       {/* Displaying user profile */}
@@ -213,12 +225,23 @@ const HomePage = () => {
               </div>
               
               {/* Images Upload Section */}
-              {/* <div>
+              <div>
                 <input
                   type = 'file'
-                  accept = 'images*'
+                  accept = 'image/*'
+                  multiple
+                  onChange = {handleImageChange}
+                  className = {`mb-4 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-gray-600 file:bg-gray-50 hover:file:text-cyan-600 hover:file:bg-cyan-100 file:cursor-pointer`}
                 />
-              </div> */}
+                <div className='flex flex-wrap gap-2'>
+                  {images.map((image, index) => (
+                  <div key={index}>
+                    {/* <img src={URL.createObjectURL(image)} alt='Preview' className='w-20 h-20 object-cover'/> */}
+                    <button onClick={handleImageRemove(index)}>-</button>
+                  </div>
+                  ))}
+                </div>
+              </div>
               
               <button
                 disabled={!content.trim()}
