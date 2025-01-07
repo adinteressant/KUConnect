@@ -113,7 +113,7 @@ const Navigation = ({ setVisibility, setPadding,searchTrait,setSearchTrait, user
   }
 
   return (
-    <div className="w-full bg-white shadow-sm fixed z-20 top-0">
+    <div className="w-full bg-white shadow-[0_10px_25px_-15px_rgba(0,255,255,0.2)] fixed z-20 top-0">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="text-2xl font-serif text-gray-800">

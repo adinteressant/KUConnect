@@ -163,7 +163,7 @@ const CustomizeMyProfile = () => {
                   onClick={() => handleTagToggle(tag)}
                   className={`px-3 py-1 rounded-full text-sm font-semibold transition-colors ${
                     selectedTags.includes(tag)
-                      ? 'bg-blue-500 text-white'
+                      ? 'bg-cyan-500 text-white'
                       : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                   }`}
                 >
@@ -173,7 +173,7 @@ const CustomizeMyProfile = () => {
             </div>
             <button 
               onClick={handleTagSubmit}
-              className="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
+              className="w-full bg-cyan-500 text-white px-4 py-2 rounded hover:bg-cyan-600 transition-colors"
             >
               Update Tags
             </button>
@@ -183,7 +183,7 @@ const CustomizeMyProfile = () => {
         {/* Change password button */}
         <div className="text-center">
           <button
-            className="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
+            className="w-full bg-cyan-500 text-white px-4 py-2 rounded hover:bg-cyan-600 transition-colors"
             onClick={() => setshowpasswordmodal(true)}
           >
             Change Password
