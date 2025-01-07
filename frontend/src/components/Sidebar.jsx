@@ -15,7 +15,6 @@ export default function Sidebar({userProfile,setUserProfile}) {
   const [userUnreadCount, setUserUnreadCount] = useState(userProfile.unread_count);
   const {incomingRequestsCount, setIncomingRequestsCount} = useRequestCount(); 
   const {newMessages} = useNewMessages()
-  console.log(newMessages.length)
      //Fetch user profile
     useEffect(() => {
       async function fetchProfile ()  {
@@ -81,10 +80,10 @@ export default function Sidebar({userProfile,setUserProfile}) {
             }>
               <div className="flex gap-2 items-center">
                 <div className="relative h-5 w-5">
-                    { newMessages.length!==0 &&
+                    { newMessages && newMessages?.length!==0 &&
                     (
                     <div className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-medium text-white">
-                        {newMessages.length}
+                        {newMessages?.length}
                     </div>
                     )
                     }
