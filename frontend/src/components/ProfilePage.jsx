@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { useParams, useLocation } from 'react-router-dom';
+import { Link, useParams, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import Posts from './subcomponents/Posts.jsx'
 import useRequestCount from '../zustand/useRequestCount.js';
@@ -228,52 +228,65 @@ export default function ProfilePage() {
         </div>
 
         {/* Rest of the profile content */}
-        <div className="text-center mt-4">
+        <div className="text-center mt-4 flex flex-col">
           <h1 className="text-3xl font-serif font-bold text-gray-800">
             {username}
           </h1>
           <h2 className="text-2xl font-serif font-semibold">Role: {profileData.role}</h2>
 
           {/* Add Friend button */}
-          {status === 'none' ? (
-                <button
-                  onClick={handleAddFriend}
-                  className="mt-6 bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-blue-600 transition"
+          {userProfile.username === username?
+            (
+              <Link to={`/customizemyprofile`} className='mx-auto mt-6 bg-cyan-600 text-white rounded-full hover:shadow-lg hover:bg-cyan-700 transition-all duration-300 flex justify-center items-center gap-2 py-2 px-4'>
+                  <svg width="24" height="24" viewBox="0 0 24 24" className='fill-none stroke-2 stroke-white'>
+                    <path d="M2 21a8 8 0 0 1 10.821-7.487"/>
+                    <path d="M21.378 16.626a1 1 0 0 0-3.004-3.004l-4.01 4.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z"/>
+                    <circle cx="10" cy="8" r="5"/>
+                  </svg>
+                  <div>
+                    Customize Profile
+                  </div>
+              </Link>
+            )
+            :
+            (status === 'none' ? (
+              <button
+                onClick={handleAddFriend}
+                className="mt-6 bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-blue-600 transition"
+              >
+                Add Friend
+              </button>
+            ) : status === 'pending' ? (<>
+              <p className="mt-6 text-green-600">Friend Request Sent!</p>
+              <button
+                  onClick={cancelRequest}
+                  className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
                 >
-                  Add Friend
-                </button>
-              ) : status === 'pending' ? (<>
-                <p className="mt-6 text-green-600">Friend Request Sent!</p>
-                <button
-                    onClick={cancelRequest}
-                    className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
-                  >
-                    Cancel
-                  </button>
-                  </>
-              ) : status === 'accepted' ? (
-                <button
-                  className="mt-6 bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-blue-600 transition"
-                >
-                  Friends
-                </button>
-                ) : status ==='incoming' ? (
-                  <>
-                  <p className="mt-6 text-green-600">User has sent you a friend request!</p><br />
-                  <button
-                  onClick={confirmRequest}
-                  className="mt-6 bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-blue-600 transition"
-                >
-                  Confirm Request
-                </button>
-                <button onClick={rejectRequest} 
-                className='mt-6 bg-red-500 text-white px-6 py-2 rounded-full hover:bg-red-700 transition'>
-                  Cancel Request
+                  Cancel
                 </button>
                 </>
-                ) : null
-            }
-
+            ) : status === 'accepted' ? (
+              <button
+                className="mt-6 bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-blue-600 transition"
+              >
+                Friends
+              </button>
+              ) : status ==='incoming' ? (
+                <>
+                <p className="mt-6 text-green-600">User has sent you a friend request!</p><br />
+                <button
+                onClick={confirmRequest}
+                className="mt-6 bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-blue-600 transition"
+              >
+                Confirm Request
+              </button>
+              <button onClick={rejectRequest} 
+              className='mt-6 bg-red-500 text-white px-6 py-2 rounded-full hover:bg-red-700 transition'>
+                Cancel Request
+              </button>
+              </>
+              ) : null)
+          }
         </div>
       </div>
 

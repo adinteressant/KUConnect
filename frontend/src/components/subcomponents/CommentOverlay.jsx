@@ -103,7 +103,7 @@ function ShowComments(props) {
                                                 <Link onClick={() => {
                                                         document.body.classList.toggle('overflow-hidden', false)
                                                         props.closeCommentOverlay()
-                                                    }} to={comment.username != props.userProfile.username ? `/${comment.username}`: `/myprofile` } className='text-gray-800 font-semibold text-sm'>
+                                                    }} to={`/${comment.username}`} className='text-gray-800 font-semibold text-sm'>
                                                     {comment.username}
                                                 </Link>
                                                 <div className='text-gray-600 text-xs'>

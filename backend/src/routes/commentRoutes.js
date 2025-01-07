@@ -19,7 +19,7 @@ router.post('/api/posts/:postId/users/:userId/add-a-reply', validateComment, add
 // Get replies for a post
 router.get('/api/comments/:commentId/get-replies', getReplies)
 
-// Get comments for a post
+// Delete a reply for a comment
 router.post('/api/posts/:postId/comments/:commentId/delete-a-reply', deleteReply)
 
 export default router

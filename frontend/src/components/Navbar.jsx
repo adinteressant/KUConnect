@@ -77,40 +77,55 @@ const Navigation = ({ setVisibility, setPadding,searchTrait,setSearchTrait, user
     }, 300);
   };
 
-  const handleSearch = async (e)=>{
+
+  //Navbar handle search
+  const handleSearch = async (e) => {
     e.preventDefault();
   
-
-  const trimmedTag = searchTrait.trim();
-    if (!trimmedTag) {
-      alert('Please enter a tag to search');
+    const trimmedQuery = searchTrait.trim();
+    if (!trimmedQuery) {
+      alert('Please enter something to search');
       return;
     }
-
+  
     try {
-      // Make API call to search posts by tag
-      const response = await axios.get(`/api/posts/search?tag=${trimmedTag}`);
-      
+      let response;
+  
+      if (trimmedQuery.startsWith('#tag:')) {
+        // Tag search
+        const tagQuery = trimmedQuery.replace('#tag:', '').trim(); // Strip #tag:
+        console.log('Tag Search Query:', tagQuery); // Debugging line
+  
+        // Make the request with the stripped tag query
+        response = await axios.get(`/api/posts/search/tag?query=${tagQuery}`);
+      } else {
+        // Regular content search
+        console.log('Regular Search Query:', trimmedQuery); // Debugging line
+        response = await axios.get(`/api/posts/search/content?query=${trimmedQuery}`);
+      }
+  
       // Navigate to search results page and pass search results
       navigate('/search', { 
         state: { 
           posts: response.data, 
-          searchTag: trimmedTag 
+          searchQuery: trimmedQuery,
+          isTagSearch: trimmedQuery.startsWith('#tag:')
         } 
       });
-      
+  
       setSearchTrait('');
     } catch (error) {
       console.error('Error searching posts:', error);
-      
+  
       // Handle different error scenarios
       if (error.response?.status === 404) {
-        alert('No posts found with this tag');
+        alert('No posts found');
       } else {
         alert('An error occurred while searching');
       }
     }
-  }
+  };
+  
 
   return (
     <div className="w-full bg-white shadow-sm fixed z-20 top-0">
@@ -163,8 +178,8 @@ const Navigation = ({ setVisibility, setPadding,searchTrait,setSearchTrait, user
                   {isAuthenticated && (
                     <>
                       <Link
-                        to="/myprofile"
-                        onClick={() => checkLoginOrRegister('/myprofile')}
+                        to={`/${userProfile.username}`}
+                        onClick={() => checkLoginOrRegister(`/${userProfile.username}`)}
                         className="flex items-center px-4 py-2 hover:bg-gray-100 transition-colors"
                       >
                         <UserCircle className="h-4 w-4 mr-2" /> My Profile
