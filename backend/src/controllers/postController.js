@@ -4,6 +4,9 @@ import Like from '../models/like.js'
 import Comment from '../models/comment.js'
 import PublicInfo from '../models/PublicInfo.js'
 import PrivateInfo from '../models/PrivateInfo.js'
+import multer from 'multer'
+import fs from 'fs'
+import path from 'path'
 
 // Get all posts
 export const getAllPosts = async (req, res) => {
@@ -17,9 +20,33 @@ export const getAllPosts = async (req, res) => {
   }
 }
 
+const storage = multer.diskStorage({
+  destination: async(req, file, cb) => {
+    const { postId } = req
+    const folderPath = `../../public/uploads/${postId}`
+    
+    if(!fs.existsSync(folderPath))
+    {
+      fs.mkdirSync(folderPath, { recursive: true })
+    }
+
+    cb(null, folderPath)
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}${path.extname(file.originalname)}`
+    cb(null, uniqueSuffix)
+  }
+})
+
+const upload = multer({
+  storage,
+  //5 MB limit per image
+  limits: { fileSize: 5*1024*1024 }
+}).array('images', 10)
+
 // Create a new post
 export const createPost = async (req, res) => {
-  const { content, userInfo, tags } = req.body
+  const { content, userInfo, tags, images } = req.body
 
   // Validate content
   if (!content || content.trim() === '') {
@@ -40,25 +67,40 @@ export const createPost = async (req, res) => {
       email: userInfo.email, // Store email
       content,
       tags: tags || [],
-    });
-  if (tags.length != 0){
-  let UsersWithTags = await PublicInfo.find({ tags: { $in: tags } });
-  if (UsersWithTags.length>0){
-  const publicUid = UsersWithTags.map((e)=>e.user_id); 
-  const PrivUsersWithTags = await PrivateInfo.find({user_id:{$in:publicUid}});
+    })
 
-  console.log(PrivUsersWithTags[0].unread_count);
-  await PrivateInfo.updateMany(
-  { user_id: { $in: publicUid } }, 
-  { $inc: { unread_count: 1  } } 
-  ); 
-  console.log("Incremented by 1!");
-      }
-  }
-    //console.log(PrivUsersWithTags);   
-    //await PrivUsersWithTags.save(); 
+    if (tags.length != 0){
+    let UsersWithTags = await PublicInfo.find({ tags: { $in: tags } })
+    if (UsersWithTags.length>0){
+    const publicUid = UsersWithTags.map((e)=>e.user_id) 
+    const PrivUsersWithTags = await PrivateInfo.find({user_id:{$in:publicUid}})
+
+    console.log(PrivUsersWithTags[0].unread_count)
+    await PrivateInfo.updateMany(
+    { user_id: { $in: publicUid } }, 
+    { $inc: { unread_count: 1  } } 
+    ) 
+    console.log("Incremented by 1!")
+        }
+    }
+    //console.log(PrivUsersWithTags)
+    //await PrivUsersWithTags.save()
     // Save the post in the database
     const savedPost = await newPost.save()
+
+    if(images.length > 0)
+    {
+      req.postId = savedPost._id.toString()
+
+      upload(req, res, async(err) => {
+        if(err)
+        {
+          console.error('Error uploading images:', err)
+          return res.status(500).json({ message: 'Failed to upload images', error: err.message })
+        }
+      })
+    }
+
     res.status(201).json({ message: 'Post created successfully!', post: savedPost })
   } catch (error) {
     console.error('Error creating post:', error)
@@ -76,44 +118,44 @@ export const sharePost = async (req, res) => {
 // Search posts by content
 export const searchPostsByContent = async (req, res) => {
   try {
-    const { query } = req.query;
+    const { query } = req.query
 
     if (!query) {
-      return res.status(400).json({ message: 'Search query is required' });
+      return res.status(400).json({ message: 'Search query is required' })
     }
 
     // Case-insensitive full-text search for posts containing the query in content
     const posts = await Post.find({ 
       content: { $regex: query, $options: 'i' } 
-    }).sort({ createdAt: -1 });
+    }).sort({ createdAt: -1 })
 
     res.status(200).json(posts)
   } catch (error) {
-    console.error('Error searching posts by content:', error);
-    res.status(500).json({ message: 'Server error while searching posts' });
+    console.error('Error searching posts by content:', error)
+    res.status(500).json({ message: 'Server error while searching posts' })
   }
 }
 
 export const searchPostsByTag = async (req, res) => {
   try {
-    const { query } = req.query;
+    const { query } = req.query
 
   console.log('Received query: ', query)
 
   if (!query) {
-    return res.status(400).json({ message: 'Query parameter is required' });
+    return res.status(400).json({ message: 'Query parameter is required' })
   }
   
     const posts = await Post.find({
       tags: { $regex: query, $options: 'i' }, // Case-insensitive partial match for tags
-    });
+    })
 
-    res.status(200).json(posts);
+    res.status(200).json(posts)
   } catch (error) {
-    console.error('Error searching posts by content:', error);
-    res.status(500).json({ message: 'Server error while searching posts' });
+    console.error('Error searching posts by content:', error)
+    res.status(500).json({ message: 'Server error while searching posts' })
   }
-};
+}
 
 
 
@@ -138,17 +180,17 @@ export const deletePost = async(req, res) => {
     const { post } = req.body
 
     if (post.tags && post.tags.length > 0) {
-      let UsersWithTags = await PublicInfo.find({ tags: { $in: post.tags } });
+      let UsersWithTags = await PublicInfo.find({ tags: { $in: post.tags } })
       if (UsersWithTags.length>0){
-      const publicUid = UsersWithTags.map((e)=>e.user_id); 
-      const PrivUsersWithTags = await PrivateInfo.find({user_id:{$in:publicUid}});
+      const publicUid = UsersWithTags.map((e)=>e.user_id) 
+      const PrivUsersWithTags = await PrivateInfo.find({user_id:{$in:publicUid}})
     
-      console.log(PrivUsersWithTags[0].unread_count);
+      console.log(PrivUsersWithTags[0].unread_count)
       await PrivateInfo.updateMany(
       { user_id: { $in: publicUid } }, 
       { $inc: { unread_count: -1  } } 
-      ); 
-      console.log("Decremented by 1!");
+      ) 
+      console.log("Decremented by 1!")
           }
       }
     const [deletedPost] = await Promise.all([

@@ -259,7 +259,7 @@ const HomePage = () => {
                   }
                   {images.length >= 10 || 
                   (<label
-                    for='image-upload'
+                    htmlFor='image-upload'
                     className = 'group/uploadimg flex flex-col items-center justify-center text-center w-20 h-20 rounded-lg text-sm border-dashed border-2 border-gray-400 text-gray-400 hover:text-cyan-600 hover:border-cyan-600 cursor-pointer transition-all duration-300'
                   >
                     Upload Images

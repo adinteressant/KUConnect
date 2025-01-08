@@ -316,6 +316,14 @@ function Posts(props) {
                     </div>
                   )}
 
+                  {/* Display Images */}
+                  {post > 0 &&
+                  (<div>
+                    <div>
+                    </div>
+                    <img />
+                  </div>)}
+
                   <hr className='absolute left-0 right-0 mt-4'/>
                   
                   {/* Likes, Comments, Shares Information */}
