@@ -64,7 +64,7 @@ export const createPost = async (req, res) => {
 
     if(req.files.length > 0)
     {
-      newPost.images = path.basename(req.files[0].path)
+      newPost.images = req.folderName
     }
 
     // Save the post in the database
