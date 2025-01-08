@@ -2,6 +2,9 @@
 import multer from 'multer'
 import fs from 'fs'
 import path from 'path'
+import { fileURLToPath } from 'url'
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 const storage = multer.diskStorage({
   destination: async(req, file, cb) => {
