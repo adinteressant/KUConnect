@@ -4,7 +4,11 @@ import Like from '../models/like.js'
 import Comment from '../models/comment.js'
 import PublicInfo from '../models/PublicInfo.js'
 import PrivateInfo from '../models/PrivateInfo.js'
+import fs from 'fs'
 import path from 'path'
+import { fileURLToPath } from 'url'
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 // Get all posts
 export const getAllPosts = async (req, res) => {
@@ -148,20 +152,25 @@ export const deletePost = async(req, res) => {
   {
     const { post } = req.body
 
-    if (post.tags && post.tags.length > 0) {
+    if (post.tags && post.tags.length > 0)
+    {
       let UsersWithTags = await PublicInfo.find({ tags: { $in: post.tags } })
-      if (UsersWithTags.length>0){
-      const publicUid = UsersWithTags.map((e)=>e.user_id) 
-      const PrivUsersWithTags = await PrivateInfo.find({user_id:{$in:publicUid}})
+      
+      if (UsersWithTags.length>0)
+      {
+        const publicUid = UsersWithTags.map((e)=>e.user_id) 
+        const PrivUsersWithTags = await PrivateInfo.find({user_id:{$in:publicUid}})
     
-      console.log(PrivUsersWithTags[0].unread_count)
-      await PrivateInfo.updateMany(
-      { user_id: { $in: publicUid } }, 
-      { $inc: { unread_count: -1  } } 
-      ) 
-      console.log("Decremented by 1!")
-          }
+        console.log(PrivUsersWithTags[0].unread_count)
+        await PrivateInfo.updateMany(
+          { user_id: { $in: publicUid } }, 
+          { $inc: { unread_count: -1  } } 
+        )
+
+        console.log("Decremented by 1!")  
       }
+    }
+
     const [deletedPost] = await Promise.all([
       Post.findByIdAndDelete(post._id),
       Like.deleteMany({ postId: post._id }),
@@ -171,6 +180,12 @@ export const deletePost = async(req, res) => {
     if(!deletedPost)
     {
       return res.status(404).json({ message: 'Post not found for deletion' })
+    }
+
+    if(deletedPost.images)
+    {
+      const folderPath = path.join(__dirname, `../../public/uploads/${deletedPost.images}`)
+      fs.rmdirSync(folderPath, { recursive: true })
     }
 
     return res.status(200).json({ message: 'Post deleted successfully' , deletedPost })
