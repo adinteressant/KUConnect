@@ -1,5 +1,5 @@
 import express from 'express';
-import { createPost, getAllPosts, sharePost, searchPostsByTag, userPosts,  searchPostsByContent, deletePost } from '../controllers/postController.js';
+import { createPost, getAllPosts, getImage, sharePost, searchPostsByTag, userPosts,  searchPostsByContent, deletePost } from '../controllers/postController.js';
 import { upload, validatePost, validatePostDeletion } from '../middlewares/postMiddleware.js';
 import generateFolderName from '../utils/generateFolderName.js';
 
@@ -10,6 +10,9 @@ router.get('/api/get-posts', getAllPosts)
 
 // Route to create a new post
 router.post('/api/create-post', generateFolderName, upload, validatePost, createPost)
+
+// Route to get post images
+router.get('/api/post/image/:folderName/:imageName', getImage)
 
 // Share a post
 router.post('/api/posts/:postId/share', sharePost)

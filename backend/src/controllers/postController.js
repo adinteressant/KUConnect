@@ -66,13 +66,25 @@ export const createPost = async (req, res) => {
     //console.log(PrivUsersWithTags)
     //await PrivUsersWithTags.save()
 
-    if(req.files.length > 0)
-    {
-      newPost.images = req.folderName
-    }
-
+    newPost.images = req.files.length
+    
     // Save the post in the database
     const savedPost = await newPost.save()
+
+    if(savedPost.images)
+    {
+      const oldFolderPath = path.join(__dirname, `../../public/uploads/${req.folderName}`)
+      const newFolderPath = path.join(__dirname, `../../public/uploads/${savedPost._id.toString()}`)
+      fs.renameSync(oldFolderPath, newFolderPath)
+
+      const files = fs.readdirSync(newFolderPath)
+      files.forEach((file, index) => {
+        fs.renameSync(
+          path.join(newFolderPath, file),
+          path.join(newFolderPath, `image_${index}${path.extname(file)}`)
+        )
+      })
+    }
 
     res.status(201).json({ message: 'Post created successfully!', post: savedPost })
   } catch (error) {
@@ -81,6 +93,10 @@ export const createPost = async (req, res) => {
   }
 }
 
+export const getImage = (req, res) =>
+{
+
+}
 
 // Share a post
 export const sharePost = async (req, res) => {
@@ -184,7 +200,7 @@ export const deletePost = async(req, res) => {
 
     if(deletedPost.images)
     {
-      const folderPath = path.join(__dirname, `../../public/uploads/${deletedPost.images}`)
+      const folderPath = path.join(__dirname, `../../public/uploads/${deletedPost._id.toString()}`)
       fs.rmdirSync(folderPath, { recursive: true })
     }
 

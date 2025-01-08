@@ -18,8 +18,9 @@ const storage = multer.diskStorage({
     cb(null, folderPath)
   },
   filename: (req, file, cb) => {
-    const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}${path.extname(file.originalname)}`
-    cb(null, uniqueSuffix)
+    const a = Date.now()
+    const [b, c] = process.hrtime() 
+    cb(null, `${a}${b}${c}${path.extname(file.originalname)}`)
   }
 })
 
