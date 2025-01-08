@@ -147,7 +147,7 @@ const Navigation = ({ setVisibility, setPadding,searchTrait,setSearchTrait, user
                     </span>
                   )}
                   {searchTrait.startsWith('#tag:') && (
-                    <span className="bg-cyan-100 text-cyan-800 px-2 py-1 rounded-full text-sm whitespace-nowrap">
+                    <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-sm whitespace-nowrap">
                       #tag:
                     </span>
                   )}
