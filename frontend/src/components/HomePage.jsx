@@ -1,7 +1,7 @@
 import { useEffect, useState} from 'react'
 import { useOutletContext } from 'react-router-dom'
 import Posts from './subcomponents/Posts.jsx'
-import WelcomeModal from './subcomponents/WelcomeModal.jsx';
+import WelcomeModal from './subcomponents/WelcomeModal.jsx'
 import { useGetUnreadMessage } from './hooks/useGetUnreadMessage.js'
 
 const HomePage = () => {
@@ -16,7 +16,7 @@ const HomePage = () => {
   const [isTextareaFocused, setIsTextareaFocused] = useState(false)
   const [isTagsInputFocused, setIsTagsInputFocused] = useState(false)
   const [images, setImages] = useState([])
-  const [showWelcomeModal, setShowWelcomeModal] = useState(false);
+  const [showWelcomeModal, setShowWelcomeModal] = useState(false)
   const {searchTrait,setSearchTrait} = useOutletContext()
   // Check for logged-in user based on isAuthenticated
   if(localStorage.getItem('isLoggedIn') === 'true') useGetUnreadMessage()
@@ -24,65 +24,65 @@ const HomePage = () => {
     useEffect(() => {
     let isAuthenticated = localStorage.getItem('isAuthenticated') === 'true'  
     if (isAuthenticated) {
-      setUser({ email: 'user@example.com' });
-      const isNewLogin = sessionStorage.getItem('newLogin') === 'true';
+      setUser({ email: 'user@example.com' })
+      const isNewLogin = sessionStorage.getItem('newLogin') === 'true'
       if (isNewLogin) {
-        setShowWelcomeModal(true);
-        sessionStorage.removeItem('newLogin');
+        setShowWelcomeModal(true)
+        sessionStorage.removeItem('newLogin')
       }
     } else {
       fetch('/api/google/status')
         .then((response) => response.json())
         .then((googleUserInfo) => {
           if (googleUserInfo?.email) {
-            setGoogleUser(googleUserInfo.email);
-            const isNewGoogleLogin = sessionStorage.getItem('newGoogleLogin') === 'true';
+            setGoogleUser(googleUserInfo.email)
+            const isNewGoogleLogin = sessionStorage.getItem('newGoogleLogin') === 'true'
           if (isNewGoogleLogin) {
-            setShowWelcomeModal(true);
-            sessionStorage.removeItem('newGoogleLogin');
+            setShowWelcomeModal(true)
+            sessionStorage.removeItem('newGoogleLogin')
           }
           }
         })
         .catch((error) => {
-          console.error('Error checking Google login status:', error);
-        });
+          console.error('Error checking Google login status:', error)
+        })
     }
-  }, []);
+  }, [])
 
   // Fetch user profile on mount
   useEffect(() => {
     fetch('/api/get-user-profile')
       .then((response) => response.json())
       .then((data) => {
-        setUserProfile(data);
+        setUserProfile(data)
         localStorage.setItem('authUser',JSON.stringify(data.user_id))
       })
       .catch((e) => {
-        console.error('Error fetching user profile:', e);
-      });
-  }, []);
+        console.error('Error fetching user profile:', e)
+      })
+  }, [])
 
   // Fetch all posts on mount
   useEffect(() => {
     fetch(`/api/get-posts`)
       .then((response) => response.json())
       .then((data) => {
-        setPosts(data);
+        setPosts(data)
       })
       .catch((e) => {
-        console.error('Error fetching posts:', e);
-      }); ///AHHHHHHHHHHHH WHERE IS MY COMMENT, I HATE AI
-  }, []);
+        console.error('Error fetching posts:', e)
+      }) ///AHHHHHHHHHHHH WHERE IS MY COMMENT, I HATE AI
+  }, [])
 
   // Handle Post Submit
   const handlePostSubmit = () => {
     if (!user && !googleUser) {
-      alert('You must be logged in to post.');
-      return;
+      alert('You must be logged in to post.')
+      return
     }
 
     if (content.trim()) {
-      const userInfo = userProfile || googleUser;
+      const userInfo = userProfile || googleUser
 
       fetch('/api/create-post', {
         method: 'POST',
@@ -93,74 +93,76 @@ const HomePage = () => {
           content,
           userInfo,
           tags: tagList,
+          images
         }),
       })
         .then((response) => response.json())
         .then((data) => {
           if (data.post) {
-            setContent('');
-            setTagValue('');
-            setTagList([]);
-            setPosts([data.post, ...posts]);
-            setUserProfile(userProfile.unread_count++);
-            console.log('Post submitted:', data.post);
-            //location.reload();
+            setContent('')
+            setTagValue('')
+            setTagList([])
+            setImages([])
+            setPosts([data.post, ...posts])
+            setUserProfile(userProfile.unread_count++)
+            console.log('Post submitted:', data.post)
+            //location.reload()
           }
         })
         .catch((error) => {
-          console.error('Error submitting post:', error);
-        });
+          console.error('Error submitting post:', error)
+        })
     } else {
-      alert('Post content cannot be empty.');
+      alert('Post content cannot be empty.')
     }
-  };
+  }
 
   // Handle Tag Input Change
   const handleTagInputChange = (e) => {
-    const value = e.target.value;
+    const value = e.target.value
     if (value.endsWith(' ')) {
-      const trimmedValue = value.trim();
+      const trimmedValue = value.trim()
       if (trimmedValue && !tagList.includes(trimmedValue)) {
-        setTagList([...tagList, trimmedValue]);
+        setTagList([...tagList, trimmedValue])
       }
-      setTagValue('');
+      setTagValue('')
     } else {
-      setTagValue(value);
+      setTagValue(value)
     }
-  };
+  }
 
   // Handle Backspace Key for Tag Removal
   const handleTagInputKeyDown = (e) => {
     if (e.key === 'Backspace' && !tagValue && tagList.length > 0) {
-      const updatedTags = [...tagList];
-      updatedTags.pop();
-      setTagList(updatedTags);
+      const updatedTags = [...tagList]
+      updatedTags.pop()
+      setTagList(updatedTags)
     }
-  };
+  }
 
   const handleTextareaFocus = () => {
-    setIsTextareaFocused(true);
-    setShowTags(true);
-  };
+    setIsTextareaFocused(true)
+    setShowTags(true)
+  }
 
   const handleTextareaBlur = () => {
-    setIsTextareaFocused(false);
+    setIsTextareaFocused(false)
     if (!content.trim() && !isTagsInputFocused && !tagValue.trim()) {
-      setShowTags(false);
+      setShowTags(false)
     }
-  };
+  }
 
   const handleTagsInputFocus = () => {
-    setIsTagsInputFocused(true);
-    setShowTags(true);
-  };
+    setIsTagsInputFocused(true)
+    setShowTags(true)
+  }
 
   const handleTagsInputBlur = () => {
-    setIsTagsInputFocused(false);
+    setIsTagsInputFocused(false)
     if (!content.trim() && !isTextareaFocused && !tagValue.trim()) {
-      setShowTags(false);
+      setShowTags(false)
     }
-  };
+  }
 
   const handleImageChange = (e) => 
   {
@@ -277,8 +279,8 @@ const HomePage = () => {
 
       </main>
     </div>
-  );
-};
+  )
+}
 
-export default HomePage;
+export default HomePage
 
