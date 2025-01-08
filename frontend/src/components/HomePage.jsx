@@ -167,9 +167,15 @@ const HomePage = () => {
   const handleImageChange = (e) => 
   {
     const selectedImages = Array.from(e.target.files)
-    if(selectedImages.some((image) => image.size>(5*1024*1024)))
+    const maxSize = 5*1024*1024
+    const validExtensions = ['image/jpeg','image/png','image/gif','image/webp']
+    if(selectedImages.some((image) => image.size>maxSize))
     {
       alert('Each image must be less than 5MB')
+    }
+    else if(selectedImages.some((image) => !validExtensions.includes(image.type)))
+    {
+      alert('Each image must be of type jpeg, png, gif or webp')
     }
     else
     {
