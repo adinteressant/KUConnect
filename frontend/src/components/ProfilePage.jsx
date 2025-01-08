@@ -19,7 +19,7 @@ export default function ProfilePage() {
   const [status, setStatus] = useState('none')
   const [posts, setPosts] = useState([])
   const { incomingRequestsCount, setIncomingRequestsCount } = useRequestCount();
-
+  const dropdownRef = useRef(null);
 
   const scrollContainerRef = useRef(null)
   const location = useLocation()
@@ -74,6 +74,23 @@ export default function ProfilePage() {
       )
     }
   }, [profileData])
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowDropdown(false);
+      }
+    }
+
+    if (showDropdown) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    // Cleanup
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showDropdown]);
 
   const confirmRequest = () => {
     const receiver_id = userProfile.user_id;
@@ -294,7 +311,7 @@ export default function ProfilePage() {
             ) : 
             status === 'accepted' ? (
               <div className="flex items-center justify-center space-x-4">
-                <div className="relative">
+                <div className="relative" ref = {dropdownRef}>
                   <button
                     onClick={() => setShowDropdown((prev) => !prev)}
                     className="bg-cyan-500 text-white px-6 py-2 rounded-full hover:bg-gray-600 transition"
