@@ -23,7 +23,7 @@ export const getAllPosts = async (req, res) => {
 const storage = multer.diskStorage({
   destination: async(req, file, cb) => {
     const { postId } = req
-    const folderPath = `../../public/uploads/${postId}`
+    const folderPath = path.join(__dirname,`../../public/uploads/${postId}`)
     
     if(!fs.existsSync(folderPath))
     {
