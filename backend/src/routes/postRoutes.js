@@ -12,7 +12,7 @@ router.get('/api/get-posts', getAllPosts)
 router.post('/api/create-post', generateFolderName, upload, validatePost, createPost)
 
 // Route to get post images
-router.get('/api/post/image/:folderName/:imageName', getImage)
+router.get('/api/post/:postId/:imageId', getImage)
 
 // Share a post
 router.post('/api/posts/:postId/share', sharePost)

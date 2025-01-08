@@ -95,7 +95,36 @@ export const createPost = async (req, res) => {
 
 export const getImage = (req, res) =>
 {
+  try
+  {  
+    const { postId, imageId } = req.params
 
+    if(!postId)
+    {
+      return res.status(400).json({ message: 'Missing post Id' })
+    }
+
+    if(!imageId)
+    {
+      return res.status(400).json({ message: 'Missing image Id' })
+    }
+
+    const folder = path.join(__dirname, `../../public/uploads/${postId}`)
+    const files = fs.readdirSync(folder)
+    const matchingFile = files.find(file => path.parse(file).name === `image_${imageId}`)
+
+    if(!matchingFile)
+    {
+      return res.status(404).json({ message: "Post's image not found" })
+    }
+
+    return res.sendFile(path.join(folder, matchingFile))
+  }
+  catch(error)
+  {
+    console.error('Error getting image for post:', error)
+    res.status(500).json({ message: 'Internal Server Error', error })
+  }
 }
 
 // Share a post
