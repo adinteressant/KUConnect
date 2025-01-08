@@ -1,8 +1,37 @@
 //Middleware
+import multer from 'multer'
+import fs from 'fs'
+import path from 'path'
+
+const storage = multer.diskStorage({
+  destination: async(req, file, cb) => {
+    const { postId } = req
+    const folderPath = path.join(__dirname,`../../public/uploads/${postId}`)
+    
+    if(!fs.existsSync(folderPath))
+    {
+      fs.mkdirSync(folderPath, { recursive: true })
+    }
+
+    cb(null, folderPath)
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}${path.extname(file.originalname)}`
+    cb(null, uniqueSuffix)
+  }
+})
+
+export const upload = multer({
+  storage,
+  //5 MB limit per image
+  limits: { fileSize: 5*1024*1024 }
+}).array('images', 10)
+
 
 //Middleware to validate post content
 export const validatePost = (req, res, next) => {
-  const { content, images } = req.body
+  const content = req.body.content
+  const images = req.files.map(file => file.path)
 
   // Check if content is empty or exceeds the max length
   if (!content || content.trim().length === 0) {

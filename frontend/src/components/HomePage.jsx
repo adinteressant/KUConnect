@@ -84,17 +84,19 @@ const HomePage = () => {
     if (content.trim()) {
       const userInfo = userProfile || googleUser
 
+      const formData = new FormData()
+
+      formData.append('content', content)
+      formData.append('userInfo', JSON.stringify(userInfo))
+      formData.append('tags', JSON.stringify(tagList))
+
+      images.forEach((image) => {
+        formData.append('images', image)
+      })
+
       fetch('/api/create-post', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          content,
-          userInfo,
-          tags: tagList,
-          images
-        }),
+        body: formData
       })
         .then((response) => response.json())
         .then((data) => {

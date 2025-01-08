@@ -4,9 +4,7 @@ import Like from '../models/like.js'
 import Comment from '../models/comment.js'
 import PublicInfo from '../models/PublicInfo.js'
 import PrivateInfo from '../models/PrivateInfo.js'
-import multer from 'multer'
-import fs from 'fs'
-import path from 'path'
+import { upload } from '../middlewares/postMiddleware.js'
 
 // Get all posts
 export const getAllPosts = async (req, res) => {
@@ -20,33 +18,12 @@ export const getAllPosts = async (req, res) => {
   }
 }
 
-const storage = multer.diskStorage({
-  destination: async(req, file, cb) => {
-    const { postId } = req
-    const folderPath = path.join(__dirname,`../../public/uploads/${postId}`)
-    
-    if(!fs.existsSync(folderPath))
-    {
-      fs.mkdirSync(folderPath, { recursive: true })
-    }
-
-    cb(null, folderPath)
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}${path.extname(file.originalname)}`
-    cb(null, uniqueSuffix)
-  }
-})
-
-const upload = multer({
-  storage,
-  //5 MB limit per image
-  limits: { fileSize: 5*1024*1024 }
-}).array('images', 10)
-
 // Create a new post
 export const createPost = async (req, res) => {
-  const { content, userInfo, tags, images } = req.body
+  const content = req.body.content
+  const userInfo = JSON.parse(req.body.userInfo)
+  const tags = JSON.parse(req.body.tags)
+  const images = req.files.map(file => file.path)
 
   // Validate content
   if (!content || content.trim() === '') {

@@ -1,6 +1,6 @@
 import express from 'express';
 import { createPost, getAllPosts, sharePost, searchPostsByTag, userPosts,  searchPostsByContent, deletePost } from '../controllers/postController.js';
-import { validatePost, validatePostDeletion } from '../middlewares/postMiddleware.js';
+import { upload, validatePost, validatePostDeletion } from '../middlewares/postMiddleware.js';
 
 const router = express.Router()
 
@@ -8,7 +8,7 @@ const router = express.Router()
 router.get('/api/get-posts', getAllPosts)
 
 // Route to create a new post
-router.post('/api/create-post', validatePost, createPost)
+router.post('/api/create-post',upload, validatePost, createPost)
 
 // Share a post
 router.post('/api/posts/:postId/share', sharePost)
