@@ -226,7 +226,7 @@ const HomePage = () => {
               </div>
               
               {/* Images Upload Section */}
-              <div className={`flex flex-col transition-all duration-500 ${isTextareaFocused || isTagsInputFocused || content.trim() || tagValue.trim() || tagList.length>0 || images.length>0 ? 'opacity-100 max-h-screen' : 'opacity-0 max-h-0'}`}>
+              <div className={`transition-all duration-300 ${isTextareaFocused || isTagsInputFocused || content.trim() || tagValue.trim() || tagList.length>0 || images.length>0 ? 'opacity-100 max-h-screen mt-4' : 'opacity-0 max-h-0 mt-0'}`}>
                 <input
                   type = 'file'
                   accept = 'image/*'
@@ -235,27 +235,26 @@ const HomePage = () => {
                   className = 'hidden'
                   id = 'image-upload'
                 />
-                <label 
-                  for='image-upload'
-                  className = 'mt-4 block mr-auto py-2 px-4 rounded-lg text-gray-600 bg-gray-50 hover:text-cyan-600 hover:bg-cyan-100 cursor-pointer transition-all duration-300'
-                >
-                  Add Images
-                </label>
-                {images.length === 0 ||
-                (<div className = 'mt-2 flex flex-wrap gap-2'>
+                <div className = 'flex flex-wrap gap-2'>
                   {images.map((image, index) => (
-                  <div key={index} className='relative'>
-                    <img src={URL.createObjectURL(image)} alt='Preview' className='w-20 h-20 object-cover rounded-lg'/>
-                    <button onClick={() => handleImageRemove(index)} className='p-0.5 absolute top-0 right-0 rounded-full bg-red-500 hover:bg-red-600 transition-all duration-300'>
-                      <svg width='12' height='12' viewBox='0 0 24 24'
-                        className='stroke-2 stroke-gray-100'
-                      >
-                        <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
-                      </svg>
-                    </button>
-                  </div>
-                  ))}
-                </div>)}
+                    <div key={index} className='relative'>
+                      <img src={URL.createObjectURL(image)} alt='Preview' className='w-20 h-20 object-cover rounded-lg'/>
+                      <button onClick={() => handleImageRemove(index)} className='p-0.5 absolute top-0 right-0 rounded-full bg-red-500 hover:bg-red-600 transition-all duration-300'>
+                        <svg width='12' height='12' viewBox='0 0 24 24'
+                          className='stroke-2 stroke-gray-100'
+                        >
+                          <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+                        </svg>
+                      </button>
+                    </div>))
+                  }
+                  <label 
+                    for='image-upload'
+                    className = 'group/uploadimg flex flex-col items-center justify-center text-center w-20 h-20 rounded-lg text-sm border-dashed border-2 border-gray-400 text-gray-400 hover:text-cyan-600 hover:border-cyan-600 cursor-pointer transition-all duration-300'
+                  >
+                    Upload Images
+                  </label>
+                </div>
               </div>
               
               <button
