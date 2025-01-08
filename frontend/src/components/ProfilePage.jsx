@@ -12,6 +12,8 @@ export default function ProfilePage() {
     user_id: '',
   });
   const [userProfile, setUserProfile] = useState({});
+  const [showUnfriendPopup, setShowUnfriendPopup] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
   const [incomingRequests, setIncomingRequests] = useState([]);
   const [sentRequests, setSentRequests] = useState([]);
   const [status, setStatus] = useState('none')
@@ -148,6 +150,28 @@ export default function ProfilePage() {
       .catch((err) => console.error('Error denying request:', err));
   };
   
+  const handleUnfriend = () => {
+      const sender_id = userProfile.user_id;
+      const receiver_id = profileData.user_id;
+  
+      fetch('/api/unfriend', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ sender_id, receiver_id }),
+        credentials: 'same-origin',
+      })
+        .then((response) => {
+          if (!response.ok) throw new Error('Failed to unfriend');
+          return response.json();
+        })
+        .then(() => {
+          setStatus('none');
+          setShowUnfriendPopup(false);
+        })
+        .catch((err) => console.error('Error unfriending:', err));
+  };
 
   const checkRequestStatus = async (user1_id, user2_id) => {
     try {
@@ -178,7 +202,9 @@ export default function ProfilePage() {
 
       fetchStatus();
     }
-  }, [userProfile, profileData]);   const handleAddFriend = () => {
+  }, [userProfile, profileData]);   
+  
+  const handleAddFriend = () => {
     const receiver_id = profileData.user_id;
     const sender_id = userProfile.user_id;
 
@@ -265,15 +291,38 @@ export default function ProfilePage() {
                   Cancel
                 </button>
                 </>
-            ) : status === 'accepted' ? (
-              <button
-                className="mt-6 bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-blue-600 transition"
-              >
-                Friends
-              </button>
-              ) : status ==='incoming' ? (
+            ) : 
+            status === 'accepted' ? (
+              <div className="flex items-center justify-center space-x-4">
+                <div className="relative">
+                  <button
+                    onClick={() => setShowDropdown((prev) => !prev)}
+                    className="bg-cyan-500 text-white px-6 py-2 rounded-full hover:bg-gray-600 transition"
+                  >
+                    Friends
+                  </button>
+                  {showDropdown && (
+                    <div className="absolute top-full left-0 mt-2 w-full bg-white rounded-md shadow-lg z-10">
+                      <button 
+                        onClick={() => setShowUnfriendPopup(true)}
+                        className="w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100 transition"
+                      >
+                        Unfriend
+                      </button>
+                    </div>
+                  )}
+                </div>
+                <button
+                  onClick={() => console.log('Open message functionality')}
+                  className="bg-green-500 text-white px-4 py-2 rounded-full hover:bg-green-600 transition"
+                >
+                  Message
+                </button>
+              </div>
+            ) : status ==='incoming' ? (
                 <>
                 <p className="mt-6 text-green-600">User has sent you a friend request!</p><br />
+                <div className="flex items-center justify-center mt-6 space-x-4">
                 <button
                 onClick={confirmRequest}
                 className="mt-6 bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-blue-600 transition"
@@ -284,6 +333,7 @@ export default function ProfilePage() {
               className='mt-6 bg-red-500 text-white px-6 py-2 rounded-full hover:bg-red-700 transition'>
                 Cancel Request
               </button>
+              </div>
               </>
               ) : null)
           }
@@ -292,6 +342,29 @@ export default function ProfilePage() {
 
       {/* Displaying Posts */}
       <Posts posts={posts} setPosts={setPosts}/>
+
+      {showUnfriendPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+            <p className="text-lg font-semibold mb-4">Unfriend {username}</p>
+            <p className="text-sm text-gray-600 mb-6">Are you sure you want to remove {username} as your friend?</p>
+            <div className="flex justify-end space-x-2">
+              <button
+                onClick={() => setShowUnfriendPopup(false)}
+                className="px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleUnfriend}
+                className="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 transition"
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
