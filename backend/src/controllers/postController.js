@@ -4,7 +4,7 @@ import Like from '../models/like.js'
 import Comment from '../models/comment.js'
 import PublicInfo from '../models/PublicInfo.js'
 import PrivateInfo from '../models/PrivateInfo.js'
-import { upload } from '../middlewares/postMiddleware.js'
+import path from 'path'
 
 // Get all posts
 export const getAllPosts = async (req, res) => {
@@ -23,7 +23,6 @@ export const createPost = async (req, res) => {
   const content = req.body.content
   const userInfo = JSON.parse(req.body.userInfo)
   const tags = JSON.parse(req.body.tags)
-  const images = req.files.map(file => file.path)
 
   // Validate content
   if (!content || content.trim() === '') {
@@ -62,21 +61,14 @@ export const createPost = async (req, res) => {
     }
     //console.log(PrivUsersWithTags)
     //await PrivUsersWithTags.save()
+
+    if(req.files.length > 0)
+    {
+      newPost.images = path.basename(req.files[0].path)
+    }
+
     // Save the post in the database
     const savedPost = await newPost.save()
-
-    if(images.length > 0)
-    {
-      req.postId = savedPost._id.toString()
-
-      upload(req, res, async(err) => {
-        if(err)
-        {
-          console.error('Error uploading images:', err)
-          return res.status(500).json({ message: 'Failed to upload images', error: err.message })
-        }
-      })
-    }
 
     res.status(201).json({ message: 'Post created successfully!', post: savedPost })
   } catch (error) {

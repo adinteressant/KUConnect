@@ -3,13 +3,13 @@ import multer from 'multer'
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import { v4 as uuidv4 } from 'uuid'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 const storage = multer.diskStorage({
   destination: async(req, file, cb) => {
-    const { postId } = req
-    const folderPath = path.join(__dirname,`../../public/uploads/${postId}`)
+    const folderPath = path.join(__dirname,`../../public/uploads/${Date.now()}-${uuidv4()}`)
     
     if(!fs.existsSync(folderPath))
     {
