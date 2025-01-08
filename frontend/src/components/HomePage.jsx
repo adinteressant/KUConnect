@@ -167,14 +167,21 @@ const HomePage = () => {
   const handleImageChange = (e) => 
   {
     const selectedImages = Array.from(e.target.files)
-    setImages((prev) => {
-      const i = [...prev, ...selectedImages]
-      if(i.length > 10)
-      {
-        i.splice(10)
-      }
-      return i
-    })
+    if(selectedImages.some((image) => image.size>(5*1024*1024)))
+    {
+      alert('Each image must be less than 5MB')
+    }
+    else
+    {
+      setImages((prev) => {
+        const i = [...prev, ...selectedImages]
+        if(i.length > 10)
+        {
+          i.splice(10)
+        }
+        return i
+      })
+    }
   }
 
   const handleImageRemove = (index) =>
