@@ -66,12 +66,12 @@ export const createPost = async (req, res) => {
     //console.log(PrivUsersWithTags)
     //await PrivUsersWithTags.save()
 
-    newPost.images = req.files.length
+    newPost.images = req.files.map((file, i) => `image_${i}${path.extname(file.originalname)}`)
     
     // Save the post in the database
     const savedPost = await newPost.save()
 
-    if(savedPost.images)
+    if(savedPost.images.length)
     {
       const oldFolderPath = path.join(__dirname, `../../public/uploads/${req.folderName}`)
       const newFolderPath = path.join(__dirname, `../../public/uploads/${savedPost._id.toString()}`)
@@ -97,28 +97,26 @@ export const getImage = (req, res) =>
 {
   try
   {  
-    const { postId, imageId } = req.params
+    const { postId, imageName } = req.params
 
     if(!postId)
     {
       return res.status(400).json({ message: 'Missing post Id' })
     }
 
-    if(!imageId)
+    if(!imageName)
     {
-      return res.status(400).json({ message: 'Missing image Id' })
+      return res.status(400).json({ message: 'Missing image name' })
     }
 
-    const folder = path.join(__dirname, `../../public/uploads/${postId}`)
-    const files = fs.readdirSync(folder)
-    const matchingFile = files.find(file => path.parse(file).name === `image_${imageId}`)
+    const filePath = path.join(__dirname, `../../public/uploads/${postId}/${imageName}`)
 
-    if(!matchingFile)
+    if(!fs.existsSync(filePath))
     {
       return res.status(404).json({ message: "Post's image not found" })
     }
 
-    return res.sendFile(path.join(folder, matchingFile))
+    return res.sendFile(filePath)
   }
   catch(error)
   {
@@ -227,7 +225,7 @@ export const deletePost = async(req, res) => {
       return res.status(404).json({ message: 'Post not found for deletion' })
     }
 
-    if(deletedPost.images)
+    if(deletedPost.images.length)
     {
       const folderPath = path.join(__dirname, `../../public/uploads/${deletedPost._id.toString()}`)
       fs.rmdirSync(folderPath, { recursive: true })
