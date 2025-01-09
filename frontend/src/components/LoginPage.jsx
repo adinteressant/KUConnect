@@ -32,6 +32,7 @@ export default function LoginPage() {
       //const token = data.token;
       localStorage.setItem("isAuthenticated", true); // Save token to localStorage //BRO WHAT 
       sessionStorage.setItem('newLogin', 'true');
+      localStorage.setItem('isLoggedIn',true)
       window.location.href='/';
     } catch (error) {
       console.error("Login error:", error.message);
@@ -43,6 +44,7 @@ export default function LoginPage() {
     const backendUrl = 'http://localhost:4000';  // Adjust based on your actual backend URL
     const currentPort = window.location.port;
     window.location.href = `${backendUrl}/api/auth/google?port=${currentPort}`;
+    localStorage.setItem('isLoggedIn',true)
     localStorage.setItem('isAuthenticated', false);
     sessionStorage.setItem('newGoogleLogin', 'true');
   };

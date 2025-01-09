@@ -56,6 +56,7 @@ const Navigation = ({ setVisibility, setPadding,searchTrait,setSearchTrait, user
       await axios.get('/api/user-logout', { withCredentials: true });
       localStorage.setItem('isAuthenticated', 'false');
       localStorage.removeItem('authUser')
+      localStorage.setItem('isLoggedIn',false)
       setIsAuthenticated(false);
       setVisibility(false);
       setPadding('');
