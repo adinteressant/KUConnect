@@ -318,8 +318,8 @@ function Posts(props) {
 
                   {/* Display Images */}
                   {post.images.length > 0 && post.images.map((imageName, index) => 
-                    <div key={index}>
-                      <img src={`/api/post/${post._id.toString()}/${imageName}`} className=''/>  
+                    <div key={index} className='mt-2 flex'>
+                      <img src={`/api/post/${post._id.toString()}/${imageName}`} className='rounded-lg'/>
                     </div>
                   )}
 
