@@ -66,13 +66,25 @@ export const createPost = async (req, res) => {
     //console.log(PrivUsersWithTags)
     //await PrivUsersWithTags.save()
 
-    if(req.files.length > 0)
-    {
-      newPost.images = req.folderName
-    }
-
+    newPost.images = req.files.map((file, i) => `image_${i}${path.extname(file.originalname)}`)
+    
     // Save the post in the database
     const savedPost = await newPost.save()
+
+    if(savedPost.images.length)
+    {
+      const oldFolderPath = path.join(__dirname, `../../public/uploads/${req.folderName}`)
+      const newFolderPath = path.join(__dirname, `../../public/uploads/${savedPost._id.toString()}`)
+      fs.renameSync(oldFolderPath, newFolderPath)
+
+      const files = fs.readdirSync(newFolderPath)
+      files.forEach((file, index) => {
+        fs.renameSync(
+          path.join(newFolderPath, file),
+          path.join(newFolderPath, `image_${index}${path.extname(file)}`)
+        )
+      })
+    }
 
     res.status(201).json({ message: 'Post created successfully!', post: savedPost })
   } catch (error) {
@@ -81,6 +93,37 @@ export const createPost = async (req, res) => {
   }
 }
 
+export const getImage = (req, res) =>
+{
+  try
+  {  
+    const { postId, imageName } = req.params
+
+    if(!postId)
+    {
+      return res.status(400).json({ message: 'Missing post Id' })
+    }
+
+    if(!imageName)
+    {
+      return res.status(400).json({ message: 'Missing image name' })
+    }
+
+    const filePath = path.join(__dirname, `../../public/uploads/${postId}/${imageName}`)
+
+    if(!fs.existsSync(filePath))
+    {
+      return res.status(404).json({ message: "Post's image not found" })
+    }
+
+    return res.sendFile(filePath)
+  }
+  catch(error)
+  {
+    console.error('Error getting image for post:', error)
+    res.status(500).json({ message: 'Internal Server Error', error })
+  }
+}
 
 // Share a post
 export const sharePost = async (req, res) => {
@@ -178,9 +221,9 @@ export const deletePost = async(req, res) => {
       return res.status(404).json({ message: 'Post not found for deletion' })
     }
 
-    if(deletedPost.images)
+    if(deletedPost.images.length)
     {
-      const folderPath = path.join(__dirname, `../../public/uploads/${deletedPost.images}`)
+      const folderPath = path.join(__dirname, `../../public/uploads/${deletedPost._id.toString()}`)
       fs.rmdirSync(folderPath, { recursive: true })
     }
 
