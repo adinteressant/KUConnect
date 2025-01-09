@@ -120,9 +120,13 @@ export default function Sidebar({userProfile,setUserProfile}) {
                 <div className="relative">
                   <Bell className="h-5 w-5 text-muted-foreground text-cyan-600" />
                   {userUnreadCount> 0 && (
+<>
+                    <div className="absolute animate-ping -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-medium text-white" >
+                    </div>
                     <div className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-medium text-white">
                       {userUnreadCount}
                     </div>
+</>
                   )}
                 </div>
                 <span className="text-base text-foreground">Notifications</span>

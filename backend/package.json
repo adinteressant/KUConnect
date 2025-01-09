@@ -35,6 +35,7 @@
     "passport-google-oauth2": "^0.2.0",
     "socket.io": "^4.8.1",
     "uuid": "^11.0.3",
+    "web-push": "^3.6.7",
     "wrtc": "^0.4.7"
   }
 }

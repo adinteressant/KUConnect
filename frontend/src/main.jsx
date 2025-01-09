@@ -18,6 +18,7 @@ import ResultPage from './components/ResultPage.jsx'
 import SearchPage from './components/SearchPage.jsx'
 import SearchResults from './components/SearchResults.jsx'
 import VideoCall from './components/VideoCall.jsx'
+import PushNotification from './components/pushNotifications.jsx'
 
 const router = createBrowserRouter([
   {
@@ -71,6 +72,10 @@ const router = createBrowserRouter([
       {
         path:'/search',
         element:<SearchPage/>
+      },
+      {
+        path:'/push-notifications',
+        element:<PushNotification/>
       }
     ]
   },
