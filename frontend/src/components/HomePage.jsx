@@ -1,7 +1,7 @@
 import { useEffect, useState} from 'react'
 import { useOutletContext } from 'react-router-dom'
 import Posts from './subcomponents/Posts.jsx'
-import WelcomeModal from './subcomponents/WelcomeModal.jsx';
+import WelcomeModal from './subcomponents/WelcomeModal.jsx'
 import { useGetUnreadMessage } from './hooks/useGetUnreadMessage.js'
 
 const HomePage = () => {
@@ -16,7 +16,7 @@ const HomePage = () => {
   const [isTextareaFocused, setIsTextareaFocused] = useState(false)
   const [isTagsInputFocused, setIsTagsInputFocused] = useState(false)
   const [images, setImages] = useState([])
-  const [showWelcomeModal, setShowWelcomeModal] = useState(false);
+  const [showWelcomeModal, setShowWelcomeModal] = useState(false)
   const {searchTrait,setSearchTrait} = useOutletContext()
   // Check for logged-in user based on isAuthenticated
   if(localStorage.getItem('isLoggedIn') === 'true') useGetUnreadMessage()
@@ -24,148 +24,172 @@ const HomePage = () => {
     useEffect(() => {
     let isAuthenticated = localStorage.getItem('isAuthenticated') === 'true'  
     if (isAuthenticated) {
-      setUser({ email: 'user@example.com' });
-      const isNewLogin = sessionStorage.getItem('newLogin') === 'true';
+      setUser({ email: 'user@example.com' })
+      const isNewLogin = sessionStorage.getItem('newLogin') === 'true'
       if (isNewLogin) {
-        setShowWelcomeModal(true);
-        sessionStorage.removeItem('newLogin');
+        setShowWelcomeModal(true)
+        sessionStorage.removeItem('newLogin')
       }
     } else {
       fetch('/api/google/status')
         .then((response) => response.json())
         .then((googleUserInfo) => {
           if (googleUserInfo?.email) {
-            setGoogleUser(googleUserInfo.email);
-            const isNewGoogleLogin = sessionStorage.getItem('newGoogleLogin') === 'true';
+            setGoogleUser(googleUserInfo.email)
+            const isNewGoogleLogin = sessionStorage.getItem('newGoogleLogin') === 'true'
           if (isNewGoogleLogin) {
-            setShowWelcomeModal(true);
-            sessionStorage.removeItem('newGoogleLogin');
+            setShowWelcomeModal(true)
+            sessionStorage.removeItem('newGoogleLogin')
           }
           }
         })
         .catch((error) => {
-          console.error('Error checking Google login status:', error);
-        });
+          console.error('Error checking Google login status:', error)
+        })
     }
-  }, []);
+  }, [])
 
   // Fetch user profile on mount
   useEffect(() => {
     fetch('/api/get-user-profile')
       .then((response) => response.json())
       .then((data) => {
-        setUserProfile(data);
+        setUserProfile(data)
         localStorage.setItem('authUser',JSON.stringify(data.user_id))
       })
       .catch((e) => {
-        console.error('Error fetching user profile:', e);
-      });
-  }, []);
+        console.error('Error fetching user profile:', e)
+      })
+  }, [])
 
   // Fetch all posts on mount
   useEffect(() => {
     fetch(`/api/get-posts`)
       .then((response) => response.json())
       .then((data) => {
-        setPosts(data);
+        setPosts(data)
       })
       .catch((e) => {
-        console.error('Error fetching posts:', e);
-      }); ///AHHHHHHHHHHHH WHERE IS MY COMMENT, I HATE AI
-  }, []);
+        console.error('Error fetching posts:', e)
+      }) ///AHHHHHHHHHHHH WHERE IS MY COMMENT, I HATE AI
+  }, [])
 
   // Handle Post Submit
   const handlePostSubmit = () => {
     if (!user && !googleUser) {
-      alert('You must be logged in to post.');
-      return;
+      alert('You must be logged in to post.')
+      return
     }
 
     if (content.trim()) {
-      const userInfo = userProfile || googleUser;
+      const userInfo = userProfile || googleUser
+
+      const formData = new FormData()
+
+      formData.append('content', content)
+      formData.append('userInfo', JSON.stringify(userInfo))
+      formData.append('tags', JSON.stringify(tagList))
+
+      images.forEach((image) => {
+        formData.append('images', image)
+      })
 
       fetch('/api/create-post', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          content,
-          userInfo,
-          tags: tagList,
-        }),
+        body: formData
       })
         .then((response) => response.json())
         .then((data) => {
           if (data.post) {
-            setContent('');
-            setTagValue('');
-            setTagList([]);
-            setPosts([data.post, ...posts]);
-            setUserProfile(userProfile.unread_count++);
-            console.log('Post submitted:', data.post);
-            //location.reload();
+            setContent('')
+            setTagValue('')
+            setTagList([])
+            setImages([])
+            setPosts([data.post, ...posts])
+            setUserProfile(userProfile.unread_count++)
+            console.log('Post submitted:', data.post)
+            //location.reload()
           }
         })
         .catch((error) => {
-          console.error('Error submitting post:', error);
-        });
+          console.error('Error submitting post:', error)
+        })
     } else {
-      alert('Post content cannot be empty.');
+      alert('Post content cannot be empty.')
     }
-  };
+  }
 
   // Handle Tag Input Change
   const handleTagInputChange = (e) => {
-    const value = e.target.value;
+    const value = e.target.value
     if (value.endsWith(' ')) {
-      const trimmedValue = value.trim();
+      const trimmedValue = value.trim()
       if (trimmedValue && !tagList.includes(trimmedValue)) {
-        setTagList([...tagList, trimmedValue]);
+        setTagList([...tagList, trimmedValue])
       }
-      setTagValue('');
+      setTagValue('')
     } else {
-      setTagValue(value);
+      setTagValue(value)
     }
-  };
+  }
 
   // Handle Backspace Key for Tag Removal
   const handleTagInputKeyDown = (e) => {
     if (e.key === 'Backspace' && !tagValue && tagList.length > 0) {
-      const updatedTags = [...tagList];
-      updatedTags.pop();
-      setTagList(updatedTags);
+      const updatedTags = [...tagList]
+      updatedTags.pop()
+      setTagList(updatedTags)
     }
-  };
+  }
 
   const handleTextareaFocus = () => {
-    setIsTextareaFocused(true);
-    setShowTags(true);
-  };
+    setIsTextareaFocused(true)
+    setShowTags(true)
+  }
 
   const handleTextareaBlur = () => {
-    setIsTextareaFocused(false);
+    setIsTextareaFocused(false)
     if (!content.trim() && !isTagsInputFocused && !tagValue.trim()) {
-      setShowTags(false);
+      setShowTags(false)
     }
-  };
+  }
 
   const handleTagsInputFocus = () => {
-    setIsTagsInputFocused(true);
-    setShowTags(true);
-  };
+    setIsTagsInputFocused(true)
+    setShowTags(true)
+  }
 
   const handleTagsInputBlur = () => {
-    setIsTagsInputFocused(false);
+    setIsTagsInputFocused(false)
     if (!content.trim() && !isTextareaFocused && !tagValue.trim()) {
-      setShowTags(false);
+      setShowTags(false)
     }
-  };
+  }
 
   const handleImageChange = (e) => 
   {
     const selectedImages = Array.from(e.target.files)
-    setImages((prev) => [...prev, ...selectedImages])
+    const maxSize = 5*1024*1024
+    const validExtensions = ['image/jpeg','image/png','image/gif','image/webp']
+    if(selectedImages.some((image) => image.size>maxSize))
+    {
+      alert('Each image must be less than 5MB')
+    }
+    else if(selectedImages.some((image) => !validExtensions.includes(image.type)))
+    {
+      alert('Each image must be of type jpeg, png, gif or webp')
+    }
+    else
+    {
+      setImages((prev) => {
+        const i = [...prev, ...selectedImages]
+        if(i.length > 10)
+        {
+          i.splice(10)
+        }
+        return i
+      })
+    }
   }
 
   const handleImageRemove = (index) =>
@@ -193,7 +217,7 @@ const HomePage = () => {
             >
               <textarea
                 placeholder="What's on your mind?"
-                className={`w-full p-2 border rounded-lg mb-2 bg-gray-100 focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-600 transition-all duration-300 ${
+                className={`w-full p-2 border rounded-lg bg-gray-100 focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-600 transition-all duration-300 ${
                   isTextareaFocused || isTagsInputFocused ? 'h-28' : 'h-20'
                 }`}
                 value={content}
@@ -202,18 +226,18 @@ const HomePage = () => {
                 onBlur={handleTextareaBlur}
               />
 
-              <div className={`flex flex-col transition-all duration-300 overflow-y-auto ease-in-out ${isTextareaFocused || isTagsInputFocused || content.trim() || tagValue.trim() ? 'opacity-100 max-h-screen' : 'opacity-0 max-h-0'}`}>
+              <div className={`flex flex-col transition-all duration-500 overflow-y-auto ease-in-out ${isTextareaFocused || isTagsInputFocused || content.trim() || tagValue.trim() || tagList.length>0 || images.length>0 ? 'opacity-100 max-h-screen' : 'opacity-0 max-h-0'}`}>
                 <input
                   type="text"
                   placeholder="Add tags (space-separated)"
-                  className="flex-1 p-2 border rounded-lg mt-2 mb-4 bg-gray-100 focus:mx-1 focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-600 transition-all duration-300"
+                  className="mt-4 flex-1 p-2 border rounded-lg bg-gray-100 focus:m-1 focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-600 transition-all duration-300"
                   value={tagValue}
                   onChange={handleTagInputChange}
                   onKeyDown={handleTagInputKeyDown}
                   onFocus={handleTagsInputFocus}
                   onBlur={handleTagsInputBlur}
                 />
-                <div className="flex flex-wrap gap-2 mb-2">
+                <div className="mt-2 flex flex-wrap gap-2">
                   {tagList.map((tag, index) => (
                     <span
                       key={index}
@@ -226,30 +250,43 @@ const HomePage = () => {
               </div>
               
               {/* Images Upload Section */}
-              <div>
+              <div className={`transition-all duration-300 ${isTextareaFocused || isTagsInputFocused || content.trim() || tagValue.trim() || tagList.length>0 || images.length>0 ? 'opacity-100 max-h-screen mt-4' : 'opacity-0 max-h-0 mt-0'}`}>
                 <input
                   type = 'file'
                   accept = 'image/*'
                   multiple
                   onChange = {(e) => handleImageChange(e)}
-                  className = {`mb-4 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-gray-600 file:bg-gray-50 hover:file:text-cyan-600 hover:file:bg-cyan-100 file:cursor-pointer`}
+                  className = 'hidden'
+                  id = 'image-upload'
                 />
-                <div className='flex flex-wrap gap-2'>
+                <div className = 'flex flex-wrap gap-2'>
                   {images.map((image, index) => (
-                  <div key={index}>
-                    <img src={URL.createObjectURL(image)} alt='Preview' className='w-20 h-20 object-cover'/>
-                    <button onClick={() => handleImageRemove(index)} className='absolute top-2 right-2 p-2 rounded-full hover:bg-gray-200 transition-all duration-300'>
-
-                    </button>
-                  </div>
-                  ))}
+                    <div key={index} className='relative'>
+                      <img src={URL.createObjectURL(image)} alt='Preview' className='w-20 h-20 object-cover rounded-lg'/>
+                      <button onClick={() => handleImageRemove(index)} className='p-0.5 absolute top-0 right-0 rounded-full bg-red-500 hover:bg-red-600 transition-all duration-300'>
+                        <svg width='12' height='12' viewBox='0 0 24 24'
+                          className='stroke-2 stroke-gray-100'
+                        >
+                          <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+                        </svg>
+                      </button>
+                    </div>))
+                  }
+                  {images.length >= 10 || 
+                  (<label
+                    htmlFor='image-upload'
+                    className = 'group/uploadimg flex flex-col items-center justify-center text-center w-20 h-20 rounded-lg text-sm border-dashed border-2 border-gray-400 text-gray-400 hover:text-cyan-600 hover:border-cyan-600 cursor-pointer transition-all duration-300'
+                  >
+                    Upload Images
+                  </label>)
+                  }                
                 </div>
               </div>
               
               <button
                 disabled={!content.trim()}
                 onClick={handlePostSubmit}
-                className="bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:ring-offset-2 disabled:bg-gray-400 transition-all duration-300"
+                className="mt-4 bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:ring-offset-2 disabled:bg-gray-400 transition-all duration-300"
               >
                 Post
               </button>
@@ -266,8 +303,8 @@ const HomePage = () => {
 
       </main>
     </div>
-  );
-};
+  )
+}
 
-export default HomePage;
+export default HomePage
 
