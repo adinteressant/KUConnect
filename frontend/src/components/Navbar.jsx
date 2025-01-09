@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useOutletContext } from 'react-router-dom';
 import { Search, User, ChevronDown, LogOut, LogIn, UserPlus, UserCircle } from 'lucide-react';
 import axios from 'axios';
-
 const Navigation = ({ setVisibility, setPadding,searchTrait,setSearchTrait, userProfile,setUserProfile}) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem('isAuthenticated') == 'true');
@@ -118,18 +117,21 @@ const Navigation = ({ setVisibility, setPadding,searchTrait,setSearchTrait, user
   
 
   return (
-    <div className="w-full bg-white shadow-[0_10px_25px_-15px_rgba(0,255,255,0.2)] fixed z-20 top-0">
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
+    <div className="w-full bg-white shadow-[0_10px_25px_-15px_rgba(0,255,255,0.2)] fixed z-20 top-0 ">
+
+      <div className="max-w-7xl mx-auto px-4 ">
+        <div className="flex items-center justify-between h-16 ">
           <Link to="/" className="text-2xl font-serif text-gray-800">
             KUConnect
           </Link>
 
           <div className="w-full max-w-md mx-32">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-              <form onSubmit={handleSearch}>
-                <div className="w-full pl-10 pr-4 py-2 rounded-full bg-gray-100 focus-within:ring-2 focus-within:ring-cyan-500 focus-within:bg-white transition-colors flex items-center gap-2">
+    <div className='animate-slide opacity-0 mt-2 text-center text-gray-400 text-xl absolute'>Welcome Aboard!</div> 
+            <div className="relative card-wrapper absolute">
+    <div className='card-content'>
+              <Search className="absolute left-3 animate-fade top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+              <form onSubmit={handleSearch}>   
+                <div className="animate-fade w-full card-content pl-10 pr-4 py-2 rounded-full bg-gray-100 focus-within:ring-2 focus-within:ring-cyan-500 focus-within:bg-white transition-all duration-700 flex items-center gap-2 ">
                   {searchTrait.startsWith('@user:') && (
                     <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-sm whitespace-nowrap">
                       @user:
@@ -201,9 +203,10 @@ const Navigation = ({ setVisibility, setPadding,searchTrait,setSearchTrait, user
                       }
                     }}
                   />
-                </div>
+              </div>
               </form>
-              {showDropdown && (
+    </div>
+            {showDropdown && (
                 <div className="absolute left-0 top-12 bg-white border border-gray-200 rounded-lg shadow-lg w-full z-50">
                   {dropdownOptions.map((option) => (
                     <div

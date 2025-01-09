@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .card-wrapper{
+    @apply  mr-48 py-2 rounded-full bg-gray-100  focus-within:bg-gray-200 transition-colors flex items-center gap-2 
+  }
+  .card-wrapper::before{  
+    background: conic-gradient(
+     rgba(0,200,0,0.4) 0deg,
+     rgba(0,200,200,0.4) 0deg,
+     transparent 10deg
+    );
+
+    @apply h-[450%] w-[5%] left-[50%] content-[''] absolute animate-[spin_5s_ease-in-out_infinite];
+  }
+  .card-content{
+    @apply ml-1 h-[calc(100%)-2px] w-[calc(100%)-2px];
+  }
+
+}
