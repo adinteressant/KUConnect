@@ -2,33 +2,34 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 import Fuse from 'fuse.js';
 import Posts from '../components/subcomponents/Posts';
+import UserSearchResults from './UserSearchResults';
 
 const SearchPage = () => {
   const location = useLocation();
   const searchQuery = location.state?.searchQuery || '';
-  const posts = location.state?.posts || [];
-  const isTagSearch = location.state?.isTagSearch || false;
-  
-  const fuse = new Fuse(posts, {
+  const results = location.state?.results || [];
+  const isUserSearch = searchQuery.startsWith('@user:');
+  const isTagSearch = searchQuery.startsWith('#tag:');
+
+  const fuse = new Fuse(results, {
     keys: isTagSearch ? ['tags'] : ['content', 'tags', 'username'],
     threshold: 0.3,
     includeScore: true
   });
 
   let searchResults;
-
-  if (isTagSearch) {
-    // For tag search, strip the "#tag:" prefix
+  if (isUserSearch) {
+    searchResults = results; // Direct results from user search API
+  } else if (isTagSearch) {
     const tagQuery = searchQuery.replace('#tag:', '').trim();
-    // If tagQuery is empty, show all posts with tags
     searchResults = tagQuery 
       ? fuse.search(tagQuery).map(result => result.item)
-      : posts.filter(post => post.tags.length > 0); // Show posts with tags if tag query is empty
+      : results.filter(post => post.tags.length > 0);
   } else {
-    // Regular search
     searchResults = searchQuery 
       ? fuse.search(searchQuery).map(result => result.item)
-      : posts; // If searchQuery is empty, return all posts
+      : results;
+      console.log(searchResults)
   }
 
   return (
@@ -37,19 +38,24 @@ const SearchPage = () => {
         <div className="max-w-2xl mx-auto space-y-4">
           <div className="bg-white p-4 rounded-lg shadow-md">
             <h2 className="text-lg font-medium text-gray-900">
-              {searchResults.length > 0 
-                ? `${isTagSearch ? 'Tag search' : 'Search'} results for "${searchQuery.replace('#tag:', '')}"`
-                : `No ${isTagSearch ? 'tags' : 'results'} found for "${searchQuery.replace('#tag:', '')}"`}
+              {isUserSearch 
+                ? `User results for "${searchQuery.replace('@user:', '')}"` 
+                : isTagSearch 
+                  ? `Tag search results for "${searchQuery.replace('#tag:', '')}"` 
+                  : `Search results for "${searchQuery}"`}
             </h2>
           </div>
 
-          {searchResults.length > 0 && (
-            <Posts posts={searchResults} setPosts={() => {}} />
+          {isUserSearch ? (
+            <UserSearchResults users={searchResults} />
+          ) : (
+            searchResults.length > 0 && (
+              <Posts posts={searchResults} setPosts={() => {}} />
+            )
           )}
         </div>
       </main>
     </div>
   );
 };
-
 export default SearchPage;
