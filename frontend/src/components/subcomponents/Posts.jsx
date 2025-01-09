@@ -317,12 +317,11 @@ function Posts(props) {
                   )}
 
                   {/* Display Images */}
-                  {post > 0 &&
-                  (<div>
-                    <div>
+                  {post.images.length > 0 && post.images.map((imageName, index) => 
+                    <div key={index} className='mt-2 flex'>
+                      <img src={`/api/post/${post._id.toString()}/${imageName}`} className='rounded-lg'/>
                     </div>
-                    <img />
-                  </div>)}
+                  )}
 
                   <hr className='absolute left-0 right-0 mt-4'/>
                   

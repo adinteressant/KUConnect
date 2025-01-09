@@ -211,7 +211,7 @@ const HomePage = () => {
       <main className="flex-1 p-6 overflow-y-auto">
         <div className="max-w-2xl mx-auto space-y-4">
           {/* Post creation section */}
-          {searchTrait.length===0 && ((user || googleUser) ? (
+          {(user || googleUser) ? (
             <div
               className={`bg-white p-4 rounded-lg shadow-md transition-all duration-300 h-auto`}
             >
@@ -295,7 +295,7 @@ const HomePage = () => {
             <div className="bg-yellow-100 text-yellow-800 p-4 rounded-lg shadow-md">
               Please <a href="/login" className="text-cyan-600">log in</a> to post.
             </div>
-          ))}
+          )}
 
         </div>
 
