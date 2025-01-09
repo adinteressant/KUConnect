@@ -8,7 +8,7 @@ const SearchPage = () => {
   const location = useLocation();
   const searchQuery = location.state?.searchQuery || '';
   const results = location.state?.results || [];
-  const isUserSearch = searchQuery.startsWith('#user:');
+  const isUserSearch = searchQuery.startsWith('@user:');
   const isTagSearch = searchQuery.startsWith('#tag:');
 
   const fuse = new Fuse(results, {
@@ -39,7 +39,7 @@ const SearchPage = () => {
           <div className="bg-white p-4 rounded-lg shadow-md">
             <h2 className="text-lg font-medium text-gray-900">
               {isUserSearch 
-                ? `User results for "${searchQuery.replace('#user:', '')}"` 
+                ? `User results for "${searchQuery.replace('@user:', '')}"` 
                 : isTagSearch 
                   ? `Tag search results for "${searchQuery.replace('#tag:', '')}"` 
                   : `Search results for "${searchQuery}"`}

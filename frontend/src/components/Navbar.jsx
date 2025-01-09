@@ -7,7 +7,7 @@ const Navigation = ({ setVisibility, setPadding,searchTrait,setSearchTrait, user
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem('isAuthenticated') == 'true');
   const [showDropdown, setShowDropdown] = useState(false);
-  const dropdownOptions = ['#tag', '#user'];
+  const dropdownOptions = ['#tag', '@user'];
   const navigate = useNavigate();
   let timeout = null;
   
@@ -91,8 +91,8 @@ const Navigation = ({ setVisibility, setPadding,searchTrait,setSearchTrait, user
 
   try {
     let response;
-    if (trimmedQuery.startsWith('#user:')) {
-      response = await axios.get(`/api/users/search?query=${trimmedQuery.replace('#user:', '')}`);
+    if (trimmedQuery.startsWith('@user:')) {
+      response = await axios.get(`/api/users/search?query=${trimmedQuery.replace('@user:', '')}`);
     } else if (trimmedQuery.startsWith('#tag:')) {
       response = await axios.get(`/api/posts/search/tag?query=${trimmedQuery.replace('#tag:', '')}`);
     } else {
@@ -127,9 +127,9 @@ const Navigation = ({ setVisibility, setPadding,searchTrait,setSearchTrait, user
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
               <form onSubmit={handleSearch}>
                 <div className="w-full pl-10 pr-4 py-2 rounded-full bg-gray-100 focus-within:ring-2 focus-within:ring-cyan-500 focus-within:bg-white transition-colors flex items-center gap-2">
-                  {searchTrait.startsWith('#user:') && (
+                  {searchTrait.startsWith('@user:') && (
                     <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-sm whitespace-nowrap">
-                      #user:
+                      @user:
                     </span>
                   )}
                   {searchTrait.startsWith('#tag:') && (
@@ -142,7 +142,7 @@ const Navigation = ({ setVisibility, setPadding,searchTrait,setSearchTrait, user
                     placeholder="Search"
                     className="flex-1 bg-transparent focus:outline-none"
                     value={
-                      searchTrait.startsWith('#user:')
+                      searchTrait.startsWith('@user:')
                         ? searchTrait.slice(6)
                         : searchTrait.startsWith('#tag:')
                         ? searchTrait.slice(5)
@@ -151,7 +151,7 @@ const Navigation = ({ setVisibility, setPadding,searchTrait,setSearchTrait, user
                     onChange={(e) => {
                       const input = e.target.value;
                       
-                      if(input === '#'){
+                      if(input === '#' || input === '@'){
                         setShowDropdown(true);
                       }
                       else{
@@ -159,8 +159,8 @@ const Navigation = ({ setVisibility, setPadding,searchTrait,setSearchTrait, user
                       }
         
                       // If there's input and we have a prefix, append the input to the prefix
-                      if (searchTrait.startsWith('#user:')) {
-                        setSearchTrait('#user:' + input);
+                      if (searchTrait.startsWith('@user:')) {
+                        setSearchTrait('@user:' + input);
                       }
                       else if (searchTrait.startsWith('#tag:')) {
                         setSearchTrait('#tag:' + input);
@@ -173,7 +173,7 @@ const Navigation = ({ setVisibility, setPadding,searchTrait,setSearchTrait, user
                     onKeyDown={(e) => {
                       // Handle backspace when only prefix remains
                       if (e.key === 'Backspace' && 
-                          (searchTrait === '#user:' || searchTrait === '#tag:')) {
+                          (searchTrait === '@user:' || searchTrait === '#tag:')) {
                         setSearchTrait('');
                       }
                     }}
