@@ -199,7 +199,8 @@ const Navigation = ({ setVisibility, setPadding,searchTrait,setSearchTrait, user
                       if (e.key === 'Backspace' && 
                           (searchTrait === '@user:' || searchTrait === '#tag:')) {
                         setSearchTrait('');
-                        setShowDropdown(false)
+                        setShowDropdown(true)
+                        setDropdownOptions(['#tag', '@user'])
                       }
                     }}
                   />
