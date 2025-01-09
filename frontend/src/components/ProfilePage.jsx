@@ -293,20 +293,24 @@ export default function ProfilePage() {
             )
             :
             (status === 'none' ? (
+              <div className = "flex items-center justify-center space-x-4">
               <button
                 onClick={handleAddFriend}
                 className="mt-6 bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-blue-600 transition"
               >
                 Add Friend
               </button>
+              </div>
             ) : status === 'pending' ? (<>
               <p className="mt-6 text-green-600">Friend Request Sent!</p>
+              <div className = "flex items-center justify-center space-x-4">
               <button
                   onClick={cancelRequest}
                   className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
                 >
                   Cancel
                 </button>
+                </div>
                 </>
             ) : 
             status === 'accepted' ? (
