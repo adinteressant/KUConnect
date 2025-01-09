@@ -7,7 +7,8 @@ const Navigation = ({ setVisibility, setPadding,searchTrait,setSearchTrait, user
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem('isAuthenticated') == 'true');
   const [showDropdown, setShowDropdown] = useState(false);
-  const dropdownOptions = ['#tag', '@user'];
+  const [dropdownOptions, setDropdownOptions] = useState(['#tag', '@user'])
+  //const dropdownOptions = ['#tag', '@user'];
   const navigate = useNavigate();
   let timeout = null;
   
@@ -143,27 +144,46 @@ const Navigation = ({ setVisibility, setPadding,searchTrait,setSearchTrait, user
                     className="flex-1 bg-transparent focus:outline-none"
                     value={
                       searchTrait.startsWith('@user:')
-                        ? searchTrait.slice(6)
+                        ? searchTrait.slice(6) 
                         : searchTrait.startsWith('#tag:')
-                        ? searchTrait.slice(5)
+                        ? searchTrait.slice(5) 
                         : searchTrait
+
                     }
+
+                    onFocus={() => setShowDropdown(true)}
+                    onBlur={(e) => {
+                      // Small delay to allow clicking on dropdown items
+                      setTimeout(() => {
+                        setShowDropdown(false);
+                        setDropdownOptions(['#tag', '@user'])
+                      }, 200);
+                    }}
+
+
                     onChange={(e) => {
                       const input = e.target.value;
-                      
-                      if(input === '#' || input === '@'){
-                        setShowDropdown(true);
+
+                      if(input === '#'){
+                        setShowDropdown(true)
+                        setDropdownOptions(['#tag']); // Only show tag option
                       }
-                      else{
+                      else if (input === '@') {
+                        setShowDropdown(true);
+                        setDropdownOptions(['@user']); // Only show user option
+                      }
+                      else {
                         setShowDropdown(false);
                       }
         
                       // If there's input and we have a prefix, append the input to the prefix
                       if (searchTrait.startsWith('@user:')) {
                         setSearchTrait('@user:' + input);
+                        setShowDropdown(false);
                       }
                       else if (searchTrait.startsWith('#tag:')) {
                         setSearchTrait('#tag:' + input);
+                        setShowDropdown(false);
                       }
                       // Otherwise just set the input directly
                       else {
@@ -175,6 +195,7 @@ const Navigation = ({ setVisibility, setPadding,searchTrait,setSearchTrait, user
                       if (e.key === 'Backspace' && 
                           (searchTrait === '@user:' || searchTrait === '#tag:')) {
                         setSearchTrait('');
+                        setShowDropdown(false)
                       }
                     }}
                   />
