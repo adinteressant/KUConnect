@@ -34,14 +34,11 @@
     "nodemailer": "^6.9.16",
     "passport": "^0.7.0",
     "passport-google-oauth2": "^0.2.0",
-<<<<<<< HEAD
     "socket.io": "^4.8.1",
     "uuid": "^11.0.3",
     "web-push": "^3.6.7",
-    "wrtc": "^0.4.7"
-=======
+    "wrtc": "^0.4.7",
     "path": "^0.12.7",
     "uuid": "^11.0.3"
->>>>>>> 74d4aa2
   }
 }

@@ -151,8 +151,6 @@ export const deletePost = async(req, res) => {
   try
   {
     const { post } = req.body
-
-<<<<<<< HEAD
     if (post.tags && post.tags.length > 0) {
       let UsersWithTags = await PublicInfo.find({ tags: { $in: post.tags } });
       if (UsersWithTags.length>0){
@@ -168,25 +166,6 @@ export const deletePost = async(req, res) => {
       ); 
       console.log("Decremented by 1!");
           }
-=======
-    if (post.tags && post.tags.length > 0)
-    {
-      let UsersWithTags = await PublicInfo.find({ tags: { $in: post.tags } })
-      
-      if (UsersWithTags.length>0)
-      {
-        const publicUid = UsersWithTags.map((e)=>e.user_id) 
-        const PrivUsersWithTags = await PrivateInfo.find({user_id:{$in:publicUid}})
-    
-        console.log(PrivUsersWithTags[0].unread_count)
-        await PrivateInfo.updateMany(
-          { user_id: { $in: publicUid } }, 
-          { $inc: { unread_count: -1  } } 
-        )
-
-        console.log("Decremented by 1!")  
-      }
-    }
 
     const [deletedPost] = await Promise.all([
       Post.findByIdAndDelete(post._id),
@@ -206,6 +185,7 @@ export const deletePost = async(req, res) => {
     }
 
     return res.status(200).json({ message: 'Post deleted successfully' , deletedPost })
+  }
   }
   catch(error)
   {
