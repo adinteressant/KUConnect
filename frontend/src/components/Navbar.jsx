@@ -8,7 +8,6 @@ const Navigation = ({ setVisibility, setPadding,searchTrait,setSearchTrait, user
   const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem('isAuthenticated') == 'true');
   const [showDropdown, setShowDropdown] = useState(false);
   const [dropdownOptions, setDropdownOptions] = useState(['#tag', '@user'])
-  //const dropdownOptions = ['#tag', '@user'];
   const navigate = useNavigate();
   let timeout = null;
   
