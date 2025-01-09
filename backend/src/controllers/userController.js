@@ -85,3 +85,20 @@ export const getUserProfileController = async (req, res) => {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+// userController.js
+export const searchUsers = async (req, res) => {
+  try {
+    const { query } = req.query;
+    const users = await PublicInfo.find({
+      $or: [
+        { username: { $regex: query, $options: 'i' } },
+        { tags: { $regex: query, $options: 'i' } }
+      ]
+    }).select('username pfp_id role');
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+

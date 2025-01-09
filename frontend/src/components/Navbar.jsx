@@ -7,7 +7,7 @@ const Navigation = ({ setVisibility, setPadding,searchTrait,setSearchTrait, user
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem('isAuthenticated') == 'true');
   const [showDropdown, setShowDropdown] = useState(false);
-  const dropdownOptions = ['#tag', '#post'];
+  const dropdownOptions = ['#tag', '#user'];
   const navigate = useNavigate();
   let timeout = null;
   
@@ -81,51 +81,37 @@ const Navigation = ({ setVisibility, setPadding,searchTrait,setSearchTrait, user
 
   //Navbar handle search
   const handleSearch = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
+  const trimmedQuery = searchTrait.trim();
   
-    const trimmedQuery = searchTrait.trim();
-    if (!trimmedQuery) {
-      alert('Please enter something to search');
-      return;
+  if (!trimmedQuery) {
+    alert('Please enter something to search');
+    return;
+  }
+
+  try {
+    let response;
+    if (trimmedQuery.startsWith('#user:')) {
+      response = await axios.get(`/api/users/search?query=${trimmedQuery.replace('#user:', '')}`);
+    } else if (trimmedQuery.startsWith('#tag:')) {
+      response = await axios.get(`/api/posts/search/tag?query=${trimmedQuery.replace('#tag:', '')}`);
+    } else {
+      response = await axios.get(`/api/posts/search/content?query=${trimmedQuery}`);
     }
-  
-    try {
-      let response;
-  
-      if (trimmedQuery.startsWith('#tag:')) {
-        // Tag search
-        const tagQuery = trimmedQuery.replace('#tag:', '').trim(); // Strip #tag:
-        console.log('Tag Search Query:', tagQuery); // Debugging line
-  
-        // Make the request with the stripped tag query
-        response = await axios.get(`/api/posts/search/tag?query=${tagQuery}`);
-      } else {
-        // Regular content search
-        console.log('Regular Search Query:', trimmedQuery); // Debugging line
-        response = await axios.get(`/api/posts/search/content?query=${trimmedQuery}`);
+
+    navigate('/search', {
+      state: {
+        results: response.data,
+        searchQuery: trimmedQuery
       }
-  
-      // Navigate to search results page and pass search results
-      navigate('/search', { 
-        state: { 
-          posts: response.data, 
-          searchQuery: trimmedQuery,
-          isTagSearch: trimmedQuery.startsWith('#tag:')
-        } 
-      });
-  
-      setSearchTrait('');
-    } catch (error) {
-      console.error('Error searching posts:', error);
-  
-      // Handle different error scenarios
-      if (error.response?.status === 404) {
-        alert('No posts found');
-      } else {
-        alert('An error occurred while searching');
-      }
-    }
-  };
+    });
+    
+    setSearchTrait('');
+  } catch (error) {
+    console.error('Error searching:', error);
+    alert('An error occurred while searching');
+  }
+};
   
 
   return (
@@ -141,9 +127,9 @@ const Navigation = ({ setVisibility, setPadding,searchTrait,setSearchTrait, user
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
               <form onSubmit={handleSearch}>
                 <div className="w-full pl-10 pr-4 py-2 rounded-full bg-gray-100 focus-within:ring-2 focus-within:ring-cyan-500 focus-within:bg-white transition-colors flex items-center gap-2">
-                  {searchTrait.startsWith('#post:') && (
+                  {searchTrait.startsWith('#user:') && (
                     <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-sm whitespace-nowrap">
-                      #post:
+                      #user:
                     </span>
                   )}
                   {searchTrait.startsWith('#tag:') && (
@@ -156,7 +142,7 @@ const Navigation = ({ setVisibility, setPadding,searchTrait,setSearchTrait, user
                     placeholder="Search"
                     className="flex-1 bg-transparent focus:outline-none"
                     value={
-                      searchTrait.startsWith('#post:')
+                      searchTrait.startsWith('#user:')
                         ? searchTrait.slice(6)
                         : searchTrait.startsWith('#tag:')
                         ? searchTrait.slice(5)
@@ -168,10 +154,13 @@ const Navigation = ({ setVisibility, setPadding,searchTrait,setSearchTrait, user
                       if(input === '#'){
                         setShowDropdown(true);
                       }
+                      else{
+                        setShowDropdown(false);
+                      }
         
                       // If there's input and we have a prefix, append the input to the prefix
-                      if (searchTrait.startsWith('#post:')) {
-                        setSearchTrait('#post:' + input);
+                      if (searchTrait.startsWith('#user:')) {
+                        setSearchTrait('#user:' + input);
                       }
                       else if (searchTrait.startsWith('#tag:')) {
                         setSearchTrait('#tag:' + input);
@@ -184,7 +173,7 @@ const Navigation = ({ setVisibility, setPadding,searchTrait,setSearchTrait, user
                     onKeyDown={(e) => {
                       // Handle backspace when only prefix remains
                       if (e.key === 'Backspace' && 
-                          (searchTrait === '#post:' || searchTrait === '#tag:')) {
+                          (searchTrait === '#user:' || searchTrait === '#tag:')) {
                         setSearchTrait('');
                       }
                     }}
