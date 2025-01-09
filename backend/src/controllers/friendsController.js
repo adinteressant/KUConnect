@@ -188,6 +188,27 @@ export const acceptFriendRequest = async (req, res) => {
   }
 };
 
+export const unfriendUser = async (req, res) => {
+  const { sender_id, receiver_id } = req.body;
+  try {
+    const friendRequest = await FriendRequest.findOne({ $or: [
+      { sender_id, receiver_id },
+      { sender_id: receiver_id, receiver_id: sender_id },
+    ],}); 
+    if (!friendRequest) {
+      return res.status(404).json({ message: 'Friend request not found' });
+    }
+
+    await friendRequest.deleteOne(); 
+
+
+    res.status(200).json({ message: 'Successfully unfriended the user!' });
+  } catch (error) {
+    console.error('Error unfriending the user:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+}
+
 /**
  * Cancel a sent friend request
  */

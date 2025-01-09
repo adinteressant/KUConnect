@@ -38,8 +38,8 @@ const SearchPage = () => {
           <div className="bg-white p-4 rounded-lg shadow-md">
             <h2 className="text-lg font-medium text-gray-900">
               {searchResults.length > 0 
-                ? `${isTagSearch ? 'Tag search' : 'Search'} results for "${searchQuery}"`
-                : `No ${isTagSearch ? 'tags' : 'results'} found for "${searchQuery}"`}
+                ? `${isTagSearch ? 'Tag search' : 'Search'} results for "${searchQuery.replace('#tag:', '')}"`
+                : `No ${isTagSearch ? 'tags' : 'results'} found for "${searchQuery.replace('#tag:', '')}"`}
             </h2>
           </div>
 

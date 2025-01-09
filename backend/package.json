@@ -26,6 +26,7 @@
     "express": "^4.21.1",
     "express-session": "^1.18.1",
     "express-validator": "^7.2.0",
+    "fs": "^0.0.1-security",
     "i": "^0.3.7",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.8.3",
@@ -33,9 +34,14 @@
     "nodemailer": "^6.9.16",
     "passport": "^0.7.0",
     "passport-google-oauth2": "^0.2.0",
+<<<<<<< HEAD
     "socket.io": "^4.8.1",
     "uuid": "^11.0.3",
     "web-push": "^3.6.7",
     "wrtc": "^0.4.7"
+=======
+    "path": "^0.12.7",
+    "uuid": "^11.0.3"
+>>>>>>> 74d4aa2
   }
 }

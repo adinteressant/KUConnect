@@ -11,6 +11,7 @@ import {
   acceptFriendRequestfromProfile,
   denyFriendRequestfromProfile,
   cancelFriendRequestfromProfile,
+  unfriendUser,
 } from '../controllers/friendsController.js';
 import getProfileByUserId from '../middlewares/friendMiddleware.js';
 import authenticateJWT from '../middlewares/authenticateJWT.js';
@@ -22,6 +23,9 @@ router.get('/api/check-status', authenticateJWT, checkFriendRequestStatus);
 
 // Route to send a friend request
 router.post('/api/add-friend', authenticateJWT, sendFriendRequest);
+
+//Route to unfriend user
+router.post('/api/unfriend', authenticateJWT, unfriendUser)
 
 //Route to cancel friend request
 router.post('/api/cancel-request', authenticateJWT, cancelFriendRequest );

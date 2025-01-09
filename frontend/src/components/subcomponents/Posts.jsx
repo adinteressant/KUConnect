@@ -285,7 +285,7 @@ function Posts(props) {
               posts.map((post) => (
                 <div
                   key={post._id}
-                  className={`relative bg-white p-4 rounded-lg shadow-md mb-4 transition-all duration-300 ${
+                  className={`group/post relative bg-white p-4 rounded-lg shadow-md mb-4 transition-all duration-300 ${
                     post.isUpdating ? 'scale-105' : 'scale-100'
                   }`}
                 >
@@ -323,6 +323,14 @@ function Posts(props) {
                       Tags: {post.tags.join(', ')}
                     </div>
                   )}
+
+                  {/* Display Images */}
+                  {post > 0 &&
+                  (<div>
+                    <div>
+                    </div>
+                    <img />
+                  </div>)}
 
                   <hr className='absolute left-0 right-0 mt-4'/>
                   
@@ -490,8 +498,8 @@ function Posts(props) {
 
                   {/* Post Options */}
                   {(post.userId === userProfile.user_id) &&
-                    <div className='absolute top-3 right-3 flex flex-col items-end'>
-                      <button className='rounded-full p-1 transition-all duration-300 hover:bg-gray-100' onClick={() => setPostOptions((prev) => (prev===post._id)?'':post._id)}>
+                    <div className='absolute top-3 right-3 flex flex-col items-end' onMouseLeave={() => setPostOptions(() => '')}>
+                      <button className='hidden group-hover/post:block rounded-full p-1 transition-all duration-300 hover:bg-gray-100' onClick={() => setPostOptions((prev) => (prev===post._id)?'':post._id)}>
                         <svg width="16" height="16" viewBox="0 0 24 24" 
                           className = 'stroke-1 stroke-gray-600'>
                           <circle cx="12" cy="12" r="1"/>

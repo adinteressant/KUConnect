@@ -5,7 +5,9 @@ import axios from 'axios';
 
 const Navigation = ({ setVisibility, setPadding,searchTrait,setSearchTrait, userProfile,setUserProfile}) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem('isAuthenticated') == 'true');  
+  const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem('isAuthenticated') == 'true');
+  const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownOptions = ['#tag', '#post'];
   const navigate = useNavigate();
   let timeout = null;
   
@@ -137,18 +139,76 @@ const Navigation = ({ setVisibility, setPadding,searchTrait,setSearchTrait, user
           </Link>
 
           <div className="w-full max-w-md mx-32">
-            {/* Search Section */}
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-            <form onSubmit={handleSearch}>  
-            <input
-                type="text"
-                placeholder="Search"
-                className="w-full pl-10 pr-4 py-2 rounded-full bg-gray-100 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:bg-white transition-colors"
-                value={searchTrait}
-                onChange={(e)=>{setSearchTrait(e.target.value)}}
-              />
-            </form>
+              <form onSubmit={handleSearch}>
+                <div className="w-full pl-10 pr-4 py-2 rounded-full bg-gray-100 focus-within:ring-2 focus-within:ring-cyan-500 focus-within:bg-white transition-colors flex items-center gap-2">
+                  {searchTrait.startsWith('#post:') && (
+                    <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-sm whitespace-nowrap">
+                      #post:
+                    </span>
+                  )}
+                  {searchTrait.startsWith('#tag:') && (
+                    <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-sm whitespace-nowrap">
+                      #tag:
+                    </span>
+                  )}
+                  <input
+                    type="text"
+                    placeholder="Search"
+                    className="flex-1 bg-transparent focus:outline-none"
+                    value={
+                      searchTrait.startsWith('#post:')
+                        ? searchTrait.slice(6)
+                        : searchTrait.startsWith('#tag:')
+                        ? searchTrait.slice(5)
+                        : searchTrait
+                    }
+                    onChange={(e) => {
+                      const input = e.target.value;
+                      
+                      if(input === '#'){
+                        setShowDropdown(true);
+                      }
+        
+                      // If there's input and we have a prefix, append the input to the prefix
+                      if (searchTrait.startsWith('#post:')) {
+                        setSearchTrait('#post:' + input);
+                      }
+                      else if (searchTrait.startsWith('#tag:')) {
+                        setSearchTrait('#tag:' + input);
+                      }
+                      // Otherwise just set the input directly
+                      else {
+                        setSearchTrait(input);
+                      }
+                    }}
+                    onKeyDown={(e) => {
+                      // Handle backspace when only prefix remains
+                      if (e.key === 'Backspace' && 
+                          (searchTrait === '#post:' || searchTrait === '#tag:')) {
+                        setSearchTrait('');
+                      }
+                    }}
+                  />
+                </div>
+              </form>
+              {showDropdown && (
+                <div className="absolute left-0 top-12 bg-white border border-gray-200 rounded-lg shadow-lg w-full z-50">
+                  {dropdownOptions.map((option) => (
+                    <div
+                      key={option}
+                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-gray-700"
+                      onMouseDown={() => {
+                        setSearchTrait(option + ':');
+                        setShowDropdown(false);
+                      }}
+                    >
+                      {option}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 
