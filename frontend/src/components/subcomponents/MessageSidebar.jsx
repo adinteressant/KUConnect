@@ -10,17 +10,20 @@ export default function MessageSidebar() {
   const [initValue,setInitValue] = useState(0)
 
   const handleChange = (e) => {
-    setSearchValue(e.target.value)
-    if(!e.target.value){
-      setConvos(conversations)
-    }else{
-      const convos = conversations.filter((conversation) => {
-        return conversation.username.toLowerCase().includes(searchValue.toLowerCase())
-      })
-      setInitValue(1)
-      setConvos(convos)
+    const value = e.target.value; // Current input value
+    setSearchValue(value); // Update the search value state
+    if (!value) {
+      setConvos(conversations);
+    } else {
+      const filteredConvos = conversations.filter((conversation) =>
+        conversation.username.toLowerCase().includes(value.toLowerCase()) 
+      );
+      setInitValue(1);
+      setConvos(filteredConvos); 
     }
-  }
+  };
+  
+
   return (
     <div className="sticky bg-white">
       <div className="p-4 fixed h-screen">
