@@ -19,6 +19,7 @@ function Posts(props) {
     const [showCommentOverlay, setShowCommentOverlay] = useState('')
     const [overlayTransitionState, setOverlayTransitionState] = useState(false)
     const [postOptions, setPostOptions] = useState('')
+    const [confirmDeletePost, setConfirmDeletePost] = useState(false)
 
     useEffect(() => {
       fetch('/api/get-user-profile')
@@ -227,6 +228,24 @@ function Posts(props) {
         }, 300)
         setOverlayTransitionState(false)
         document.body.classList.toggle('overflow-hidden', false)
+    }
+
+    const openConfirmDeletePost = (post) =>
+    {
+      setConfirmDeletePost(() => post)
+      setTimeout(() => {
+          setOverlayTransitionState(true)
+      }, 1)
+      document.body.classList.toggle('overflow-hidden', true)
+    }
+
+    const closeConfirmDeletePost = () =>
+    {
+      setTimeout(() => {
+        setConfirmDeletePost(() => false)
+      }, 300)
+      setOverlayTransitionState(false)
+      document.body.classList.toggle('overflow-hidden', false)
     }
 
     const deletePost = async(post) =>
@@ -509,8 +528,14 @@ function Posts(props) {
                       
                       {postOptions === post._id &&
                         <div className='rounded-lg shadow-lg'>  
-                          <button onClick={() => deletePost(post)} className='flex items-center gap-2 rounded-lg p-2 text-red-400 hover:bg-gray-100 transition-all duration-300'>
-                            <svg className='stroke-red-400 fill-none stroke-2' width="20" height="20" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                          <button 
+                            onClick={() => openConfirmDeletePost(post)} 
+                            className='flex items-center gap-2 rounded-lg p-2 text-red-600 hover:bg-gray-100 transition-all duration-300'
+                          >
+                            <svg className='stroke-red-600 fill-none stroke-2' width="20" height="20" viewBox="0 0 24 24">
+                              <path d="M3 6h18"/>
+                              <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                            </svg>
                             <div>Delete</div>
                           </button>
                         </div>
@@ -526,9 +551,45 @@ function Posts(props) {
             )}
             </div>
           </div>
+
+          {/* Confirmation for deleting post */}
+          {confirmDeletePost && 
+          (<div className={`fixed inset-0 z-50
+                          flex items-center justify-center
+                          bg-black transition-all duration-300
+                          ${overlayTransitionState?'bg-opacity-50':'bg-opacity-0'}
+                          `}
+          >
+            <div className={`bg-white min-w-[320px] w-[40%] max-w-[580px] min-h-36 max-h-[400px] rounded-xl shadow-2xl
+                  transition-all duration-300
+                  ${overlayTransitionState?'opacity-100 scale-100':'opacity-0 scale-50'}
+                  flex flex-col justify-evenly p-2`}
+            >
+              <div className='m-3 mb-2 text-lg font-semibold'>
+                Delete Post
+              </div>
+              <hr/>
+              <div className='m-3 my-2'>
+                Once deleted, this post cannot be restored. Are you sure you want to delete it permanently?
+              </div>
+              <div className='flex justify-end gap-2 m-2'>
+                <button className='py-2 px-4 rounded-xl text-gray-600 hover:text-white bg-gray-200 hover:bg-gray-400'
+                  onClick={() => closeConfirmDeletePost()}>
+                  Cancel
+                </button>
+                <button className='py-2 px-4 rounded-xl text-white bg-red-600 hover:bg-red-700'
+                  onClick={() => {
+                    deletePost(confirmDeletePost)
+                    closeConfirmDeletePost()
+                  }}>
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>)}
           {/* Like Overlay */}
           {showLikeOverlay &&
-              (<div className={`w-screen h-screen fixed inset-0 z-50
+              (<div className={`fixed inset-0 z-50
                             flex items-center justify-center
                             bg-black transition-all duration-300
                             ${overlayTransitionState?'bg-opacity-50':'bg-opacity-0'}

@@ -209,6 +209,7 @@ export const deletePost = async(req, res) => {
       ); 
       console.log("Decremented by 1!");
           }
+        }
 
     const [deletedPost] = await Promise.all([
       Post.findByIdAndDelete(post._id),
@@ -228,7 +229,6 @@ export const deletePost = async(req, res) => {
     }
 
     return res.status(200).json({ message: 'Post deleted successfully' , deletedPost })
-  }
   }
   catch(error)
   {

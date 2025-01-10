@@ -27,7 +27,6 @@
     "react-dom": "^18.3.1",
     "react-router-dom": "^7.0.1",
     "react-webcam": "^7.2.0",
-    "zustand": "^5.0.2",
     "workbox-background-sync": "^6.4.2",
     "workbox-broadcast-update": "^6.4.2",
     "workbox-cacheable-response": "^6.4.2",
@@ -39,7 +38,8 @@
     "workbox-range-requests": "^6.4.2",
     "workbox-routing": "^6.4.2",
     "workbox-strategies": "^6.4.2",
-    "workbox-streams": "^6.4.2"
+    "workbox-streams": "^6.4.2",
+    "zustand": "^5.0.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.13.0",
