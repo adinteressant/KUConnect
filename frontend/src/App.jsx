@@ -36,7 +36,7 @@ export default function App() {
 
         {/* Content Area */}
         <div className={`flex-grow pt-14 ${paddingValue}`}>
-          <Outlet context={{ searchTrait, setSearchTrait ,userPosts,setUserPosts,userProfile,setUserProfile}} />
+          <Outlet context={{ searchTrait, setSearchTrait ,userPosts,setUserPosts,userProfile,setUserProfile,setIsSidebarVisible}} />
         </div>
       </div>
     </>

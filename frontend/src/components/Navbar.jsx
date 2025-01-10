@@ -7,6 +7,7 @@ const Navigation = ({ setVisibility, setPadding,searchTrait,setSearchTrait, user
   const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem('isAuthenticated') == 'true');
   const [showDropdown, setShowDropdown] = useState(false);
   const [dropdownOptions, setDropdownOptions] = useState(['#tag', '@user'])
+  //const dropdownOptions = ['#tag', '@user'];
   const navigate = useNavigate();
   let timeout = null;
   
@@ -167,17 +168,13 @@ const Navigation = ({ setVisibility, setPadding,searchTrait,setSearchTrait, user
                     onChange={(e) => {
                       const input = e.target.value;
 
-                      if(input === ''){
-                        setShowDropdown(true);
-                        setDropdownOptions(['#tag'], ['@user']);
+                      if(input === '#'){
+                        setShowDropdown(true)
+                        setDropdownOptions(['#tag']); // Only show tag option
                       }
-                      else if (input.startsWith('#') && input !== '#tag:') {
+                      else if (input === '@') {
                         setShowDropdown(true);
-                        setDropdownOptions(['#tag']);
-                      } 
-                      else if (input.startsWith('@') && input !== '@user:') {
-                        setShowDropdown(true);
-                        setDropdownOptions(['@user']);
+                        setDropdownOptions(['@user']); // Only show user option
                       }
                       else {
                         setShowDropdown(false);
@@ -202,8 +199,7 @@ const Navigation = ({ setVisibility, setPadding,searchTrait,setSearchTrait, user
                       if (e.key === 'Backspace' && 
                           (searchTrait === '@user:' || searchTrait === '#tag:')) {
                         setSearchTrait('');
-                        setShowDropdown(true)
-                        setDropdownOptions(['#tag', '@user'])
+                        setShowDropdown(false)
                       }
                     }}
                   />

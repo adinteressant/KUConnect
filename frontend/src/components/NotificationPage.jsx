@@ -6,7 +6,7 @@ import { useOutletContext } from 'react-router-dom';
 const NotificationPage = () => {
   const [userProfiletags, setUserProfile] = useState({tags:[]});
   const {userProfile, setUserProfile:setUserProfileFunc} = useOutletContext();
-  
+  const [incomingRequests,setIncomingRequests] = useState([]);
   const {userPosts, setUserPosts} = useOutletContext()
   const [userFilteredPosts, setFilteredPosts] = useState([]);
 
@@ -60,6 +60,24 @@ const NotificationPage = () => {
 
     fetchPosts();
   }, []);
+
+  useEffect(() => {
+    const fetchIncomingRequests = async () => {
+      try {
+        const res = await axios.get(`/api/view-incoming-requests?user_id=${userProfile.user_id}`, {withCredentials:true});
+        console.log(res.data);
+        const res_data = res.data.incoming.length?res.data.incoming:[];
+        setIncomingRequests(res_data);
+        console.log("Incoming Requests for:",userProfile.user_id,incomingRequests);
+      } catch (error) {
+        if (error.name !== 'AbortError') {
+          console.error('Error fetching posts:', error);
+        }
+      }
+    };
+    fetchIncomingRequests();
+  }, []);
+
 
   // Filter posts based on tags
   useEffect(() => {

@@ -19,7 +19,8 @@ import SearchPage from './components/SearchPage.jsx'
 import SearchResults from './components/SearchResults.jsx'
 import VideoCall from './components/VideoCall.jsx'
 import PushNotification from './components/pushNotifications.jsx'
-
+import LandingPage from './components/LandingPage.jsx'
+ 
 const router = createBrowserRouter([
   {
     path : '/',
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
     children:[
       {
         path:'/',
+        element: <LandingPage/>
+      },
+      {
+        path:'/home',
         element: <HomePage/>
       },
       {
