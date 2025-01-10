@@ -15,7 +15,7 @@ export default function App() {
 
   useEffect(() => {
     // Hide sidebar for login and register pages
-    if (location.pathname === "/login" || location.pathname === "/register" || location.pathname.startsWith("/verifyotp")) {
+    if (location.pathname==="/" ||location.pathname === "/login" || location.pathname === "/register" || location.pathname.startsWith("/verifyotp")) {
       setIsSidebarVisible(false);
       setPaddingValue("");
     } else {
@@ -27,7 +27,7 @@ export default function App() {
   return (
     <>
       {/* Navbar */}
-      <Navbar setVisibility={setIsSidebarVisible} setPadding={setPaddingValue} searchTrait={searchTrait} setSearchTrait={setSearchTrait} userProfile={userProfile} setUserProfile={setUserProfile}/>
+    {isSidebarVisible&&<Navbar setVisibility={setIsSidebarVisible} setPadding={setPaddingValue} searchTrait={searchTrait} setSearchTrait={setSearchTrait} userProfile={userProfile} setUserProfile={setUserProfile}/>}
 
       {/* Main Layout */}
       <div className="flex h-screen bg-gray-100">
