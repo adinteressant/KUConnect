@@ -30,7 +30,7 @@ import { setUserInfo } from '../controllers/setUserInfo.js'
   router.get('/api/auth/google',(req,res,next)=>{
     frontendPort = req.query.port
     next()
-  },passport.authenticate('google',{failureRedirect:`http://localhost:${frontendPort}`}))
+  },passport.authenticate('google',{failureRedirect:`http://localhost:${frontendPort}/login`}))
   
 router.get('/api/google/callback',passport.authenticate('google',{
   failureRedirect:`http://localhost:5173/login`,
@@ -44,7 +44,7 @@ router.get('/api/google/callback',passport.authenticate('google',{
       return res.redirect(`http://localhost:${frontendPort}/set-google-profile?email=${email}`)
     }
 
-    return res.redirect(`http://localhost:${frontendPort}`);  
+    return res.redirect(`http://localhost:${frontendPort}/home`);  
   }
 )
 

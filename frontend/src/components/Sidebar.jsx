@@ -61,7 +61,7 @@ export default function Sidebar({userProfile,setUserProfile}) {
       <nav>
         <ul className="space-y-2">
           <li>
-            <NavLink to="/" className={({ isActive }) => 
+            <NavLink to="/home" className={({ isActive }) => 
               `${isActive ? 'bg-gray-200' : 'bg-white'}
               flex items-center p-2 hover:bg-gray-200 rounded-lg cursor-pointer transition-all`
             }>

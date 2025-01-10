@@ -27,6 +27,8 @@ export default {
       }
     },
   },
-  plugins: [],
+  plugins: [
+    require("tailwind-animation-delay"),
+  ],
 }
 
