@@ -94,6 +94,7 @@ const Navigation = ({ setVisibility, setPadding,searchTrait,setSearchTrait, user
     let response;
     if (trimmedQuery.startsWith('@user:')) {
       response = await axios.get(`/api/users/search?query=${trimmedQuery.replace('@user:', '')}`);
+      console.log(response)
     } else if (trimmedQuery.startsWith('#tag:')) {
       response = await axios.get(`/api/posts/search/tag?query=${trimmedQuery.replace('#tag:', '')}`);
     } else {

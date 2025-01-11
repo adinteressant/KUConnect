@@ -63,7 +63,7 @@ const SearchPage = () => {
       </div>
 
       {isUserSearch ? (
-        <UserSearchResults results={searchResults} />
+        <UserSearchResults users={searchResults} />
       ) : (
         searchResults.length > 0 && (
           <Posts posts={searchResults} />
