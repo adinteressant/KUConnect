@@ -410,16 +410,16 @@ function Posts(props) {
 
                   {/* Display Images */}
                   {post.images.length > 0 &&
-                    <div className='mt-2 relative flex justify-center items-center group/image'>
+                    <div className='mt-2 relative group/image'>
                       
                       <img 
                         onClick={() => openImageOverlay(post._id.toString(), displayImage.find(i => i.postId === post._id).image)} 
                         src={`/api/post/${post._id.toString()}/${displayImage.find(i => i.postId === post._id).image}`}
-                        className='rounded-lg cursor-pointer'
+                        className='rounded-lg cursor-pointer min-w-[100%] max-h-[500px] object-cover'
                       />
                       
                       {post.images.length > 1 &&
-                      (<div className='absolute bottom-0 w-full h-12 bg-black bg-opacity-40 opacity-0 rounded-lg flex justify-center items-center group-hover/image:opacity-80 transition-all duration-300'>
+                      (<div className='absolute bottom-0 w-full h-12 bg-black bg-opacity-40 opacity-0 rounded-b-lg flex justify-center items-center group-hover/image:opacity-80 transition-all duration-300'>
                         
                         <button 
                           disabled={displayImage.find(i => i.postId === post._id).num===0}
@@ -621,7 +621,7 @@ function Posts(props) {
                   {/* Post Options */}
                   {(post.userId === userProfile.user_id) &&
                     <div className='absolute top-3 right-3 flex flex-col items-end' onMouseLeave={() => setPostOptions(() => '')}>
-                      <button className='hidden group-hover/post:block rounded-full p-1 transition-all duration-300 hover:bg-gray-100' onClick={() => setPostOptions((prev) => (prev===post._id)?'':post._id)}>
+                      <button className='opacity-0 group-hover/post:opacity-100 rounded-full p-1 transition-all duration-300 hover:bg-gray-100' onClick={() => setPostOptions((prev) => (prev===post._id)?'':post._id)}>
                         <svg width="16" height="16" viewBox="0 0 24 24" 
                           className = 'stroke-1 stroke-gray-600'>
                           <circle cx="12" cy="12" r="1"/>
@@ -630,9 +630,10 @@ function Posts(props) {
                         </svg>
                       </button>
                       
-                      {postOptions === post._id &&
-                        <div className='rounded-lg shadow-lg'>  
-                          <button 
+                      {
+                        <div className={`rounded-lg shadow-lg transition-all duration-300 ${postOptions === post._id?'opacity-100':'opacity-0'}`}>  
+                          <button
+                            disabled={postOptions!==post._id}
                             onClick={() => openConfirmDeletePost(post)} 
                             className='flex items-center gap-2 rounded-lg p-2 text-red-600 hover:bg-gray-100 transition-all duration-300'
                           >
