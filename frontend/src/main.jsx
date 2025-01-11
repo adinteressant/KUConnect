@@ -20,6 +20,7 @@ import SearchResults from './components/SearchResults.jsx'
 import VideoCall from './components/VideoCall.jsx'
 import PushNotification from './components/pushNotifications.jsx'
 import LandingPage from './components/LandingPage.jsx'
+import SpecificPost from './components/subcomponents/SpecificPost.jsx'
  
 const router = createBrowserRouter([
   {
@@ -69,6 +70,10 @@ const router = createBrowserRouter([
       {
         path:'/:username',
         element:<ProfilePage/>
+      },
+      {
+        path:'/post/:postId',
+        element:<SpecificPost/>
       },
       {
         path:'/results',

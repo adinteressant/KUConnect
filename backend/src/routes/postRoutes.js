@@ -1,5 +1,5 @@
 import express from 'express';
-import { createPost, getAllPosts, getImage, sharePost, searchPostsByTag, userPosts,  searchPostsByContent, deletePost } from '../controllers/postController.js';
+import { createPost, getAllPosts, getImage, sharePost, searchPostsByTag, userPosts, getSpecificPost,  searchPostsByContent, deletePost } from '../controllers/postController.js';
 import { upload, validatePost, validatePostDeletion } from '../middlewares/postMiddleware.js';
 import generateFolderName from '../utils/generateFolderName.js';
 
@@ -22,6 +22,9 @@ router.get('/api/posts/search/content', searchPostsByContent)
 
 // Search a post by tags
 router.get('/api/posts/search/tag', searchPostsByTag);
+
+//To get specific post
+router.get('/api/post/:postId', getSpecificPost)
 
 //To get posts of specific user
 router.get('/api/posts/user/:userId/get-user-posts', userPosts)

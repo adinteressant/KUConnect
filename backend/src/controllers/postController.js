@@ -22,6 +22,26 @@ export const getAllPosts = async (req, res) => {
   }
 }
 
+export const getSpecificPost = async(req, res) => {
+  try
+  {
+    const postId = req.params.postId
+    const post = await Post.findById(postId)
+
+    if(!post)
+    {
+      return res.status(404).json({ message: 'Post not found' })
+    }
+    
+    return res.status(200).json({ message: 'Post found' , post: [post] })
+  }
+  catch(error)
+  {
+    console.error('Error fetching post:', error)
+    res.status(500).json({ message: 'Error in fetching the post', error })
+  }
+}
+
 // Create a new post
 export const createPost = async (req, res) => {
   const content = req.body.content
