@@ -10,7 +10,7 @@ import { useOutletContext } from 'react-router-dom'
 
 function Posts(props) {
 
-    const {userProfile, setUserProfile} = useOutletContext();
+    const {userProfile, setUserProfile} = useOutletContext()
     const [posts, setPosts] = useState([])
     const [likedPosts, setLikedPosts] = useState([])
     const [liked, setLiked] = useState('false')
@@ -20,21 +20,25 @@ function Posts(props) {
     const [overlayTransitionState, setOverlayTransitionState] = useState(false)
     const [postOptions, setPostOptions] = useState('')
     const [confirmDeletePost, setConfirmDeletePost] = useState(false)
+    const [displayImage, setDisplayImage] = useState([])
+    const [viewImage, setViewImage] = useState(false)
 
     useEffect(() => {
       fetch('/api/get-user-profile')
         .then((response) => response.json())
         .then((data) => {
-          setUserProfile(data);
+          setUserProfile(data)
         })
         .catch((e) => {
-          console.error('Error fetching user profile:', e);
-        });
-    }, []);
+          console.error('Error fetching user profile:', e)
+        })
+    }, [])
 
-    //For separate comments for separate posts
+    //For separate comments and images for separate posts
     useEffect(() => {
+      
       setPosts(() => props.posts)
+
       const updatedArray = props.posts.map((p) => {
           const alreadyExists = showCommentBox.find((c) => c.postId === p._id)
           if(alreadyExists)
@@ -47,6 +51,24 @@ function Posts(props) {
           }
       })
       setShowCommentBox(() => updatedArray)
+      
+      const displayImageArray = props.posts.map((p) => {
+        const alreadyObjExists = displayImage.find((i) => i.postId === p._id)
+        if(alreadyObjExists)
+        {
+          return alreadyObjExists
+        }
+        else
+        {  
+          return {
+            postId: p._id,
+            image: p.images[0] || '',
+            num: 0
+          }
+        }
+      })
+      setDisplayImage(() => displayImageArray)
+
     }, [props.posts])
 
     //Fetch user liked posts data
@@ -57,15 +79,15 @@ function Posts(props) {
             setLikedPosts(() => data.likedPosts)
         })
         .catch((e) => {
-            console.error('Error fetching liked posts:', e);
-        });
+            console.error('Error fetching liked posts:', e)
+        })
     }, [userProfile, liked])
 
     //Handle like in post
     const handleLike = async(post) => {
         if (!userProfile) {
-            alert('You must be logged in to like the post.');
-            return;
+            alert('You must be logged in to like the post.')
+            return
         }
     
         try {
@@ -133,8 +155,8 @@ function Posts(props) {
     const handleNewComment = async(post) =>
     {
         if (!userProfile) {
-        alert('You must be logged in to comment on the post.');
-        return;
+        alert('You must be logged in to comment on the post.')
+        return
         }
         
         try {
@@ -220,7 +242,7 @@ function Posts(props) {
             setOverlayTransitionState(true)
         }, 1)
     }
-    
+
     const closeCommentOverlay = () =>
     {
         setTimeout(() => {
@@ -228,6 +250,49 @@ function Posts(props) {
         }, 300)
         setOverlayTransitionState(false)
         document.body.classList.toggle('overflow-hidden', false)
+    }
+
+    const prevImage = (post) => {
+      setDisplayImage((prev) => prev.map((i) => {
+        if(i.postId === post._id)
+        {
+          return {...i, image:post.images[i.num-1], num:i.num-1}
+        }
+        else
+        {
+          return i
+        }
+      }))
+    }
+
+    const nextImage = (post) => {
+      setDisplayImage((prev) => prev.map((i) => {
+        if(i.postId === post._id)
+        {
+          return {...i, image:post.images[i.num+1], num:i.num+1}
+        }
+        else
+        {
+          return i
+        }
+      }))
+    }
+
+    const openImageOverlay = (postId, image) => {
+      const obj = {postId, image}
+      setViewImage(() => obj)
+      setTimeout(() => {
+          setOverlayTransitionState(true)
+      }, 1)
+      document.body.classList.toggle('overflow-hidden', true)
+    }
+
+    const closeImageOverlay = () => {
+      setTimeout(() => {
+        setViewImage(() => false)
+      }, 300)
+      setOverlayTransitionState(false)
+      document.body.classList.toggle('overflow-hidden', false)
     }
 
     const openConfirmDeletePost = (post) =>
@@ -276,13 +341,13 @@ function Posts(props) {
               p._id !== deletedPost.deletedPost._id
             )
           )
-          console.log(deletedPost+ "Unread Count!:"+userProfile.unread_count);
+          console.log(deletedPost+ "Unread Count!:"+userProfile.unread_count)
           deletedPost.deletedPost.tags.forEach(e => {
             if (userProfile.tags.includes(e) && userProfile.unread_count>0){
-              userProfile.unread_count--;
-              return;
+              userProfile.unread_count--
+              return
             } 
-          });
+          })
         }
         else
         {
@@ -344,11 +409,50 @@ function Posts(props) {
                   )}
 
                   {/* Display Images */}
-                  {post.images.length > 0 && post.images.map((imageName, index) => 
-                    <div key={index} className='mt-2 flex'>
-                      <img src={`/api/post/${post._id.toString()}/${imageName}`} className='rounded-lg'/>
-                    </div>
-                  )}
+                  {post.images.length > 0 &&
+                    <div className='mt-2 relative flex justify-center items-center group/image'>
+                      
+                      <img 
+                        onClick={() => openImageOverlay(post._id.toString(), displayImage.find(i => i.postId === post._id).image)} 
+                        src={`/api/post/${post._id.toString()}/${displayImage.find(i => i.postId === post._id).image}`}
+                        className='rounded-lg cursor-pointer'
+                      />
+                      
+                      {post.images.length > 1 &&
+                      (<div className='absolute bottom-0 w-full h-12 bg-black bg-opacity-40 opacity-0 rounded-lg flex justify-center items-center group-hover/image:opacity-80 transition-all duration-300'>
+                        
+                        <button 
+                          disabled={displayImage.find(i => i.postId === post._id).num===0}
+                          onClick={() => prevImage(post)}
+                          className='disabled:opacity-0'
+                        >
+                          <svg width="20" height="20" viewBox="0 0 24 24"
+                            className='fill-none stroke-2 stroke-white hover:stroke-cyan-600 transition-all duration-300'
+                          >
+                            <path d="m15 18-6-6 6-6"/>
+                          </svg>
+                        </button>
+                        
+                        <div className='text-white text-sm'>
+                          {displayImage.find(i => i.postId === post._id).num+1} / {post.images.length}
+                        </div>
+                        
+                        <button 
+                          disabled={displayImage.find(i => i.postId === post._id).num===(post.images.length-1)}
+                          onClick={() => nextImage(post)}
+                          className='disabled:opacity-0'
+                        >
+                          <svg width="20" height="20" viewBox="0 0 24 24"
+                            className='fill-none stroke-2 stroke-white hover:stroke-cyan-600 transition-all duration-300'
+                          >
+                            <path d="m9 18 6-6-6-6"/>
+                          </svg>
+                        </button>
+
+                      </div>)}
+
+                    </div> 
+                  }
 
                   <hr className='absolute left-0 right-0 mt-4'/>
                   
@@ -587,6 +691,33 @@ function Posts(props) {
               </div>
             </div>
           </div>)}
+
+          {/* Image Overlay */}
+          {viewImage &&
+          (<div className={`fixed inset-0 z-50
+              flex items-center justify-center
+              bg-black transition-all duration-300
+              ${overlayTransitionState?'bg-opacity-50':'bg-opacity-0'}
+              `}      
+              onClick={closeImageOverlay}
+          >
+            <img src={`/api/post/${viewImage.postId}/${viewImage.image}`}
+                onClick={(e) => e.stopPropagation()}
+                className={`max-w-[80%] max-h-[80%]
+                  rounded-lg shadow-2xl
+                  transition-all duration-300
+                  ${overlayTransitionState?'opacity-100 scale-100':'opacity-0 scale-50'}
+                  `}
+            />
+            <button className={`absolute right-4 top-4 p-2 rounded-full bg-black bg-opacity-30 hover:bg-opacity-50 transition-all duration-300 ${overlayTransitionState?'opacity-100 scale-100':'opacity-0 scale-50'}`}>
+              <svg width='20' height='20' viewBox='0 0 24 24'
+                    className='stroke-gray-100 fill-none'
+              >
+                <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+              </svg>
+            </button>
+          </div>)}
+
           {/* Like Overlay */}
           {showLikeOverlay &&
               (<div className={`fixed inset-0 z-50
@@ -643,7 +774,7 @@ function Posts(props) {
               </div>
             )}
         </div>
-    );
+    )
 }
 
 export default Posts

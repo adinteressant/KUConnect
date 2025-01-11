@@ -226,60 +226,63 @@ const HomePage = () => {
                 onBlur={handleTextareaBlur}
               />
 
-              <div className={`flex flex-col transition-all duration-500 overflow-y-auto ease-in-out ${isTextareaFocused || isTagsInputFocused || content.trim() || tagValue.trim() || tagList.length>0 || images.length>0 ? 'opacity-100 max-h-screen' : 'opacity-0 max-h-0'}`}>
-                <input
-                  type="text"
-                  placeholder="Add tags (space-separated)"
-                  className="mt-4 flex-1 p-2 border rounded-lg bg-gray-100 focus:m-1 focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-600 transition-all duration-300"
-                  value={tagValue}
-                  onChange={handleTagInputChange}
-                  onKeyDown={handleTagInputKeyDown}
-                  onFocus={handleTagsInputFocus}
-                  onBlur={handleTagsInputBlur}
-                />
-                <div className="mt-2 flex flex-wrap gap-2">
-                  {tagList.map((tag, index) => (
-                    <span
-                      key={index}
-                      className="bg-cyan-100 text-cyan-800 px-2 py-1 rounded-full text-sm"
-                    >
-                      {tag}
-                    </span>
-                  ))}
+              <div className={`transition-all duration-1000 overflow-y-auto ease-in-out ${isTextareaFocused || isTagsInputFocused || content.trim() || tagValue.trim() || tagList.length>0 || images.length>0 ? 'opacity-100 max-h-screen' : 'opacity-0 max-h-0'}`}>
+                {/*Tag Input Section*/}
+                <div className='flex flex-col'>
+                  <input
+                    type="text"
+                    placeholder="Add tags (space-separated)"
+                    className="mt-4 flex-1 p-2 border rounded-lg bg-gray-100 focus:m-1 focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-600 transition-all duration-300"
+                    value={tagValue}
+                    onChange={handleTagInputChange}
+                    onKeyDown={handleTagInputKeyDown}
+                    onFocus={handleTagsInputFocus}
+                    onBlur={handleTagsInputBlur}
+                  />
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {tagList.map((tag, index) => (
+                      <span
+                        key={index}
+                        className="bg-cyan-100 text-cyan-800 px-2 py-1 rounded-full text-sm"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
                 </div>
-              </div>
-              
-              {/* Images Upload Section */}
-              <div className={`transition-all duration-300 ${isTextareaFocused || isTagsInputFocused || content.trim() || tagValue.trim() || tagList.length>0 || images.length>0 ? 'opacity-100 max-h-screen mt-4' : 'opacity-0 max-h-0 mt-0'}`}>
-                <input
-                  type = 'file'
-                  accept = 'image/*'
-                  multiple
-                  onChange = {(e) => handleImageChange(e)}
-                  className = 'hidden'
-                  id = 'image-upload'
-                />
-                <div className = 'flex flex-wrap gap-2'>
-                  {images.map((image, index) => (
-                    <div key={index} className='relative'>
-                      <img src={URL.createObjectURL(image)} alt='Preview' className='w-20 h-20 object-cover rounded-lg'/>
-                      <button onClick={() => handleImageRemove(index)} className='p-0.5 absolute top-0 right-0 rounded-full bg-red-500 hover:bg-red-600 transition-all duration-300'>
-                        <svg width='12' height='12' viewBox='0 0 24 24'
-                          className='stroke-2 stroke-gray-100'
-                        >
-                          <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
-                        </svg>
-                      </button>
-                    </div>))
-                  }
-                  {images.length >= 10 || 
-                  (<label
-                    htmlFor='image-upload'
-                    className = 'group/uploadimg flex flex-col items-center justify-center text-center w-20 h-20 rounded-lg text-sm border-dashed border-2 border-gray-400 text-gray-400 hover:text-cyan-600 hover:border-cyan-600 cursor-pointer transition-all duration-300'
-                  >
-                    Upload Images
-                  </label>)
-                  }                
+                
+                {/* Images Upload Section */}
+                <div className='mt-4'>
+                  <input
+                    type = 'file'
+                    accept = 'image/*'
+                    multiple
+                    onChange = {(e) => handleImageChange(e)}
+                    className = 'hidden'
+                    id = 'image-upload'
+                  />
+                  <div className = 'flex flex-wrap gap-2'>
+                    {images.map((image, index) => (
+                      <div key={index} className='relative'>
+                        <img src={URL.createObjectURL(image)} alt='Preview' className='w-20 h-20 object-cover rounded-lg'/>
+                        <button onClick={() => handleImageRemove(index)} className='p-0.5 absolute top-0 right-0 rounded-full bg-red-600 hover:bg-red-700 transition-all duration-300'>
+                          <svg width='12' height='12' viewBox='0 0 24 24'
+                            className='stroke-2 stroke-gray-100'
+                          >
+                            <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+                          </svg>
+                        </button>
+                      </div>))
+                    }
+                    {images.length >= 10 || 
+                    (<label
+                      htmlFor='image-upload'
+                      className = 'flex flex-col items-center justify-center text-center w-20 h-20 rounded-lg text-sm border-dashed border-2 border-gray-400 text-gray-400 hover:text-cyan-600 hover:border-cyan-600 cursor-pointer transition-all duration-300'
+                    >
+                      Upload Images
+                    </label>)
+                    }                
+                  </div>
                 </div>
               </div>
               
