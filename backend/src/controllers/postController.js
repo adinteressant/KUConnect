@@ -154,25 +154,33 @@ export const searchPostsByContent = async (req, res) => {
 
 export const searchPostsByTag = async (req, res) => {
   try {
-    const { query } = req.query
+    const { query } = req.query;
+    
+    console.log('Received query:', query);
 
-  console.log('Received query: ', query)
+    if (!query) {
+      return res.status(400).json({ message: 'Query parameter is required' });
+    }
 
-  if (!query) {
-    return res.status(400).json({ message: 'Query parameter is required' })
-  }
-  
+    // Split the query into individual tags and clean them
+    const tags = query
+      .split(/[,\s]+/)
+      .filter(tag => tag.length > 0)
+      .map(tag => new RegExp(tag, 'i'));
+
+    // Use $all to match posts that contain all specified tags
     const posts = await Post.find({
-      tags: { $regex: query, $options: 'i' }, // Case-insensitive partial match for tags
-    })
+      tags: { $all: tags }
+    });
 
-    res.status(200).json(posts)
+    console.log('Found posts:', posts.length);
+    res.status(200).json(posts);
+    
   } catch (error) {
-    console.error('Error searching posts by content:', error)
-    res.status(500).json({ message: 'Server error while searching posts' })
+    console.error('Error searching posts by tags:', error);
+    res.status(500).json({ message: 'Server error while searching posts' });
   }
-}
-
+};
 
 
 export const userPosts = async(req, res) => {

@@ -11,51 +11,72 @@ const SearchPage = () => {
   const isUserSearch = searchQuery.startsWith('@user:');
   const isTagSearch = searchQuery.startsWith('#tag:');
 
+  // Function to extract multiple tags from the search query
+  const extractTags = (query) => {
+    const tagString = query.replace('#tag:', '').trim();
+    // Split by commas or spaces, filter out empty strings, and trim whitespace
+    return tagString.split(/[,\s]+/).filter(tag => tag.length > 0);
+  };
+
   const fuse = new Fuse(results, {
     keys: isTagSearch ? ['tags'] : ['content', 'tags', 'username'],
-    threshold: 0.3,
-    includeScore: true
+    threshold: 0.9,
+    includeScore: true,
+    // Enable AND logic for matching all tags
+    useExtendedSearch: true
   });
 
   let searchResults;
   if (isUserSearch) {
     searchResults = results; // Direct results from user search API
   } else if (isTagSearch) {
-    const tagQuery = searchQuery.replace('#tag:', '').trim();
-    searchResults = tagQuery 
-      ? fuse.search(tagQuery).map(result => result.item)
-      : results.filter(post => post.tags.length > 0);
+    const tags = extractTags(searchQuery);
+    
+    if (tags.length > 0) {
+      // Filter posts that contain ALL specified tags
+      searchResults = results.filter(post => 
+        tags.every(tag => 
+          post.tags.some(postTag => 
+            postTag.toLowerCase().includes(tag.toLowerCase())
+          )
+        )
+      );
+    } else {
+      searchResults = results.filter(post => post.tags.length > 0);
+    }
   } else {
-    searchResults = searchQuery 
+    searchResults = searchQuery
       ? fuse.search(searchQuery).map(result => result.item)
       : results;
-      console.log(searchResults)
   }
 
   return (
-    <div className="flex-1 flex flex-col min-h-screen bg-gray-100">
-      <main className="flex-1 p-6 overflow-y-auto">
-        <div className="max-w-2xl mx-auto space-y-4">
-          <div className="bg-white p-4 rounded-lg shadow-md">
-            <h2 className="text-lg font-medium text-gray-900">
-              {isUserSearch 
-                ? `User results for "${searchQuery.replace('@user:', '')}"` 
-                : isTagSearch 
-                  ? `Tag search results for "${searchQuery.replace('#tag:', '')}"` 
-                  : `Search results for "${searchQuery}"`}
-            </h2>
-          </div>
+    <div className="container mx-auto px-4 py-8">
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold">
+          {isUserSearch 
+            ? `User results for "${searchQuery.replace('@user:', '')}"` 
+            : isTagSearch
+              ? `Tag search results for "${searchQuery.replace('#tag:', '').split(/[,\s]+/).join(', ')}"` 
+              : `Search results for "${searchQuery}"`}
+        </h1>
+      </div>
 
-          {isUserSearch ? (
-            <UserSearchResults users={searchResults} />
-          ) : (
-            searchResults.length > 0 && (
-              <Posts posts={searchResults} setPosts={() => {}} />
-            )
-          )}
+      {isUserSearch ? (
+        <UserSearchResults results={searchResults} />
+      ) : (
+        searchResults.length > 0 && (
+          <Posts posts={searchResults} />
+        )
+      )}
+
+      {searchResults.length === 0 && (
+        <div className="text-center text-gray-600">
+          No results found
         </div>
-      </main>
+      )}
     </div>
   );
 };
+
 export default SearchPage;
