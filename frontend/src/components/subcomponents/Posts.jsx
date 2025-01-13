@@ -592,17 +592,9 @@ function Posts(props) {
                   </div>
 
                   {/* Post Options */}
-                  <div className='absolute top-3 right-3 flex flex-col items-end' onMouseLeave={() => setPostOptions(() => '')}>
-                    <button className='opacity-0 group-hover/post:opacity-100 rounded-full p-1 transition-all duration-300 hover:bg-gray-100' onClick={() => setPostOptions((prev) => (prev===post._id)?'':post._id)}>
-                      <svg width="16" height="16" viewBox="0 0 24 24" 
-                        className = 'stroke-1 stroke-gray-600'>
-                        <circle cx="12" cy="12" r="1"/>
-                        <circle cx="19" cy="12" r="1"/>
-                        <circle cx="5" cy="12" r="1"/>
-                      </svg>
-                    </button>
+                  <div className='absolute top-3 right-3 flex items-start' onMouseLeave={() => setPostOptions(() => '')}>
                     
-                    <div className={`rounded-lg shadow-2xl bg-gray-100 transition-all duration-300 overflow-hidden ${postOptions === post._id?'opacity-100 max-h-screen':'opacity-0 max-h-0'}`}>  
+                    <div className={`rounded-lg shadow-2xl bg-gray-100 border border-gray-200 transition-all duration-300 overflow-hidden ${postOptions === post._id?'opacity-100 max-h-screen':'opacity-0 max-h-0'}`}>  
                       {useParams().postId===post._id ||
                       (<div>
                         <Link
@@ -667,6 +659,15 @@ function Posts(props) {
                         </button>
                       </div>}
                     </div>
+
+                    <button className='opacity-0 group-hover/post:opacity-100 rounded-full p-1 transition-all duration-300 hover:bg-gray-100' onClick={() => setPostOptions((prev) => (prev===post._id)?'':post._id)}>
+                      <svg width="16" height="16" viewBox="0 0 24 24" 
+                        className = 'stroke-1 stroke-gray-600'>
+                        <circle cx="12" cy="12" r="1"/>
+                        <circle cx="19" cy="12" r="1"/>
+                        <circle cx="5" cy="12" r="1"/>
+                      </svg>
+                    </button>
                   </div>
                   
                 </div>
