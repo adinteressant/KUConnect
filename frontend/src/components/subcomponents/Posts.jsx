@@ -106,19 +106,8 @@ function Posts(props) {
                     )
                 )
 
-               setPosts((prevPosts) => 
-                  prevPosts.map((p) =>
-                      p._id === updatedPost.post._id ? { ...updatedPost.post, isUpdating: true } : p
-                  )
-              )
-            
                 // Reset the isUpdating state after animation
                 setTimeout(() => {
-                    setPosts((prevPosts) =>
-                        prevPosts.map((p) =>
-                            p._id === updatedPost.post._id ? { ...p, isUpdating: false } : p
-                        )
-                    )
                     props.setPosts((prevPosts) => 
                       prevPosts.map((p) =>
                           p._id === updatedPost.post._id ? { ...updatedPost.post, isUpdating: false } : p
@@ -186,20 +175,9 @@ function Posts(props) {
               prevPosts.map((p) =>
                   p._id === updatedPost.post._id ? { ...updatedPost.post, isUpdating: true } : p
               ))
-            setPosts((prevPosts) =>
-            prevPosts.map((p) =>
-                p._id === updatedPost.post._id ? { ...updatedPost.post, isUpdating: true } : p
-            )
-            )
             setTimeout(() => {
 
               props.setPosts((prevPosts) =>
-                prevPosts.map((p) =>
-                p._id === updatedPost.post._id ? { ...p, isUpdating: false } : p
-                )
-            )
-              
-            setPosts((prevPosts) =>
                 prevPosts.map((p) =>
                 p._id === updatedPost.post._id ? { ...p, isUpdating: false } : p
                 )
@@ -332,11 +310,6 @@ function Posts(props) {
         if(response.ok)
         {
           props.setPosts((prevPosts) =>
-            prevPosts.filter((p) =>
-              p._id !== deletedPost.deletedPost._id
-            )
-          )
-          setPosts((prevPosts) =>
             prevPosts.filter((p) =>
               p._id !== deletedPost.deletedPost._id
             )
