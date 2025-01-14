@@ -17,8 +17,8 @@ export default function SpecificPost()
     }, [postId])
 
     return(
-        <>
+        <div className='p-6'>
             <Posts posts={posts} setPosts={setPosts}/>
-        </>
+        </div>
     )
 }

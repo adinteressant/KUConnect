@@ -2,6 +2,7 @@
 import Post from '../models/Post.js' // Post model
 import Like from '../models/like.js'
 import Comment from '../models/comment.js'
+import Save from '../models/savePost.js'
 import PublicInfo from '../models/PublicInfo.js'
 import PrivateInfo from '../models/PrivateInfo.js'
 import fs from 'fs'
@@ -242,7 +243,8 @@ export const deletePost = async(req, res) => {
     const [deletedPost] = await Promise.all([
       Post.findByIdAndDelete(post._id),
       Like.deleteMany({ postId: post._id }),
-      Comment.deleteMany({ postId: post._id })
+      Comment.deleteMany({ postId: post._id }),
+      Save.deleteMany({ postId: post._id })
     ])
 
     if(!deletedPost)
