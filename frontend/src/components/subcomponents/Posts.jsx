@@ -4,6 +4,7 @@ import formatTimeAgo from '../../utils/generateTimeAgo.js'
 import ShowLikes from './LikeOverlay.jsx'
 import ShowComments from './CommentOverlay.jsx'
 import { useOutletContext } from 'react-router-dom'
+import { Loader2 } from 'lucide-react'
 //Props include:
 //Posts (array) jun dekhauna parney cha
 //Also send the setPosts function for state variable posts
@@ -24,6 +25,7 @@ function Posts(props) {
     const [viewImage, setViewImage] = useState(false)
     const [urlPostId] = useState(useParams().postId)
     const [saveStatus, setSaveStatus] = useState(false)
+    const [optionsState, setOptionsState] = useState(false)
 
     useEffect(() => {
       fetch('/api/get-user-profile')
@@ -381,6 +383,7 @@ function Posts(props) {
         if(response.ok)
         {
           setSaveStatus(() => data.status)
+          setOptionsState(() => true)
         }
         else
         {
@@ -655,82 +658,99 @@ function Posts(props) {
                   <div className='absolute top-3 right-3 flex items-start' onMouseLeave={() => setPostOptions(() => '')}>
                     
                     <div className={`rounded-lg shadow-2xl bg-gray-100 border border-gray-200 transition-all duration-300 overflow-hidden ${postOptions === post._id?'opacity-100 max-h-screen':'opacity-0 max-h-0'}`}>  
-                      {urlPostId===post._id ||
-                      (<div>
-                        <Link
-                          to={`/post/${post._id}`}
-                          className={`w-[100%] group/view flex items-center gap-2 rounded-t-lg p-2 text-gray-600 hover:text-cyan-600 hover:bg-gray-200 hover:shadow-inner transition-all duration-300`}
-                        >
-                          <svg className='stroke-gray-600 fill-none stroke-2 group-hover/view:stroke-cyan-600 transition-all duration-300' width="20" height="20" viewBox="0 0 24 24">
-                            <path d="M3 7V5a2 2 0 0 1 2-2h2"/>
-                            <path d="M17 3h2a2 2 0 0 1 2 2v2"/>
-                            <path d="M21 17v2a2 2 0 0 1-2 2h-2"/>
-                            <path d="M7 21H5a2 2 0 0 1-2-2v-2"/>
-                            <circle cx="12" cy="12" r="1"/>
-                            <path d="M18.944 12.33a1 1 0 0 0 0-.66 7.5 7.5 0 0 0-13.888 0 1 1 0 0 0 0 .66 7.5 7.5 0 0 0 13.888 0"/>
-                          </svg>
-                          <div>View</div>
-                        </Link>
-                      
-                        <hr/>
-                      </div>)}
-
-                      <button
-                        disabled={postOptions!==post._id}
-                        onClick={() => {
-                          savePost(post._id.toString(), userProfile.user_id)
-                        }}
-                        className={`w-[100%] group/save flex items-center gap-2 p-2 hover:bg-gray-200 hover:shadow-inner transition-all duration-300
-                          ${post.userId !== userProfile.user_id?'rounded-b-lg':''}
-                          ${urlPostId?'rounded-t-lg':''}
-                          ${saveStatus?'text-cyan-600 hover:text-cyan-700':'text-gray-600 hover:text-cyan-600'}
-                        `}
-                      >
-                        <svg className={`stroke-2 transition-all duration-300
-                          ${saveStatus?'stroke-cyan-600 fill-cyan-600 group-hover:fill-cyan-700 group-hover:stroke-cyan-700':'stroke-gray-600 fill-none group-hover/save:stroke-cyan-600'}
-                          `}
-                          width="20" height="20" viewBox="0 0 24 24"
-                        >
-                          <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/>
-                        </svg>
-                        <div>{saveStatus?'Saved':'Save'}</div>
-                      </button>
-                      
-                      {(post.userId === userProfile.user_id) &&
+                      {optionsState?
                       <div>
-                        <hr/>
+                        {urlPostId===post._id ||
+                        (<div>
+                          <Link
+                            to={`/post/${post._id}`}
+                            className={`w-[100%] group/view flex items-center gap-2 rounded-t-lg p-2 text-gray-600 hover:text-cyan-600 hover:bg-gray-200 hover:shadow-inner transition-all duration-300`}
+                          >
+                            <svg className='stroke-gray-600 fill-none stroke-2 group-hover/view:stroke-cyan-600 transition-all duration-300' width="20" height="20" viewBox="0 0 24 24">
+                              <path d="M3 7V5a2 2 0 0 1 2-2h2"/>
+                              <path d="M17 3h2a2 2 0 0 1 2 2v2"/>
+                              <path d="M21 17v2a2 2 0 0 1-2 2h-2"/>
+                              <path d="M7 21H5a2 2 0 0 1-2-2v-2"/>
+                              <circle cx="12" cy="12" r="1"/>
+                              <path d="M18.944 12.33a1 1 0 0 0 0-.66 7.5 7.5 0 0 0-13.888 0 1 1 0 0 0 0 .66 7.5 7.5 0 0 0 13.888 0"/>
+                            </svg>
+                            <div>View</div>
+                          </Link>
+                        
+                          <hr/>
+                        </div>)}
 
                         <button
                           disabled={postOptions!==post._id}
-                          // onClick={() => }
-                          className={`w-[100%] group/edit flex items-center gap-2 p-2 text-gray-600 hover:text-cyan-600 hover:bg-gray-200 hover:shadow-inner transition-all duration-300`}
+                          onClick={() => {
+                            savePost(post._id.toString(), userProfile.user_id)
+                          }}
+                          className={`w-[100%] group/save flex items-center gap-2 p-2 hover:bg-gray-200 hover:shadow-inner transition-all duration-300
+                            ${post.userId !== userProfile.user_id?'rounded-b-lg':''}
+                            ${urlPostId?'rounded-t-lg':''}
+                            ${saveStatus?'text-cyan-600 hover:text-cyan-700':'text-gray-600 hover:text-cyan-600'}
+                          `}
                         >
-                          <svg className='stroke-gray-600 fill-none stroke-2 group-hover/edit:stroke-cyan-600 transition-all duration-300' width="20" height="20" viewBox="0 0 24 24">
-                            <path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/>
+                          <svg className={`stroke-2 transition-all duration-300
+                            ${saveStatus?'stroke-cyan-600 fill-cyan-600 group-hover:fill-cyan-700 group-hover:stroke-cyan-700':'stroke-gray-600 fill-none group-hover/save:stroke-cyan-600'}
+                            `}
+                            width="20" height="20" viewBox="0 0 24 24"
+                          >
+                            <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/>
                           </svg>
-                          <div>Edit</div>
+                          <div>{saveStatus?'Saved':'Save'}</div>
                         </button>
+                        
+                        {(post.userId === userProfile.user_id) &&
+                        <div>
+                          <hr/>
 
-                        <hr/>
-                      
-                        <button
-                          disabled={postOptions!==post._id}
-                          onClick={() => openConfirmDeletePost(post)} 
-                          className={`w-[100%] group/del flex items-center gap-2 rounded-b-lg p-2 text-red-600 hover:text-red-700 hover:bg-gray-200 hover:shadow-inner transition-all duration-300`}
-                        >
-                          <svg className='stroke-red-600 fill-none stroke-2 group-hover/del:stroke-red-700 transition-all duration-300' width="20" height="20" viewBox="0 0 24 24">
-                            <path d="M3 6h18"/>
-                            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
-                          </svg>
-                          <div>Delete</div>
-                        </button>
+                          <button
+                            disabled={postOptions!==post._id}
+                            // onClick={() => }
+                            className={`w-[100%] group/edit flex items-center gap-2 p-2 text-gray-600 hover:text-cyan-600 hover:bg-gray-200 hover:shadow-inner transition-all duration-300`}
+                          >
+                            <svg className='stroke-gray-600 fill-none stroke-2 group-hover/edit:stroke-cyan-600 transition-all duration-300' width="20" height="20" viewBox="0 0 24 24">
+                              <path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/>
+                            </svg>
+                            <div>Edit</div>
+                          </button>
+
+                          <hr/>
+                        
+                          <button
+                            disabled={postOptions!==post._id}
+                            onClick={() => openConfirmDeletePost(post)} 
+                            className={`w-[100%] group/del flex items-center gap-2 rounded-b-lg p-2 text-red-600 hover:text-red-700 hover:bg-gray-200 hover:shadow-inner transition-all duration-300`}
+                          >
+                            <svg className='stroke-red-600 fill-none stroke-2 group-hover/del:stroke-red-700 transition-all duration-300' width="20" height="20" viewBox="0 0 24 24">
+                              <path d="M3 6h18"/>
+                              <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                            </svg>
+                            <div>Delete</div>
+                          </button>
+                        </div>}
+                      </div>
+                      :
+                      <div className={`flex justify-center items-center w-20 h-20`}>
+                        <Loader2 className="w-5 h-5 text-cyan-600 animate-spin" />
                       </div>}
                     </div>
 
                     <button className='opacity-0 group-hover/post:opacity-100 rounded-full p-1 transition-all duration-300 hover:bg-gray-100'
                       onClick={
                         () => {
-                          setPostOptions((prev) => (prev===post._id)?'':post._id)
+                          setPostOptions((prev) => {
+                            if(prev===post._id)
+                            {
+                              return ''
+                            } 
+                            else
+                            {
+                              setOptionsState(() => false)
+                              return post._id
+                            }
+                          })
                           getSaveStatus(post._id.toString(), userProfile.user_id)
                         }
                       }>
