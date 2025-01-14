@@ -349,16 +349,16 @@ function Posts(props) {
         {
           props.setPosts((prevPosts) =>
             prevPosts.map((p) =>
-                p._id === updatedPost.post._id ? { ...updatedPost.post, isUpdating: true } : p
+                p._id === postId ? { ...p, isUpdating: true } : p
             ))
           setTimeout(() => {
             props.setPosts((prevPosts) =>
               prevPosts.map((p) =>
-              p._id === updatedPost.post._id ? { ...p, isUpdating: false } : p
+                p._id === postId ? { ...p, isUpdating: false } : p
               )
           )
           }, 300)
-          setSaveStatus(() => true)
+          setSaveStatus((prev) => !prev)
         }
         else
         {
@@ -374,11 +374,9 @@ function Posts(props) {
     const getSaveStatus = async(postId, userId) => {
       try
       {
-        const response = await fetch(`/api/save/get-status/post/${postId}/user/${userId}`,{
-          method: 'GET'
-        })
+        const response = await fetch(`/api/save/get-status/post/${postId}/user/${userId}`)
         
-        const data = response.json()
+        const data = await response.json()
 
         if(response.ok)
         {

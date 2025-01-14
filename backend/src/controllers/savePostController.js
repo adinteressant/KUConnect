@@ -37,11 +37,11 @@ export const getSavedStatus = async(req, res) =>
 
         if(save)
         {
-
+            return res.status(200).json({ message: 'Post is saved', status: true })
         }
         else
         {
-            
+            return res.status(200).json({ message: 'Post is not saved', status: false })
         }
     }
     catch(err)
