@@ -21,6 +21,7 @@ import VideoCall from './components/VideoCall.jsx'
 import PushNotification from './components/pushNotifications.jsx'
 import LandingPage from './components/LandingPage.jsx'
 import SpecificPost from './components/subcomponents/SpecificPost.jsx'
+import SavedPosts from './components/SavedPosts.jsx'
  
 const router = createBrowserRouter([
   {
@@ -74,6 +75,10 @@ const router = createBrowserRouter([
       {
         path:'/post/:postId',
         element:<SpecificPost/>
+      },
+      {
+        path:'/posts/saved',
+        element:<SavedPosts/>
       },
       {
         path:'/results',
