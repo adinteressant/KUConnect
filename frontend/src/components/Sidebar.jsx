@@ -2,18 +2,20 @@ import {
   Home as HomeIcon, 
   MessageCircle as MessagesIcon, 
   Users as FriendsIcon, 
-  Bell ,
-} from 'lucide-react';
-import { NavLink } from 'react-router-dom';
-import axios from 'axios';
-import { useState, useEffect } from 'react';
-import useRequestCount from '../zustand/useRequestCount';
+  Bell,
+  Bookmark as SaveIcon
+} from 'lucide-react'
+
+import { NavLink } from 'react-router-dom'
+import axios from 'axios'
+import { useState, useEffect } from 'react'
+import useRequestCount from '../zustand/useRequestCount'
 import useNewMessages from '../zustand/useNewMessages'
 
 
 export default function Sidebar({userProfile,setUserProfile}) {
-  const [userUnreadCount, setUserUnreadCount] = useState(userProfile.unread_count);
-  const {incomingRequestsCount, setIncomingRequestsCount} = useRequestCount(); 
+  const [userUnreadCount, setUserUnreadCount] = useState(userProfile.unread_count)
+  const {incomingRequestsCount, setIncomingRequestsCount} = useRequestCount() 
   const {newMessages} = useNewMessages()
      //Fetch user profile
     useEffect(() => {
@@ -21,39 +23,39 @@ export default function Sidebar({userProfile,setUserProfile}) {
         try {
           const response = await axios.get('/api/get-user-profile/', {
             withCredentials: true,
-          });
+          })
           if (response.data) {
-            setUserProfile(response.data);
-            setUserUnreadCount(userProfile.unread_count);
+            setUserProfile(response.data)
+            setUserUnreadCount(userProfile.unread_count)
           }
         } catch (error) {
-          console.error('Error fetching user profile:', error);
+          console.error('Error fetching user profile:', error)
         }
-      }fetchProfile();
-    }, [userProfile.unread_count]);
+      }fetchProfile()
+    }, [userProfile.unread_count])
   
     useEffect(() => {
       const fetchIncomingRequestsCount = async () => {
-        const user_id = userProfile.user_id;
-        if (!user_id) return; 
+        const user_id = userProfile.user_id
+        if (!user_id) return 
         try {
           const response = await axios.get(`/api/view-incoming-requests?user_id=${user_id}`, {
             withCredentials: true,
-          });
+          })
           if (response.data) {
-            setIncomingRequestsCount(response.data.incoming.length || 0);
+            setIncomingRequestsCount(response.data.incoming.length || 0)
           }
         } catch (error) {
-          console.error('Error fetching incoming requests count:', error);
+          console.error('Error fetching incoming requests count:', error)
         }
-      };
+      }
   
-      fetchIncomingRequestsCount();
-    }, [userProfile.user_id, setIncomingRequestsCount]);
+      fetchIncomingRequestsCount()
+    }, [userProfile.user_id, setIncomingRequestsCount])
 
   //useEffect(()=>{
-  //  setUserUnreadCount(userProfile.unread_count);
-  //},[]);
+  //  setUserUnreadCount(userProfile.unread_count)
+  //},[])
 
 
   return (
@@ -133,8 +135,21 @@ export default function Sidebar({userProfile,setUserProfile}) {
               </div>
             </NavLink>
           </li>
+          <li>
+            <NavLink to="/posts/saved" className={({ isActive }) =>
+              `${isActive ? 'bg-gray-200' : 'bg-white'}
+              flex items-center p-2 hover:bg-gray-200 rounded-lg cursor-pointer transition-all`
+            }>
+              <div className="flex items-center gap-2">
+                <div className="relative">
+                  <SaveIcon className="h-5 w-5 text-muted-foreground text-cyan-600" />
+                </div>
+                <span>Saved Posts</span>
+              </div>
+            </NavLink>
+          </li>
         </ul>
       </nav>
     </div>
-  );
+  )
 }
