@@ -1,4 +1,5 @@
 import Save from '../models/savePost.js'
+import Post from '../models/Post.js'
 
 export const savePost = async(req, res) =>
 {
@@ -23,7 +24,7 @@ export const savePost = async(req, res) =>
     catch(err)
     {
         console.error('Error saving post:', err)
-        res.status(500).json({ message: 'Internal server error', err })
+        res.status(500).json({ message: 'Internal server error', errror: err })
     }
 }
 
@@ -47,11 +48,26 @@ export const getSavedStatus = async(req, res) =>
     catch(err)
     {
         console.error('Error getting save status:',err)
-        res.status(500).json({ message: 'Internal server error' })
+        res.status(500).json({ message: 'Internal server error', error: err })
     }
 }
 
 export const getSavedPosts = async(req, res) =>
 {
+    try
+    {
+        const { userId } = req.params
 
+        const postIds = await Save.find({ userId },{ postId: 1, _id: 0 })
+        const matchingPostIds = postIds.map(p => p.postId)
+
+        const posts = await Post.find({ _id: {$in: matchingPostIds} }).sort({ createdAt: -1 })
+
+        return res.status(200).json({ message: 'Saved posts', posts})
+    }
+    catch(err)
+    {
+        console.error('Error getting saved posts:', err)
+        res.status(500).json({ message: 'Internal server error', error: err })
+    }
 }
