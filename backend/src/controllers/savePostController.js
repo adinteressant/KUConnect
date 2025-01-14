@@ -27,12 +27,31 @@ export const savePost = async(req, res) =>
     }
 }
 
-export const getSavedStatus = (req, res) =>
+export const getSavedStatus = async(req, res) =>
 {
+    try
+    {
+        const { postId, userId } = req.params
 
+        const save = await Save.findOne({ postId, userId })
+
+        if(save)
+        {
+
+        }
+        else
+        {
+            
+        }
+    }
+    catch(err)
+    {
+        console.error('Error getting save status:',err)
+        res.status(500).json({ message: 'Internal server error' })
+    }
 }
 
-export const getSavedPosts = (req, res) =>
+export const getSavedPosts = async(req, res) =>
 {
 
 }

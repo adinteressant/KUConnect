@@ -347,7 +347,18 @@ function Posts(props) {
 
         if(response.ok)
         {
-          console.log(data.message)
+          props.setPosts((prevPosts) =>
+            prevPosts.map((p) =>
+                p._id === updatedPost.post._id ? { ...updatedPost.post, isUpdating: true } : p
+            ))
+          setTimeout(() => {
+            props.setPosts((prevPosts) =>
+              prevPosts.map((p) =>
+              p._id === updatedPost.post._id ? { ...p, isUpdating: false } : p
+              )
+          )
+          }, 300)
+          setSaveStatus(() => true)
         }
         else
         {
@@ -371,7 +382,6 @@ function Posts(props) {
 
         if(response.ok)
         {
-          console.log(data.message)
           setSaveStatus(() => data.status)
         }
         else
@@ -669,16 +679,23 @@ function Posts(props) {
 
                       <button
                         disabled={postOptions!==post._id}
-                        onClick={() => savePost(post._id.toString(), userProfile.user_id)}
-                        className={`w-[100%] group/save flex items-center gap-2 p-2 text-gray-600 hover:text-cyan-600 hover:bg-gray-200 hover:shadow-inner transition-all duration-300
+                        onClick={() => {
+                          savePost(post._id.toString(), userProfile.user_id)
+                        }}
+                        className={`w-[100%] group/save flex items-center gap-2 p-2 hover:bg-gray-200 hover:shadow-inner transition-all duration-300
                           ${post.userId !== userProfile.user_id?'rounded-b-lg':''}
                           ${urlPostId?'rounded-t-lg':''}
+                          ${saveStatus?'text-cyan-600 hover:text-cyan-700':'text-gray-600 hover:text-cyan-600'}
                         `}
                       >
-                        <svg className='stroke-gray-600 fill-none stroke-2 group-hover/save:stroke-cyan-600 transition-all duration-300' width="20" height="20" viewBox="0 0 24 24">
+                        <svg className={`stroke-2 transition-all duration-300
+                          ${saveStatus?'stroke-cyan-600 fill-cyan-600 group-hover:fill-cyan-700 group-hover:stroke-cyan-700':'stroke-gray-600 fill-none group-hover/save:stroke-cyan-600'}
+                          `}
+                          width="20" height="20" viewBox="0 0 24 24"
+                        >
                           <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/>
                         </svg>
-                        <div>Save</div>
+                        <div>{saveStatus?'Saved':'Save'}</div>
                       </button>
                       
                       {(post.userId === userProfile.user_id) &&
@@ -712,7 +729,13 @@ function Posts(props) {
                       </div>}
                     </div>
 
-                    <button className='opacity-0 group-hover/post:opacity-100 rounded-full p-1 transition-all duration-300 hover:bg-gray-100' onClick={() => setPostOptions((prev) => (prev===post._id)?'':post._id)}>
+                    <button className='opacity-0 group-hover/post:opacity-100 rounded-full p-1 transition-all duration-300 hover:bg-gray-100'
+                      onClick={
+                        () => {
+                          setPostOptions((prev) => (prev===post._id)?'':post._id)
+                          getSaveStatus(post._id.toString(), userProfile.user_id)
+                        }
+                      }>
                       <svg width="16" height="16" viewBox="0 0 24 24" 
                         className = 'stroke-1 stroke-gray-600'>
                         <circle cx="12" cy="12" r="1"/>

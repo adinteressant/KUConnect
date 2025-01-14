@@ -8,7 +8,7 @@ const router = express.Router()
 router.post('/api/save/post/:postId/user/:userId', postCheck, savePost)
 
 //Get the saved status
-router.get('/api/save/get-status/post/:postId/user/:userId', getSavedStatus)
+router.get('/api/save/get-status/post/:postId/user/:userId', postCheck, getSavedStatus)
 
 //Get all the saved posts
 router.get('/api/save/get-posts/user/:userId', getSavedPosts)
