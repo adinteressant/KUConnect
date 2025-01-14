@@ -22,6 +22,8 @@ function Posts(props) {
     const [confirmDeletePost, setConfirmDeletePost] = useState(false)
     const [displayImage, setDisplayImage] = useState([])
     const [viewImage, setViewImage] = useState(false)
+    const [urlPostId] = useState(useParams().postId)
+    const [saveStatus, setSaveStatus] = useState(false)
 
     useEffect(() => {
       fetch('/api/get-user-profile')
@@ -333,6 +335,56 @@ function Posts(props) {
       }
     }
 
+    const savePost = async(postId, userId) =>
+    {
+      try
+      {
+        const response = await fetch(`/api/save/post/${postId}/user/${userId}`,{
+          method: 'POST'
+        })
+
+        const data = await response.json()
+
+        if(response.ok)
+        {
+          console.log(data.message)
+        }
+        else
+        {
+          console.error('Error saving post:', data.message)
+        }
+      }
+      catch(err)
+      {
+        console.error('Error saving post:', err)
+      }
+    }
+
+    const getSaveStatus = async(postId, userId) => {
+      try
+      {
+        const response = await fetch(`/api/save/get-status/post/${postId}/user/${userId}`,{
+          method: 'GET'
+        })
+        
+        const data = response.json()
+
+        if(response.ok)
+        {
+          console.log(data.message)
+          setSaveStatus(() => data.status)
+        }
+        else
+        {
+          console.error('Error getting save status:', data.message)
+        }
+      }
+      catch(err)
+      {
+        console.error('Error getting save status:',err)
+      }
+    }
+
     return(
 
         <div>
@@ -595,7 +647,7 @@ function Posts(props) {
                   <div className='absolute top-3 right-3 flex items-start' onMouseLeave={() => setPostOptions(() => '')}>
                     
                     <div className={`rounded-lg shadow-2xl bg-gray-100 border border-gray-200 transition-all duration-300 overflow-hidden ${postOptions === post._id?'opacity-100 max-h-screen':'opacity-0 max-h-0'}`}>  
-                      {useParams().postId===post._id ||
+                      {urlPostId===post._id ||
                       (<div>
                         <Link
                           to={`/post/${post._id}`}
@@ -617,10 +669,10 @@ function Posts(props) {
 
                       <button
                         disabled={postOptions!==post._id}
-                        // onClick={() => }
+                        onClick={() => savePost(post._id.toString(), userProfile.user_id)}
                         className={`w-[100%] group/save flex items-center gap-2 p-2 text-gray-600 hover:text-cyan-600 hover:bg-gray-200 hover:shadow-inner transition-all duration-300
                           ${post.userId !== userProfile.user_id?'rounded-b-lg':''}
-                          ${useParams().postId?'rounded-t-lg':''}
+                          ${urlPostId?'rounded-t-lg':''}
                         `}
                       >
                         <svg className='stroke-gray-600 fill-none stroke-2 group-hover/save:stroke-cyan-600 transition-all duration-300' width="20" height="20" viewBox="0 0 24 24">
