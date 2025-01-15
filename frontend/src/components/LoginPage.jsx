@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
@@ -7,6 +8,7 @@ export default function LoginPage() {
   });
 
   const [errorMessage, setErrorMessage] = useState(""); // Add state for displaying errors
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e) => {
     try {
@@ -33,7 +35,7 @@ export default function LoginPage() {
       localStorage.setItem("isAuthenticated", true); // Save token to localStorage //BRO WHAT 
       sessionStorage.setItem('newLogin', 'true');
       localStorage.setItem('isLoggedIn',true)
-      window.location.href='/';
+      window.location.href='/home';
     } catch (error) {
       console.error("Login error:", error.message);
       setErrorMessage(error.message); // Display the error message to the user
@@ -41,7 +43,7 @@ export default function LoginPage() {
   };
 
   const handleGoogleLogin = () => {
-    const backendUrl = 'http://localhost:4000';  // Adjust based on your actual backend URL
+    const backendUrl = 'http://localhost:4000';  
     const currentPort = window.location.port;
     window.location.href = `${backendUrl}/api/auth/google?port=${currentPort}`;
     localStorage.setItem('isLoggedIn',true)
@@ -66,14 +68,24 @@ export default function LoginPage() {
             />
           </div>
           <div className="w-full space-y-2">
+            <div className="relative">
             <input
-              type="password"
-              placeholder="Password"
+              type={showPassword ? "text" : "password"}
+              placeholder="Enter your password"
               value={formData.password}
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
               className="w-full px-4 py-3 rounded-md text-base transition-colors bg-gray-100 focus:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-cyan-500"
               required
             />
+             <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+              >
+                {showPassword ? <EyeOffIcon className="w-5 h-5" /> :
+                <EyeIcon className="w-5 h-5" />}
+              </button>
+              </div>
           </div>
           <div className="pt-2">
             <button

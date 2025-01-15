@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
 
 export default function RegisterPage() {
 
@@ -15,6 +16,8 @@ export default function RegisterPage() {
     rePassword: "",
     password: "",
   });
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -87,25 +90,45 @@ export default function RegisterPage() {
             {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
           </div>
           <div className="w-full space-y-2">
+          <div className="relative">
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               placeholder="Enter your password"
               value={formData.password}
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
               className="w-full px-4 py-3 rounded-md text-base transition-colors bg-gray-100 focus:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-cyan-500"
               required
             />
+             <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+              >
+                {showPassword ? <EyeOffIcon className="w-5 h-5" /> :
+                <EyeIcon className="w-5 h-5" />}
+              </button>
+              </div>
             {errors.password && <p className="text-sm text-red-500">{errors.password}</p>}
           </div>
           <div className="w-full space-y-2">
+          <div className="relative">
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               placeholder="Re-enter your Password"
               value={formData.rePassword}
               onChange={(e) => setFormData({ ...formData, rePassword: e.target.value })}
               className="w-full px-4 py-3 rounded-md text-base transition-colors bg-gray-100 focus:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-cyan-500"
               required
             />
+             <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+              >
+                {showPassword ? <EyeOffIcon className="w-5 h-5" /> :
+                <EyeIcon className="w-5 h-5" />}
+              </button>
+              </div>
             {errors.rePassword && <p className="text-sm text-red-500">{errors.rePassword}</p>}
           </div>
 
