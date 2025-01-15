@@ -25,8 +25,8 @@ export default function SavedPosts()
     }, [userProfile])
 
     return(
-        <div className='p-6'>
-            <Posts posts={posts} setPosts={setPosts}/>
+        <div className='p-6 bg-gray-100'>
+            <Posts posts={posts} setPosts={setPosts} savePage={true}/>
         </div>
     )
 }

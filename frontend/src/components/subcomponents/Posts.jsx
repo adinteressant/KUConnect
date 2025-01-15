@@ -360,6 +360,14 @@ function Posts(props) {
               )
           )
           }, 300)
+          if(props.savePage === true)
+          {
+            props.setPosts((prevPosts) =>
+              prevPosts.filter((p) =>
+                p._id !== postId
+              )
+            )
+          }
           setSaveStatus((prev) => !prev)
         }
         else
