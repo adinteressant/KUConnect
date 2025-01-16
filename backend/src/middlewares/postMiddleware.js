@@ -4,31 +4,14 @@ import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
+// const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
-const storage = multer.diskStorage({
-  destination: async(req, file, cb) => {
-    const folderPath = path.join(__dirname,`../../public/uploads/${req.folderName}`)
-    
-    if(!fs.existsSync(folderPath))
-    {
-      fs.mkdirSync(folderPath, { recursive: true })
-    }
-
-    cb(null, folderPath)
-  },
-  filename: (req, file, cb) => {
-    const a = Date.now()
-    const [b, c] = process.hrtime() 
-    cb(null, `${a}${b}${c}${path.extname(file.originalname)}`)
-  }
-})
+const storage = multer.memoryStorage()
 
 export const upload = multer({
   storage,
-  //10 MB limit per image
-  limits: { fileSize: 10*1024*1024 }
-}).array('images', 10)
+  limits: { fieldSize: 20 *1024*1024 }
+}).array('images',10)
 
 
 //Middleware to validate post content
