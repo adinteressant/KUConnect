@@ -39,7 +39,7 @@ const PORT = process.env.PORT || 3000
 const VIDEO_PORT = 3056
 connectToDB()
 .then(()=>{
-  app.listen(PORT,()=>{
+  app.listen(PORT, '0.0.0.0', ()=>{
     console.log(`Server is running on port ${PORT}`)
   })
   server.listen(VIDEO_PORT,()=>{
