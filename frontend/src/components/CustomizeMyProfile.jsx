@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { X } from 'lucide-react';
+import { EyeIcon, EyeOffIcon } from "lucide-react";
 
 const CustomizeMyProfile = () => {
   const [userprofile, setuserprofile] = useState({});
@@ -12,6 +13,18 @@ const CustomizeMyProfile = () => {
     confirmpassword: ''
   });
   const [selectedTags, setSelectedTags] = useState([]);
+  const [passwordVisibility, setPasswordVisibility] = useState({
+    current: false,
+    new: false,
+    confirm: false
+  });
+
+  const togglePasswordVisibility = (field) => {
+    setPasswordVisibility(prev => ({
+      ...prev,
+      [field]: !prev[field]
+    }));
+  };
 
   // Predefined array of tags
   const availableTags = ['Engineering', 'SoE', 'SoS', 'Research', 'Sciences'];
@@ -202,8 +215,10 @@ const CustomizeMyProfile = () => {
               </button>
               <h2 className="text-2xl mb-4 font-semibold">Change Password</h2>
               <form onSubmit={handlepasswordchange}>
+              <div className="w-full space-y-2">
+              <div className="relative">
                 <input
-                  type="password"
+                  type={passwordVisibility.current ? "text" : "password"}
                   placeholder="Current password"
                   className="w-full mb-3 p-2 border rounded"
                   value={passwordform.currentpassword}
@@ -213,8 +228,20 @@ const CustomizeMyProfile = () => {
                   }))}
                   required
                 />
+                <button
+                type="button"
+                onClick={() => togglePasswordVisibility('current')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+              >
+                {passwordVisibility.current ? <EyeOffIcon className="w-5 h-5" /> :
+                <EyeIcon className="w-5 h-5" />}
+              </button>
+              </div>
+              </div>
+              <div className="w-full space-y-2">
+              <div className="relative">
                 <input
-                  type="password"
+                  type={passwordVisibility.new ? "text" : "password"}
                   placeholder="New password"
                   className="w-full mb-3 p-2 border rounded"
                   value={passwordform.newpassword}
@@ -224,8 +251,20 @@ const CustomizeMyProfile = () => {
                   }))}
                   required
                 />
+                <button
+                type="button"
+                onClick={() => togglePasswordVisibility('new')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+              >
+                {passwordVisibility.new ? <EyeOffIcon className="w-5 h-5" /> :
+                <EyeIcon className="w-5 h-5" />}
+              </button>
+              </div>
+              </div>
+              <div className="w-full space-y-2">
+              <div className="relative">
                 <input
-                  type="password"
+                  type={passwordVisibility.confirm? "text" : "password"}
                   placeholder="Confirm new password"
                   className="w-full mb-3 p-2 border rounded"
                   value={passwordform.confirmpassword}
@@ -235,6 +274,16 @@ const CustomizeMyProfile = () => {
                   }))}
                   required
                 />
+              <button
+                type="button"
+                onClick={() => togglePasswordVisibility('confirm')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+              >
+                {passwordVisibility.confirm ? <EyeOffIcon className="w-5 h-5" /> :
+                <EyeIcon className="w-5 h-5" />}
+              </button>
+              </div>
+              </div>
                 <div className="flex flex-col gap-2 sm:flex-row sm:justify-between">
                   <button
                     type="submit"

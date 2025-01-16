@@ -17,7 +17,17 @@ export default function RegisterPage() {
     password: "",
   });
 
-  const [showPassword, setShowPassword] = useState(false);
+  const [passwordVisibility, setPasswordVisibility] = useState({
+    password: false,
+    rePassword: false
+  });
+
+  const togglePasswordVisibility = (field) => {
+    setPasswordVisibility(prev => ({
+      ...prev,
+      [field]: !prev[field]
+    }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -92,7 +102,7 @@ export default function RegisterPage() {
           <div className="w-full space-y-2">
           <div className="relative">
             <input
-              type={showPassword ? "text" : "password"}
+              type={passwordVisibility.password ? "text" : "password"}
               placeholder="Enter your password"
               value={formData.password}
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
@@ -101,10 +111,10 @@ export default function RegisterPage() {
             />
              <button
                 type="button"
-                onClick={() => setShowPassword(!showPassword)}
+                onClick={() => togglePasswordVisibility('password')}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
               >
-                {showPassword ? <EyeOffIcon className="w-5 h-5" /> :
+                {passwordVisibility.password ? <EyeOffIcon className="w-5 h-5" /> :
                 <EyeIcon className="w-5 h-5" />}
               </button>
               </div>
@@ -113,7 +123,7 @@ export default function RegisterPage() {
           <div className="w-full space-y-2">
           <div className="relative">
             <input
-              type={showPassword ? "text" : "password"}
+              type={passwordVisibility.rePassword ? "text" : "password"}
               placeholder="Re-enter your Password"
               value={formData.rePassword}
               onChange={(e) => setFormData({ ...formData, rePassword: e.target.value })}
@@ -122,10 +132,10 @@ export default function RegisterPage() {
             />
              <button
                 type="button"
-                onClick={() => setShowPassword(!showPassword)}
+                onClick={() => togglePasswordVisibility('rePassword')}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
               >
-                {showPassword ? <EyeOffIcon className="w-5 h-5" /> :
+                {passwordVisibility.rePassword ? <EyeOffIcon className="w-5 h-5" /> :
                 <EyeIcon className="w-5 h-5" />}
               </button>
               </div>
