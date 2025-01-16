@@ -458,7 +458,7 @@ function Posts(props) {
                       
                       <img 
                         onClick={() => openImageOverlay(post._id.toString(), displayImage.find(i => i.postId === post._id).image)} 
-                        src={`/api/post/${post._id.toString()}/${displayImage.find(i => i.postId === post._id).image}`}
+                        src={post.image}
                         className='rounded-lg cursor-pointer min-w-[100%] max-h-[500px] object-cover'
                       />
                       
@@ -723,7 +723,6 @@ function Posts(props) {
                             </svg>
                             <div>Edit</div>
                           </button>
-
                           <hr/>
                         
                           <button
@@ -826,7 +825,7 @@ function Posts(props) {
               `}      
               onClick={closeImageOverlay}
           >
-            <img src={`/api/post/${viewImage.postId}/${viewImage.image}`}
+            <img src={`/api/post/${viewImage.postId}/images`}
                 onClick={(e) => e.stopPropagation()}
                 className={`max-w-[80%] max-h-[80%]
                   rounded-lg shadow-2xl

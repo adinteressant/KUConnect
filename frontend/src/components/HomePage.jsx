@@ -3,6 +3,7 @@ import { useOutletContext } from 'react-router-dom'
 import Posts from './subcomponents/Posts.jsx'
 import WelcomeModal from './subcomponents/WelcomeModal.jsx'
 import { useGetUnreadMessage } from './hooks/useGetUnreadMessage.js'
+import base64encode from '../utils/base64encode.js'
 
 const HomePage = () => {
   const [user, setUser] = useState(null)
@@ -16,6 +17,7 @@ const HomePage = () => {
   const [isTextareaFocused, setIsTextareaFocused] = useState(false)
   const [isTagsInputFocused, setIsTagsInputFocused] = useState(false)
   const [images, setImages] = useState([])
+  const [encodedImages, setEncodedImages] = useState([])
   const [showWelcomeModal, setShowWelcomeModal] = useState(false)
   const {searchTrait,setSearchTrait} = useOutletContext()
   // Check for logged-in user based on isAuthenticated
@@ -89,8 +91,7 @@ const HomePage = () => {
       formData.append('content', content)
       formData.append('userInfo', JSON.stringify(userInfo))
       formData.append('tags', JSON.stringify(tagList))
-
-      images.forEach((image) => {
+      encodedImages.forEach((image) => {
         formData.append('images', image)
       })
 
@@ -166,14 +167,15 @@ const HomePage = () => {
     }
   }
 
-  const handleImageChange = (e) => 
+  const handleImageChange = async(e) => 
   {
-    const selectedImages = Array.from(e.target.files)
-    const maxSize = 5*1024*1024
+    const encodedImageFiles = await base64encode(Array.from(e.target.files));
+    const selectedImages = Array.from(e.target.files);
+    const maxSize = 10*1024*1024
     const validExtensions = ['image/jpeg','image/png','image/gif','image/webp']
     if(selectedImages.some((image) => image.size>maxSize))
     {
-      alert('Each image must be less than 5MB')
+      alert('Each image must be less than 10MB')
     }
     else if(selectedImages.some((image) => !validExtensions.includes(image.type)))
     {
@@ -189,12 +191,23 @@ const HomePage = () => {
         }
         return i
       })
+      setEncodedImages(
+        (prev) => {
+            const i = [...prev, ...encodedImageFiles]
+            if(i.length > 10)
+            {
+              i.splice(10)
+            }
+            return i
+          }
+      )
     }
   }
 
   const handleImageRemove = (index) =>
   {
     setImages((prev) => prev.filter((_, i) => i!==index))
+    setEncodedImages((prev) => prev.filter((_, i) => i!==index))
   }
 
   return (
@@ -284,8 +297,7 @@ const HomePage = () => {
                     }                
                   </div>
                 </div>
-              </div>
-              
+              </div> 
               <button
                 disabled={!content.trim()}
                 onClick={handlePostSubmit}
