@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import formatTimeAgo from '../utils/generateTimeAgo.js';
 import { useOutletContext } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const NotificationPage = () => {
   const [userProfiletags, setUserProfile] = useState({tags:[]});
@@ -100,6 +101,8 @@ const NotificationPage = () => {
         <div className="space-y-4">
           {userFilteredPosts.map((post, index) => (
             <div key={post.id || index} className="bg-gray-200 p-4 rounded-lg hover:bg-gray-100 transition-colors">
+              <Link 
+                            to={`/post/${post._id}`}>
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-lg font-semibold text-gray-800">
@@ -109,6 +112,7 @@ const NotificationPage = () => {
                 </div>
                 <div className="text-gray-400">{formatTimeAgo(post.createdAt)}</div>
               </div>
+              </Link>
             </div>
           ))}
         </div>
