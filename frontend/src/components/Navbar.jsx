@@ -122,13 +122,13 @@ const Navigation = ({ setVisibility, setPadding,searchTrait,setSearchTrait, user
 
       <div className="max-w-7xl mx-auto px-4 ">
         <div className="flex items-center justify-between h-16 ">
-          <Link to="/" className="text-2xl font-serif text-gray-800">
+          <Link to="/home" className="text-2xl font-serif text-gray-800">
             KUConnect
           </Link>
 
           <div className="w-full max-w-md mx-32">
     <div className='animate-slide opacity-0 mt-2 text-center text-gray-400 text-xl absolute'>Welcome Aboard!</div> 
-            <div className="relative card-wrapper absolute">
+            <div className="relative card-wrapper">
     <div className='card-content'>
               <Search className="absolute left-3 animate-fade top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
               <form onSubmit={handleSearch}>   
