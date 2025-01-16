@@ -458,9 +458,10 @@ function Posts(props) {
                       
                       <img 
                         onClick={() => openImageOverlay(post._id.toString(), displayImage.find(i => i.postId === post._id).image)} 
-                        src={post.image}
+                        src={post.images[0]}
                         className='rounded-lg cursor-pointer min-w-[100%] max-h-[500px] object-cover'
                       />
+
                       
                       {post.images.length > 1 &&
                       (<div className='absolute bottom-0 w-full h-12 bg-black bg-opacity-40 opacity-0 rounded-b-lg flex justify-center items-center group-hover/image:opacity-80 transition-all duration-300'>
@@ -825,7 +826,7 @@ function Posts(props) {
               `}      
               onClick={closeImageOverlay}
           >
-            <img src={`/api/post/${viewImage.postId}/images`}
+            <img src={`/api/post/${viewImage.postId}`}
                 onClick={(e) => e.stopPropagation()}
                 className={`max-w-[80%] max-h-[80%]
                   rounded-lg shadow-2xl
