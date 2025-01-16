@@ -48,6 +48,7 @@ export const createPost = async (req, res) => {
 
   const content = req.body.content
   const userInfo = JSON.parse(req.body.userInfo)
+  const images = req.body.images
   const tags = JSON.parse(req.body.tags)
 
   // Validate content
@@ -61,9 +62,10 @@ export const createPost = async (req, res) => {
 
   try {
     // Create a new post using the provided data
+    console.log(userInfo.images)
     const newPost = new Post({
       pfp_id: userInfo.pfp_id || 0,
-      images: userInfo.images,
+      images: images,
       role: userInfo.role,
       userId: userInfo.user_id,
       username: userInfo.username,
