@@ -305,7 +305,7 @@ function Posts(props) {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            post
+            post: {...post, images:[]}
           })
         })
 
