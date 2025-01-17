@@ -57,8 +57,6 @@ export default function Sidebar({userProfile,setUserProfile}) {
       fetchIncomingRequestsCount()
     }, [userProfile.user_id, setIncomingRequestsCount])
 
-    console.log(uniqueSendersCount);
-    console.log(newMessages);
   //useEffect(()=>{
   //  setUserUnreadCount(userProfile.unread_count)
   //},[])
