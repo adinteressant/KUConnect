@@ -12,7 +12,6 @@ import axios from 'axios'
 import { useState, useEffect } from 'react'
 import useRequestCount from '../zustand/useRequestCount'
 import useNewMessages from '../zustand/useNewMessages'
-import { uniq } from 'lodash';
 
 
 export default function Sidebar({userProfile,setUserProfile}) {
@@ -64,115 +63,80 @@ export default function Sidebar({userProfile,setUserProfile}) {
 
   return (
     <motion.div
-  onMouseEnter={() => setIsHovered(true)}
-  onMouseLeave={() => setIsHovered(false)}
-  animate={{ width: isHovered ? 220 : 48 }} // Reduced the non-hover width
-  transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-  className="bg-white shadow-md p-2 fixed z-10 bottom-0 top-14 h-screen border-r border-gray-200 overflow-hidden"
->
-  <nav>
-    <ul className="space-y-2">
-      <li>
-        <NavLink
-          to="/home"
-          className={({ isActive }) =>
-            `${isActive ? 'bg-gray-200 shadow-inner' : 'hover:bg-gray-100'}
-            flex items-center p-3 rounded-lg cursor-pointer transition-all`
-          }
-        >
-          <div className="flex items-center gap-2">
-            <div className="h-6 w-6 flex justify-center items-center">
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      animate={{ width: isHovered ? 220 : 55 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+      className="bg-white shadow-md p-2 fixed z-10 bottom-0 top-14 h-screen border-r border-gray-200 overflow-hidden"
+    >
+      <nav>
+      <ul className="space-y-2">
+        <li>
+          <NavLink to="/home" className={({ isActive }) => `${isActive ? 'bg-gray-200 shadow-inner' : 'hover:bg-gray-100'} flex items-center p-3 rounded-lg cursor-pointer transition-all`}>
+            <div className="flex items-center gap-2">
               <HomeIcon className="text-cyan-600 h-5 w-5" />
+               {isHovered && <span className="truncate whitespace-nowrap">Home</span>}
             </div>
-            {isHovered && <span>Home</span>}
-          </div>
-        </NavLink>
-      </li>
-      <li>
-        <NavLink
-          to="/messages"
-          className={({ isActive }) =>
-            `${isActive ? 'bg-gray-200' : 'hover:bg-gray-100'}
-            flex items-center p-3 rounded-lg cursor-pointer transition-all`
-          }
-        >
-          <div className="flex gap-2 items-center">
-            <div className="relative h-6 w-6 flex justify-center items-center">
-              {newMessages && newMessages.length !== 0 && (
-                <div className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-medium text-white">
-                  {uniqueSendersCount}
-                </div>
-              )}
-              <MessagesIcon className="text-cyan-600 h-5 w-5" />
-            </div>
-            {isHovered && <span>Messages</span>}
-          </div>
-        </NavLink>
-      </li>
-      <li>
-        <NavLink
-          to="/friends"
-          className={({ isActive }) =>
-            `${isActive ? 'bg-gray-200' : 'hover:bg-gray-100'}
-            flex items-center p-3 rounded-lg cursor-pointer transition-all`
-          }
-        >
-          <div className="flex items-center gap-2">
-            <div className="relative h-6 w-6 flex justify-center items-center">
-              <FriendsIcon className="text-cyan-600 h-5 w-5" />
-              {incomingRequestsCount > 0 && (
-                <div className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-medium text-white">
-                  {incomingRequestsCount}
-                </div>
-              )}
-            </div>
-            {isHovered && <span>Friends</span>}
-          </div>
-        </NavLink>
-      </li>
-      <li>
-        <NavLink
-          to="/notifications"
-          className={({ isActive }) =>
-            `${isActive ? 'bg-gray-200' : 'hover:bg-gray-100'}
-            flex items-center p-3 rounded-lg cursor-pointer transition-all`
-          }
-        >
-          <div className="flex items-center gap-2">
-            <div className="relative h-6 w-6 flex justify-center items-center">
-              <Bell className="text-cyan-600 h-5 w-5" />
-              {userUnreadCount > 0 && (
-                <>
-                  <div className="absolute animate-ping -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-medium text-white" />
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to="/messages" className={({ isActive }) => `${isActive ? 'bg-gray-200' : 'hover:bg-gray-100'} flex items-center p-3 rounded-lg cursor-pointer transition-all`}>
+            <div className="flex gap-2 items-center">
+              <div className="relative h-6 w-6 flex justify-center items-center">
+                {newMessages.length > 0 && (
                   <div className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-medium text-white">
-                    {userUnreadCount}
+                    {uniqueSendersCount}
                   </div>
-                </>
-              )}
+                )}
+                <MessagesIcon className="text-cyan-600 h-5 w-5" />
+              </div>
+              {isHovered && <span className="truncate whitespace-nowrap">Messages</span>}
             </div>
-            {isHovered && <span>Notifications</span>}
-          </div>
-        </NavLink>
-      </li>
-      <li>
-        <NavLink
-          to="/posts/saved"
-          className={({ isActive }) =>
-            `${isActive ? 'bg-gray-200' : 'hover:bg-gray-100'}
-            flex items-center p-3 rounded-lg cursor-pointer transition-all`
-          }
-        >
-          <div className="flex items-center gap-2">
-            <div className="relative h-6 w-6 flex justify-center items-center">
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to="/friends" className={({ isActive }) => `${isActive ? 'bg-gray-200' : 'hover:bg-gray-100'} flex items-center p-3 rounded-lg cursor-pointer transition-all`}>
+            <div className="flex items-center gap-2">
+              <div className="relative h-6 w-6 flex justify-center items-center">
+                <FriendsIcon className="text-cyan-600 h-5 w-5" />
+                {incomingRequestsCount > 0 && (
+                  <div className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-medium text-white">
+                    {incomingRequestsCount}
+                  </div>
+                )}
+              </div>
+              {isHovered && <span className="truncate whitespace-nowrap">Friends</span>}
+            </div>
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to="/notifications" className={({ isActive }) => `${isActive ? 'bg-gray-200' : 'hover:bg-gray-100'} flex items-center p-3 rounded-lg cursor-pointer transition-all`}>
+            <div className="flex items-center gap-2">
+              <div className="relative h-6 w-6 flex justify-center items-center">
+                <Bell className="text-cyan-600 h-5 w-5" />
+                {userUnreadCount > 0 && (
+                  <>
+                    <div className="absolute animate-ping -right-2 -top-2 flex h-5 w-5 rounded-full bg-red-500" />
+                    <div className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-medium text-white">
+                      {userUnreadCount}
+                    </div>
+                  </>
+                )}
+              </div>
+              {isHovered && <span className="truncate whitespace-nowrap">Notifications</span>}
+            </div>
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to="/posts/saved" className={({ isActive }) => `${isActive ? 'bg-gray-200' : 'hover:bg-gray-100'} flex items-center p-3 rounded-lg cursor-pointer transition-all`}>
+            <div className="flex items-center gap-2">
               <SaveIcon className="text-cyan-600 h-5 w-5" />
+              {isHovered && <span className="truncate whitespace-nowrap">Saved Posts</span>}
             </div>
-            {isHovered && <span>Saved Posts</span>}
-          </div>
-        </NavLink>
-      </li>
-    </ul>
-  </nav>
-</motion.div>
-
-  )
+          </NavLink>
+        </li>
+      </ul>
+    </nav>
+    </motion.div>
+  );
 }
