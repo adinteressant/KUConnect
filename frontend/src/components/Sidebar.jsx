@@ -12,6 +12,7 @@ import axios from 'axios'
 import { useState, useEffect } from 'react'
 import useRequestCount from '../zustand/useRequestCount'
 import useNewMessages from '../zustand/useNewMessages'
+import { uniq } from 'lodash';
 
 
 export default function Sidebar({userProfile,setUserProfile}) {
@@ -19,6 +20,7 @@ export default function Sidebar({userProfile,setUserProfile}) {
   const [isHovered, setIsHovered] = useState(false);
   const {incomingRequestsCount, setIncomingRequestsCount} = useRequestCount() 
   const {newMessages} = useNewMessages()
+  const uniqueSendersCount = new Set(newMessages.map(msg => msg.senderId)).size;
      //Fetch user profile
     useEffect(() => {
       async function fetchProfile ()  {
@@ -55,6 +57,8 @@ export default function Sidebar({userProfile,setUserProfile}) {
       fetchIncomingRequestsCount()
     }, [userProfile.user_id, setIncomingRequestsCount])
 
+    console.log(uniqueSendersCount);
+    console.log(newMessages);
   //useEffect(()=>{
   //  setUserUnreadCount(userProfile.unread_count)
   //},[])
@@ -98,7 +102,7 @@ export default function Sidebar({userProfile,setUserProfile}) {
             <div className="relative h-6 w-6 flex justify-center items-center">
               {newMessages && newMessages.length !== 0 && (
                 <div className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-medium text-white">
-                  {newMessages.length}
+                  {uniqueSendersCount}
                 </div>
               )}
               <MessagesIcon className="text-cyan-600 h-5 w-5" />
