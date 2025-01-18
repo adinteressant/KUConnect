@@ -3,9 +3,12 @@ import useConversation from '../../zustand/useConversation'
 import { useGetUnreadMessage } from '../hooks/useGetUnreadMessage'
 import useNewMessages from '../../zustand/useNewMessages'
 import useGetFriends from '../hooks/useGetFriends'
+import { useSocketContext } from '../context/socketContext'
 
 export default function Conversations({ conversations, loading }) {
   const { selectedConversation, setSelectedConversation } = useConversation()
+  const {onlineUsers} = useSocketContext()
+
   useGetUnreadMessage()
   const userProfiles = useGetFriends(JSON.parse(localStorage.getItem('authUser')))
   // const userProfiles = useGetProfile()
@@ -47,13 +50,13 @@ export default function Conversations({ conversations, loading }) {
         })
     }
   
-
   return (
     <div className="flex flex-col mt-5">
       {loading ? (
         <div>Loading...</div>
       ) : (
-        enhancedConversations.map((conversation, index) => (
+        enhancedConversations.map((conversation, index) =>
+          (
           <div
             key={index}
             className={`hover:bg-gray-200 cursor-pointer hover:rounded-md flex justify-between
@@ -71,7 +74,12 @@ export default function Conversations({ conversations, loading }) {
             }}
           >
         <div className="flex items-center gap-4 p-2 w-full ">
-            <div>
+            <div className="relative">
+              {onlineUsers?.includes(conversation.user_id) &&
+              (
+                <div className="bg-green-500 h-3 w-3 rounded-full absolute right-0"></div>
+              )}
+              
             <img src={`/api/get-pfp?id=${conversation.pfp_id}`}
             alt={`${conversation.username}'s profile`} className="rounded-full object-cover border border-gray-200 h-10 w-14" />
             </div>

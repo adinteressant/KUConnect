@@ -11,10 +11,13 @@ import router from './routes/index.js';
 
 import { connectToDB } from './db/index.js'
 
+import { app } from './utils/socket/socket.js'
+import {server} from './utils/socket/socket.js'
+
 dotenv.config({path: './.env'});
 
 
-const app = express();
+// export const app = express();
 //middleware attachments
 app.use(express.json());
 
@@ -23,7 +26,7 @@ app.use("/public",express.static("../public/"))
 app.use(
   cors({
     origin: 'http://localhost:5173', // Frontend URL
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    methods: ['GET', 'POST', 'PUT','PATCH', 'DELETE'],
     credentials: true, // Allow cookies to be sent with requests
   })
 );
@@ -34,7 +37,7 @@ const PORT = process.env.PORT || 3000
 
 connectToDB()
 .then(()=>{
-  app.listen(PORT,()=>{
+  server.listen(PORT,()=>{
     console.log(`Server is running on port ${PORT}`)
   })
 })

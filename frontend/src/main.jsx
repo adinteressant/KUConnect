@@ -18,11 +18,16 @@ import ResultPage from './components/ResultPage.jsx'
 import SearchPage from './components/SearchPage.jsx'
 import SearchResults from './components/SearchResults.jsx'
 import VideoCall from './components/VideoCall.jsx'
+import { SocketContextProvider } from './components/context/socketContext.jsx'
 
 const router = createBrowserRouter([
   {
     path : '/',
-    element : <App/>,
+    element : (
+    <SocketContextProvider>  
+      <App/>
+    </SocketContextProvider>
+  ),
     children:[
       {
         path:'/',

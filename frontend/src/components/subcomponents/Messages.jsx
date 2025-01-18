@@ -1,9 +1,11 @@
 import useGetMessage from '../hooks/useGetMessage.js';
+import useListenMessage from '../hooks/useListenMessage.js';
 import Message from './Message.jsx';
 import { Loader2 } from 'lucide-react';
 
 export default function Messages() {
-  const { loading, messages } = useGetMessage();
+  const { loading, messages } = useGetMessage()
+  useListenMessage()
 
   return (
     <div className="space-y-4">
