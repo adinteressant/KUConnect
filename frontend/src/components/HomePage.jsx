@@ -106,6 +106,7 @@ const HomePage = () => {
             setTagValue('')
             setTagList([])
             setImages([])
+            setEncodedImages([])
             setPosts([data.post, ...posts])
             setUserProfile(userProfile.unread_count++)
             console.log('Post submitted:', data.post)

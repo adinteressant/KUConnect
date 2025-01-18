@@ -8,7 +8,7 @@ const postSchema = new mongoose.Schema({
   email: { type: String, required: true },
   content: { type: String, required: true, maxlength: 500 },
   tags: { type: [String], default: [] }, // Array of tags
-  images: { type: [ String ], default: [] }, // Array of strings 
+  images: { type: mongoose.Schema.Types.ObjectId, ref:'PostImages', default: null }, // id from image schema
   likes: { type: Number, default: 0 },
   recentLikes: { type: [String], default:[] },
   shares: { type: Number, default: 0 },
