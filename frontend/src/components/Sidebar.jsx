@@ -12,7 +12,7 @@ import axios from 'axios'
 import { useState, useEffect } from 'react'
 import useRequestCount from '../zustand/useRequestCount'
 import useNewMessages from '../zustand/useNewMessages'
-
+import { useTheme } from './context/themeContext';
 
 export default function Sidebar({userProfile,setUserProfile}) {
   const [userUnreadCount, setUserUnreadCount] = useState(userProfile.unread_count)
@@ -20,6 +20,16 @@ export default function Sidebar({userProfile,setUserProfile}) {
   const {incomingRequestsCount, setIncomingRequestsCount} = useRequestCount() 
   const {newMessages} = useNewMessages()
   const uniqueSendersCount = new Set(newMessages.map(msg => msg.senderId)).size;
+  // const [selected, setSelected] = useState(localStorage.getItem('darkmode') || "light");
+  const {theme, toggleTheme} = useTheme();
+useEffect(() => {
+  if (theme === 'dark') {
+    document.documentElement.classList.add('dark');
+  } else {
+    document.documentElement.classList.remove('dark');
+  }
+}, [theme]);
+
      //Fetch user profile
     useEffect(() => {
       async function fetchProfile ()  {
@@ -36,25 +46,26 @@ export default function Sidebar({userProfile,setUserProfile}) {
         }
       }fetchProfile()
     }, [userProfile.unread_count])
+
   
-    useEffect(() => {
-      const fetchIncomingRequestsCount = async () => {
-        const user_id = userProfile.user_id
-        if (!user_id) return 
-        try {
-          const response = await axios.get(`/api/view-incoming-requests?user_id=${user_id}`, {
-            withCredentials: true,
-          })
-          if (response.data) {
-            setIncomingRequestsCount(response.data.incoming.length || 0)
-          }
-        } catch (error) {
-          console.error('Error fetching incoming requests count:', error)
-        }
-      }
+    // useEffect(() => {
+    //   const fetchIncomingRequestsCount = async () => {
+    //     const user_id = userProfile.user_id
+    //     if (!user_id) return 
+    //     try {
+    //       const response = await axios.get(`/api/view-incoming-requests?user_id=${user_id}`, {
+    //         withCredentials: true,
+    //       })
+    //       if (response.data) {
+    //         setIncomingRequestsCount(response.data.incoming.length || 0)
+    //       }
+    //     } catch (error) {
+    //       console.error('Error fetching incoming requests count:', error)
+    //     }
+    //   }
   
-      fetchIncomingRequestsCount()
-    }, [userProfile.user_id, setIncomingRequestsCount])
+    //   fetchIncomingRequestsCount()
+    // }, [userProfile.user_id, setIncomingRequestsCount])
 
   //useEffect(()=>{
   //  setUserUnreadCount(userProfile.unread_count)
@@ -62,17 +73,29 @@ export default function Sidebar({userProfile,setUserProfile}) {
 
 
   return (
+    <div
+    className={`grid place-content-center transition-colors ${
+      theme === "light" ? "bg-white text-black" : "bg-slate-900 text-white"
+    }`}
+  >
     <motion.div
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       animate={{ width: isHovered ? 220 : 55 }}
       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-      className="bg-white shadow-md p-2 fixed z-10 bottom-0 top-14 h-screen border-r border-gray-200 overflow-hidden"
+      className ={ `shadow-md p-2 fixed z-10 bottom-0 top-16 h-screen border-r ${theme === 'dark' ? 'border-slate-900' :'border-gray-200' } transition-colors ${
+      theme === "light" ? "bg-white" : "bg-slate-900"
+    }`}
     >
       <nav>
       <ul className="space-y-2">
         <li>
-          <NavLink to="/home" className={({ isActive }) => `${isActive ? 'bg-gray-200 shadow-inner' : 'hover:bg-gray-100'} flex items-center p-3 rounded-lg cursor-pointer transition-all`}>
+          <NavLink to="/home" className={({ isActive }) =>     
+            `${isActive
+      ? theme === 'dark'
+        ? 'text-white shadow-inner'  
+        : 'bg-gray-200 shadow-inner'  
+      : theme === 'dark' ? 'hover:bg-slate-700' : 'hover:bg-gray-200'} flex items-center p-3 rounded-lg cursor-pointer transition-all`}>
             <div className="flex items-center gap-2">
               <HomeIcon className="text-cyan-600 h-5 w-5" />
                {isHovered && <span className="truncate whitespace-nowrap">Home</span>}
@@ -138,5 +161,6 @@ export default function Sidebar({userProfile,setUserProfile}) {
       </ul>
     </nav>
     </motion.div>
+    </div>
   );
 }

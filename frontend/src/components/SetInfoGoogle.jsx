@@ -1,12 +1,19 @@
 import { useLocation } from 'react-router-dom'
-import { useState } from 'react'
-
+import { useState, useEffect } from 'react'
+import { useTheme } from './context/themeContext'
 export default function SetInfoGoogle(){
 
+    const {theme, toggleTheme} = useTheme();
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [theme]);
   const location = useLocation()
 
   const [username,setUsername] = useState('')
-  const [role,setRole] = useState('')
 
   const queryParams = new URLSearchParams(location.search)
 

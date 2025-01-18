@@ -1,7 +1,7 @@
 import { Outlet, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar.jsx";
 import Sidebar from "./components/Sidebar.jsx";
-
+import { useTheme } from "./components/context/themeContext.jsx";
 import { useState, useEffect } from "react";
 
 export default function App() {
@@ -23,6 +23,15 @@ export default function App() {
       setPaddingValue("pl-64");
     }
   }, [location.pathname]);
+      
+  const {theme, toggleTheme} = useTheme();
+    useEffect(() => {
+      if (theme === 'dark') {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    }, [theme]);
 
   return (
     <>
@@ -30,7 +39,7 @@ export default function App() {
     {isSidebarVisible&&<Navbar setVisibility={setIsSidebarVisible} setPadding={setPaddingValue} searchTrait={searchTrait} setSearchTrait={setSearchTrait} userProfile={userProfile} setUserProfile={setUserProfile}/>}
 
       {/* Main Layout */}
-      <div className="flex h-screen bg-gray-100">
+      <div className={`flex h-screen ${theme === 'dark' ? 'bg-slate-900' : 'bg-white'}`}>
         {/* Sidebar */}
         {isSidebarVisible && <Sidebar userPosts={userPosts} userProfile={userProfile} setUserProfile={setUserProfile} />}
 

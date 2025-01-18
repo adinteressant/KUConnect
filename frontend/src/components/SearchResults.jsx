@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useTheme } from './context/themeContext';
 
 const SearchResults = () => {
     const location = useLocation();
@@ -9,6 +10,14 @@ const SearchResults = () => {
     const [showCommentBox, setShowCommentBox] = useState(false);
     const [googleUser, setGoogleUser] = useState('');
     const [user, setUser] = useState(null); // Added user state
+      const {theme, toggleTheme} = useTheme();
+    useEffect(() => {
+      if (theme === 'dark') {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    }, [theme]);
   
      // Check for logged-in user based on isAuthenticated
       useEffect(() => {

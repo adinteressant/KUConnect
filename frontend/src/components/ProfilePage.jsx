@@ -3,8 +3,17 @@ import { Link, useParams, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import Posts from './subcomponents/Posts.jsx'
 import useRequestCount from '../zustand/useRequestCount.js';
+import { useTheme } from './context/themeContext.jsx';
 
 export default function ProfilePage() {
+    const {theme, toggleTheme} = useTheme();
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [theme]);
   const { username } = useParams();
   const [profileData, setProfileData] = useState({
     pfp_id: null,
@@ -251,13 +260,13 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="flex-1 min-h-screen bg-gray-100 p-6 overflow-y-auto" ref={scrollContainerRef}>
-      <div className="max-w-2xl mx-auto space-y-4 bg-white p-8 rounded-lg shadow-md mb-4">
+    <div className={`flex-1 min-h-screen ${(theme === 'dark' )?'bg-slate-900 text-gray-200' : 'bg-gray-100 text-gray-800'} p-6 overflow-y-auto `} ref={scrollContainerRef}>
+      <div className="max-w-2xl mx-auto space-y-4 p-8 rounded-lg shadow-md mb-4">
         {/* Profile picture with hover effect */}
         <div
-          className="w-32 h-32 md:w-40 md:h-40 rounded-full bg-gray-300
+          className={`w-32 h-32 md:w-40 md:h-40 rounded-full ${(theme === 'dark' )?'bg-slate-900' : 'bg-gray-300'}
                      flex items-center justify-center mx-auto
-                     relative group cursor-pointer"
+                     relative group cursor-pointer`}
         >
           {profileData.pfp_id ? (
             <img
@@ -272,7 +281,7 @@ export default function ProfilePage() {
 
         {/* Rest of the profile content */}
         <div className="text-center mt-4 flex flex-col">
-          <h1 className="text-3xl font-serif font-bold text-gray-800">
+          <h1 className="text-3xl font-serif font-bold">
             {username}
           </h1>
           <h2 className="text-2xl font-serif font-semibold">Role: {profileData.role}</h2>

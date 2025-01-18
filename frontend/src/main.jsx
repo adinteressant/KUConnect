@@ -22,6 +22,7 @@ import PushNotification from './components/pushNotifications.jsx'
 import LandingPage from './components/LandingPage.jsx'
 import SpecificPost from './components/subcomponents/SpecificPost.jsx'
 import SavedPosts from './components/SavedPosts.jsx'
+import { ThemeProvider } from "./components/context/themeContext.jsx";
  
 const router = createBrowserRouter([
   {
@@ -101,7 +102,9 @@ const router = createBrowserRouter([
 ])
 
 createRoot(document.getElementById('root')).render(
+  <ThemeProvider>
   <StrictMode>
       <RouterProvider router={router} />
   </StrictMode>
+  </ThemeProvider>
 );

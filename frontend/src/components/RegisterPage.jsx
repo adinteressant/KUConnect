@@ -1,8 +1,16 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
-
+import { useTheme } from "./context/themeContext";
 export default function RegisterPage() {
 
+  const {theme, toggleTheme} = useTheme();
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [theme]);
   const [formData, setFormData] = useState({
     username: "",
     email: "",

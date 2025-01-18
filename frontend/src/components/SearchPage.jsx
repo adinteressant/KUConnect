@@ -1,8 +1,9 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { useLocation } from 'react-router-dom';
 import Fuse from 'fuse.js';
 import Posts from '../components/subcomponents/Posts';
 import UserSearchResults from './UserSearchResults';
+import { useTheme } from './context/themeContext';
 
 const SearchPage = () => {
   const location = useLocation();
@@ -10,7 +11,14 @@ const SearchPage = () => {
   const results = location.state?.results || [];
   const isUserSearch = searchQuery.startsWith('@user:');
   const isTagSearch = searchQuery.startsWith('#tag:');
-
+  const {theme, toggleTheme} = useTheme();
+useEffect(() => {
+  if (theme === 'dark') {
+    document.documentElement.classList.add('dark');
+  } else {
+    document.documentElement.classList.remove('dark');
+  }
+}, [theme]);
   // Function to extract multiple tags from the search query
   const extractTags = (query) => {
     const tagString = query.replace('#tag:', '').trim();

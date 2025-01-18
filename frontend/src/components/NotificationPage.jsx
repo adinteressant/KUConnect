@@ -3,6 +3,7 @@ import axios from 'axios';
 import formatTimeAgo from '../utils/generateTimeAgo.js';
 import { useOutletContext } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import { useTheme } from './context/themeContext.jsx';
 
 const NotificationPage = () => {
   const [userProfiletags, setUserProfile] = useState({tags:[]});
@@ -10,6 +11,14 @@ const NotificationPage = () => {
   const [incomingRequests,setIncomingRequests] = useState([]);
   const {userPosts, setUserPosts} = useOutletContext()
   const [userFilteredPosts, setFilteredPosts] = useState([]);
+  const {theme, toggleTheme} = useTheme();
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [theme]);
 
   useEffect(() => {
     async function clearNotification() {

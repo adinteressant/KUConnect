@@ -1,14 +1,23 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { Link } from 'react-router-dom';
+import { useTheme } from './context/themeContext';
 
 const UserSearchResults = ({ users }) => {
+    const {theme, toggleTheme} = useTheme();
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [theme]);
   return (
     <div className="grid gap-4 md:grid-cols-2">
       {users.map(user => (
         <Link 
           key={user.user_id} 
           to={`/${user.username}`}
-          className="flex items-center p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300"
+          className="flex items-center p-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-300"
         >
           <img 
             src={`/api/get-pfp?id=${user.pfp_id}`} 
