@@ -461,7 +461,14 @@ function Posts(props) {
                     <div className='mt-2 relative group/image'>
                       
                       <img 
-                        onClick={() => openImageOverlay(post._id.toString(), displayImage.find(i => i.postId === post._id).image)} 
+                        onClick={() => 
+                          openImageOverlay(
+                            postImages.find(i => i._id === post.images)
+                            .images[
+                              postImages.find(i => i._id === post.images).current
+                            ]
+                          )
+                        } 
                         src={`${
                           postImages.find(i => i._id === post.images)
                           .images[
@@ -472,7 +479,7 @@ function Posts(props) {
                       />
 
                       
-                      { postImages.find(i => i._id === post.images).images.length > 0 &&
+                      { postImages.find(i => i._id === post.images).images.length > 1 &&
                       (<div className='absolute bottom-0 w-full h-12 bg-black bg-opacity-40 opacity-0 rounded-b-lg flex justify-center items-center group-hover/image:opacity-80 transition-all duration-300'>
                         
                         <button 
