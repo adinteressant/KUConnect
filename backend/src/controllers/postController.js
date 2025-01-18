@@ -65,7 +65,7 @@ export const createPost = async (req, res) => {
 
     let savedImages = {}
 
-    if(images.length > 0)
+    if(images)
     {
       const newPostImages = new PostImages({
         images: images
