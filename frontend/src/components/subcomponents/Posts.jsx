@@ -472,12 +472,12 @@ function Posts(props) {
                       />
 
                       
-                      {false &&
+                      { postImages.find(i => i._id === post.images).images.length > 0 &&
                       (<div className='absolute bottom-0 w-full h-12 bg-black bg-opacity-40 opacity-0 rounded-b-lg flex justify-center items-center group-hover/image:opacity-80 transition-all duration-300'>
                         
                         <button 
-                          disabled={displayImage.find(i => i.postId === post._id).num===0}
-                          onClick={() => prevImage(post)}
+                          disabled={postImages.find(i => i._id === post.images).current===0}
+                          onClick={() => prevImage(post.images)}
                           className='disabled:opacity-0'
                         >
                           <svg width="20" height="20" viewBox="0 0 24 24"
@@ -488,12 +488,12 @@ function Posts(props) {
                         </button>
                         
                         <div className='text-white text-sm'>
-                          {displayImage.find(i => i.postId === post._id).num+1} / {post.images.length}
+                          {postImages.find(i => i._id === post.images).current+1} / {postImages.find(i => i._id === post.images).images.length}
                         </div>
                         
                         <button 
-                          disabled={displayImage.find(i => i.postId === post._id).num===(post.images.length-1)}
-                          onClick={() => nextImage(post)}
+                          disabled={postImages.find(i => i._id === post.images).current===(postImages.find(i => i._id === post.images).images.length-1)}
+                          onClick={() => nextImage(post.images)}
                           className='disabled:opacity-0'
                         >
                           <svg width="20" height="20" viewBox="0 0 24 24"
