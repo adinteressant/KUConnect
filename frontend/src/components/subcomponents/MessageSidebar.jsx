@@ -33,7 +33,7 @@ export default function MessageSidebar() {
             type="text"
             placeholder="Search conversations..."
             onChange={handleChange}
-            className="w-full px-4 py-2 pr-10 text-sm rounded-lg border border-gray-200 focus:border-gray-300 focus:ring-2 focus:ring-gray-300 focus:outline-none transition-all placeholder:text-gray-400"
+            className="w-full px-4 py-2 pr-10 text-sm rounded-lg border dark:bg-slate-900 dark:text-slate-200 border-gray-200 dark:focus:border-slate-950 dark:focus:ring-slate-950 focus:border-gray-300 focus:ring-2 focus:ring-gray-300 focus:outline-none transition-all placeholder:text-gray-400"
           />
           <button 
             type="submit"

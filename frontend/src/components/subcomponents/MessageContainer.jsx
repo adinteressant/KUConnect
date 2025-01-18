@@ -30,7 +30,7 @@ export default function MessageContainer() {
           </div>
 
           {/* Scrollable Messages Section */}
-          <div className="flex-1  dark:bg-slate-900 dark:text-slate-100 bg-gray-50 pt-16 pb-16 border-l border-gray-200 flex flex-col">
+          <div className="flex-1  dark:bg-slate-900 dark:text-slate-100 bg-gray-50 pt-16 pb-16 border-l border-gray-200 dark:border-slate-800 flex flex-col">
             <div className="mt-auto p-4 space-y-4 dark:bg-slate-900">
               <Messages />
               {/* Empty div for scrolling to the bottom */}
@@ -39,7 +39,7 @@ export default function MessageContainer() {
           </div>
 
           {/* Fixed SendMessage */}
-          <div className="fixed bottom-0 left-[520px] right-0 z-20 bg-white border-t border-gray-200">
+          <div className="fixed bottom-0 left-[520px] right-0 z-20 bg-white border-t dark:border-slate-800 border-gray-200">
             <SendMessage />
           </div>
         </>
