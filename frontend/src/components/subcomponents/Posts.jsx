@@ -30,6 +30,7 @@ function Posts(props) {
     const [overlayTransitionState, setOverlayTransitionState] = useState(false)
     const [postOptions, setPostOptions] = useState('')
     const [confirmDeletePost, setConfirmDeletePost] = useState(false)
+    const [deleteLoadingState, setDeleteLoadingState] = useState(false)
     const [postImages, setPostImages] = useState([])
     const [viewImage, setViewImage] = useState(false)
     const [urlPostId] = useState(useParams().postId)
@@ -302,6 +303,7 @@ function Posts(props) {
     {
       setTimeout(() => {
         setConfirmDeletePost(() => false)
+        setDeleteLoadingState(() => false)
       }, 300)
       setOverlayTransitionState(false)
       document.body.classList.toggle('overflow-hidden', false)
@@ -325,6 +327,8 @@ function Posts(props) {
 
         if(response.ok)
         {
+          closeConfirmDeletePost()
+
           props.setPosts((prevPosts) =>
             prevPosts.filter((p) =>
               p._id !== deletedPost.deletedPost._id
@@ -817,32 +821,42 @@ function Posts(props) {
                           bg-black transition-all duration-300
                           ${overlayTransitionState?'bg-opacity-50':'bg-opacity-0'}
                           `}
-          >
+          > 
             <div className={`bg-white min-w-[320px] w-[40%] max-w-[580px] min-h-36 max-h-[400px] rounded-xl shadow-2xl
                   transition-all duration-300
                   ${overlayTransitionState?'opacity-100 scale-100':'opacity-0 scale-50'}
-                  flex flex-col justify-evenly p-2`}
+                  flex p-2`}
             >
-              <div className='m-3 mb-2 text-lg font-semibold'>
-                Delete Post
+              {deleteLoadingState?
+              <div className='m-auto text-lg text-gray-600 flex justify-center items-center gap-2'>
+                <div>
+                  Deleting Post
+                </div>
+                <Loader2 className="w-5 h-5 text-cyan-600 animate-spin"/>
               </div>
-              <hr/>
-              <div className='m-3 my-2'>
-                Once deleted, this post cannot be restored. Are you sure you want to delete it permanently?
-              </div>
-              <div className='flex justify-end gap-2 m-2'>
-                <button className='py-2 px-4 rounded-xl text-gray-600 hover:text-white bg-gray-200 hover:bg-gray-400'
-                  onClick={() => closeConfirmDeletePost()}>
-                  Cancel
-                </button>
-                <button className='py-2 px-4 rounded-xl text-white bg-red-600 hover:bg-red-700'
-                  onClick={() => {
-                    deletePost(confirmDeletePost)
-                    closeConfirmDeletePost()
-                  }}>
-                  Delete
-                </button>
-              </div>
+              :
+              <div>
+                <div className='m-3 mb-2 text-lg font-semibold'>
+                  Delete Post
+                </div>
+                <hr/>
+                <div className='m-3 my-2'>
+                  Once deleted, this post cannot be restored. Are you sure you want to delete it permanently?
+                </div>
+                <div className='flex justify-end gap-2 m-2'>
+                  <button className='py-2 px-4 rounded-xl text-gray-600 hover:text-white bg-gray-200 hover:bg-gray-400'
+                    onClick={() => closeConfirmDeletePost()}>
+                    Cancel
+                  </button>
+                  <button className='py-2 px-4 rounded-xl text-white bg-red-600 hover:bg-red-700'
+                    onClick={() => {
+                      setDeleteLoadingState(() => true)
+                      deletePost(confirmDeletePost)
+                    }}>
+                    Delete
+                  </button>
+                </div>
+              </div>}
             </div>
           </div>)}
 
