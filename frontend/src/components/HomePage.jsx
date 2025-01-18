@@ -170,8 +170,8 @@ const HomePage = () => {
 
   const handleImageChange = async(e) => 
   {
-    const encodedImageFiles = await base64encode(Array.from(e.target.files));
-    const selectedImages = Array.from(e.target.files);
+    const selectedImages = Array.from(e.target.files)
+    const encodedImageFiles = await base64encode(selectedImages)
     const maxSize = 10*1024*1024
     const validExtensions = ['image/jpeg','image/png','image/gif','image/webp']
     if(selectedImages.some((image) => image.size>maxSize))
@@ -203,6 +203,8 @@ const HomePage = () => {
           }
       )
     }
+
+    e.target.value = null
   }
 
   const handleImageRemove = (index) =>

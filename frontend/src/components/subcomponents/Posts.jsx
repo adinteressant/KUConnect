@@ -30,7 +30,7 @@ function Posts(props) {
     const [overlayTransitionState, setOverlayTransitionState] = useState(false)
     const [postOptions, setPostOptions] = useState('')
     const [confirmDeletePost, setConfirmDeletePost] = useState(false)
-    const [displayImage, setDisplayImage] = useState([])
+    const [postImages, setPostImages] = useState([])
     const [viewImage, setViewImage] = useState(false)
     const [urlPostId] = useState(useParams().postId)
     const [saveStatus, setSaveStatus] = useState(false)
@@ -64,23 +64,27 @@ function Posts(props) {
           }
       })
       setShowCommentBox(() => updatedArray)
-      
-      const displayImageArray = props.posts.map((p) => {
-        const alreadyObjExists = displayImage.find((i) => i.postId === p._id)
-        if(alreadyObjExists)
+
+      props.posts.forEach(p =>
+      {
+        if(p.images!==null && !postImages.find(i => p.images === i._id))
         {
-          return alreadyObjExists
-        }
-        else
-        {  
-          return {
-            postId: p._id,
-            image: p.images[0] || '',
-            num: 0
-          }
+          fetch(`/api/post/images/${p.images.toString()}`,{
+            method: 'GET'
+          })
+          .then(response => response.json())
+          .then(data => {
+            const obj = { 
+              ...data.images, 
+              current: 0
+            }
+            setPostImages(prev => [...prev, obj])
+          })
+          .catch(err => {
+            console.error('Error fetching images for post', err)
+          })
         }
       })
-      setDisplayImage(() => displayImageArray)
 
     }, [props.posts])
 
@@ -243,11 +247,11 @@ function Posts(props) {
         document.body.classList.toggle('overflow-hidden', false)
     }
 
-    const prevImage = (post) => {
-      setDisplayImage((prev) => prev.map((i) => {
-        if(i.postId === post._id)
+    const prevImage = (imageId) => {
+      setPostImages((prev) => prev.map((i) => {
+        if(i._id === imageId)
         {
-          return {...i, image:post.images[i.num-1], num:i.num-1}
+          return {...i, current: i.current-1}
         }
         else
         {
@@ -256,11 +260,11 @@ function Posts(props) {
       }))
     }
 
-    const nextImage = (post) => {
-      setDisplayImage((prev) => prev.map((i) => {
-        if(i.postId === post._id)
+    const nextImage = (imageId) => {
+      setPostImages((prev) => prev.map((i) => {
+        if(i._id === imageId)
         {
-          return {...i, image:post.images[i.num+1], num:i.num+1}
+          return {...i, current: i.current+1}
         }
         else
         {
@@ -269,9 +273,8 @@ function Posts(props) {
       }))
     }
 
-    const openImageOverlay = (postId, image) => {
-      const obj = {postId, image}
-      setViewImage(() => obj)
+    const openImageOverlay = (imageSrc) => {
+      setViewImage(() => imageSrc)
       setTimeout(() => {
           setOverlayTransitionState(true)
       }, 1)
@@ -462,22 +465,35 @@ function Posts(props) {
                   )}
 
                   {/* Display Images */}
-                  {post.images.length > 0 &&
+                  {post.images === null ||
+                    (postImages.some(i => i._id === post.images)?
                     <div className='mt-2 relative group/image'>
                       
                       <img 
-                        onClick={() => openImageOverlay(post._id.toString(), displayImage.find(i => i.postId === post._id).image)} 
-                        src={post.images[0]}
+                        onClick={() => 
+                          openImageOverlay(
+                            postImages.find(i => i._id === post.images)
+                            .images[
+                              postImages.find(i => i._id === post.images).current
+                            ]
+                          )
+                        } 
+                        src={`${
+                          postImages.find(i => i._id === post.images)
+                          .images[
+                            postImages.find(i => i._id === post.images).current
+                          ]
+                        }`}
                         className='rounded-lg cursor-pointer min-w-[100%] max-h-[500px] object-cover'
                       />
 
                       
-                      {post.images.length > 1 &&
+                      { postImages.find(i => i._id === post.images).images.length > 1 &&
                       (<div className='absolute bottom-0 w-full h-12 bg-black bg-opacity-40 opacity-0 rounded-b-lg flex justify-center items-center group-hover/image:opacity-80 transition-all duration-300'>
                         
                         <button 
-                          disabled={displayImage.find(i => i.postId === post._id).num===0}
-                          onClick={() => prevImage(post)}
+                          disabled={postImages.find(i => i._id === post.images).current===0}
+                          onClick={() => prevImage(post.images)}
                           className='disabled:opacity-0'
                         >
                           <svg width="20" height="20" viewBox="0 0 24 24"
@@ -488,12 +504,12 @@ function Posts(props) {
                         </button>
                         
                         <div className='text-white text-sm'>
-                          {displayImage.find(i => i.postId === post._id).num+1} / {post.images.length}
+                          {postImages.find(i => i._id === post.images).current+1} / {postImages.find(i => i._id === post.images).images.length}
                         </div>
                         
                         <button 
-                          disabled={displayImage.find(i => i.postId === post._id).num===(post.images.length-1)}
-                          onClick={() => nextImage(post)}
+                          disabled={postImages.find(i => i._id === post.images).current===(postImages.find(i => i._id === post.images).images.length-1)}
+                          onClick={() => nextImage(post.images)}
                           className='disabled:opacity-0'
                         >
                           <svg width="20" height="20" viewBox="0 0 24 24"
@@ -505,8 +521,12 @@ function Posts(props) {
 
                       </div>)}
 
-                    </div> 
-                  }
+                    </div>
+                    :
+                    <div className='mt-2 bg-gray-100 rounded-lg w-[100%] h-[300px] flex justify-center items-center'>
+                      <Loader2 className="w-5 h-5 text-cyan-600 animate-spin" />
+                    </div>
+                  )}
 
                   <hr className='absolute left-0 right-0 mt-4'/>
                   
@@ -835,7 +855,7 @@ function Posts(props) {
               `}      
               onClick={closeImageOverlay}
           >
-            <img src={`/api/post/${viewImage.postId}`}
+            <img src={viewImage}
                 onClick={(e) => e.stopPropagation()}
                 className={`max-w-[80%] max-h-[80%]
                   rounded-lg shadow-2xl
