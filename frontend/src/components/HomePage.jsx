@@ -227,7 +227,7 @@ const HomePage = () => {
           {/* Post creation section */}
           {(user || googleUser) ? (
             <div
-              className={`dark:bg-gray-900 bg-white p-4 rounded-lg shadow-md transition-all duration-300 h-auto`}
+              className={`dark:bg-gray-900 bg-white dark:shadow-black p-4 rounded-lg shadow-md transition-all duration-300 h-auto`}
             >
               <textarea
                 placeholder="What's on your mind?"
