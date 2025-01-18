@@ -25,13 +25,13 @@ export default function MessageContainer() {
       ) : (
         <>
           {/* Fixed Header */}
-          <div className=" w-full z-10 bg-white fixed">
+          <div className=" w-full z-10 bg-white dark:bg-slate-900 fixed">
             <MessageHeader username={selectedConversation.username} />
           </div>
 
           {/* Scrollable Messages Section */}
-          <div className="flex-1 bg-gray-50 pt-16 pb-16 border-l border-gray-200 flex flex-col">
-            <div className="mt-auto p-4 space-y-4">
+          <div className="flex-1  dark:bg-slate-900 dark:text-slate-100 bg-gray-50 pt-16 pb-16 border-l border-gray-200 flex flex-col">
+            <div className="mt-auto p-4 space-y-4 dark:bg-slate-900">
               <Messages />
               {/* Empty div for scrolling to the bottom */}
               <div ref={messagesEndRef}></div>

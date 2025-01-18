@@ -39,7 +39,7 @@ export default function App() {
     {isSidebarVisible&&<Navbar setVisibility={setIsSidebarVisible} setPadding={setPaddingValue} searchTrait={searchTrait} setSearchTrait={setSearchTrait} userProfile={userProfile} setUserProfile={setUserProfile}/>}
 
       {/* Main Layout */}
-      <div className={`flex h-screen `}>
+      <div className={`flex overflow-y-auto max-h-screen `}>
         {/* Sidebar */}
         {isSidebarVisible && <Sidebar userPosts={userPosts} userProfile={userProfile} setUserProfile={setUserProfile} />}
 

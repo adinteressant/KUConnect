@@ -25,7 +25,7 @@ export default function MessageSidebar() {
   
 
   return (
-    <div className="sticky bg-white">
+    <div className="sticky dark:bg-slate-900 bg-white">
       <div className="p-4 fixed h-screen">
         {/* Search Section */}
         <div className="relative">
@@ -47,7 +47,7 @@ export default function MessageSidebar() {
         <div className="my-4 border-t border-gray-100" />
         
         {/* Conversations List Container */}
-        <div className="h-[calc(100vh-12rem)]">
+        <div className="h-[calc(100vh-12rem)] dark:text-slate-100">
         <Conversations conversations={initValue ? convos : conversations} loading={loading}/>
         </div>
       </div>
