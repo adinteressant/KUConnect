@@ -59,10 +59,10 @@ export default function Conversations({ conversations, loading }) {
           (
           <div
             key={index}
-            className={`hover:bg-gray-200 dark:hover:bg-slate-900 dark:text-slate-100 cursor-pointer hover:rounded-md flex justify-between
+            className={`hover:bg-gray-200 dark:hover:bg-gray-700 mb-2 dark:text-slate-100 cursor-pointer hover:rounded-md flex justify-between
                px-3 border-gray-200 border-b text-gray-800
                ${selectedConversation?.user_id === conversation.user_id
-                ? `bg-gray-200 dark:bg-slate-900 rounded-md`
+                ? `bg-gray-200 dark:bg-gray-700 rounded-md`
                 : ``}
                 ${conversation.count ? `font-semibold`: ``}
                 `

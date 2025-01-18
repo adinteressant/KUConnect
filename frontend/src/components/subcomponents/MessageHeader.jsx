@@ -106,7 +106,7 @@ export default function MessageHeader({ username }) {
 
   
   return (
-    <div className="px-4 py-3 border-b border-gray-200 dark:bg-slate-900 sticky">
+    <div className="px-4 py-3 border-b border-gray-200 dark:border-slate-800 dark:bg-slate-900 sticky">
       <div className="flex items-center gap-3">
       {loading ? (
   <div className="w-10 h-10 rounded-full dark:bg-slate-900 bg-gray-200 animate-pulse" />

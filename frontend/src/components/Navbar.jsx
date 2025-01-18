@@ -169,7 +169,7 @@ const SliderToggle = ({ selected, setSelected }) => {
   
 
   return (
-    <div className="w-full border-b-slate-800 fixed z-20 dark:bg-slate-900 bg-white dark:text-gray-100 top-0 ">
+    <div className="w-full border-b dark:border-b-slate-800 fixed z-20  dark:bg-slate-900 bg-white dark:text-gray-100 top-0 ">
 
       <div className="max-w-7xl mx-auto px-4 ">
         <div className="flex items-center justify-between h-16 ">
@@ -183,7 +183,7 @@ const SliderToggle = ({ selected, setSelected }) => {
     <div className='card-content'>
               <Search className="absolute left-3 animate-fade top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-100 h-5 w-5" />
               <form onSubmit={handleSearch}>   
-                <div className="animate-fade w-full dark:text-white dark:bg-white card-content pl-10 pr-4 py-2 rounded-full bg-gray-100 focus-within:ring-2 focus-within:ring-cyan-500 focus-within:bg-white transition-all duration-700 flex items-center gap-2 ">
+                <div className="animate-fade w-full dark:text-white placeholder:text-gray-400 border border-gray-200 dark:bg-slate-900 card-content pl-10 pr-4 py-2 rounded-full bg-gray-100 focus-within:ring-2 focus-within:ring-cyan-500 focus-within:bg-white transition-all duration-700 flex items-center gap-2 ">
                   {searchTrait.startsWith('@user:') && (
                     <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-sm whitespace-nowrap">
                       @user:
