@@ -108,8 +108,8 @@ const CustomizeMyProfile = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
-      <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-md">
+    <div className="flex items-center justify-center min-h-screen dark:bg-slate-900  bg-gray-100 p-4">
+      <div className="w-full max-w-md p-6 bg-white dark:bg-slate-900 border dark:border-slate-950 rounded-lg shadow-lg">
         {/* Profile picture section */}
         <div className="relative w-32 h-32 mx-auto mb-6 md:w-40 md:h-40">
           <div 
@@ -162,13 +162,13 @@ const CustomizeMyProfile = () => {
 
         {/* Profile content */}
         <div className="text-center mb-6">
-          <h1 className="text-2xl font-bold text-gray-800 mb-2 md:text-3xl lg:text-4xl">
+          <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2 md:text-3xl lg:text-4xl">
             {userprofile.username || userprofile.email?.split('@')[0]}
           </h1>
           
           {/* Tag selection section */}
           <div className="mt-6">
-            <h2 className="text-xl mb-4 font-semibold md:text-2xl">Select Tags</h2>
+            <h2 className="text-xl mb-4 font-semibold dark:text-gray-400 md:text-2xl">Select Tags</h2>
             <div className="flex flex-wrap justify-center gap-2 mb-4">
               {availableTags.map((tag) => (
                 <button

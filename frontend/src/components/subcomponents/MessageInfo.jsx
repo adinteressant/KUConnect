@@ -18,16 +18,16 @@ export default function MessageInfo({isVisible,id}){
       console.log(e)
     }
   }
-  return <div className={`mr-6 flex shadow-sm flex-col border bg-white rounded-md border-gray-200 
+  return <div className={`mr-6 flex shadow-sm flex-col border bg-white dark:bg-slate-900 rounded-md border-gray-200 
     ${isVisible?`absolute z-50`:`hidden`}
   `}>
-    <div className="border-b border-gray-200 p-2 hover:bg-gray-200 cursor-pointer"
+    <div className="border-b dark:bg-slate-900 dark:hover:bg-slate-900 border-gray-200 p-2 hover:bg-gray-200 cursor-pointer"
       onClick={async () => {
         await handleDelete()
       }}
     >
       Delete
     </div>
-    <div className="p-2 hover:bg-gray-200 cursor-pointer">operation2</div>
+    <div className="p-2 hover:bg-gray-200 dark:bg-slate-900 dark:hover:bg-slate-900 cursor-pointer">operation2</div>
   </div>
 }

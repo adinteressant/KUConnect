@@ -5,12 +5,21 @@ import ShowLikes from './LikeOverlay.jsx'
 import ShowComments from './CommentOverlay.jsx'
 import { useOutletContext } from 'react-router-dom'
 import { Loader2 } from 'lucide-react'
+import { useTheme } from '../context/themeContext.jsx'
 //Props include:
 //Posts (array) jun dekhauna parney cha
 //Also send the setPosts function for state variable posts
 
 function Posts(props) {
 
+  const {theme, toggleTheme} = useTheme();
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [theme]);
     const {userProfile, setUserProfile} = useOutletContext()
     const [posts, setPosts] = useState([])
     const [likedPosts, setLikedPosts] = useState([])
@@ -798,7 +807,7 @@ function Posts(props) {
                 </div>
               ))
             ) : (
-              <div className="bg-white p-4 rounded-lg shadow-md text-center">
+              <div className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow-md text-center">
                 No posts available.
               </div>
             )}

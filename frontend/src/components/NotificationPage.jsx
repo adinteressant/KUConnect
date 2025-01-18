@@ -93,24 +93,24 @@ const NotificationPage = () => {
 
 
   return (
-    <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-full h-full max-h-full">
-      <h1 className="text-4xl font-serif text-gray-800 mb-6">Notifications</h1>
-      {userFilteredPosts.length === 0 ? (
-        <p className="text-gray-600">No notifications yet</p>
+    <div className=" p-8 rounded-lg w-full max-w-full h-full max-h-full">
+      <h1 className="text-4xl font-serif dark:text-gray-300 text-gray-800 mb-6">Notifications</h1>
+      {userFilteredPosts.length === 0 ? ( 
+        <p className="dark:text-gray-500 text-gray-600">No notifications yet</p>
       ) : (
         <div className="space-y-4">
           {userFilteredPosts.map((post, index) => (
-            <div key={post.id || index} className="bg-gray-200 p-4 rounded-lg hover:bg-gray-100 transition-colors">
+            <div key={post.id || index} className="dark:bg-slate-800 bg-gray-200 p-4 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors">
               <Link 
                             to={`/post/${post._id}`}>
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-800">
+                  <h3 className="text-lg font-semibold dark:text-gray-300 text-gray-800">
                     A new post by {post.username}!
                   </h3>
-                  <p className="text-gray-600">{post.content}</p>
+                  <p className="text-gray-600 dark:text-gray-400">{post.content}</p>
                 </div>
-                <div className="text-gray-400">{formatTimeAgo(post.createdAt)}</div>
+                <div className="text-gray-400 dark:text-gray-500">{formatTimeAgo(post.createdAt)}</div>
               </div>
               </Link>
             </div>

@@ -30,5 +30,6 @@ export default {
   plugins: [
     require("tailwind-animation-delay"),
   ],
+   darkMode: 'class',
 }
 

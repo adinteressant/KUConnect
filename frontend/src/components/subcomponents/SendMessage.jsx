@@ -16,8 +16,8 @@ export default function SendMessage(){
   }
 
   return (
-    <form onSubmit={handleSubmit} className="border-t border-gray-200 p-4">
-      <div className="flex gap-2 overflow-hidden">
+    <form onSubmit={handleSubmit} className="border-t border-gray-200 dark:bg-slate-900 p-4">
+      <div className="flex gap-2 overflow-hidden ">
         <input
           type="text"
           placeholder="Type your message..."
