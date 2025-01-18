@@ -211,7 +211,7 @@ const HomePage = () => {
   }
 
   return (
-    <div className="flex-1 flex flex-col min-h-screen bg-gray-100">
+    <div className="flex-1 flex flex-col min-h-screen dark:bg-slate-900 bg-gray-100">
       {/* Displaying user profile */}
       {(user || googleUser) && showWelcomeModal && (
             <WelcomeModal
@@ -226,11 +226,11 @@ const HomePage = () => {
           {/* Post creation section */}
           {(user || googleUser) ? (
             <div
-              className={`bg-white p-4 rounded-lg shadow-md transition-all duration-300 h-auto`}
+              className={`dark:bg-gray-900 bg-white p-4 rounded-lg shadow-md transition-all duration-300 h-auto`}
             >
               <textarea
                 placeholder="What's on your mind?"
-                className={`w-full p-2 border rounded-lg bg-gray-100 focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-600 transition-all duration-300 ${
+                className={`w-full p-2 border rounded-lg dark:bg-slate-800 dark:text-gray-200 bg-gray-100 focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-600 transition-all duration-300 ${
                   isTextareaFocused || isTagsInputFocused ? 'h-28' : 'h-20'
                 }`}
                 value={content}
@@ -245,7 +245,7 @@ const HomePage = () => {
                   <input
                     type="text"
                     placeholder="Add tags (space-separated)"
-                    className="mt-4 flex-1 p-2 border rounded-lg bg-gray-100 focus:m-1 focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-600 transition-all duration-300"
+                    className="mt-4 flex-1 p-2 border rounded-lg dark:text-gray-200 dark:bg-slate-800 bg-gray-100 focus:m-1 focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-600 transition-all duration-300"
                     value={tagValue}
                     onChange={handleTagInputChange}
                     onKeyDown={handleTagInputKeyDown}
@@ -290,7 +290,7 @@ const HomePage = () => {
                     {images.length >= 10 || 
                     (<label
                       htmlFor='image-upload'
-                      className = 'flex flex-col items-center justify-center text-center w-20 h-20 rounded-lg text-sm border-dashed border-2 border-gray-400 text-gray-400 hover:text-cyan-600 hover:border-cyan-600 cursor-pointer transition-all duration-300'
+                      className = 'flex flex-col items-center justify-center text-center w-20 h-20 rounded-lg text-sm border-dashed border-2 border-gray-400 dark:text-gray-200 text-gray-400 hover:text-cyan-600 hover:border-cyan-600 cursor-pointer transition-all duration-300'
                     >
                       Upload Images
                     </label>)

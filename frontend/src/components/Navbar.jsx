@@ -181,9 +181,9 @@ const SliderToggle = ({ selected, setSelected }) => {
     <div className='animate-slide opacity-0 mt-2 text-center text-gray-400 text-xl absolute'>Welcome Aboard!</div> 
             <div className="relative card-wrapper">
     <div className='card-content'>
-              <Search className="absolute left-3 animate-fade top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+              <Search className="absolute left-3 animate-fade top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-100 h-5 w-5" />
               <form onSubmit={handleSearch}>   
-                <div className="animate-fade w-full card-content pl-10 pr-4 py-2 rounded-full bg-gray-100 focus-within:ring-2 focus-within:ring-cyan-500 focus-within:bg-white transition-all duration-700 flex items-center gap-2 ">
+                <div className="animate-fade w-full dark:text-white dark:bg-white card-content pl-10 pr-4 py-2 rounded-full bg-gray-100 focus-within:ring-2 focus-within:ring-cyan-500 focus-within:bg-white transition-all duration-700 flex items-center gap-2 ">
                   {searchTrait.startsWith('@user:') && (
                     <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-sm whitespace-nowrap">
                       @user:
@@ -197,7 +197,7 @@ const SliderToggle = ({ selected, setSelected }) => {
                   <input
                     type="text"
                     placeholder="Search"
-                    className="flex-1 bg-transparent focus:outline-none"
+                    className="flex-1 bg-transparent dark:text-gray-100 focus:outline-none"
                     value={
                       searchTrait.startsWith('@user:')
                         ? searchTrait.slice(6) 
@@ -259,11 +259,11 @@ const SliderToggle = ({ selected, setSelected }) => {
               </form>
     </div>
             {showDropdown && (
-                <div className="absolute left-0 top-12 border border-gray-200 rounded-lg shadow-lg w-full z-50">
+                <div className="absolute left-0 top-12 dark:bg-slate-800 bg-gray-100 border border-gray-200 rounded-lg shadow-lg w-full z-50">
                   {dropdownOptions.map((option) => (
                     <div
                       key={option}
-                      className="px-4 py-2 hover:cursor-pointer text-gray-700"
+                      className="px-4 py-2 hover:cursor-pointer dark:text-gray-100 text-gray-700"
                       onMouseDown={() => {
                         setSearchTrait(option + ':');
                         setShowDropdown(false);

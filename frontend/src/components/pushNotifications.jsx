@@ -1,19 +1,10 @@
 // src/components/PushNotification.js
-import React, { useState, useEffect } from 'react';
+import React, { useState} from 'react';
 import axios from 'axios';
-import { useTheme } from './context/themeContext';
 
 const PushNotification = () => {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [subscription, setSubscription] = useState(null);
-  const {theme, toggleTheme} = useTheme();
-useEffect(() => {
-  if (theme === 'dark') {
-    document.documentElement.classList.add('dark');
-  } else {
-    document.documentElement.classList.remove('dark');
-  }
-}, [theme]);
   const registerServiceWorker = async () => {
     try {
       const registration = await navigator.serviceWorker.register('/service-worker.js');

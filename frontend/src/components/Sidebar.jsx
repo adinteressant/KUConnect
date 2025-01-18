@@ -83,7 +83,7 @@ useEffect(() => {
       onMouseLeave={() => setIsHovered(false)}
       animate={{ width: isHovered ? 220 : 55 }}
       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-      className ={ `shadow-md p-2 fixed z-10 bottom-0 top-16 h-screen border-r ${theme === 'dark' ? 'border-slate-900' :'border-gray-200' } transition-colors ${
+      className ={ `shadow-md p-2 fixed z-10 bottom-0 top-16 h-screen border-r ${theme === 'dark' ? 'border-slate-800' :'border-gray-200' } transition-colors ${
       theme === "light" ? "bg-white" : "bg-slate-900"
     }`}
     >
@@ -91,20 +91,25 @@ useEffect(() => {
       <ul className="space-y-2">
         <li>
           <NavLink to="/home" className={({ isActive }) =>     
-            `${isActive
-      ? theme === 'dark'
-        ? 'text-white shadow-inner'  
-        : 'bg-gray-200 shadow-inner'  
-      : theme === 'dark' ? 'hover:bg-slate-700' : 'hover:bg-gray-200'} flex items-center p-3 rounded-lg cursor-pointer transition-all`}>
-            <div className="flex items-center gap-2">
+                      `${isActive
+                        ? theme === 'dark'
+                          ? 'text-white hover:bg-gray-700 bg-gray-700 shadow-inner'  
+                          : 'bg-gray-200 shadow-inner'  
+                        : 'hover:bg-gray-200'} flex items-center p-3 rounded-lg cursor-pointer transition-all dark:hover:bg-gray-700`}>          
+                  <div className="flex items-center gap-2">
               <HomeIcon className="text-cyan-600 h-5 w-5" />
                {isHovered && <span className="truncate whitespace-nowrap">Home</span>}
             </div>
           </NavLink>
         </li>
         <li>
-          <NavLink to="/messages" className={({ isActive }) => `${isActive ? 'bg-gray-200' : 'hover:bg-gray-100'} flex items-center p-3 rounded-lg cursor-pointer transition-all`}>
-            <div className="flex gap-2 items-center">
+        <NavLink to="/messages" className={({ isActive }) =>     
+            `${isActive
+      ? theme === 'dark'
+        ? 'text-white hover:bg-gray-700 bg-gray-700 shadow-inner'  
+        : 'bg-gray-200 shadow-inner'  
+      : 'hover:bg-gray-200'} flex items-center p-3 rounded-lg cursor-pointer transition-all dark:hover:bg-gray-700`}>          
+        <div className="flex gap-2 items-center">
               <div className="relative h-6 w-6 flex justify-center items-center">
                 {newMessages.length > 0 && (
                   <div className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-medium text-white">
@@ -118,7 +123,11 @@ useEffect(() => {
           </NavLink>
         </li>
         <li>
-          <NavLink to="/friends" className={({ isActive }) => `${isActive ? 'bg-gray-200' : 'hover:bg-gray-100'} flex items-center p-3 rounded-lg cursor-pointer transition-all`}>
+          <NavLink to="/friends" className={({ isActive }) =>             `${isActive
+      ? theme === 'dark'
+        ? 'text-white hover:bg-gray-700 bg-gray-700 shadow-inner'  
+        : 'bg-gray-200 shadow-inner'  
+      : 'hover:bg-gray-200'} flex items-center p-3 rounded-lg cursor-pointer transition-all dark:hover:bg-gray-700`}>          
             <div className="flex items-center gap-2">
               <div className="relative h-6 w-6 flex justify-center items-center">
                 <FriendsIcon className="text-cyan-600 h-5 w-5" />
@@ -133,7 +142,11 @@ useEffect(() => {
           </NavLink>
         </li>
         <li>
-          <NavLink to="/notifications" className={({ isActive }) => `${isActive ? 'bg-gray-200' : 'hover:bg-gray-100'} flex items-center p-3 rounded-lg cursor-pointer transition-all`}>
+          <NavLink to="/notifications" className={({ isActive }) =>             `${isActive
+      ? theme === 'dark'
+        ? 'text-white hover:bg-gray-700 bg-gray-700 shadow-inner'  
+        : 'bg-gray-200 shadow-inner'  
+       : 'hover:bg-gray-200'} flex items-center p-3 rounded-lg cursor-pointer transition-all dark:hover:bg-gray-700`}>          
             <div className="flex items-center gap-2">
               <div className="relative h-6 w-6 flex justify-center items-center">
                 <Bell className="text-cyan-600 h-5 w-5" />
@@ -151,7 +164,11 @@ useEffect(() => {
           </NavLink>
         </li>
         <li>
-          <NavLink to="/posts/saved" className={({ isActive }) => `${isActive ? 'bg-gray-200' : 'hover:bg-gray-100'} flex items-center p-3 rounded-lg cursor-pointer transition-all`}>
+          <NavLink to="/posts/saved" className={({ isActive }) =>             `${isActive
+      ? theme === 'dark'
+        ? 'text-white hover:bg-gray-700 bg-gray-700 shadow-inner'  
+        : 'bg-gray-200 shadow-inner'  
+         : 'hover:bg-gray-200'} flex items-center p-3 rounded-lg cursor-pointer transition-all dark:hover:bg-gray-700`}>          
             <div className="flex items-center gap-2">
               <SaveIcon className="text-cyan-600 h-5 w-5" />
               {isHovered && <span className="truncate whitespace-nowrap">Saved Posts</span>}

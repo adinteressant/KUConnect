@@ -1,18 +1,9 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { useTheme } from './context/themeContext';
 
 const UserSearchResults = ({ users }) => {
-    const {theme, toggleTheme} = useTheme();
-  useEffect(() => {
-    if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, [theme]);
   return (
-    <div className="grid gap-4 md:grid-cols-2">
+    <div className="grid gap-4 dark:text-gray-200 dark:bg-slate-900 md:grid-cols-2">
       {users.map(user => (
         <Link 
           key={user.user_id} 
@@ -25,8 +16,8 @@ const UserSearchResults = ({ users }) => {
             className="w-16 h-16 rounded-full object-cover"
           />
           <div className="ml-4">
-            <h3 className="font-medium text-gray-900">{user.username}</h3>
-            <p className="text-sm text-gray-600">{user.role}</p>
+            <h3 className="font-medium dark:text-gray-200 text-gray-900">{user.username}</h3>
+            <p className="text-sm dark:text-gray-300 text-gray-600">{user.role}</p>
           </div>
         </Link>
       ))}

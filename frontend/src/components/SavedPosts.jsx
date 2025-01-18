@@ -1,16 +1,7 @@
 import { useState, useEffect } from 'react'
 import Posts from './subcomponents/Posts.jsx'
-import { useTheme } from './context/themeContext.jsx';
 export default function SavedPosts()
 {
-      const {theme, toggleTheme} = useTheme();
-    useEffect(() => {
-      if (theme === 'dark') {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
-    }, [theme]);
     const [userProfile, setUserProfile] = useState({})
     const [posts, setPosts] = useState([])
 
@@ -33,7 +24,7 @@ export default function SavedPosts()
     }, [userProfile])
 
     return(
-        <div className='p-6 bg-gray-100'>
+        <div className='p-6'>
             <Posts posts={posts} setPosts={setPosts} savePage={true}/>
         </div>
     )

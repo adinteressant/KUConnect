@@ -1,17 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
-import { useTheme } from './context/themeContext';
 
 export default function VerifyOtp(){
 
-  const {theme, toggleTheme} = useTheme();
-useEffect(() => {
-  if (theme === 'dark') {
-    document.documentElement.classList.add('dark');
-  } else {
-    document.documentElement.classList.remove('dark');
-  }
-}, [theme]);
   const [otp,setOtp] = useState('')
   const location = useLocation()
 
@@ -49,8 +40,8 @@ useEffect(() => {
   return (
     <div className="min-h-screen w-full flex items-center justify-center">
       <div className="w-full max-w-md p-8 rounded-lg shadow-md">
-        <h1 className="text-4xl font-serif mb-8 text-center text-gray-800">Verify OTP</h1>
-        <p className="text-center text-gray-600 mb-6">
+        <h1 className="text-4xl font-serif mb-8 text-center dark:text-gray-200 text-gray-800">Verify OTP</h1>
+        <p className="text-center dark:text-gray-300 text-gray-600 mb-6">
           Enter the OTP sent to {queryParams.get('email')}
         </p>
         <form onSubmit={handleSubmit} className="w-full space-y-6">

@@ -1,17 +1,8 @@
 import ReactWebcam from "react-webcam";
-import { useTheme } from "./context/themeContext";
-import React, {useEffect} from 'react';
+import React from 'react';
 
 
 export default function VideoCall(){
-  const {theme, toggleTheme} = useTheme();
-useEffect(() => {
-  if (theme === 'dark') {
-    document.documentElement.classList.add('dark');
-  } else {
-    document.documentElement.classList.remove('dark');
-  }
-}, [theme]);
   const videoConstraints = {
     facingMode: "user",
     disablePictureInPicture:true,
