@@ -807,7 +807,7 @@ function Posts(props) {
                 </div>
               ))
             ) : (
-              <div className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow-md text-center">
+              <div className="bg-white dark:bg-slate-800 dark:text-slate-200 p-4 rounded-lg shadow-md text-center">
                 No posts available.
               </div>
             )}

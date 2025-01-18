@@ -88,7 +88,7 @@ useEffect(() => {
     }`}
     >
       <nav>
-      <ul className="space-y-2">
+      <ul className={`space-y-2 ${isHovered ? 'justify-start': 'place-items-center'}`}>
         <li>
           <NavLink to="/home" className={({ isActive }) =>     
                       `${isActive

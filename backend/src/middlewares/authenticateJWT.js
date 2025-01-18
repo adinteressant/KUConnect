@@ -54,7 +54,7 @@ const authenticateJWT = async (req, res, next) => {
         }
       } else {
         // Token is valid
-        console.log('token is valid')
+        // console.log('token is valid')
         req.user = decoded.user_id;
         return next();
       }
