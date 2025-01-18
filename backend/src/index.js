@@ -13,12 +13,15 @@ import http from  'http';
 import { connectToDB } from './db/index.js'
 import handleWebRTC from './controllers/handleWebRTC.js';
 
+import { app } from './utils/socket/socket.js'
+import {server} from './utils/socket/socket.js'
+
 dotenv.config({path: './.env'});
 
 
-const app = express();
+// const app = express();
 const video_app = express();
-const server = http.createServer(app);
+// const server = http.createServer(app);
 const io = new Server(server);
 
 //middleware attachments
@@ -28,7 +31,7 @@ app.use("/public",express.static("../public/"))
 app.use(
   cors({
     origin: 'http://localhost:5173', // Frontend URL
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    methods: ['GET', 'POST', 'PUT','PATCH', 'DELETE'],
     credentials: true, // Allow cookies to be sent with requests
   })
 );
