@@ -95,7 +95,7 @@ const NotificationPage = () => {
   return (
     <div className=" p-8 rounded-lg w-full max-w-full h-full max-h-full">
       <h1 className="text-4xl font-serif dark:text-gray-300 text-gray-800 mb-6">Notifications</h1>
-      {userFilteredPosts.length === 0 ? (
+      {userFilteredPosts.length === 0 ? ( 
         <p className="dark:text-gray-500 text-gray-600">No notifications yet</p>
       ) : (
         <div className="space-y-4">
