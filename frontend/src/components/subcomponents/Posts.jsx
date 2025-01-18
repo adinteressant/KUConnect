@@ -429,20 +429,20 @@ function Posts(props) {
               posts.map((post) => (
                 <div
                   key={post._id}
-                  className={`group/post relative bg-white p-4 rounded-lg shadow-md mb-4 transition-all duration-300 ${
+                  className={`group/post relative bg-white dark:bg-slate-800 dark:shadow-black dark:text-slate-200 p-4 rounded-lg shadow-md mb-4 transition-all duration-300 ${
                     post.isUpdating ? 'scale-105' : 'scale-100'
                   }`}
                 >
-                  <div className='flex gap-2 items-center'>
+                  <div className='flex gap-2 dark:text-slate-200 items-center'>
                     <Link to={`/${post.username}`}>
                       <img src={`/api/get-pfp?id=${post.pfp_id}`} className="h-9 w-9 rounded-full object-cover"/>
                     </Link>
                     <div>
                       <Link to={`/${post.username}`}
-                        className="text-gray-800 font-semibold">
+                        className="text-gray-800 dark:text-slate-200 font-semibold">
                         {post.username}
                       </Link>
-                      <div className='flex gap-1 items-center text-gray-600 text-xs'>
+                      <div className='flex gap-1 items-center text-gray-600 dark:text-gray-600 text-xs'>
                         <div>
                           {post.role.charAt(0).toUpperCase() + post.role.slice(1)}
                         </div>
@@ -461,7 +461,7 @@ function Posts(props) {
                       </div>
                     </div>
                   </div>
-                  <p className="mt-2 text-gray-800">{post.content}</p>
+                  <p className="mt-2 dark:text-slate-200 text-gray-800">{post.content}</p>
                   {post.tags.length > 0 && (
                     <div className="mt-2 text-sm text-gray-600">
                       Tags: {post.tags.join(', ')}
@@ -527,7 +527,7 @@ function Posts(props) {
 
                     </div>
                     :
-                    <div className='mt-2 bg-gray-100 rounded-lg w-[100%] h-[300px] flex justify-center items-center'>
+                    <div className='mt-2 bg-gray-100 rounded-lg w-[100%] h-[300px] dark:bg-slate-800 flex justify-center items-center'>
                       <Loader2 className="w-5 h-5 text-cyan-600 animate-spin" />
                     </div>
                   )}
@@ -540,7 +540,7 @@ function Posts(props) {
                       {post.likes>0 &&
                         <button 
                           onClick={() => openLikeOverlay(post._id)} 
-                          className="text-sm text-gray-600 hover:text-cyan-600 transition-all duration-300"
+                          className="text-sm text-gray-600 dark:text-gray-400 hover:text-cyan-600 transition-all duration-300"
                         >  
                           {(post.likes<3
                             ? `Liked by ${post.recentLikes.join(' and ')}`
@@ -553,14 +553,14 @@ function Posts(props) {
                       
                         {/* comment information */}
                         {post.comments>0 &&
-                          <button onClick={() => openCommentOverlay(post._id)} className="text-sm text-gray-600 hover:text-cyan-600 transition-all duration-300">  
+                          <button onClick={() => openCommentOverlay(post._id)} className="text-sm dark:text-gray-400 text-gray-600 hover:text-cyan-600 transition-all duration-300">  
                             {post.comments} comments
                           </button>
                         }
 
                         {/* share information */}
                         {post.shares.length>0 &&
-                          <button className="text-sm text-gray-600 hover:text-cyan-600 transition-all duration-300">  
+                          <button className="text-sm text-gray-600 dark:text-gray-400 hover:text-cyan-600 transition-all duration-300">  
                             {post.shares.length} shares
                           </button>
                         }
@@ -577,7 +577,7 @@ function Posts(props) {
                       <svg width='24' height='24' viewBox='0 0 24 24'
                       className= {`transition-all duration-300 ${isLiked(post)
                         ? 'stroke-cyan-600 fill-cyan-600 group-hover:fill-cyan-700 group-hover:stroke-cyan-700'
-                        : 'stroke-gray-600 fill-none group-hover:stroke-cyan-600'}`}
+                        : 'stroke-gray-600 dark:stroke-gray-400 fill-none group-hover:stroke-cyan-600'}`}
                       xmlns='http://www.w3.org/2000/svg'
                       >
                         <path d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/>
@@ -586,7 +586,7 @@ function Posts(props) {
                       <span className = {`transition-all duration-300
                           ${isLiked(post)
                           ? 'text-cyan-600 group-hover:text-cyan-700'
-                          : 'text-gray-600 group-hover:text-cyan-600'
+                          : 'text-gray-600 dark:text-gray-400 group-hover:text-cyan-600'
                       }`}>
                         {isLiked(post)
                         ? 'Liked' 
@@ -601,7 +601,7 @@ function Posts(props) {
                         className = {`transition-all duration-300 fill-none
                           ${showCommentBox.find(obj => obj.postId===post._id).value
                           ? 'stroke-cyan-600 group-hover:stroke-cyan-700'
-                          : 'stroke-gray-600 group-hover:stroke-cyan-600'
+                          : 'stroke-gray-600 dark:stroke-gray-400 group-hover:stroke-cyan-600'
                         }`}
                         xmlns="http://www.w3.org/2000/svg"
                       >
@@ -611,7 +611,7 @@ function Posts(props) {
                       <span className = {`transition-all duration-300
                           ${showCommentBox.find(obj => obj.postId===post._id).value
                           ? 'text-cyan-600 group-hover:text-cyan-700'
-                          : 'text-gray-600 group-hover:text-cyan-600'
+                          : 'text-gray-600 dark:text-gray-400 group-hover:text-cyan-600'
                         }`}>
                         Comment
                       </span>
@@ -620,14 +620,14 @@ function Posts(props) {
                     {/* share button */}
                     <button className='flex justify-center items-center gap-2 group'>
                       <svg width='24' height='24' viewBox='0 0 24 24'
-                        className='stroke-gray-600 fill-none group-hover:stroke-cyan-600 transition-all duration-300'
+                        className='stroke-gray-600 dark:stroke-gray-400 fill-none group-hover:stroke-cyan-600 transition-all duration-300'
                         xmlns="http://www.w3.org/2000/svg"
                       >
                         <path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/>
                         <path d="m21.854 2.147-10.94 10.939"/>
                       </svg>
 
-                      <span className='text-gray-600 group-hover:text-cyan-600 transition-all duration-300'>
+                      <span className='text-gray-600 dark:text-gray-400 group-hover:text-cyan-600 transition-all duration-300'>
                         Share
                       </span>
                     </button>
@@ -646,7 +646,7 @@ function Posts(props) {
                             <img src={`/api/get-pfp?id=${d.pfp}`} alt="profile" className="w-8 h-8 rounded-full object-cover"/>
                           </Link>
                           <div className='ml-2'>
-                              <div className='bg-gray-100 p-2 rounded-xl'>
+                              <div className='bg-gray-100 dark:bg-slate-800 p-2 rounded-xl'>
                                 <div className='flex gap-2 items-center'>
                                   <Link to={`/${userProfile.username}`} className='text-gray-800 font-semibold text-sm'>
                                     {d.username}
@@ -678,7 +678,7 @@ function Posts(props) {
                           }
                           value={showCommentBox.find(obj => obj.postId===post._id).content}
                           placeholder="Add a comment..."
-                          className='flex-1 transition-all duration-300 p-2 border rounded-lg bg-gray-100 focus:m-1 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:ring-offset-1
+                          className='flex-1 transition-all duration-300 p-2 border rounded-lg bg-gray-100 dark:bg-slate-800 focus:m-1 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:ring-offset-1
                                     resize-none overflow-auto leading-6'
                           rows='2'
                         />
@@ -699,16 +699,16 @@ function Posts(props) {
                   {/* Post Options */}
                   <div className='absolute top-3 right-3 flex items-start' onMouseLeave={() => setPostOptions(() => '')}>
                     
-                    <div className={`rounded-lg shadow-2xl bg-gray-100 border border-gray-200 transition-all duration-300 overflow-hidden ${postOptions === post._id?'opacity-100 max-h-screen':'opacity-0 max-h-0'}`}>  
+                    <div className={`rounded-lg shadow-2xl bg-gray-100 dark:bg-slate-800 border border-gray-200 transition-all duration-300 overflow-hidden ${postOptions === post._id?'opacity-100 max-h-screen':'opacity-0 max-h-0'}`}>  
                       {optionsState?
                       <div>
                         {urlPostId===post._id ||
                         (<div>
                           <Link
                             to={`/post/${post._id}`}
-                            className={`w-[100%] group/view flex items-center gap-2 rounded-t-lg p-2 text-gray-600 hover:text-cyan-600 hover:bg-gray-200 hover:shadow-inner transition-all duration-300`}
+                            className={`w-[100%] group/view flex items-center gap-2 rounded-t-lg p-2 dark:hover:text-cyan-600 text-gray-600 dark:text-gray-400 hover:text-cyan-600 hover:bg-gray-200 dark:hover:bg-gray-700 hover:shadow-inner transition-all duration-300`}
                           >
-                            <svg className='stroke-gray-600 fill-none stroke-2 group-hover/view:stroke-cyan-600 transition-all duration-300' width="20" height="20" viewBox="0 0 24 24">
+                            <svg className='stroke-gray-600 dark:stroke-gray-400 fill-none stroke-2 group-hover/view:stroke-cyan-600 transition-all duration-300' width="20" height="20" viewBox="0 0 24 24">
                               <path d="M3 7V5a2 2 0 0 1 2-2h2"/>
                               <path d="M17 3h2a2 2 0 0 1 2 2v2"/>
                               <path d="M21 17v2a2 2 0 0 1-2 2h-2"/>
@@ -727,14 +727,14 @@ function Posts(props) {
                           onClick={() => {
                             savePost(post._id.toString(), userProfile.user_id)
                           }}
-                          className={`w-[100%] group/save flex items-center gap-2 p-2 hover:bg-gray-200 hover:shadow-inner transition-all duration-300
+                          className={`w-[100%] group/save flex items-center gap-2 p-2 hover:bg-gray-200 dark:hover:text-cyan-600 dark:hover:bg-gray-700 hover:shadow-inner transition-all duration-300
                             ${post.userId !== userProfile.user_id?'rounded-b-lg':''}
                             ${urlPostId?'rounded-t-lg':''}
-                            ${saveStatus?'text-cyan-600 hover:text-cyan-700':'text-gray-600 hover:text-cyan-600'}
+                            ${saveStatus?'text-cyan-600 hover:text-cyan-700':'text-gray-600 dark:text-gray-400 hover:text-cyan-600'}
                           `}
                         >
                           <svg className={`stroke-2 transition-all duration-300
-                            ${saveStatus?'stroke-cyan-600 fill-cyan-600 group-hover:fill-cyan-700 group-hover:stroke-cyan-700':'stroke-gray-600 fill-none group-hover/save:stroke-cyan-600'}
+                            ${saveStatus?'stroke-cyan-600 fill-cyan-600 group-hover:fill-cyan-700 group-hover:stroke-cyan-700':'stroke-gray-600 dark:stroke-gray-400 dark:hover:bg-gray-700 fill-none group-hover/save:stroke-cyan-600'}
                             `}
                             width="20" height="20" viewBox="0 0 24 24"
                           >
@@ -750,9 +750,9 @@ function Posts(props) {
                           <button
                             disabled={postOptions!==post._id}
                             // onClick={() => }
-                            className={`w-[100%] group/edit flex items-center gap-2 p-2 text-gray-600 hover:text-cyan-600 hover:bg-gray-200 hover:shadow-inner transition-all duration-300`}
+                            className={`w-[100%] group/edit flex items-center gap-2 p-2 text-gray-600 dark:text-gray-400 dark:hover:text-cyan-600 hover:text-cyan-600 dark:hover:bg-gray-700 hover:bg-gray-200 hover:shadow-inner transition-all duration-300`}
                           >
-                            <svg className='stroke-gray-600 fill-none stroke-2 group-hover/edit:stroke-cyan-600 transition-all duration-300' width="20" height="20" viewBox="0 0 24 24">
+                            <svg className='stroke-gray-600 dark:stroke-gray-400  fill-none stroke-2 group-hover/edit:stroke-cyan-600 transition-all duration-300' width="20" height="20" viewBox="0 0 24 24">
                               <path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/>
                             </svg>
                             <div>Edit</div>
@@ -762,7 +762,7 @@ function Posts(props) {
                           <button
                             disabled={postOptions!==post._id}
                             onClick={() => openConfirmDeletePost(post)} 
-                            className={`w-[100%] group/del flex items-center gap-2 rounded-b-lg p-2 text-red-600 hover:text-red-700 hover:bg-gray-200 hover:shadow-inner transition-all duration-300`}
+                            className={`w-[100%] group/del flex items-center gap-2 rounded-b-lg p-2 text-red-600 hover:text-red-700 dark:hover:bg-gray-700 hover:bg-gray-200 hover:shadow-inner transition-all duration-300`}
                           >
                             <svg className='stroke-red-600 fill-none stroke-2 group-hover/del:stroke-red-700 transition-all duration-300' width="20" height="20" viewBox="0 0 24 24">
                               <path d="M3 6h18"/>
