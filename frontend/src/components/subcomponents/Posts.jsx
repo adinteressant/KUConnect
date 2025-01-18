@@ -39,14 +39,6 @@ function Posts(props) {
         })
     }, [])
 
-    useEffect(() => {
-      props.posts.map((p) => {
-        fetch(`/api/post/${p._id.toString()}/images`,{
-          method: 'GET'
-        })
-      })
-    }, [props.posts])
-
     //For separate comments and images for separate posts
     useEffect(() => {
       
@@ -64,6 +56,23 @@ function Posts(props) {
           }
       })
       setShowCommentBox(() => updatedArray)
+
+      props.posts.forEach(p =>
+      {
+        if(p.images!==null && !postImages.find(i => p.images === i._id))
+        {
+          fetch(`/api/post/images/${p.images.toString()}`,{
+            method: 'GET'
+          })
+          .then(response => response.json())
+          .then(data => {
+            setPostImages(prev => [...prev, data.images])
+          })
+          .catch(err => {
+            console.error('Error fetching images for post', err)
+          })
+        }
+      })
       
       const displayImageArray = props.posts.map((p) => {
         const alreadyObjExists = displayImage.find((i) => i.postId === p._id)
@@ -462,12 +471,13 @@ function Posts(props) {
                   )}
 
                   {/* Display Images */}
-                  {post.images.length > 0 &&
+                  {post.images === null ||
+                    (postImages.find(i => i._id === post.images)?
                     <div className='mt-2 relative group/image'>
                       
                       <img 
                         onClick={() => openImageOverlay(post._id.toString(), displayImage.find(i => i.postId === post._id).image)} 
-                        src={post.images[0]}
+                        src={`a`}
                         className='rounded-lg cursor-pointer min-w-[100%] max-h-[500px] object-cover'
                       />
 
@@ -505,8 +515,12 @@ function Posts(props) {
 
                       </div>)}
 
-                    </div> 
-                  }
+                    </div>
+                    :
+                    <div className='mt-2 bg-gray-100 rounded-lg w-[100%] h-[300px] flex justify-center items-center'>
+                      <Loader2 className="w-5 h-5 text-cyan-600 animate-spin" />
+                    </div>
+                  )}
 
                   <hr className='absolute left-0 right-0 mt-4'/>
                   

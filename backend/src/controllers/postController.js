@@ -116,36 +116,24 @@ export const createPost = async (req, res) => {
   }
 }
 
-export const getImages = (req, res) =>
+export const getImages = async(req, res) =>
 {
  try
  {  
-   const { postId } = req.params
+   const { imageId } = req.params
 
-   if(!postId)
+   if(!imageId)
    {
-     return res.status(400).json({ message: 'Missing post Id' })
+     return res.status(400).json({ message: 'Missing image Id' })
    }
 
-   if(!imageName)
-   {
-    return res.status(400).json({ message: 'Missing image name' })
-   }
+   const images = await PostImages.findById(imageId)
 
-   if(!fs.existsSync(filePath))
-   {
-    return res.status(404).json({ message: "Post's image not found" })
-   }
-   
-   return res.sendFile(filePath)
-
-   const ImagesData = Post.findOne({postId})
-   console.log(ImagesData.images)
-   return res.status(200).json({images:ImagesData})
+   return res.status(200).json({message: 'Images fetched successfully', images})
  }
  catch(error)
  {
-   console.error('Error getting image for post:', error)
+   console.error('Error getting images for post:', error)
    res.status(500).json({ message: 'Internal Server Error', error })
  }
 }
