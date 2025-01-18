@@ -34,12 +34,12 @@ export default function App() {
     }, [theme]);
 
   return (
-    <>
+    <div className = {`${theme === 'dark' ? 'bg-slate-900' : 'bg-white'}`}>
       {/* Navbar */}
     {isSidebarVisible&&<Navbar setVisibility={setIsSidebarVisible} setPadding={setPaddingValue} searchTrait={searchTrait} setSearchTrait={setSearchTrait} userProfile={userProfile} setUserProfile={setUserProfile}/>}
 
       {/* Main Layout */}
-      <div className={`flex h-screen ${theme === 'dark' ? 'bg-slate-900' : 'bg-white'}`}>
+      <div className={`flex h-screen `}>
         {/* Sidebar */}
         {isSidebarVisible && <Sidebar userPosts={userPosts} userProfile={userProfile} setUserProfile={setUserProfile} />}
 
@@ -48,6 +48,6 @@ export default function App() {
           <Outlet context={{ searchTrait, setSearchTrait ,userPosts,setUserPosts,userProfile,setUserProfile,setIsSidebarVisible}} />
         </div>
       </div>
-    </>
+    </div>
   );
 }
