@@ -21,6 +21,7 @@ function Posts(props) {
     const [overlayTransitionState, setOverlayTransitionState] = useState(false)
     const [postOptions, setPostOptions] = useState('')
     const [confirmDeletePost, setConfirmDeletePost] = useState(false)
+    const [postImages, setPostImages] = useState([])
     const [displayImage, setDisplayImage] = useState([])
     const [viewImage, setViewImage] = useState(false)
     const [urlPostId] = useState(useParams().postId)
@@ -37,6 +38,14 @@ function Posts(props) {
           console.error('Error fetching user profile:', e)
         })
     }, [])
+
+    useEffect(() => {
+      props.posts.map((p) => {
+        fetch(`/api/post/${p._id.toString()}/images`,{
+          method: 'GET'
+        })
+      })
+    }, [props.posts])
 
     //For separate comments and images for separate posts
     useEffect(() => {

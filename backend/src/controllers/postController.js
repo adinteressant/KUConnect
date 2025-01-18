@@ -116,41 +116,39 @@ export const createPost = async (req, res) => {
   }
 }
 
-//export const getImage = (req, res) =>
-//{
-//  try
-//  {  
-//    const { postId} = req.params
-//
-//    if(!postId)
-//    {
-//      return res.status(400).json({ message: 'Missing post Id' })
-//    }
-//
-//    //if(!imageName)
-//    //{
-//    //  return res.status(400).json({ message: 'Missing image name' })
-//    //}
-//
-//    //const filePath = path.join(__dirname, `../../public/uploads/${postId}/${imageName}`)
-//
-//    //if(!fs.existsSync(filePath))
-//    //{
-//    //  return res.status(404).json({ message: "Post's image not found" })
-//    //}
-//    //
-//    //return res.sendFile(filePath)
-//
-//    const ImagesData = Post.findOne({postId})
-//    console.log(ImagesData.images)
-//    return res.status(200).json({images:ImagesData})
-//  }
-//  catch(error)
-//  {
-//    console.error('Error getting image for post:', error)
-//    res.status(500).json({ message: 'Internal Server Error', error })
-//  }
-//}
+export const getImages = (req, res) =>
+{
+ try
+ {  
+   const { postId } = req.params
+
+   if(!postId)
+   {
+     return res.status(400).json({ message: 'Missing post Id' })
+   }
+
+   if(!imageName)
+   {
+    return res.status(400).json({ message: 'Missing image name' })
+   }
+
+   if(!fs.existsSync(filePath))
+   {
+    return res.status(404).json({ message: "Post's image not found" })
+   }
+   
+   return res.sendFile(filePath)
+
+   const ImagesData = Post.findOne({postId})
+   console.log(ImagesData.images)
+   return res.status(200).json({images:ImagesData})
+ }
+ catch(error)
+ {
+   console.error('Error getting image for post:', error)
+   res.status(500).json({ message: 'Internal Server Error', error })
+ }
+}
 
 // Share a post
 export const sharePost = async (req, res) => {
