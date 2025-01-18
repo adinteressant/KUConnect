@@ -59,13 +59,13 @@ function ShowComments(props) {
             </div>):
             (<div className='flex flex-col w-[100%] h-[100%]'>
                 <div className='p-2 flex gap-2 dark:bg-slate-900'>
-                    <button onClick={() => setCategory(() => 'all')} className={`p-2 rounded hover:bg-gray-100 transition-bg dark:hover:bg-gray-700  duration-300 ${category==='all'?'bg-gray-200 dark:bg-slate-900 dark:text-slate-200':'bg-slate-800 text-slate-200'}`}>
+                    <button onClick={() => setCategory(() => 'all')} className={`p-2 rounded hover:bg-gray-100 transition-bg dark:hover:bg-gray-700  duration-300 ${category==='all'?'bg-gray-200 dark:bg-slate-900 dark:text-slate-200':'dark:bg-slate-800 dark:text-slate-200'}`}>
                     All({student+faculty})
                     </button>
-                    <button onClick={() => setCategory(() => 'student')} className={`p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-300 ${category==='student'?'bg-gray-200 dark:bg-slate-900 dark:text-slate-200':'bg-slate-800 text-slate-200'}`}>
+                    <button onClick={() => setCategory(() => 'student')} className={`p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-300 ${category==='student'?'bg-gray-200 dark:bg-slate-900 dark:text-slate-200':'dark:bg-slate-800 dark:text-slate-200'}`}>
                     Students({student})
                     </button>
-                    <button onClick={() => setCategory(() => 'faculty')} className={`p-2 rounded hover:bg-gray-100 transition-all dark:hover:bg-gray-700  duration-300 ${category==='faculty'?'bg-gray-200 dark:bg-slate-900 dark:text-slate-200':'bg-slate-800 text-slate-200'}`}>
+                    <button onClick={() => setCategory(() => 'faculty')} className={`p-2 rounded hover:bg-gray-100 transition-all dark:hover:bg-gray-700  duration-300 ${category==='faculty'?'bg-gray-200 dark:bg-slate-900 dark:text-slate-200':'dark:bg-slate-800 dark:text-slate-200'}`}>
                     Faculty({faculty})
                     </button>
                 </div>

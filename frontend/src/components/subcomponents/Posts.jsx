@@ -646,16 +646,16 @@ function Posts(props) {
                             <img src={`/api/get-pfp?id=${d.pfp}`} alt="profile" className="w-8 h-8 rounded-full object-cover"/>
                           </Link>
                           <div className='ml-2'>
-                              <div className='bg-gray-100 dark:bg-slate-800 p-2 rounded-xl'>
+                              <div className='bg-gray-100 dark:bg-slate-800 p-2 rounded-xl dark:bg-slate-700'>
                                 <div className='flex gap-2 items-center'>
-                                  <Link to={`/${userProfile.username}`} className='text-gray-800 font-semibold text-sm'>
+                                  <Link to={`/${userProfile.username}`} className='text-gray-800 dark:text-slate-200 font-semibold text-sm'>
                                     {d.username}
                                   </Link>
-                                  <div className='text-gray-600 text-xs'>
+                                  <div className='text-gray-600 dark:text-gray-400 text-xs'>
                                     {d.role.charAt(0).toUpperCase() + d.role.slice(1)}
                                   </div>
                                 </div>
-                                <div className='text-gray-800 break-all whitespace-normal'>
+                                <div className='text-gray-800 dark:text-slate-200 break-all whitespace-normal'>
                                   {d.comment}
                                 </div>
                               </div>
