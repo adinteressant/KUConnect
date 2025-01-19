@@ -3,7 +3,7 @@ export default function PostSkeleton()
     return(
         // Post
         <div
-            className = 'max-w-2xl mx-auto bg-white dark:bg-slate-800 dark:shadow-black dark:text-slate-200 p-4 rounded-lg shadow-md mb-4'
+            className = 'max-w-2xl mx-auto bg-white dark:bg-slate-800 dark:shadow-black dark:text-slate-200 p-4 rounded-lg shadow-md mt-4'
         >
             {/* Post Contents */}
             <div className='animate-pulse mb-[25%]'>

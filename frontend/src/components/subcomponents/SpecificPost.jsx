@@ -13,7 +13,7 @@ export default function SpecificPost()
         fetch(`/api/post/${postId}`)
         .then(response => response.json())
         .then(data => {
-           setPosts(() => data.post)
+            setPosts(() => data.post)
             setLoadingState(() => false)
         })
         .catch(error => {
