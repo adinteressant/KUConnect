@@ -20,7 +20,7 @@ export default function App() {
       setPaddingValue("");
     } else {
       setIsSidebarVisible(true);
-      setPaddingValue("pl-64");
+      setPaddingValue("pl-[55px]");
     }
   }, [location.pathname]);
       

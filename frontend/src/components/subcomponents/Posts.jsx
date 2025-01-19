@@ -471,26 +471,23 @@ function Posts(props) {
                   {/* Display Images */}
                   {post.images === null ||
                     (postImages.some(i => i._id === post.images)?
-                    <div className='mt-2 relative group/image'>
+                    <div className='mt-2 relative group/image rounded-lg flex overflow-hidden'>
                       
-                      <img 
-                        onClick={() => 
-                          openImageOverlay(
-                            postImages.find(i => i._id === post.images)
-                            .images[
-                              postImages.find(i => i._id === post.images).current
-                            ]
-                          )
-                        } 
-                        src={`${
-                          postImages.find(i => i._id === post.images)
-                          .images[
-                            postImages.find(i => i._id === post.images).current
-                          ]
-                        }`}
-                        className='rounded-lg cursor-pointer min-w-[100%] max-h-[500px] object-cover'
-                      />
-
+                      {postImages.find(i => i._id === post.images)
+                        .images.map((image,index) => (
+                          <img
+                            key = {index}
+                            onClick={() => 
+                              openImageOverlay(image)
+                            }
+                            src={`${image}`}
+                            className='rounded-lg cursor-pointer min-w-[100%] min-h-24 max-h-[500px] object-cover transition-all duration-500'
+                            style={{
+                              transform: `translateX(-${postImages.find(i => i._id === post.images).current * 100}%)`
+                            }}
+                          />
+                        ))
+                      }
                       
                       { postImages.find(i => i._id === post.images).images.length > 1 &&
                       (<div className='absolute bottom-0 w-full h-12 bg-black bg-opacity-40 opacity-0 rounded-b-lg flex justify-center items-center group-hover/image:opacity-80 transition-all duration-300'>

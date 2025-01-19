@@ -4,6 +4,7 @@ import Posts from './subcomponents/Posts.jsx'
 import WelcomeModal from './subcomponents/WelcomeModal.jsx'
 import { useGetUnreadMessage } from './hooks/useGetUnreadMessage.js'
 import base64encode from '../utils/base64encode.js'
+import PostSkeleton from './subcomponents/PostSkeleton.jsx'
 
 const HomePage = () => {
   const [user, setUser] = useState(null)
@@ -20,6 +21,7 @@ const HomePage = () => {
   const [encodedImages, setEncodedImages] = useState([])
   const [showWelcomeModal, setShowWelcomeModal] = useState(false)
   const {searchTrait,setSearchTrait} = useOutletContext()
+  const [postLoadingState, setPostLoadingState] = useState(true)
   // Check for logged-in user based on isAuthenticated
   if(localStorage.getItem('isLoggedIn') === 'true') useGetUnreadMessage()
   
@@ -69,11 +71,14 @@ const HomePage = () => {
     fetch(`/api/get-posts`)
       .then((response) => response.json())
       .then((data) => {
-        setPosts(data)
+        setPosts(() => data)
+        setTimeout(() => {
+          setPostLoadingState(() => false)
+        }, 2000)
       })
       .catch((e) => {
         console.error('Error fetching posts:', e)
-      }) ///AHHHHHHHHHHHH WHERE IS MY COMMENT, I HATE AI
+      })
   }, [])
 
   // Handle Post Submit
@@ -317,8 +322,12 @@ const HomePage = () => {
 
         </div>
 
+        {postLoadingState?
+        <PostSkeleton />
+        :
         <Posts posts={posts} setPosts={setPosts}/>
-
+        }
+        
       </main>
     </div>
   )
