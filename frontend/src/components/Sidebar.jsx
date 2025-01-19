@@ -75,7 +75,7 @@ useEffect(() => {
   return (
     <div
     className={`grid place-content-center transition-colors ${
-      theme === "light" ? "bg-white text-black" : "bg-slate-900 text-white"
+      theme === "light" ? "bg-white text-black" : "bg-slate-800 text-white"
     }`}
   >
     <motion.div
@@ -84,7 +84,7 @@ useEffect(() => {
       animate={{ width: isHovered ? 220 : 55 }}
       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
       className ={ `shadow-md p-2 fixed z-10 bottom-0 top-16 h-screen border-r ${theme === 'dark' ? 'border-slate-800' :'border-gray-200' } transition-colors ${
-      theme === "light" ? "bg-white" : "bg-slate-900"
+      theme === "light" ? "bg-white" : "bg-slate-800"
     }`}
     >
       <nav>

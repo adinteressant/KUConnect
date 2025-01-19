@@ -442,7 +442,7 @@ function Posts(props) {
                         className="text-gray-800 dark:text-slate-200 font-semibold">
                         {post.username}
                       </Link>
-                      <div className='flex gap-1 items-center text-gray-600 dark:text-gray-600 text-xs'>
+                      <div className='flex gap-1 items-center text-gray-600 dark:text-gray-400 text-xs'>
                         <div>
                           {post.role.charAt(0).toUpperCase() + post.role.slice(1)}
                         </div>
@@ -463,7 +463,7 @@ function Posts(props) {
                   </div>
                   <p className="mt-2 dark:text-slate-200 text-gray-800">{post.content}</p>
                   {post.tags.length > 0 && (
-                    <div className="mt-2 text-sm text-gray-600">
+                    <div className="mt-2 text-sm text-gray-600 dark:text-gray-400">
                       Tags: {post.tags.join(', ')}
                     </div>
                   )}
@@ -532,10 +532,10 @@ function Posts(props) {
                     </div>
                   )}
 
-                  <hr className='absolute left-0 right-0 mt-4'/>
+                  {/* <hr className='absolute left-0 right-0 mt-4'/> */}
                   
                   {/* Likes, Comments, Shares Information */}
-                  <div className={`mt-6 flex items-center gap-4 transition-all duration-300 ${isInfoDisplayed(post)?'opacity-100 h-max-screen':'opacity-0 h-max-0'}`}>
+                  <div className={`mt-6 flex items-center gap-4 pt-2 transition-all border-t border-b pb-1 dark:border-slate-700 duration-300 ${isInfoDisplayed(post)?'opacity-100 h-max-screen':'opacity-0 h-max-0'}`}>
                     {/* like information */}
                       {post.likes>0 &&
                         <button 
@@ -554,7 +554,7 @@ function Posts(props) {
                         {/* comment information */}
                         {post.comments>0 &&
                           <button onClick={() => openCommentOverlay(post._id)} className="text-sm dark:text-gray-400 text-gray-600 hover:text-cyan-600 transition-all duration-300">  
-                            {post.comments} comments
+                            {post.comments }{post.comments === 1 ? ` comment`: ` comments`}
                           </button>
                         }
 
@@ -567,7 +567,7 @@ function Posts(props) {
                     </div>
                   </div>
 
-                  <hr className={`transition-all duration-300 ${isInfoDisplayed(post)?'opacity-100 h-max-screen mt-2':'opacity-0 h-max-0 mt-0'}`}/>
+                  {/* <hr className={`transition-all duration-300 ${isInfoDisplayed(post)?'opacity-100 h-max-screen mt-2':'opacity-0 h-max-0 mt-0'}`}/> */}
 
                   {/* Like, Comment, Share Button */}
                   <div className={`transition-all duration-1000 flex justify-evenly items-center gap-2 ${(!isInfoDisplayed(post)&&showCommentBox.find(obj => obj.postId===post._id).value)?'mt-0':'mt-2'}`}>
@@ -646,7 +646,7 @@ function Posts(props) {
                             <img src={`/api/get-pfp?id=${d.pfp}`} alt="profile" className="w-8 h-8 rounded-full object-cover"/>
                           </Link>
                           <div className='ml-2'>
-                              <div className='bg-gray-100 dark:bg-slate-800 p-2 rounded-xl dark:bg-slate-700'>
+                              <div className='bg-gray-100 dark:bg-slate-700 p-2 rounded-xl'>
                                 <div className='flex gap-2 items-center'>
                                   <Link to={`/${userProfile.username}`} className='text-gray-800 dark:text-slate-200 font-semibold text-sm'>
                                     {d.username}
@@ -699,7 +699,7 @@ function Posts(props) {
                   {/* Post Options */}
                   <div className='absolute top-3 right-3 flex items-start' onMouseLeave={() => setPostOptions(() => '')}>
                     
-                    <div className={`rounded-lg shadow-2xl bg-gray-100 dark:bg-slate-800 border border-gray-200 transition-all duration-300 overflow-hidden ${postOptions === post._id?'opacity-100 max-h-screen':'opacity-0 max-h-0'}`}>  
+                    <div className={`rounded-lg shadow-2xl bg-gray-100 dark:bg-slate-900 border dark:border-slate-700 border-gray-200 transition-all duration-300 overflow-hidden ${postOptions === post._id?'opacity-100 max-h-screen':'opacity-0 max-h-0'}`}>  
                       {optionsState?
                       <div>
                         {urlPostId===post._id ||
@@ -719,7 +719,6 @@ function Posts(props) {
                             <div>View</div>
                           </Link>
                         
-                          <hr/>
                         </div>)}
 
                         <button
@@ -745,7 +744,7 @@ function Posts(props) {
                         
                         {(post.userId === userProfile.user_id) &&
                         <div>
-                          <hr/>
+                          
 
                           <button
                             disabled={postOptions!==post._id}
@@ -757,7 +756,6 @@ function Posts(props) {
                             </svg>
                             <div>Edit</div>
                           </button>
-                          <hr/>
                         
                           <button
                             disabled={postOptions!==post._id}

@@ -233,7 +233,7 @@ const HomePage = () => {
             >
               <textarea
                 placeholder="What's on your mind?"
-                className={`w-full p-2 border rounded-lg dark:bg-slate-800 dark:text-gray-200 bg-gray-100 focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-600 transition-all duration-300 ${
+                className={`w-full p-2 border rounded-lg dark:bg-slate-900 dark:border-slate-800 dark:text-gray-200 bg-gray-100 focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-600 transition-all duration-300 ${
                   isTextareaFocused || isTagsInputFocused ? 'h-28' : 'h-20'
                 }`}
                 value={content}
@@ -248,7 +248,7 @@ const HomePage = () => {
                   <input
                     type="text"
                     placeholder="Add tags (space-separated)"
-                    className="mt-4 flex-1 p-2 border rounded-lg dark:text-gray-200 dark:bg-slate-800 bg-gray-100 focus:m-1 focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-600 transition-all duration-300"
+                    className="mt-4 flex-1 p-2 border rounded-lg dark:text-gray-200 dark:bg-slate-900 dark:border-slate-800 bg-gray-100 focus:m-1 focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-600 transition-all duration-300"
                     value={tagValue}
                     onChange={handleTagInputChange}
                     onKeyDown={handleTagInputKeyDown}
@@ -293,7 +293,7 @@ const HomePage = () => {
                     {images.length >= 10 || 
                     (<label
                       htmlFor='image-upload'
-                      className = 'flex flex-col items-center justify-center text-center w-20 h-20 rounded-lg text-sm border-dashed border-2 border-gray-400 dark:text-gray-200 text-gray-400 hover:text-cyan-600 hover:border-cyan-600 cursor-pointer transition-all duration-300'
+                      className = 'flex flex-col dark:bg-slate-900 dark:border-slate-700 dark:text-gray-400 items-center justify-center text-center w-20 h-20 rounded-lg text-sm border-dashed border-2 border-gray-400 text-gray-400 hover:text-cyan-600 hover:border-cyan-600 cursor-pointer transition-all duration-300'
                     >
                       Upload Images
                     </label>)
@@ -304,7 +304,7 @@ const HomePage = () => {
               <button
                 disabled={!content.trim()}
                 onClick={handlePostSubmit}
-                className="mt-4 bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:ring-offset-2 disabled:bg-gray-400 transition-all duration-300"
+                className="mt-4 bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:ring-offset-2 disabled:bg-gray-400 dark:disabled:bg-slate-600 transition-all duration-300"
               >
                 Post
               </button>
