@@ -62,7 +62,6 @@ export const createPost = async (req, res) => {
 
   try {
     // Create a new post using the provided data
-    console.log(userInfo.images)
     const newPost = new Post({
       pfp_id: userInfo.pfp_id || 0,
       images: images,
