@@ -20,7 +20,8 @@ export default function App() {
       setPaddingValue("");
     } else {
       setIsSidebarVisible(true);
-      setPaddingValue("pl-[55px]");
+      setPaddingValue("pl-[55px] pt-[64px]");
+      document.body.classList.toggle('overflow-hidden', true)
     }
   }, [location.pathname]);
       
@@ -36,15 +37,15 @@ export default function App() {
   return (
     <div className = {`${theme === 'dark' ? 'bg-slate-900' : 'bg-white'}`}>
       {/* Navbar */}
-    {isSidebarVisible&&<Navbar setVisibility={setIsSidebarVisible} setPadding={setPaddingValue} searchTrait={searchTrait} setSearchTrait={setSearchTrait} userProfile={userProfile} setUserProfile={setUserProfile}/>}
+      {isSidebarVisible&&<Navbar setVisibility={setIsSidebarVisible} setPadding={setPaddingValue} searchTrait={searchTrait} setSearchTrait={setSearchTrait} userProfile={userProfile} setUserProfile={setUserProfile}/>}
 
       {/* Main Layout */}
-      <div className={`flex overflow-y-auto min-h-screen max-h-screen `}>
+      <div className={`flex`}>
         {/* Sidebar */}
         {isSidebarVisible && <Sidebar userPosts={userPosts} userProfile={userProfile} setUserProfile={setUserProfile} />}
 
         {/* Content Area */}
-        <div className={`flex-grow pt-14 ${paddingValue}`}>
+        <div className={`flex-grow flex flex-col max-h-screen ${paddingValue}`}>
           <Outlet context={{ searchTrait, setSearchTrait ,userPosts,setUserPosts,userProfile,setUserProfile,setIsSidebarVisible}} />
         </div>
       </div>

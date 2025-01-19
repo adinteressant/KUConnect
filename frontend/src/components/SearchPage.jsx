@@ -50,8 +50,8 @@ const SearchPage = () => {
   }
 
   return (
-    <div className="container mx-auto dark:text-slate-200 px-4 py-8">
-      <div className="mb-6">
+    <div className="flex flex-col dark:text-slate-200 p-4 overflow-y-auto">
+      <div className="mx-auto">
         <h1 className="text-2xl font-bold">
           {isUserSearch 
             ? `User results for "${searchQuery.replace('@user:', '')}"` 
@@ -70,7 +70,7 @@ const SearchPage = () => {
       )}
 
       {searchResults.length === 0 && (
-        <div className="text-center dark:text-slate-300 text-gray-600">
+        <div className="text-center dark:text-slate-300 text-gray-600 mt-4">
           No results found
         </div>
       )}

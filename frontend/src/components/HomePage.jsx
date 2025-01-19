@@ -219,7 +219,7 @@ const HomePage = () => {
   }
 
   return (
-    <div className="flex-1 flex flex-col min-h-screen dark:bg-slate-900 bg-white">
+    <div className="dark:bg-slate-900 bg-white overflow-y-auto">
       {/* Displaying user profile */}
       {(user || googleUser) && showWelcomeModal && ( 
             <WelcomeModal
@@ -229,7 +229,7 @@ const HomePage = () => {
               pfp_id = {userProfile.pfp_id}
             />
       )}
-      <main className="flex-1 p-6 overflow-y-auto">
+      <main className="flex-1 p-4">
         <div className="max-w-2xl mx-auto space-y-4">
           {/* Post creation section */}
           {(user || googleUser) ? (

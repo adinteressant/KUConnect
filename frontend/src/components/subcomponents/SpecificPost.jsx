@@ -24,7 +24,7 @@ export default function SpecificPost()
     }, [postId])
 
     return(
-        <div className='p-6'>
+        <div className='p-4 pt-0 overflow-y-auto'>
             {loadingState?
             <PostSkeleton />
             :
