@@ -653,7 +653,7 @@ function Posts(props) {
                   </div>
 
                   {/* comment button thichda dekhauney */}
-                  <div className={`border-t dark:border-slate-700 border-gray-200 transition-all duration-1000 overflow-y-auto ease-in-out ${showCommentBox.find(obj => obj.postId===post._id).value? 'opacity-100 max-h-screen mt-2' : 'opacity-0 max-h-0 mt-0'}`}>
+                  <div className={`border-t dark:border-slate-700 border-gray-200 transition-all duration-500 overflow-y-auto ease-in-out ${showCommentBox.find(obj => obj.postId===post._id).value? 'opacity-100 max-h-screen mt-2' : 'opacity-0 max-h-0 mt-0'}`}>
                     {/* <hr className='absolute left-0 right-0'/> */}
 
                     {/* Bhakhar gareko comment bhayo hai bhanera display garna ko lagi (ani overall comments chai paxi xuttai overlay maa dekhauney) */}
@@ -913,14 +913,14 @@ function Posts(props) {
                           onClick={closeLikeOverlay}
             >
               <div onClick={(e) => e.stopPropagation()} 
-                  className={`relative bg-white w-80 h-96 rounded-lg shadow-2xl
+                  className={`relative bg-white dark:bg-slate-900 w-80 h-96 rounded-lg shadow-2xl
                     transition-all duration-300
                     ${overlayTransitionState?'opacity-100 scale-100':'opacity-0 scale-50'}
                     `}
               >
-                <button onClick={closeLikeOverlay} className='absolute top-2 right-2 p-2 rounded-full hover:bg-gray-200 transition-all duration-300'>
+                <button onClick={closeLikeOverlay} className='absolute top-2 right-2 p-2 rounded-full dark:hover:bg-gray-700 hover:bg-gray-200 transition-all duration-300'>
                   <svg width='24' height='24' viewBox='0 0 24 24'
-                    className='stroke-gray-600 fill-none'
+                    className='stroke-gray-600 dark:stroke-white fill-none'
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
@@ -941,14 +941,14 @@ function Posts(props) {
                           onClick={closeCommentOverlay}
             >
               <div onClick={(e) => e.stopPropagation()} 
-                  className={`relative bg-white min-w-80 w-[50%] h-[60%] rounded-lg shadow-2xl
+                  className={`relative bg-white dark:bg-slate-900  min-w-80 w-[50%] h-[60%] rounded-lg shadow-2xl
                     transition-all duration-300
                     ${overlayTransitionState?'opacity-100 scale-100':'opacity-0 scale-50'}
                     `}
               >
-                <button onClick={closeCommentOverlay} className='absolute top-2 right-2 p-2 rounded-full hover:bg-gray-200 transition-all duration-300'>
+                <button onClick={closeCommentOverlay} className='absolute top-2 right-2 p-2 rounded-full dark:hover:bg-gray-700 hover:bg-gray-200 transition-all duration-300'>
                   <svg width='24' height='24' viewBox='0 0 24 24'
-                    className='stroke-gray-600 fill-none'
+                    className='stroke-gray-600 dark:stroke-white fill-none'
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
@@ -969,20 +969,20 @@ function Posts(props) {
                           onClick={closeShareOverlay}
             >
               <div onClick={(e) => e.stopPropagation()} 
-                  className={`relative bg-white w-80 h-96 rounded-lg shadow-2xl
+                  className={`relative bg-white dark:bg-slate-900 w-96 h-96 rounded-lg shadow-2xl
                     transition-all duration-300
                     ${overlayTransitionState?'opacity-100 scale-100':'opacity-0 scale-50'}
                     `}
               >
-                <button onClick={closeShareOverlay} className='absolute top-2 right-2 p-2 rounded-full hover:bg-gray-200 transition-all duration-300'>
+                <button onClick={closeShareOverlay} className='absolute top-2 right-2 p-2 rounded-full dark:hover:bg-gray-700 hover:bg-gray-200 transition-all duration-300'>
                   <svg width='24' height='24' viewBox='0 0 24 24'
-                    className='stroke-gray-600 fill-none'
+                    className='stroke-gray-600 dark:stroke-white fill-none'
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
                   </svg>
                 </button>
-                <ShareWithFriends postId={showShareOverlay} userProfile={userProfile} closeShareOverlay={closeShareOverlay}/>
+                {/* <ShareWithFriends postId={showShareOverlay} userProfile={userProfile} closeShareOverlay={closeShareOverlay}/> */}
               </div>
             </div>
           )}

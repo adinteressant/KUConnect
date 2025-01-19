@@ -55,18 +55,18 @@ function ShowLikes(props) {
                 </div>
             </div>):
             (<div className='flex flex-col w-[100%] h-[100%]'>
-                <div className='p-2 flex gap-2 dark:bg-slate-900 border-b border-slate-700'>
-                    <button onClick={() => setCategory(() => 'all')} className={`p-2 rounded hover:bg-gray-100 transition-bg dark:hover:bg-gray-700  duration-300 ${category==='all'?'bg-gray-200 dark:text-white dark:bg-gray-700':'dark:bg-slate-900 dark:text-gray-400'}`}>
+                <div className='p-2 flex gap-2 border-b border-slate-700'>
+                    <button onClick={() => setCategory(() => 'all')} className={`p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-300 ${category==='all'?'bg-gray-200 dark:text-white dark:bg-gray-700':'dark:bg-slate-900 dark:text-gray-400'}`}>
                     All({student+faculty})
                     </button>
-                    <button onClick={() => setCategory(() => 'student')} className={`p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-300 ${category==='student'?'bg-gray-200 text-white dark:bg-gray-700 ':'dark:bg-slate-900 dark:text-gray-400'}`}>
+                    <button onClick={() => setCategory(() => 'student')} className={`p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-300 ${category==='student'?'bg-gray-200 dark:text-white dark:bg-gray-700 ':'dark:bg-slate-900 dark:text-gray-400'}`}>
                     Students({student})
                     </button>
-                    <button onClick={() => setCategory(() => 'faculty')} className={`p-2 rounded hover:bg-gray-100 transition-all dark:hover:bg-gray-700 duration-300 ${category==='faculty'?'bg-gray-200 text-white dark:bg-gray-700':'dark:bg-slate-900 dark:text-gray-400'}`}>
+                    <button onClick={() => setCategory(() => 'faculty')} className={`p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-300 ${category==='faculty'?'bg-gray-200 dark:text-white dark:bg-gray-700':'dark:bg-slate-900 dark:text-gray-400'}`}>
                     Faculty({faculty})
                     </button>
                 </div>
-                <div className='p-2 overflow-y-auto dark:bg-slate-900 flex flex-col gap-2 w-[100%] h-[100%]'>
+                <div className='p-2 overflow-y-auto flex flex-col gap-2 w-[100%] h-[100%]'>
                     {likes.map((like, index) => {
                         if(like.role === 'student')
                         {

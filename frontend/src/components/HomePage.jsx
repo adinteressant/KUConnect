@@ -247,7 +247,7 @@ const HomePage = () => {
                 onBlur={handleTextareaBlur}
               />
 
-              <div className={`transition-all duration-1000 overflow-y-auto ease-in-out ${isTextareaFocused || isTagsInputFocused || content.trim() || tagValue.trim() || tagList.length>0 || images.length>0 ? 'opacity-100 max-h-screen' : 'opacity-0 max-h-0'}`}>
+              <div className={`transition-all duration-500 overflow-y-auto ease-in-out ${isTextareaFocused || isTagsInputFocused || content.trim() || tagValue.trim() || tagList.length>0 || images.length>0 ? 'opacity-100 max-h-screen' : 'opacity-0 max-h-0'}`}>
                 {/*Tag Input Section*/}
                 <div className='flex flex-col'>
                   <input
