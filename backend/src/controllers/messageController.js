@@ -1,5 +1,6 @@
 import Conversation from '../models/conversation.model.js'
 import Message from '../models/message.model.js'
+import { getReceiverSocketId, socketIo } from '../utils/socket/socket.js'
 
 export const sendMessageController = async (req,res) => {
   try{
@@ -28,6 +29,11 @@ export const sendMessageController = async (req,res) => {
     }
 
     await Promise.all([conversation.save(),newMessage.save()])
+
+    //websockets
+    const receiverSocketId = getReceiverSocketId(receiverId)
+    
+    if(receiverSocketId) socketIo.to(receiverSocketId).emit('newMessage',newMessage)
 
     res.status(201).json(newMessage) 
   }

@@ -106,10 +106,10 @@ export default function MessageHeader({ username }) {
 
   
   return (
-    <div className="px-4 py-3 border-b border-gray-200 sticky">
+    <div className="px-4 py-3 border-b border-gray-200 dark:border-slate-800 dark:bg-slate-900 sticky">
       <div className="flex items-center gap-3">
       {loading ? (
-  <div className="w-10 h-10 rounded-full bg-gray-200 animate-pulse" />
+  <div className="w-10 h-10 rounded-full dark:bg-slate-900 bg-gray-200 animate-pulse" />
 ) : profileData.pfp_id && !error ? (
   <img
     src={`/api/get-pfp?id=${profileData.pfp_id}`}
@@ -131,7 +131,7 @@ export default function MessageHeader({ username }) {
         <div className="font-medium text-gray-900">
         <Link 
                     to={`/${username}`}
-                    className="font-medium"
+                    className="font-medium dark:text-slate-100"
                   >{username}
                   </Link>
                   </div>

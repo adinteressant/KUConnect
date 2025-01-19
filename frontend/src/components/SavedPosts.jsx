@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import Posts from './subcomponents/Posts.jsx'
-
 export default function SavedPosts()
 {
     const [userProfile, setUserProfile] = useState({})
@@ -25,7 +24,7 @@ export default function SavedPosts()
     }, [userProfile])
 
     return(
-        <div className='p-6 bg-gray-100'>
+        <div className='p-6'>
             <Posts posts={posts} setPosts={setPosts} savePage={true}/>
         </div>
     )

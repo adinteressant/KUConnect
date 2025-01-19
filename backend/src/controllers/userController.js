@@ -42,17 +42,17 @@ export const getUserProfileController = async (req, res) => {
     });
   }
 
-  console.log("get-user-id called!");
+  // console.log("get-user-id called!");
   const user_info = jwt.decode(req.cookies.JWT_TOKEN);  // Decode the JWT token to get user info
-  console.log("Decoded value: " );
-  console.log(user_info);
+  // console.log("Decoded value: " );
+  // console.log(user_info);
   
   if (!user_info || !user_info.user_id) {
     return res.status(400).json({ error: "Invalid token or user_id" });
   }
   
   const user_id = user_info.user_id;
-  console.log("User ID: " + user_id);
+  // console.log("User ID: " + user_id);
 
   try {
     // Fetch user profile data from the PublicInfo model

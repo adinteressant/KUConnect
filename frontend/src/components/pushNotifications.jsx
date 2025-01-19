@@ -1,11 +1,10 @@
 // src/components/PushNotification.js
-import React, { useState } from 'react';
+import React, { useState} from 'react';
 import axios from 'axios';
 
 const PushNotification = () => {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [subscription, setSubscription] = useState(null);
-
   const registerServiceWorker = async () => {
     try {
       const registration = await navigator.serviceWorker.register('/service-worker.js');

@@ -43,34 +43,34 @@ function ShowComments(props) {
             (<div className='flex flex-col w-[100%] h-[100%]'>
                 <div className='p-2 flex gap-2'>
                     {[1,2,3].map((_,index) => (
-                        <button key={index} className={`pl-8 pr-8 pt-4 pb-4 rounded-2xl bg-gray-200 animate-pulse`}>
+                        <button key={index} className={`pl-8 pr-8 pt-4 pb-4 rounded-2xl bg-gray-200 dark:bg-slate-900 animate-pulse`}>
                         </button>
                     ))}
                 </div>
                 <hr/>
                 <div className='p-4 overflow-hidden flex flex-col gap-8 w-[100%] h-[100%]'>
                     {[1,2,3,4].map((_,index) => (<div key={index} className='flex'>
-                        <div className='mt-2 shrink-0 w-8 h-8 rounded-full object-cover bg-gray-200 animate-pulse'>
+                        <div className='mt-2 shrink-0 w-8 h-8 rounded-full object-cover bg-gray-200 dark:bg-slate-900 animate-pulse'>
                         </div>
-                        <div className='ml-2 bg-gray-200 w-[50%] h-[120%] rounded-xl animate-pulse object-cover'>
+                        <div className='ml-2 bg-gray-200 dark:bg-slate-900 w-[50%] h-[120%] rounded-xl animate-pulse object-cover'>
                         </div>
                     </div>))}
                 </div>
             </div>):
             (<div className='flex flex-col w-[100%] h-[100%]'>
-                <div className='p-2 flex gap-2'>
-                    <button onClick={() => setCategory(() => 'all')} className={`p-2 rounded hover:bg-gray-100 transition-bg duration-300 ${category==='all'?'bg-gray-200':'bg-none'}`}>
+                <div className='p-2 flex gap-2 dark:bg-slate-900'>
+                    <button onClick={() => setCategory(() => 'all')} className={`p-2 rounded hover:bg-gray-100 transition-bg dark:hover:bg-gray-700  duration-300 ${category==='all'?'bg-gray-200 dark:bg-slate-900 dark:text-slate-200':'dark:bg-slate-800 dark:text-slate-200'}`}>
                     All({student+faculty})
                     </button>
-                    <button onClick={() => setCategory(() => 'student')} className={`p-2 rounded hover:bg-gray-100 transition-all duration-300 ${category==='student'?'bg-gray-200':'bg-none'}`}>
+                    <button onClick={() => setCategory(() => 'student')} className={`p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-300 ${category==='student'?'bg-gray-200 dark:bg-slate-900 dark:text-slate-200':'dark:bg-slate-800 dark:text-slate-200'}`}>
                     Students({student})
                     </button>
-                    <button onClick={() => setCategory(() => 'faculty')} className={`p-2 rounded hover:bg-gray-100 transition-all duration-300 ${category==='faculty'?'bg-gray-200':'bg-none'}`}>
+                    <button onClick={() => setCategory(() => 'faculty')} className={`p-2 rounded hover:bg-gray-100 transition-all dark:hover:bg-gray-700  duration-300 ${category==='faculty'?'bg-gray-200 dark:bg-slate-900 dark:text-slate-200':'dark:bg-slate-800 dark:text-slate-200'}`}>
                     Faculty({faculty})
                     </button>
                 </div>
                 <hr/>
-                <div className='p-4 overflow-y-auto flex flex-col gap-4 w-[100%] h-[100%]'>
+                <div className='p-4 overflow-y-auto dark:bg-slate-900 flex flex-col gap-4 w-[100%] h-[100%]'>
                     {comments.map((comment, index) => {
                     if(comment.role === 'student')
                         {
@@ -98,19 +98,19 @@ function ShowComments(props) {
                                 </Link>
                                 <div className='ml-2'>
                                     <div className='flex'>
-                                        <div className='bg-gray-100 p-2 rounded-xl'>
+                                        <div className='bg-gray-100 dark:bg-slate-800 p-2 rounded-xl'>
                                             <div className='flex gap-2 items-center'>
                                                 <Link onClick={() => {
                                                         document.body.classList.toggle('overflow-hidden', false)
                                                         props.closeCommentOverlay()
-                                                    }} to={`/${comment.username}`} className='text-gray-800 font-semibold text-sm'>
+                                                    }} to={`/${comment.username}`} className='text-gray-800 dark:text-slate-200 font-semibold text-sm'>
                                                     {comment.username}
                                                 </Link>
-                                                <div className='text-gray-600 text-xs'>
+                                                <div className='text-gray-600 dark:text-gray-400 text-xs'>
                                                     {comment.role.charAt(0).toUpperCase() + comment.role.slice(1)}
                                                 </div>
                                             </div>
-                                            <div className='text-gray-800 break-all whitespace-normal'>
+                                            <div className='text-gray-800 dark:text-slate-200 break-all whitespace-normal'>
                                                 {comment.comment}
                                             </div>
                                         </div>

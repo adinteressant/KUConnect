@@ -52,9 +52,9 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-gray-100">
-      <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-md">
-        <h1 className="text-4xl font-serif mb-8 text-center text-gray-800">Login</h1>
+    <div className="min-h-screen w-full flex items-center justify-center dark:bg-gray-900 bg-gray-100">
+      <div className="w-full max-w-md p-8 dark:bg-gray-800  bg-white rounded-lg shadow-md">
+        <h1 className="text-4xl font-serif mb-8 text-center dark:text-gray-200 text-gray-800">Login</h1>
         {errorMessage && <p className="text-sm text-red-500 text-center">{errorMessage}</p>}
         <form onSubmit={handleSubmit} className="w-full space-y-6">
           <div className="w-full space-y-2">

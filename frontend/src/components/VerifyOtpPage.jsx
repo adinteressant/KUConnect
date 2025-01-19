@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 
 export default function VerifyOtp(){
@@ -38,10 +38,10 @@ export default function VerifyOtp(){
   }
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-gray-100">
-      <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-md">
-        <h1 className="text-4xl font-serif mb-8 text-center text-gray-800">Verify OTP</h1>
-        <p className="text-center text-gray-600 mb-6">
+    <div className="min-h-screen w-full flex items-center justify-center">
+      <div className="w-full max-w-md p-8 rounded-lg shadow-md">
+        <h1 className="text-4xl font-serif mb-8 text-center dark:text-gray-200 text-gray-800">Verify OTP</h1>
+        <p className="text-center dark:text-gray-300 text-gray-600 mb-6">
           Enter the OTP sent to {queryParams.get('email')}
         </p>
         <form onSubmit={handleSubmit} className="w-full space-y-6">

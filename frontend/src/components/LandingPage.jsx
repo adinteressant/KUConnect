@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useNavigate, useOutletContext } from "react-router-dom";
+import styles from "./bubble.module.css";
 
 export default function LandingPage() {
   
@@ -70,23 +71,28 @@ export default function LandingPage() {
       {/* Main content */}
       <main className="relative z-10 flex min-h-screen flex-col items-center justify-center px-4">
     <div>
-        <div className="text-center">
-          <h1 className="mb-16 text-6xl font-medium text-slate-800 font-serif">
-            KUConnect
-          </h1>
+        <div className="text-center grid h-screen place-content-center">
+        <h2 className="text-center text-5xl font-thin text-cyan-400">
+      {"KUConnect".split("").map((child, idx) => (
+        <span className={styles.hoverText} key={idx}>
+          {child}
+        </span>
+      ))}
+    </h2>
           
           <div className="mb-16 space-x-6">
-            <button
-              onClick={redirectToLogin}
-              className="rounded-md bg-gray-100 px-8 py-3 font-serif text-gray-800 transition-colors hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300"
-            >
+          <button              
+          onClick={redirectToLogin}
+          className="rounded-2xl border-2 border-dashed border-black bg-white px-6 py-3 font-semibold uppercase text-black transition-all duration-300 hover:translate-x-[-4px] hover:translate-y-[-4px] hover:rounded-md hover:shadow-[4px_4px_0px_black] active:translate-x-[0px] active:translate-y-[0px] active:rounded-2xl active:shadow-none"
+    >
+      <span>
               Login
+              </span>
             </button>
             <button
               onClick={redirectToRegister}
-              className="rounded-md bg-cyan-400 px-8 py-3 font-serif text-gray-800 transition-colors hover:bg-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
-            >
-              Register
+              className="rounded-2xl border-2 border-dashed border-black bg-white px-6 py-3 font-semibold uppercase text-black transition-all duration-300 hover:translate-x-[-4px] hover:translate-y-[-4px] hover:rounded-md hover:shadow-[4px_4px_0px_black] active:translate-x-[0px] active:translate-y-[0px] active:rounded-2xl active:shadow-none">
+              <span> Register</span>
             </button>
           </div>
     </div>

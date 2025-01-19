@@ -10,7 +10,6 @@ const SearchPage = () => {
   const results = location.state?.results || [];
   const isUserSearch = searchQuery.startsWith('@user:');
   const isTagSearch = searchQuery.startsWith('#tag:');
-
   // Function to extract multiple tags from the search query
   const extractTags = (query) => {
     const tagString = query.replace('#tag:', '').trim();
@@ -51,7 +50,7 @@ const SearchPage = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto dark:text-slate-200 px-4 py-8">
       <div className="mb-6">
         <h1 className="text-2xl font-bold">
           {isUserSearch 
@@ -71,7 +70,7 @@ const SearchPage = () => {
       )}
 
       {searchResults.length === 0 && (
-        <div className="text-center text-gray-600">
+        <div className="text-center dark:text-slate-300 text-gray-600">
           No results found
         </div>
       )}

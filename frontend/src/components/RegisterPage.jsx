@@ -1,8 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
-
 export default function RegisterPage() {
-
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -17,7 +15,17 @@ export default function RegisterPage() {
     password: "",
   });
 
-  const [showPassword, setShowPassword] = useState(false);
+  const [passwordVisibility, setPasswordVisibility] = useState({
+    password: false,
+    rePassword: false
+  });
+
+  const togglePasswordVisibility = (field) => {
+    setPasswordVisibility(prev => ({
+      ...prev,
+      [field]: !prev[field]
+    }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -62,9 +70,9 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-gray-100">
-      <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-md mt-8">
-        <h1 className="text-4xl font-serif mb-8 text-center text-gray-800">Signup</h1>
+    <div className="min-h-screen w-full flex items-center justify-center dark:bg-gray-900 text-gray-800 dark:text-white bg-gray-100">
+      <div className="w-full max-w-md p-8 rounded-lg dark:bg-gray-800 shadow-md mt-8">
+        <h1 className="text-4xl font-serif mb-8 text-center">Signup</h1>
         <form onSubmit={handleSubmit} className="w-full space-y-6">
           <div className="w-full space-y-2">
             <input
@@ -92,7 +100,7 @@ export default function RegisterPage() {
           <div className="w-full space-y-2">
           <div className="relative">
             <input
-              type={showPassword ? "text" : "password"}
+              type={passwordVisibility.password ? "text" : "password"}
               placeholder="Enter your password"
               value={formData.password}
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
@@ -101,10 +109,10 @@ export default function RegisterPage() {
             />
              <button
                 type="button"
-                onClick={() => setShowPassword(!showPassword)}
+                onClick={() => togglePasswordVisibility('password')}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
               >
-                {showPassword ? <EyeOffIcon className="w-5 h-5" /> :
+                {passwordVisibility.password ? <EyeOffIcon className="w-5 h-5" /> :
                 <EyeIcon className="w-5 h-5" />}
               </button>
               </div>
@@ -113,7 +121,7 @@ export default function RegisterPage() {
           <div className="w-full space-y-2">
           <div className="relative">
             <input
-              type={showPassword ? "text" : "password"}
+              type={passwordVisibility.rePassword ? "text" : "password"}
               placeholder="Re-enter your Password"
               value={formData.rePassword}
               onChange={(e) => setFormData({ ...formData, rePassword: e.target.value })}
@@ -122,10 +130,10 @@ export default function RegisterPage() {
             />
              <button
                 type="button"
-                onClick={() => setShowPassword(!showPassword)}
+                onClick={() => togglePasswordVisibility('rePassword')}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
               >
-                {showPassword ? <EyeOffIcon className="w-5 h-5" /> :
+                {passwordVisibility.rePassword ? <EyeOffIcon className="w-5 h-5" /> :
                 <EyeIcon className="w-5 h-5" />}
               </button>
               </div>
