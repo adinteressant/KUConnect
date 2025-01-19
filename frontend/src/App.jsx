@@ -21,6 +21,7 @@ export default function App() {
     } else {
       setIsSidebarVisible(true)
       setPaddingValue("pl-[55px] pt-[64px]")
+      document.body.classList.toggle('overflow-hidden', true)
     }
   }, [location.pathname])
       
