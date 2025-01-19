@@ -631,8 +631,8 @@ function Posts(props) {
                   </div>
 
                   {/* comment button thichda dekhauney */}
-                  <div className={`transition-all duration-1000 overflow-y-auto ease-in-out ${showCommentBox.find(obj => obj.postId===post._id).value? 'opacity-100 max-h-screen mt-2' : 'opacity-0 max-h-0 mt-0'}`}>
-                    <hr className='absolute left-0 right-0'/>
+                  <div className={`border-t dark:border-slate-700 border-gray-200 transition-all duration-1000 overflow-y-auto ease-in-out ${showCommentBox.find(obj => obj.postId===post._id).value? 'opacity-100 max-h-screen mt-2' : 'opacity-0 max-h-0 mt-0'}`}>
+                    {/* <hr className='absolute left-0 right-0'/> */}
 
                     {/* Bhakhar gareko comment bhayo hai bhanera display garna ko lagi (ani overall comments chai paxi xuttai overlay maa dekhauney) */}
                     <div className={`transition-all duration-300 ease-in-out flex flex-col`}>
@@ -675,7 +675,7 @@ function Posts(props) {
                           }
                           value={showCommentBox.find(obj => obj.postId===post._id).content}
                           placeholder="Add a comment..."
-                          className='flex-1 transition-all duration-300 p-2 border rounded-lg bg-gray-100 dark:bg-slate-800 focus:m-1 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:ring-offset-1
+                          className='flex-1 transition-all duration-300 p-2 border rounded-lg bg-gray-100 dark:bg-slate-900 dark:border-slate-700 focus:m-1 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:ring-offset-1
                                     resize-none overflow-auto leading-6'
                           rows='2'
                         />
@@ -684,7 +684,7 @@ function Posts(props) {
                         disabled={!showCommentBox.find(obj => obj.postId===post._id).content.trim()}
                         onClick={() => handleNewComment(post)}
                         className="transition-all duration-300
-                        mr-auto bg-cyan-600 text-white px-4 py-2 rounded-lg disabled:bg-gray-400
+                        mr-auto bg-cyan-600 text-white px-4 py-2 rounded-lg disabled:dark:bg-slate-600 disabled:bg-gray-400
                         hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:ring-offset-2 focus:ml-1 focus:mb-1 focus:mt-1"
                         
                       >
@@ -834,7 +834,7 @@ function Posts(props) {
                 <div className='m-3 mb-2 text-lg font-semibold'>
                   Delete Post
                 </div>
-                <hr/>
+                {/* <hr/> */}
                 <div className='m-3 my-2'>
                   Once deleted, this post cannot be restored. Are you sure you want to delete it permanently?
                 </div>

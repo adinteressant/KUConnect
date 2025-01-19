@@ -43,9 +43,8 @@ export default function LoginPage() {
   };
 
   const handleGoogleLogin = () => {
-    const backendUrl = 'http://localhost:4000';  
     const currentPort = window.location.port;
-    window.location.href = `${backendUrl}/api/auth/google?port=${currentPort}`;
+    window.location.href = `/api/auth/google?port=${currentPort}`;
     localStorage.setItem('isLoggedIn',true)
     localStorage.setItem('isAuthenticated', false);
     sessionStorage.setItem('newGoogleLogin', 'true');

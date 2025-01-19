@@ -64,9 +64,8 @@ export default function RegisterPage() {
   };  
 
   const handleGoogleLogin = () => {
-    const backendUrl = 'http://localhost:4000'
     const currentPort = window.location.port
-    window.location.href = `${backendUrl}/api/auth/google?port=${currentPort}`
+    window.location.href = `/api/auth/google?port=${currentPort}`
   };
 
   return (

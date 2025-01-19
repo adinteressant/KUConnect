@@ -81,7 +81,7 @@ useEffect(() => {
     <motion.div
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      animate={{ width: isHovered ? 220 : 55 }}
+      animate={{ width: isHovered ? 220 : 60 }}
       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
       className ={ `shadow-md p-2 fixed z-10 bottom-0 top-16 h-screen border-r ${theme === 'dark' ? 'border-slate-800' :'border-gray-200' } transition-colors ${
       theme === "light" ? "bg-white" : "bg-slate-800"
