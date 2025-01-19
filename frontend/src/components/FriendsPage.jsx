@@ -228,7 +228,7 @@ const FriendsPage = () => {
         {activeTab === 'friends' && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {friends.map((friend) => (
-              <div key={friend.username} className="bg-white dark:bg-slate-800 dark:text-white rounded-lg shadow p-4">
+              <div key={friend.username} className="bg-gray-100 dark:bg-slate-800 dark:text-white rounded-lg shadow p-4">
                 <div className="flex items-center space-x-4">
                   <img
                     src={friend.pfp_id ? `/api/get-pfp?id=${friend.pfp_id}` : '/api/placeholder/40/40'}
@@ -255,7 +255,7 @@ const FriendsPage = () => {
         {activeTab === 'requests' && (
           <div className="space-y-4">
             {incomingRequests.map((req) => (
-              <div key={req.sender_username} className="bg-white dark:bg-slate-800 dark:text-white rounded-lg shadow p-4">
+              <div key={req.sender_username} className="bg-gray-100 dark:bg-slate-800 dark:text-white rounded-lg shadow p-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
                     <img
@@ -298,7 +298,7 @@ const FriendsPage = () => {
         {activeTab === 'sent' && (
           <div className="space-y-4">
             {sentRequests.map((req) => (
-              <div key={req.receiver_username} className="bg-white dark:bg-slate-800 dark:text-white rounded-lg shadow p-4">
+              <div key={req.receiver_username} className="bg-gray-100 dark:bg-slate-800 dark:text-white rounded-lg shadow p-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
                     <img
