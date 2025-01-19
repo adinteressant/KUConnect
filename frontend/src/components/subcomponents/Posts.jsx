@@ -795,7 +795,7 @@ function Posts(props) {
                       </div>}
                     </div>
 
-                    <button className='opacity-0 group-hover/post:opacity-100 rounded-full p-1 transition-all duration-300 hover:bg-gray-100'
+                    <button className='opacity-0 group-hover/post:opacity-100 rounded-full p-1 transition-all duration-300 dark:hover:bg-gray-700 hover:bg-gray-100'
                       onClick={
                         () => {
                           setPostOptions((prev) => {
@@ -813,7 +813,7 @@ function Posts(props) {
                         }
                       }>
                       <svg width="16" height="16" viewBox="0 0 24 24" 
-                        className = 'stroke-1 stroke-gray-600'>
+                        className = 'stroke-1 stroke-gray-600 dark:stroke-gray-400'>
                         <circle cx="12" cy="12" r="1"/>
                         <circle cx="19" cy="12" r="1"/>
                         <circle cx="5" cy="12" r="1"/>
@@ -839,13 +839,13 @@ function Posts(props) {
                           ${overlayTransitionState?'bg-opacity-50':'bg-opacity-0'}
                           `}
           > 
-            <div className={`bg-white min-w-[320px] w-[40%] max-w-[580px] min-h-36 max-h-[400px] rounded-xl shadow-2xl
+            <div className={`bg-white dark:bg-slate-900 min-w-[320px] w-[40%] max-w-[580px] min-h-36 max-h-[400px] rounded-xl shadow-2xl
                   transition-all duration-300
                   ${overlayTransitionState?'opacity-100 scale-100':'opacity-0 scale-50'}
                   flex p-2`}
             >
               {deleteLoadingState?
-              <div className='m-auto text-lg text-gray-600 flex justify-center items-center gap-2'>
+              <div className='m-auto text-lg text-gray-600 dark:text-gray-200 flex justify-center items-center gap-2'>
                 <div>
                   Deleting Post
                 </div>
@@ -853,19 +853,19 @@ function Posts(props) {
               </div>
               :
               <div>
-                <div className='m-3 mb-2 text-lg font-semibold'>
+                <div className='m-3 mb-2 text-lg font-semibold dark:text-gray-200'>
                   Delete Post
                 </div>
                 {/* <hr/> */}
-                <div className='m-3 my-2'>
+                <div className='m-3 my-2 dark:text-gray-200'>
                   Once deleted, this post cannot be restored. Are you sure you want to delete it permanently?
                 </div>
                 <div className='flex justify-end gap-2 m-2'>
-                  <button className='py-2 px-4 rounded-xl text-gray-600 hover:text-white bg-gray-200 hover:bg-gray-400'
+                  <button className='py-2 px-4 rounded-xl dark:text-gray-200 dark:hover:text-gray-300 text-gray-600 hover:text-white dark:bg-slate-700 bg-gray-200 dark:hover:bg-slate-800 hover:bg-gray-400'
                     onClick={() => closeConfirmDeletePost()}>
                     Cancel
                   </button>
-                  <button className='py-2 px-4 rounded-xl text-white bg-red-600 hover:bg-red-700'
+                  <button className='py-2 px-4 rounded-xl dark:text-gray-200 dark:hover:text-gray-300 text-white bg-red-600 hover:bg-red-700'
                     onClick={() => {
                       setDeleteLoadingState(() => true)
                       deletePost(confirmDeletePost)
