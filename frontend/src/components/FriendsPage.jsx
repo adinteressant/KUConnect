@@ -171,7 +171,7 @@ const FriendsPage = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-pulse text-lg">Loading...</div>
+        <div className="animate-pulse dark:text-gray-300 text-lg">Loading...</div>
       </div>
     );
   }
@@ -189,13 +189,13 @@ const FriendsPage = () => {
       <div className="mb-8">
         <h1 className="text-2xl font-bold mb-6">Friends</h1>
         
-        <div className="flex space-x-2 dark:text-gray-300 mb-6 border-b">
+        <div className="flex space-x-2 dark:text-gray-300 mb-6 border-b dark:border-slate-700">
           <button
             onClick={() => setActiveTab('friends')}
             className={`flex items-center gap-2 px-4 py-2 font-medium transition-colors ${
               activeTab === 'friends'
-                ? 'text-blue-600 border-b-2 dark:text-gray-200 border-blue-600'
-                : 'text-gray-600 dark:text-gray-400 hover:text-blue-600'
+                ? 'text-cyan-600 border-b-2 dark:text-gray-200 border-cyan-600'
+                : 'text-gray-600 dark:text-gray-400 hover:text-cyan-600'
             }`}
           >
             <Users className="w-4 h-4" />
@@ -205,8 +205,8 @@ const FriendsPage = () => {
             onClick={() => setActiveTab('requests')}
             className={`flex items-center gap-2 px-4 py-2 font-medium transition-colors ${
               activeTab === 'requests'
-                ? 'text-blue-600 dark:text-gray-200 border-b-2 border-blue-600'
-                : 'text-gray-600 dark:text-gray-400 hover:text-blue-600'
+                ? 'text-cyan-600 dark:text-gray-200 border-b-2 border-cyan-600'
+                : 'text-gray-600 dark:text-gray-400 hover:text-cyan-600'
             }`}
           >
             <UserPlus className="w-4 h-4" />
@@ -216,8 +216,8 @@ const FriendsPage = () => {
             onClick={() => setActiveTab('sent')}
             className={`flex items-center gap-2 px-4 py-2 font-medium transition-colors ${
               activeTab === 'sent'
-                ? 'text-blue-600 border-b-2 dark:text-gray-200 border-blue-600'
-                : 'text-gray-600 dark:text-gray-400 hover:text-blue-600'
+                ? 'text-cyan-600 border-b-2 dark:text-gray-200 border-cyan-600'
+                : 'text-gray-600 dark:text-gray-400 hover:text-cyan-600'
             }`}
           >
             <Clock className="w-4 h-4" />
@@ -228,7 +228,7 @@ const FriendsPage = () => {
         {activeTab === 'friends' && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {friends.map((friend) => (
-              <div key={friend.username} className="bg-white dark:bg-slate-950 dark:text-white rounded-lg shadow p-4">
+              <div key={friend.username} className="bg-white dark:bg-slate-800 dark:text-white rounded-lg shadow p-4">
                 <div className="flex items-center space-x-4">
                   <img
                     src={friend.pfp_id ? `/api/get-pfp?id=${friend.pfp_id}` : '/api/placeholder/40/40'}
@@ -255,7 +255,7 @@ const FriendsPage = () => {
         {activeTab === 'requests' && (
           <div className="space-y-4">
             {incomingRequests.map((req) => (
-              <div key={req.sender_username} className="bg-white dark:bg-slate-950 dark:text-white rounded-lg shadow p-4">
+              <div key={req.sender_username} className="bg-white dark:bg-slate-800 dark:text-white rounded-lg shadow p-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
                     <img
@@ -298,7 +298,7 @@ const FriendsPage = () => {
         {activeTab === 'sent' && (
           <div className="space-y-4">
             {sentRequests.map((req) => (
-              <div key={req.receiver_username} className="bg-white dark:bg-slate-950 dark:text-white rounded-lg shadow p-4">
+              <div key={req.receiver_username} className="bg-white dark:bg-slate-800 dark:text-white rounded-lg shadow p-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
                     <img
