@@ -185,8 +185,8 @@ const FriendsPage = () => {
   }
 
   return (
-    <div className="max-w-6xl dark:text-white mx-auto p-6">
-      <div className="mb-8">
+    <div className="dark:text-white p-6 overflow-y-auto">
+      <div className="mb-8 max-w-6xl mx-auto">
         <h1 className="text-2xl font-bold mb-6">Friends</h1>
         
         <div className="flex space-x-2 dark:text-gray-300 mb-6 border-b dark:border-slate-700">
