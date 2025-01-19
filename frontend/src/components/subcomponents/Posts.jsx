@@ -461,7 +461,7 @@ function Posts(props) {
                         className="text-gray-800 dark:text-slate-200 font-semibold">
                         {post.username}
                       </Link>
-                      <div className='flex gap-1 items-center text-gray-600 dark:text-gray-600 text-xs'>
+                      <div className='flex gap-1 items-center text-gray-600 dark:text-gray-400 text-xs'>
                         <div>
                           {post.role.charAt(0).toUpperCase() + post.role.slice(1)}
                         </div>
@@ -482,7 +482,7 @@ function Posts(props) {
                   </div>
                   <p className="mt-2 dark:text-slate-200 text-gray-800">{post.content}</p>
                   {post.tags.length > 0 && (
-                    <div className="mt-2 text-sm text-gray-600">
+                    <div className="mt-2 text-sm text-gray-600 dark:text-gray-400">
                       Tags: {post.tags.join(', ')}
                     </div>
                   )}
@@ -548,10 +548,10 @@ function Posts(props) {
                     </div>
                   )}
 
-                  <hr className='absolute left-0 right-0 mt-4'/>
+                  {/* <hr className='absolute left-0 right-0 mt-4'/> */}
                   
                   {/* Likes, Comments, Shares Information */}
-                  <div className={`mt-6 flex items-center gap-4 transition-all duration-300 ${isInfoDisplayed(post)?'opacity-100 h-max-screen':'opacity-0 h-max-0'}`}>
+                  <div className={`mt-6 flex items-center gap-4 pt-2 transition-all border-t border-b pb-1 dark:border-slate-700 duration-300 ${isInfoDisplayed(post)?'opacity-100 h-max-screen':'opacity-0 h-max-0'}`}>
                     {/* like information */}
                       {post.likes>0 &&
                         <button 
@@ -570,7 +570,7 @@ function Posts(props) {
                         {/* comment information */}
                         {post.comments>0 &&
                           <button onClick={() => openCommentOverlay(post._id)} className="text-sm dark:text-gray-400 text-gray-600 hover:text-cyan-600 transition-all duration-300">  
-                            {post.comments} comments
+                            {post.comments }{post.comments === 1 ? ` comment`: ` comments`}
                           </button>
                         }
 
@@ -583,7 +583,7 @@ function Posts(props) {
                     </div>
                   </div>
 
-                  <hr className={`transition-all duration-300 ${isInfoDisplayed(post)?'opacity-100 h-max-screen mt-2':'opacity-0 h-max-0 mt-0'}`}/>
+                  {/* <hr className={`transition-all duration-300 ${isInfoDisplayed(post)?'opacity-100 h-max-screen mt-2':'opacity-0 h-max-0 mt-0'}`}/> */}
 
                   {/* Like, Comment, Share Button */}
                   <div className={`transition-all duration-1000 flex justify-evenly items-center gap-2 ${(!isInfoDisplayed(post)&&showCommentBox.find(obj => obj.postId===post._id).value)?'mt-0':'mt-2'}`}>
@@ -653,8 +653,8 @@ function Posts(props) {
                   </div>
 
                   {/* comment button thichda dekhauney */}
-                  <div className={`transition-all duration-1000 overflow-y-auto ease-in-out ${showCommentBox.find(obj => obj.postId===post._id).value? 'opacity-100 max-h-screen mt-2' : 'opacity-0 max-h-0 mt-0'}`}>
-                    <hr className='absolute left-0 right-0'/>
+                  <div className={`border-t dark:border-slate-700 border-gray-200 transition-all duration-1000 overflow-y-auto ease-in-out ${showCommentBox.find(obj => obj.postId===post._id).value? 'opacity-100 max-h-screen mt-2' : 'opacity-0 max-h-0 mt-0'}`}>
+                    {/* <hr className='absolute left-0 right-0'/> */}
 
                     {/* Bhakhar gareko comment bhayo hai bhanera display garna ko lagi (ani overall comments chai paxi xuttai overlay maa dekhauney) */}
                     <div className={`transition-all duration-300 ease-in-out flex flex-col`}>
@@ -665,7 +665,7 @@ function Posts(props) {
                             <img src={`/api/get-pfp?id=${d.pfp}`} alt="profile" className="w-8 h-8 rounded-full object-cover"/>
                           </Link>
                           <div className='ml-2'>
-                              <div className='bg-gray-100 dark:bg-slate-800 p-2 rounded-xl dark:bg-slate-700'>
+                              <div className='bg-gray-100 dark:bg-slate-700 p-2 rounded-xl'>
                                 <div className='flex gap-2 items-center'>
                                   <Link to={`/${userProfile.username}`} className='text-gray-800 dark:text-slate-200 font-semibold text-sm'>
                                     {d.username}
@@ -697,7 +697,7 @@ function Posts(props) {
                           }
                           value={showCommentBox.find(obj => obj.postId===post._id).content}
                           placeholder="Add a comment..."
-                          className='flex-1 transition-all duration-300 p-2 border rounded-lg bg-gray-100 dark:bg-slate-800 focus:m-1 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:ring-offset-1
+                          className='flex-1 transition-all duration-300 p-2 border rounded-lg bg-gray-100 dark:bg-slate-900 dark:border-slate-700 focus:m-1 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:ring-offset-1
                                     resize-none overflow-auto leading-6'
                           rows='2'
                         />
@@ -706,7 +706,7 @@ function Posts(props) {
                         disabled={!showCommentBox.find(obj => obj.postId===post._id).content.trim()}
                         onClick={() => handleNewComment(post)}
                         className="transition-all duration-300
-                        mr-auto bg-cyan-600 text-white px-4 py-2 rounded-lg disabled:bg-gray-400
+                        mr-auto bg-cyan-600 text-white px-4 py-2 rounded-lg disabled:dark:bg-slate-600 disabled:bg-gray-400
                         hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:ring-offset-2 focus:ml-1 focus:mb-1 focus:mt-1"
                         
                       >
@@ -718,7 +718,7 @@ function Posts(props) {
                   {/* Post Options */}
                   <div className='absolute top-3 right-3 flex items-start' onMouseLeave={() => setPostOptions(() => '')}>
                     
-                    <div className={`rounded-lg shadow-2xl bg-gray-100 dark:bg-slate-800 border border-gray-200 transition-all duration-300 overflow-hidden ${postOptions === post._id?'opacity-100 max-h-screen':'opacity-0 max-h-0'}`}>  
+                    <div className={`rounded-lg shadow-2xl bg-gray-100 dark:bg-slate-900 border dark:border-slate-700 border-gray-200 transition-all duration-300 overflow-hidden ${postOptions === post._id?'opacity-100 max-h-screen':'opacity-0 max-h-0'}`}>  
                       {optionsState?
                       <div>
                         {urlPostId===post._id ||
@@ -738,7 +738,6 @@ function Posts(props) {
                             <div>View</div>
                           </Link>
                         
-                          <hr/>
                         </div>)}
 
                         <button
@@ -764,7 +763,7 @@ function Posts(props) {
                         
                         {(post.userId === userProfile.user_id) &&
                         <div>
-                          <hr/>
+                          
 
                           <button
                             disabled={postOptions!==post._id}
@@ -776,7 +775,6 @@ function Posts(props) {
                             </svg>
                             <div>Edit</div>
                           </button>
-                          <hr/>
                         
                           <button
                             disabled={postOptions!==post._id}
@@ -826,7 +824,7 @@ function Posts(props) {
                 </div>
               ))
             ) : (
-              <div className="bg-white dark:bg-slate-800 dark:text-slate-200 p-4 rounded-lg shadow-md text-center">
+              <div className="bg-white dark:bg-slate-800 dark:text-slate-200 p-4 rounded-lg border dark:border-slate-700 text-center">
                 No posts available.
               </div>
             )}
@@ -858,7 +856,7 @@ function Posts(props) {
                 <div className='m-3 mb-2 text-lg font-semibold'>
                   Delete Post
                 </div>
-                <hr/>
+                {/* <hr/> */}
                 <div className='m-3 my-2'>
                   Once deleted, this post cannot be restored. Are you sure you want to delete it permanently?
                 </div>

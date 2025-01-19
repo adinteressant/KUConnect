@@ -23,7 +23,7 @@ passport.deserializeUser( async (userId,done) => {
 export default passport.use(new Strategy({
   clientID:     process.env.CLIENT_ID,
   clientSecret: process.env.CLIENT_SECRET,
-  callbackURL: `http://localhost:${process.env.PORT}/api/google/callback`,
+  callbackURL: `/api/google/callback`,
   scope:['email'],
   passReqToCallback   : true
 },

@@ -64,14 +64,13 @@ export default function RegisterPage() {
   };  
 
   const handleGoogleLogin = () => {
-    const backendUrl = 'http://localhost:4000'
     const currentPort = window.location.port
-    window.location.href = `${backendUrl}/api/auth/google?port=${currentPort}`
+    window.location.href = `/api/auth/google?port=${currentPort}`
   };
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center dark:bg-gray-900 text-gray-800 dark:text-white bg-gray-100">
-      <div className="w-full max-w-md p-8 rounded-lg dark:bg-gray-800 shadow-md mt-8">
+      <div className="w-full max-w-md p-8 rounded-lg dark:bg-gray-800 bg-white shadow-md mt-8">
         <h1 className="text-4xl font-serif mb-8 text-center">Signup</h1>
         <form onSubmit={handleSubmit} className="w-full space-y-6">
           <div className="w-full space-y-2">
@@ -80,7 +79,7 @@ export default function RegisterPage() {
               placeholder="Username"
               value={formData.username}
               onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-              className="w-full px-4 py-3 rounded-md text-base transition-colors bg-gray-100 focus:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full px-4 py-3 dark:bg-slate-900 dark:border-slate-800 rounded-md text-base transition-colors bg-gray-100 focus:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-cyan-500"
               required
             />
             {errors.username && <p className="text-sm text-red-500">{errors.username}</p>}
@@ -92,7 +91,7 @@ export default function RegisterPage() {
               placeholder="Email"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="w-full px-4 py-3 rounded-md text-base transition-colors bg-gray-100 focus:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full px-4 py-3 rounded-md dark:bg-slate-900 dark:border-slate-800 text-base transition-colors bg-gray-100 focus:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-cyan-500"
               required
             />
             {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
@@ -104,7 +103,7 @@ export default function RegisterPage() {
               placeholder="Enter your password"
               value={formData.password}
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-              className="w-full px-4 py-3 rounded-md text-base transition-colors bg-gray-100 focus:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full px-4 py-3 rounded-md text-base dark:bg-slate-900 dark:border-slate-800 transition-colors bg-gray-100 focus:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-cyan-500"
               required
             />
              <button
@@ -125,7 +124,7 @@ export default function RegisterPage() {
               placeholder="Re-enter your Password"
               value={formData.rePassword}
               onChange={(e) => setFormData({ ...formData, rePassword: e.target.value })}
-              className="w-full px-4 py-3 rounded-md text-base transition-colors bg-gray-100 focus:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full px-4 py-3 rounded-md text-base transition-colors dark:bg-slate-900 dark:border-slate-800 bg-gray-100 focus:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-cyan-500"
               required
             />
              <button

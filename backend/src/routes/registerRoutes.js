@@ -33,7 +33,7 @@ import { setUserInfo } from '../controllers/setUserInfo.js'
   },passport.authenticate('google',{failureRedirect:`http://localhost:${frontendPort}/login`}))
   
 router.get('/api/google/callback',passport.authenticate('google',{
-  failureRedirect:`http://localhost:5173/login`,
+  failureRedirect:`http://localhost:${frontendPort}/login`,
   failureFlash: true,
 }),
     async (req,res)=>{
