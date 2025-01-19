@@ -27,6 +27,7 @@ function Posts(props) {
     const [showLikeOverlay, setShowLikeOverlay] = useState('')
     const [showCommentBox, setShowCommentBox] = useState([])
     const [showCommentOverlay, setShowCommentOverlay] = useState('')
+    const [showShareOverlay, setShowShareOverlay] = useState('')
     const [overlayTransitionState, setOverlayTransitionState] = useState(false)
     const [postOptions, setPostOptions] = useState('')
     const [confirmDeletePost, setConfirmDeletePost] = useState(false)
@@ -199,7 +200,7 @@ function Posts(props) {
                 prevPosts.map((p) =>
                 p._id === updatedPost.post._id ? { ...p, isUpdating: false } : p
                 )
-            )
+              )
             }, 300)
         }
         else
@@ -232,20 +233,38 @@ function Posts(props) {
       
     const openCommentOverlay = (postId) =>
     {
-        setShowCommentOverlay(() => postId)
-        document.body.classList.toggle('overflow-hidden', true)
-        setTimeout(() => {
-            setOverlayTransitionState(true)
-        }, 1)
+      setShowCommentOverlay(() => postId)
+      document.body.classList.toggle('overflow-hidden', true)
+      setTimeout(() => {
+          setOverlayTransitionState(true)
+      }, 1)
     }
 
     const closeCommentOverlay = () =>
     {
-        setTimeout(() => {
-            setShowCommentOverlay(() => '')
-        }, 300)
-        setOverlayTransitionState(false)
-        document.body.classList.toggle('overflow-hidden', false)
+      setTimeout(() => {
+          setShowCommentOverlay(() => '')
+      }, 300)
+      setOverlayTransitionState(false)
+      document.body.classList.toggle('overflow-hidden', false)
+    }
+
+    const openShareOverlay = (postId) => 
+    {
+      setShowShareOverlay(() => postId)
+      document.body.classList.toggle('overflow-hidden', true)
+      setTimeout(() => {
+          setOverlayTransitionState(true)
+      }, 1) 
+    }
+
+    const closeShareOverlay = () =>
+    {
+      setTimeout(() => {
+        setShowShareOverlay(() => '')
+      }, 300)
+      setOverlayTransitionState(false)
+      document.body.classList.toggle('overflow-hidden', false)
     }
 
     const prevImage = (imageId) => {
@@ -615,7 +634,10 @@ function Posts(props) {
                     </button>
 
                     {/* share button */}
-                    <button className='flex justify-center items-center gap-2 group'>
+                    <button
+                      className='flex justify-center items-center gap-2 group'
+                      onClick={() => openShareOverlay(post._id.toString())}
+                    >
                       <svg width='24' height='24' viewBox='0 0 24 24'
                         className='stroke-gray-600 dark:stroke-gray-400 fill-none group-hover:stroke-cyan-600 transition-all duration-300'
                         xmlns="http://www.w3.org/2000/svg"
@@ -885,59 +907,88 @@ function Posts(props) {
 
           {/* Like Overlay */}
           {showLikeOverlay &&
-              (<div className={`fixed inset-0 z-50
-                            flex items-center justify-center
-                            bg-black transition-all duration-300
-                            ${overlayTransitionState?'bg-opacity-50':'bg-opacity-0'}
-                            `}      
-                            onClick={closeLikeOverlay}
+            (<div className={`fixed inset-0 z-50
+                          flex items-center justify-center
+                          bg-black transition-all duration-300
+                          ${overlayTransitionState?'bg-opacity-50':'bg-opacity-0'}
+                          `}      
+                          onClick={closeLikeOverlay}
+            >
+              <div onClick={(e) => e.stopPropagation()} 
+                  className={`relative bg-white w-80 h-96 rounded-lg shadow-2xl
+                    transition-all duration-300
+                    ${overlayTransitionState?'opacity-100 scale-100':'opacity-0 scale-50'}
+                    `}
               >
-                <div onClick={(e) => e.stopPropagation()} 
-                    className={`relative bg-white w-80 h-96 rounded-lg shadow-2xl
-                      transition-all duration-300
-                      ${overlayTransitionState?'opacity-100 scale-100':'opacity-0 scale-50'}
-                      `}
-                >
-                  <button onClick={closeLikeOverlay} className='absolute top-2 right-2 p-2 rounded-full hover:bg-gray-200 transition-all duration-300'>
-                    <svg width='24' height='24' viewBox='0 0 24 24'
-                      className='stroke-gray-600 fill-none'
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
-                    </svg>
-                  </button>
-                  <ShowLikes postId={showLikeOverlay} userProfile = {userProfile} closeLikeOverlay={closeLikeOverlay}/>
-                </div>
+                <button onClick={closeLikeOverlay} className='absolute top-2 right-2 p-2 rounded-full hover:bg-gray-200 transition-all duration-300'>
+                  <svg width='24' height='24' viewBox='0 0 24 24'
+                    className='stroke-gray-600 fill-none'
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+                  </svg>
+                </button>
+                <ShowLikes postId={showLikeOverlay} userProfile = {userProfile} closeLikeOverlay={closeLikeOverlay}/>
               </div>
-            )}
+            </div>
+          )}
 
-            {/* Comment Overlay */}
-            {showCommentOverlay &&
-              (<div className={`fixed inset-0 z-50
-                            flex items-center justify-center
-                            bg-black transition-all duration-300
-                            ${overlayTransitionState?'bg-opacity-50':'bg-opacity-0'}
-                            `}      
-                            onClick={closeCommentOverlay}
+          {/* Comment Overlay */}
+          {showCommentOverlay &&
+            (<div className={`fixed inset-0 z-50
+                          flex items-center justify-center
+                          bg-black transition-all duration-300
+                          ${overlayTransitionState?'bg-opacity-50':'bg-opacity-0'}
+                          `}      
+                          onClick={closeCommentOverlay}
+            >
+              <div onClick={(e) => e.stopPropagation()} 
+                  className={`relative bg-white min-w-80 w-[50%] h-[60%] rounded-lg shadow-2xl
+                    transition-all duration-300
+                    ${overlayTransitionState?'opacity-100 scale-100':'opacity-0 scale-50'}
+                    `}
               >
-                <div onClick={(e) => e.stopPropagation()} 
-                    className={`relative bg-white min-w-80 w-[50%] h-[60%] rounded-lg shadow-2xl
-                      transition-all duration-300
-                      ${overlayTransitionState?'opacity-100 scale-100':'opacity-0 scale-50'}
-                      `}
-                >
-                  <button onClick={closeCommentOverlay} className='absolute top-2 right-2 p-2 rounded-full hover:bg-gray-200 transition-all duration-300'>
-                    <svg width='24' height='24' viewBox='0 0 24 24'
-                      className='stroke-gray-600 fill-none'
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
-                    </svg>
-                  </button>
-                  <ShowComments postId={showCommentOverlay} userProfile= {userProfile} closeCommentOverlay={closeCommentOverlay}/>
-                </div>
+                <button onClick={closeCommentOverlay} className='absolute top-2 right-2 p-2 rounded-full hover:bg-gray-200 transition-all duration-300'>
+                  <svg width='24' height='24' viewBox='0 0 24 24'
+                    className='stroke-gray-600 fill-none'
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+                  </svg>
+                </button>
+                <ShowComments postId={showCommentOverlay} userProfile= {userProfile} closeCommentOverlay={closeCommentOverlay}/>
               </div>
-            )}
+            </div>
+          )}
+
+          {/* Share Overlay */}
+          {showShareOverlay &&
+            (<div className={`fixed inset-0 z-50
+                          flex items-center justify-center
+                          bg-black transition-all duration-300
+                          ${overlayTransitionState?'bg-opacity-50':'bg-opacity-0'}
+                          `}      
+                          onClick={closeShareOverlay}
+            >
+              <div onClick={(e) => e.stopPropagation()} 
+                  className={`relative bg-white w-80 h-96 rounded-lg shadow-2xl
+                    transition-all duration-300
+                    ${overlayTransitionState?'opacity-100 scale-100':'opacity-0 scale-50'}
+                    `}
+              >
+                <button onClick={closeShareOverlay} className='absolute top-2 right-2 p-2 rounded-full hover:bg-gray-200 transition-all duration-300'>
+                  <svg width='24' height='24' viewBox='0 0 24 24'
+                    className='stroke-gray-600 fill-none'
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+                  </svg>
+                </button>
+                <ShareWithFriends postId={showShareOverlay} userProfile={userProfile} closeShareOverlay={closeShareOverlay}/>
+              </div>
+            </div>
+          )}
+
         </div>
     )
 }
