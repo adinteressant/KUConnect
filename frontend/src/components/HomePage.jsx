@@ -72,11 +72,13 @@ const HomePage = () => {
       .then((response) => response.json())
       .then((data) => {
         setPosts(() => data)
-        setPostLoadingState(() => false)
+        setTimeout(() => {
+          setPostLoadingState(() => false)
+        }, 2000)
       })
       .catch((e) => {
         console.error('Error fetching posts:', e)
-      }) ///AHHHHHHHHHHHH WHERE IS MY COMMENT, I HATE AI
+      })
   }, [])
 
   // Handle Post Submit
