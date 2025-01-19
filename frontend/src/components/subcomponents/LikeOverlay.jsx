@@ -85,7 +85,6 @@ function ShowLikes(props) {
                         return (
                             <div key={index} className='flex'>
                                 <Link onClick={() => {
-                                                        document.body.classList.toggle('overflow-hidden', false)
                                                         props.closeLikeOverlay()
                                                     }}
                                          className='mt-2 shrink-0' to={`/${like.username}`}>
@@ -93,7 +92,6 @@ function ShowLikes(props) {
                                 </Link>
                                 <div className='ml-2'>
                                     <Link onClick={() => {
-                                                        document.body.classList.toggle('overflow-hidden', false)
                                                         props.closeLikeOverlay()
                                                     }} 
                                         to={`/${like.username}`}  className='text-gray-800  dark:text-slate-200 font-semibold text-sm'>

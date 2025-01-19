@@ -216,7 +216,7 @@ function Posts(props) {
     const openLikeOverlay = (postId) =>
     {
         setShowLikeOverlay(() => postId)
-        document.body.classList.toggle('overflow-hidden', true)
+        
         setTimeout(() => {
             setOverlayTransitionState(true)
         }, 1)
@@ -228,13 +228,13 @@ function Posts(props) {
             setShowLikeOverlay(() => '')
         }, 300)
         setOverlayTransitionState(false)
-        document.body.classList.toggle('overflow-hidden', false)
+        
     }
       
     const openCommentOverlay = (postId) =>
     {
       setShowCommentOverlay(() => postId)
-      document.body.classList.toggle('overflow-hidden', true)
+      
       setTimeout(() => {
           setOverlayTransitionState(true)
       }, 1)
@@ -246,13 +246,13 @@ function Posts(props) {
           setShowCommentOverlay(() => '')
       }, 300)
       setOverlayTransitionState(false)
-      document.body.classList.toggle('overflow-hidden', false)
+      
     }
 
     const openShareOverlay = (postId) => 
     {
       setShowShareOverlay(() => postId)
-      document.body.classList.toggle('overflow-hidden', true)
+      
       setTimeout(() => {
           setOverlayTransitionState(true)
       }, 1) 
@@ -264,7 +264,7 @@ function Posts(props) {
         setShowShareOverlay(() => '')
       }, 300)
       setOverlayTransitionState(false)
-      document.body.classList.toggle('overflow-hidden', false)
+      
     }
 
     const prevImage = (imageId) => {
@@ -298,7 +298,7 @@ function Posts(props) {
       setTimeout(() => {
           setOverlayTransitionState(true)
       }, 1)
-      document.body.classList.toggle('overflow-hidden', true)
+      
     }
 
     const closeImageOverlay = () => {
@@ -306,7 +306,7 @@ function Posts(props) {
         setViewImage(() => false)
       }, 300)
       setOverlayTransitionState(false)
-      document.body.classList.toggle('overflow-hidden', false)
+      
     }
 
     const openConfirmDeletePost = (post) =>
@@ -315,7 +315,7 @@ function Posts(props) {
       setTimeout(() => {
           setOverlayTransitionState(true)
       }, 1)
-      document.body.classList.toggle('overflow-hidden', true)
+      
     }
 
     const closeConfirmDeletePost = () =>
@@ -325,7 +325,7 @@ function Posts(props) {
         setDeleteLoadingState(() => false)
       }, 300)
       setOverlayTransitionState(false)
-      document.body.classList.toggle('overflow-hidden', false)
+      
     }
 
     const deletePost = async(post) =>
