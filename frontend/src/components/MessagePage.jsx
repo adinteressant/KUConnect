@@ -9,7 +9,7 @@ export default function MessagePage(){
       Please <Link to="/login" className="text-cyan-600">log in</Link> to message.
     </div>)
   }
-  return <div className="grid grid-cols-[264px,1fr]">
+  return <div className="h-[100%] flex">
     <MessageSidebar/>
     <MessageContainer/>
   </div>

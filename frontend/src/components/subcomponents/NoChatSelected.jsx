@@ -1,6 +1,6 @@
 export default function NoChatSelected(){
   return (
-    <div className="flex items-center justify-center h-full dark:bg-slate-900  bg-gray-50 text-gray-500">
+    <div className="flex items-center justify-center h-full dark:bg-slate-900 bg-gray-50 text-gray-500">
       <div className="text-center">
         <h3 className="text-2xl font-medium dark:text-slate-100 text-gray-900 mb-2">
           Welcome to Messages
