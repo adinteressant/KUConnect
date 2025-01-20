@@ -12,7 +12,7 @@ router.get('/api/get-posts', getAllPosts)
 router.post('/api/create-post', upload, validatePost, createPost)
 
 // Route to update post
-router.post('/api/create-post', upload, validatePost, validateUser, updatePost)
+router.post('/api/update-post', upload, validatePost, validateUser, updatePost)
 
 // Route to get post images
 router.get('/api/post/images/:imageId', getImages)

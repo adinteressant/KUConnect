@@ -80,6 +80,7 @@ export default function PostCreateSection({ parent ,user, setUser, posts, setPos
 
       const formData = new FormData()
 
+      formData.append('post', JSON.stringify(post))
       formData.append('content', content)
       formData.append('userInfo', JSON.stringify(userInfo))
       formData.append('tags', JSON.stringify(tagList))

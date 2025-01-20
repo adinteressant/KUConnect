@@ -116,6 +116,68 @@ export const createPost = async (req, res) => {
   }
 }
 
+export const updatePost = async(req, res) => {
+  
+  const post = JSON.parse(req.body.post)
+  const content = req.body.content
+  const images = req.body.images
+  const tags = JSON.parse(req.body.tags)
+
+  try
+  {
+    let [updatedPost, updatedPostImages] = [null, null]
+    if(images.length===0)
+    {
+      [updatedPost] = Promise.all([
+        Post.findByIdAndUpdate(
+          post._id,
+          { $set: { content, tags, images: null } },
+          { new: true }
+        ),
+        PostImages.findByIdAndDelete(
+          post.images
+        )
+      ])
+    }
+    else if(post.images===null)
+    {
+      const newPostImages = new PostImages({
+        images: images
+      })
+      updatedPostImages = await newPostImages.save()
+
+      updatedPost = await Post.findByIdAndUpdate(
+        post._id,
+        { $set: { content, tags, images: updatedPostImages._id } },
+        { new: true }
+      )
+    }
+    else
+    {
+      [updatedPost, updatedPostImages] = Promise.all([
+        Post.findByIdAndUpdate(
+          post._id,
+          { $set: { content, tags } },
+          { new: true }
+        ),
+        PostImages.findByIdAndUpdate(
+          post.images,
+          { $set: { images } },
+          { new: true }
+        )
+      ])
+    }
+
+    return res.status(200).json({ message: 'Post updated successfully', updatedPost, updatedPostImages })
+  }
+  catch(err)
+  {
+    console.error('Error editing post:', err)
+    res.status(500).json({ message: 'Internal Server Error', err })
+  }
+
+}
+
 export const getImages = async(req, res) =>
 {
  try
