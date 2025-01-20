@@ -353,7 +353,7 @@ const SliderToggle = ({ selected, setSelected }) => {
               </button>
               {isDropdownOpen && (
                 <div
-                  className="absolute right-0 top-14 w-48 shadow-lg rounded-lg border dark:bg-slate-900 dark:border-gray-800 border-gray-200 bg-gray-100 z-50 dropdown-area"
+                  className="absolute right-0 top-14 w-48 shadow-lg rounded-lg border dark:bg-slate-800 dark:border-slate-700 border-gray-200 bg-gray-100 z-50 dropdown-area"
                   onMouseEnter={handleDropdownOpen}
                   onMouseLeave={handleDropdownClose}
                 >
@@ -362,13 +362,13 @@ const SliderToggle = ({ selected, setSelected }) => {
                       <Link
                         to={`/${userProfile.username}`}
                         onClick={() => checkLoginOrRegister(`/${userProfile.username}`)}
-                        className="flex items-center px-4 py-2 hover:bg-gray-200 dark:hover:bg-slate-800 transition-colors"
+                        className="flex items-center px-4 py-2 hover:bg-gray-200 dark:hover:bg-slate-900 hover:rounded-t-md transition-colors"
                       >
                         <UserCircle className="h-4 w-4 mr-2" /> My Profile
                       </Link>
                       <button
                         onClick={handleLogout}
-                        className="w-full flex items-center px-4 py-2 hover:bg-gray-200 dark:hover:bg-slate-800 transition-colors text-left"
+                        className="w-full flex items-center px-4 py-2 hover:bg-gray-200 dark:hover:bg-slate-900 hover:rounded-b-md transition-colors text-left"
                       >
                         <LogOut className="h-4 w-4 mr-2" /> Logout
                       </button>
