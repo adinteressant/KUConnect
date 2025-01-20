@@ -57,7 +57,7 @@ function ShowComments(props) {
                 </div>
             </div>):
             (<div className='flex flex-col w-[100%] h-[100%]'>
-                <div className='p-2 flex gap-2 border-b border-slate-700'>
+                <div className='p-2 flex gap-2 border-b dark:border-slate-700'>
                     <button onClick={() => setCategory(() => 'all')} className={`p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-300 ${category==='all'?'bg-gray-200 dark:text-white dark:bg-gray-700':'dark:bg-slate-900 dark:text-gray-400'}`}>
                     All({student+faculty})
                     </button>
