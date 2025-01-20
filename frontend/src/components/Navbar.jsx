@@ -176,18 +176,31 @@ const SearchBar = React.memo(({ searchTrait, setSearchTrait, onSearch }) => {
 // User dropdown component
 const UserDropdown = React.memo(({ isAuthenticated, userProfile, onLogout }) => { 
   const [isOpen, setIsOpen] = useState(false);
+  let timeout = null;
   const navigate = useNavigate();
 
-  const handleMouseEnter = () => setIsOpen(true);
-  const handleMouseLeave = () => setIsOpen(false);
+  const handleDropdownOpen = () => {
+    if (timeout) clearTimeout(timeout);
+    setIsOpen(true);
+  };
+
+  const handleDropdownClose = (e) => {
+    timeout = setTimeout(() => {
+      if (!e.relatedTarget?.closest('.dropdown-area')) {
+        setIsOpen(false);
+      }
+    }, 300);
+  };
 
   return (
-    <div className="relative">
-      <button
-        className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors flex items-center"
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      >
+          <div className="flex items-center space-x-7">
+            {/* Dropdown Section */}
+            <div
+              className="relative dropdown-area"
+              onMouseEnter={handleDropdownOpen}
+              onMouseLeave={handleDropdownClose}
+            >
+              <button className="p-2 rounded-full hover:transition-colors flex items-center">
         {isAuthenticated ? (
           <img
             src={`/api/get-pfp?id=${userProfile?.pfp_id || 5}`}
@@ -201,44 +214,49 @@ const UserDropdown = React.memo(({ isAuthenticated, userProfile, onLogout }) => 
       </button>
 
       {isOpen && (
-        <div
-          className="absolute right-0 top-14 w-48 shadow-lg rounded-lg border dark:bg-slate-800 dark:border-slate-700 border-gray-200 bg-gray-100 z-50"
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-        >
-          {isAuthenticated ? (
-            <>
-              <Link
-                to={`/${userProfile?.username}`}
-                className="flex items-center px-4 py-2 hover:bg-gray-200 dark:hover:bg-slate-900 hover:rounded-t-md transition-colors"
-              >
-                <UserCircle className="h-4 w-4 mr-2" /> My Profile
-              </Link>
-              <button
-                onClick={onLogout}
-                className="w-full flex items-center px-4 py-2 hover:bg-gray-200 dark:hover:bg-slate-900 hover:rounded-b-md transition-colors text-left"
-              >
-                <LogOut className="h-4 w-4 mr-2" /> Logout
-              </button>
-            </>
-          ) : (
-            <>
-              <Link
-                to="/login"
-                className="flex items-center px-4 py-2 dark:hover:bg-slate-900 hover:bg-gray-200 transition-colors"
-              >
-                <LogIn className="h-4 w-4 mr-2" /> Login
-              </Link>
-              <Link
-                to="/register"
-                className="flex items-center px-4 py-2 hover:bg-gray-200 dark:hover:bg-slate-900 transition-colors"
-              >
-                <UserPlus className="h-4 w-4 mr-2" /> Register
-              </Link>
-            </>
-          )}
-        </div>
+                <div
+                  className="absolute right-0 top-14 w-48 shadow-lg rounded-lg border dark:bg-slate-800 dark:border-slate-700 border-gray-200 bg-gray-100 z-50 dropdown-area"
+                  onMouseEnter={handleDropdownOpen}
+                  onMouseLeave={handleDropdownClose}
+                >
+                  {isAuthenticated && (
+                    <>
+                      <Link
+                        to={`/${userProfile.username}`}
+                        onClick={() => checkLoginOrRegister(`/${userProfile.username}`)}
+                        className="flex items-center px-4 py-2 hover:bg-gray-200 dark:hover:bg-slate-900 hover:rounded-t-md transition-colors"
+                      >
+                        <UserCircle className="h-4 w-4 mr-2" /> My Profile
+                      </Link>
+                      <button
+                        onClick={onLogout}
+                        className="w-full flex items-center px-4 py-2 hover:bg-gray-200 dark:hover:bg-slate-900 hover:rounded-b-md transition-colors text-left"
+                      >
+                        <LogOut className="h-4 w-4 mr-2" /> Logout
+                      </button>
+                    </>
+                  )}
+                  {!isAuthenticated && (
+                    <>
+                      <Link
+                        to="/login"
+                        onClick={() => checkLoginOrRegister('/login')}
+                        className="flex items-center px-4 py-2 dark:hover:bg-slate-800 hover:bg-gray-200 transition-colors"
+                      >
+                        <LogIn className="h-4 w-4 mr-2" /> Login
+                      </Link>
+                      <Link
+                        to="/register"
+                        onClick={() => checkLoginOrRegister('/register')}
+                        className="flex items-center px-4 py-2 hover:bg-gray-200 dark:hover:bg-slate-800 transition-colors"
+                      >
+                        <UserPlus className="h-4 w-4 mr-2" /> Register
+                      </Link>
+                    </>
+                  )}
+              </div>
       )}
+    </div>
     </div>
   );
 });
