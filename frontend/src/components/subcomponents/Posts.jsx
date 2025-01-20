@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import formatTimeAgo from '../../utils/generateTimeAgo.js'
 import ShowLikes from './LikeOverlay.jsx'
 import ShowComments from './CommentOverlay.jsx'
+import SendToFriends from './ShareOverlay.jsx'
 import { useOutletContext } from 'react-router-dom'
 import { Loader2 } from 'lucide-react'
 import { useTheme } from '../context/themeContext.jsx'
@@ -982,7 +983,7 @@ function Posts(props) {
                     <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
                   </svg>
                 </button>
-                {/* <ShareWithFriends postId={showShareOverlay} userProfile={userProfile} closeShareOverlay={closeShareOverlay}/> */}
+                <SendToFriends postId={showShareOverlay} userProfile={userProfile} closeShareOverlay={closeShareOverlay}/>
               </div>
             </div>
           )}
