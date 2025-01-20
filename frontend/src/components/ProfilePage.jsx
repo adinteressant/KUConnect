@@ -20,7 +20,7 @@ export default function ProfilePage() {
   const [posts, setPosts] = useState([])
   const { incomingRequestsCount, setIncomingRequestsCount } = useRequestCount();
   const dropdownRef = useRef(null);
-
+  const [loading, setLoading] = useState(true);
   const scrollContainerRef = useRef(null)
   const location = useLocation()
 
@@ -218,6 +218,7 @@ export default function ProfilePage() {
       };
 
       fetchStatus();
+      setLoading(false);
     }
   }, [userProfile, profileData]);   
   
@@ -250,9 +251,61 @@ export default function ProfilePage() {
       });
   };
 
+  const LoadingSkeleton = () => {
+    return (
+      <div className="flex-1 dark:bg-slate-900 dark:text-gray-200 bg-gray-100 text-gray-800 p-6 overflow-y-auto">
+        <div className="max-w-2xl mx-auto border dark:border-slate-700 dark:bg-slate-800 space-y-4 p-8 rounded-lg shadow-md mb-4">
+          {/* Profile picture skeleton */}
+          <div className="w-32 h-32 md:w-40 md:h-40 rounded-full bg-gray-200 dark:bg-slate-700 mx-auto animate-pulse" />
+  
+          {/* Profile content skeleton */}
+          <div className="text-center mt-4 flex flex-col items-center space-y-4">
+            {/* Username skeleton */}
+            <div className="w-48 h-8 bg-gray-200 dark:bg-slate-700 rounded-lg animate-pulse" />
+            
+            {/* Role skeleton */}
+            <div className="w-32 h-6 bg-gray-200 dark:bg-slate-700 rounded-lg animate-pulse" />
+            
+            {/* Generic button skeleton */}
+            <div className="w-32 h-10 bg-gray-200 dark:bg-slate-700 rounded-full animate-pulse mt-6" />
+          </div>
+        </div>
+  
+        {/* Posts skeleton */}
+        <div className="space-y-4">
+          {[...Array(3)].map((_, index) => (
+            <div 
+              key={index} 
+              className="max-w-2xl mx-auto border dark:border-slate-700 dark:bg-slate-800 p-4 rounded-lg shadow-md"
+            >
+              {/* Post header */}
+              <div className="flex items-center space-x-3 mb-4">
+                <div className="w-10 h-10 bg-gray-200 dark:bg-slate-700 rounded-full animate-pulse" />
+                <div className="w-32 h-6 bg-gray-200 dark:bg-slate-700 rounded-lg animate-pulse" />
+              </div>
+              
+              {/* Post content */}
+              <div className="space-y-2">
+                <div className="w-full h-4 bg-gray-200 dark:bg-slate-700 rounded animate-pulse" />
+                <div className="w-3/4 h-4 bg-gray-200 dark:bg-slate-700 rounded animate-pulse" />
+                <div className="w-1/2 h-4 bg-gray-200 dark:bg-slate-700 rounded animate-pulse" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  if(loading){
+    return (
+      <LoadingSkeleton />
+    )
+  }
+
   return (
-    <div className={`flex-1 min-h-screen dark:bg-slate-900 dark:text-gray-200 bg-gray-100 text-gray-800 p-6 overflow-y-auto `} ref={scrollContainerRef}>
-      <div className="max-w-2xl mx-auto border dark:border-slate-700 dark:bg-slate-800 space-y-4 p-8 rounded-lg shadow-md mb-4">
+    <div className={`flex-1 dark:bg-slate-900 dark:text-gray-200 bg-gray-100 text-gray-800 p-6 overflow-y-auto `} ref={scrollContainerRef}>
+      <div className="max-w-2xl mx-auto border dark:border-slate-700 bg-white dark:bg-slate-800 space-y-4 p-8 rounded-lg shadow-md mb-4">
         {/* Profile picture with hover effect */}
         <div
           className={`w-32 h-32 md:w-40 md:h-40 rounded-full bg-gray-300}
@@ -302,7 +355,7 @@ export default function ProfilePage() {
               </button>
               </div>
             ) : status === 'pending' ? (<>
-              <p className="mt-6 text-green-600">Friend Request Sent!</p>
+              <p className="mt-6 text-green-600">Friend Request Sent!</p><br />
               <div className = "flex items-center justify-center space-x-4">
               <button
                   onClick={cancelRequest}
@@ -323,35 +376,36 @@ export default function ProfilePage() {
                     Friends
                   </button>
                   {showDropdown && (
-                    <div className="absolute top-full left-0 mt-2 w-full bg-white rounded-md shadow-lg z-10">
+                    <div className="absolute top-full left-0 mt-2 w-full bg-white dark:bg-slate-900 rounded-md shadow-lg z-10">
                       <button 
                         onClick={() => setShowUnfriendPopup(true)}
-                        className="w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100 transition"
+                        className="w-full text-left px-4 py-2 text-red-600 dark:hover:bg-gray-700 hover:text-red-700 hover:bg-gray-100 transition"
                       >
                         Unfriend
                       </button>
                     </div>
                   )}
                 </div>
-                <button
-                  onClick={() => console.log('Open message functionality')}
-                  className="bg-green-500 text-white px-4 py-2 rounded-full hover:bg-green-600 transition"
-                >
-                  Message
-                </button>
+              
+                  <Link to={`/messages?userId=${profileData.user_id}`}
+                    className="bg-green-500 text-white px-4 py-2 rounded-full hover:bg-green-600 transition"
+                  >
+                    Message
+                  </Link>
+                
               </div>
             ) : status ==='incoming' ? (
                 <>
                 <p className="mt-6 text-green-600">User has sent you a friend request!</p><br />
-                <div className="flex items-center justify-center mt-6 space-x-4">
+                <div className="flex items-center justify-center space-x-4">
                 <button
                 onClick={confirmRequest}
-                className="mt-6 bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-blue-600 transition"
+                className="bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-blue-600 transition"
               >
                 Confirm Request
               </button>
               <button onClick={rejectRequest} 
-              className='mt-6 bg-red-500 text-white px-6 py-2 rounded-full hover:bg-red-700 transition'>
+              className='bg-red-500 text-white px-6 py-2 rounded-full hover:bg-red-700 transition'>
                 Cancel Request
               </button>
               </div>

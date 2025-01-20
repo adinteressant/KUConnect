@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useOutletContext } from 'react-router-dom';
 import { Search, User, ChevronDown, LogOut, LogIn, UserPlus, UserCircle } from 'lucide-react';
 import axios from 'axios';
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { FiMoon, FiSun } from "react-icons/fi";
 import { useTheme } from './context/themeContext';
 
@@ -27,47 +27,47 @@ const Navigation = ({ setVisibility, setPadding,searchTrait,setSearchTrait, user
 const TOGGLE_CLASSES =
   "text-sm font-medium flex items-center gap-2 px-3 md:pl-3 md:pr-3.5 py-3 md:py-1.5 transition-colors relative z-10";
 
-  const sliderVariants = {
-    light: {
-      x: 0,
-      backgroundColor: "#6366f1",
-      transition: {
-        type: "spring",
-        stiffness: 300,
-        damping: 20
-      }
-    },
-    dark: {
-      x: "100%",
-      backgroundColor: "#7c3aed",
-      transition: {
-        type: "spring",
-        stiffness: 300,
-        damping: 20
-      }
-    }
-  };
+  // const sliderVariants = {
+  //   light: {
+  //     x: 0,
+  //     backgroundColor: "#6366f1",
+  //     transition: {
+  //       type: "spring",
+  //       stiffness: 300,
+  //       damping: 20
+  //     }
+  //   },
+  //   dark: {
+  //     x: "100%",
+  //     backgroundColor: "#7c3aed",
+  //     transition: {
+  //       type: "spring",
+  //       stiffness: 300,
+  //       damping: 20
+  //     }
+  //   }
+  // };
 
-  const iconVariants = {
-    active: {
-      scale: 1.2,
-      rotate: 0,
-      transition: {
-        type: "spring",
-        stiffness: 300,
-        damping: 15
-      }
-    },
-    inactive: {
-      scale: 1,
-      rotate: -30,
-      transition: {
-        type: "spring",
-        stiffness: 300,
-        damping: 15
-      }
-    }
-  };
+  // const iconVariants = {
+  //   active: {
+  //     scale: 1.2,
+  //     rotate: 0,
+  //     transition: {
+  //       type: "spring",
+  //       stiffness: 300,
+  //       damping: 15
+  //     }
+  //   },
+  //   inactive: {
+  //     scale: 1,
+  //     rotate: -30,
+  //     transition: {
+  //       type: "spring",
+  //       stiffness: 300,
+  //       damping: 15
+  //     }
+  //   }
+  // };
 
   useEffect(() => {
     if (theme === 'dark') {
@@ -77,44 +77,50 @@ const TOGGLE_CLASSES =
     }
   }, [theme]);
 
-const SliderToggle = ({ selected, setSelected }) => {
-  return (
-    <div className="relative flex w-fit items-center rounded-full bg-gray-200 dark:bg-gray-800 p-1 transition-all duration-500">
-      <motion.button
-        className={`${TOGGLE_CLASSES} ${selected === "light" ? "text-black" : "text-gray-400"}`}
-        onClick={() => 
-          {
-            setSelected('light')
+  const SliderToggle = ({ selected, setSelected }) => {
+    return (
+      <div className="relative flex items-center">
+        <button
+          onClick={() => {
+            setSelected(selected === "dark" ? "light" : "dark");
             toggleTheme();
-            localStorage.setItem('darkmode', 'light');
-          }
-        }
-        animate={selected === "light" ? "active" : "inactive"}
-        variants={iconVariants}
-      >
-        <FiSun />
-      </motion.button>
-      <motion.button
-        className={`${TOGGLE_CLASSES} ${selected === "dark" ? "text-yellow-400" : "text-gray-400"}`}
-        onClick={() => {
-          setSelected('dark');
-          toggleTheme();
-          localStorage.setItem('darkmode','dark');
-        }
-      }        
-      >
-        <FiMoon />
-      </motion.button>
-      <motion.span
-        layout
-        animate={selected}
-        variants={sliderVariants}
-        className="absolute top-1 bottom-1 w-1/2 rounded-full"
-        style={{ x: selected === "dark" ? "100%" : "0%" }}
-      />
-    </div>
-  );
-};
+          }}
+          className="relative w-16 h-8 rounded-full bg-slate-200 dark:bg-slate-700 transition-colors duration-300"
+          aria-label="Toggle theme"
+        >
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={selected}
+              className="absolute top-1 left-1 w-6 h-6 rounded-full bg-violet-600 flex items-center justify-center"
+              initial={{ x: selected === "dark" ? "0rem" : "2rem" }}
+              animate={{ x: selected === "dark" ? "2rem" : "0rem" }}
+              transition={{
+                type: "spring",
+                stiffness: 300,
+                damping: 25
+              }}
+            >
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={selected}
+                  initial={{ rotate: -180, opacity: 0 }}
+                  animate={{ rotate: 0, opacity: 1 }}
+                  exit={{ rotate: 180, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  {selected === "dark" ? (
+                    <FiMoon className="w-4 h-4 text-white" />
+                  ) : (
+                    <FiSun className="w-4 h-4 text-white" />
+                  )}
+                </motion.div>
+              </AnimatePresence>
+            </motion.div>
+          </AnimatePresence>
+        </button>
+      </div>
+    );
+  };
 
   useEffect(() => {
     const checkAuthentication = async () => {
@@ -353,7 +359,7 @@ const SliderToggle = ({ selected, setSelected }) => {
               </button>
               {isDropdownOpen && (
                 <div
-                  className="absolute right-0 top-14 w-48 shadow-lg rounded-lg border dark:bg-slate-900 dark:border-gray-800 border-gray-200 bg-gray-100 z-50 dropdown-area"
+                  className="absolute right-0 top-14 w-48 shadow-lg rounded-lg border dark:bg-slate-800 dark:border-slate-700 border-gray-200 bg-gray-100 z-50 dropdown-area"
                   onMouseEnter={handleDropdownOpen}
                   onMouseLeave={handleDropdownClose}
                 >
@@ -362,13 +368,13 @@ const SliderToggle = ({ selected, setSelected }) => {
                       <Link
                         to={`/${userProfile.username}`}
                         onClick={() => checkLoginOrRegister(`/${userProfile.username}`)}
-                        className="flex items-center px-4 py-2 hover:bg-gray-200 dark:hover:bg-slate-800 transition-colors"
+                        className="flex items-center px-4 py-2 hover:bg-gray-200 dark:hover:bg-slate-900 hover:rounded-t-md transition-colors"
                       >
                         <UserCircle className="h-4 w-4 mr-2" /> My Profile
                       </Link>
                       <button
                         onClick={handleLogout}
-                        className="w-full flex items-center px-4 py-2 hover:bg-gray-200 dark:hover:bg-slate-800 transition-colors text-left"
+                        className="w-full flex items-center px-4 py-2 hover:bg-gray-200 dark:hover:bg-slate-900 hover:rounded-b-md transition-colors text-left"
                       >
                         <LogOut className="h-4 w-4 mr-2" /> Logout
                       </button>

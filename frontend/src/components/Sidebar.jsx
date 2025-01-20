@@ -48,24 +48,24 @@ useEffect(() => {
     }, [userProfile.unread_count])
 
   
-    // useEffect(() => {
-    //   const fetchIncomingRequestsCount = async () => {
-    //     const user_id = userProfile.user_id
-    //     if (!user_id) return 
-    //     try {
-    //       const response = await axios.get(`/api/view-incoming-requests?user_id=${user_id}`, {
-    //         withCredentials: true,
-    //       })
-    //       if (response.data) {
-    //         setIncomingRequestsCount(response.data.incoming.length || 0)
-    //       }
-    //     } catch (error) {
-    //       console.error('Error fetching incoming requests count:', error)
-    //     }
-    //   }
+    useEffect(() => {
+      const fetchIncomingRequestsCount = async () => {
+        const user_id = userProfile.user_id
+        if (!user_id) return 
+        try {
+          const response = await axios.get(`/api/view-incoming-requests?user_id=${user_id}`, {
+            withCredentials: true,
+          })
+          if (response.data) {
+            setIncomingRequestsCount(response.data.incoming.length || 0)
+          }
+        } catch (error) {
+          console.error('Error fetching incoming requests count:', error)
+        }
+      }
   
-    //   fetchIncomingRequestsCount()
-    // }, [userProfile.user_id, setIncomingRequestsCount])
+      fetchIncomingRequestsCount()
+    }, [userProfile.user_id, setIncomingRequestsCount])
 
   //useEffect(()=>{
   //  setUserUnreadCount(userProfile.unread_count)
@@ -81,7 +81,7 @@ useEffect(() => {
     <motion.div
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      animate={{ width: isHovered ? 220 : 55 }}
+      animate={{ width: isHovered ? 220 : 60 }}
       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
       className ={ `shadow-md p-2 fixed z-10 bottom-0 top-16 h-screen border-r ${theme === 'dark' ? 'border-slate-800' :'border-gray-200' } transition-colors ${
       theme === "light" ? "bg-white" : "bg-slate-800"

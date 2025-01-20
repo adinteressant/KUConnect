@@ -4,6 +4,7 @@ import Posts from './subcomponents/Posts.jsx'
 import WelcomeModal from './subcomponents/WelcomeModal.jsx'
 import { useGetUnreadMessage } from './hooks/useGetUnreadMessage.js'
 import base64encode from '../utils/base64encode.js'
+import PostSkeleton from './subcomponents/PostSkeleton.jsx'
 
 const HomePage = () => {
   const [user, setUser] = useState(null)
@@ -20,6 +21,7 @@ const HomePage = () => {
   const [encodedImages, setEncodedImages] = useState([])
   const [showWelcomeModal, setShowWelcomeModal] = useState(false)
   const {searchTrait,setSearchTrait} = useOutletContext()
+  const [postLoadingState, setPostLoadingState] = useState(true)
   // Check for logged-in user based on isAuthenticated
   if(localStorage.getItem('isLoggedIn') === 'true') useGetUnreadMessage()
   
@@ -69,11 +71,14 @@ const HomePage = () => {
     fetch(`/api/get-posts`)
       .then((response) => response.json())
       .then((data) => {
-        setPosts(data)
+        setPosts(() => data)
+        setTimeout(() => {
+          setPostLoadingState(() => false)
+        }, 2000)
       })
       .catch((e) => {
         console.error('Error fetching posts:', e)
-      }) ///AHHHHHHHHHHHH WHERE IS MY COMMENT, I HATE AI
+      })
   }, [])
 
   // Handle Post Submit
@@ -214,7 +219,7 @@ const HomePage = () => {
   }
 
   return (
-    <div className="flex-1 flex flex-col min-h-screen dark:bg-slate-900 bg-white">
+    <div className="flex-1 flex flex-col dark:bg-slate-900 bg-gray-200 overflow-y-auto">
       {/* Displaying user profile */}
       {(user || googleUser) && showWelcomeModal && ( 
             <WelcomeModal
@@ -224,7 +229,7 @@ const HomePage = () => {
               pfp_id = {userProfile.pfp_id}
             />
       )}
-      <main className="flex-1 p-6 overflow-y-auto">
+      <main className="flex-1 p-4">
         <div className="max-w-2xl mx-auto space-y-4">
           {/* Post creation section */}
           {(user || googleUser) ? (
@@ -242,7 +247,7 @@ const HomePage = () => {
                 onBlur={handleTextareaBlur}
               />
 
-              <div className={`transition-all duration-1000 overflow-y-auto ease-in-out ${isTextareaFocused || isTagsInputFocused || content.trim() || tagValue.trim() || tagList.length>0 || images.length>0 ? 'opacity-100 max-h-screen' : 'opacity-0 max-h-0'}`}>
+              <div className={`transition-all duration-500 overflow-y-auto ease-in-out ${isTextareaFocused || isTagsInputFocused || content.trim() || tagValue.trim() || tagList.length>0 || images.length>0 ? 'opacity-100 max-h-screen' : 'opacity-0 max-h-0'}`}>
                 {/*Tag Input Section*/}
                 <div className='flex flex-col'>
                   <input
@@ -317,8 +322,12 @@ const HomePage = () => {
 
         </div>
 
+        {postLoadingState?
+        <PostSkeleton />
+        :
         <Posts posts={posts} setPosts={setPosts}/>
-
+        }
+        
       </main>
     </div>
   )

@@ -1,19 +1,31 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import useConversation from '../../zustand/useConversation'
 import { useGetUnreadMessage } from '../hooks/useGetUnreadMessage'
 import useNewMessages from '../../zustand/useNewMessages'
 import useGetFriends from '../hooks/useGetFriends'
 import { useSocketContext } from '../context/socketContext'
+import { useSearchParams } from 'react-router-dom'
 
 export default function Conversations({ conversations, loading }) {
   const { selectedConversation, setSelectedConversation } = useConversation()
   const {onlineUsers} = useSocketContext()
-
+  const [searchParams] = useSearchParams()
+  const [userQueryId,setUserQueryId] = useState(searchParams.get('userId') || '')
   useGetUnreadMessage()
   console.log(localStorage.getItem('authUser'))
   const userProfiles = useGetFriends(JSON.parse(localStorage.getItem('authUser')))
-  // const userProfiles = useGetProfile()
   const {newMessages,setNewMessages} = useNewMessages()
+
+  useEffect(()=>{
+    conversations.forEach(conversation=>{
+      if(conversation.user_id == userQueryId){
+        console.log('inside useEffect'+Math.random().toFixed(2))
+        setSelectedConversation(conversation)
+        return
+      }
+    })
+  },[userQueryId,conversations])
+
 
   // Memoize the count calculation for better performance
     const enhancedConversations = useMemo(() => {
@@ -61,7 +73,7 @@ export default function Conversations({ conversations, loading }) {
           <div
             key={index}
             className={`hover:bg-gray-200 dark:hover:bg-gray-700 mb-2 dark:text-slate-100 cursor-pointer hover:rounded-md flex justify-between
-               px-3 border-gray-200 border-b text-gray-800
+               px-3 border-gray-200 dark:border-slate-700 border-b text-gray-800
                ${selectedConversation?.user_id === conversation.user_id
                 ? `bg-gray-200 dark:bg-gray-700 rounded-md`
                 : ``}

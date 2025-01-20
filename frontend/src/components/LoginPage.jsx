@@ -43,9 +43,8 @@ export default function LoginPage() {
   };
 
   const handleGoogleLogin = () => {
-    const backendUrl = 'http://localhost:4000';  
     const currentPort = window.location.port;
-    window.location.href = `${backendUrl}/api/auth/google?port=${currentPort}`;
+    window.location.href = `/api/auth/google?port=${currentPort}`;
     localStorage.setItem('isLoggedIn',true)
     localStorage.setItem('isAuthenticated', false);
     sessionStorage.setItem('newGoogleLogin', 'true');
@@ -63,7 +62,7 @@ export default function LoginPage() {
               placeholder="Email"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="w-full px-4 py-3 rounded-md text-base transition-colors bg-gray-100 focus:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full px-4 py-3 rounded-md text-base dark:bg-slate-900 dark:text-gray-200 dark:border-slate-800 transition-colors bg-gray-100 focus:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-cyan-500"
               required
             />
           </div>
@@ -74,7 +73,7 @@ export default function LoginPage() {
               placeholder="Enter your password"
               value={formData.password}
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-              className="w-full px-4 py-3 rounded-md text-base transition-colors bg-gray-100 focus:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full px-4 py-3 rounded-md text-base transition-colors dark:bg-slate-900 dark:text-gray-200 dark:border-slate-800 bg-gray-100 focus:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-cyan-500"
               required
             />
              <button

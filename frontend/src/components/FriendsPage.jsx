@@ -168,12 +168,47 @@ const FriendsPage = () => {
       .catch((err) => console.error('Error canceling request:', err))
   };
 
+  const LoadingSkeleton = () => (
+    <div className="dark:text-white p-6 overflow-y-auto">
+      <div className="mb-8 max-w-6xl mx-auto">
+        {/* Title skeleton */}
+        <div className="w-32 h-8 bg-gray-200 dark:bg-slate-800 rounded-lg mb-6 animate-pulse" />
+        
+        {/* Tabs skeleton */}
+        <div className="flex space-x-2 mb-6 border-b dark:border-slate-700">
+          {[...Array(3)].map((_, i) => (
+            <div 
+              key={i}
+              className="px-4 py-2 flex items-center gap-2"
+            >
+              <div className="w-4 h-4 bg-gray-200 dark:bg-slate-800 rounded-full animate-pulse" />
+              <div className="w-24 h-6 bg-gray-200 dark:bg-slate-800 rounded-lg animate-pulse" />
+            </div>
+          ))}
+        </div>
+  
+        {/* Content skeleton - Grid layout matching friends list */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[...Array(6)].map((_, i) => (
+            <div 
+              key={i} 
+              className="bg-gray-100 dark:bg-slate-800 rounded-lg shadow p-4"
+            >
+              <div className="flex items-center space-x-4">
+                <div className="w-10 h-10 bg-gray-200 dark:bg-slate-700 rounded-full animate-pulse" />
+                <div className="w-32 h-6 bg-gray-200 dark:bg-slate-700 rounded-lg animate-pulse" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-pulse dark:text-gray-300 text-lg">Loading...</div>
-      </div>
-    );
+        <LoadingSkeleton />
+    )
   }
 
   if (error) {
@@ -185,8 +220,8 @@ const FriendsPage = () => {
   }
 
   return (
-    <div className="max-w-6xl dark:text-white mx-auto p-6">
-      <div className="mb-8">
+    <div className="dark:text-white p-6 overflow-y-auto">
+      <div className="mb-8 max-w-6xl mx-auto">
         <h1 className="text-2xl font-bold mb-6">Friends</h1>
         
         <div className="flex space-x-2 dark:text-gray-300 mb-6 border-b dark:border-slate-700">
@@ -228,7 +263,7 @@ const FriendsPage = () => {
         {activeTab === 'friends' && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {friends.map((friend) => (
-              <div key={friend.username} className="bg-white dark:bg-slate-800 dark:text-white rounded-lg shadow p-4">
+              <div key={friend.username} className="bg-gray-100 dark:bg-slate-800 dark:text-white rounded-lg shadow p-4">
                 <div className="flex items-center space-x-4">
                   <img
                     src={friend.pfp_id ? `/api/get-pfp?id=${friend.pfp_id}` : '/api/placeholder/40/40'}
@@ -255,7 +290,7 @@ const FriendsPage = () => {
         {activeTab === 'requests' && (
           <div className="space-y-4">
             {incomingRequests.map((req) => (
-              <div key={req.sender_username} className="bg-white dark:bg-slate-800 dark:text-white rounded-lg shadow p-4">
+              <div key={req.sender_username} className="bg-gray-100 dark:bg-slate-800 dark:text-white rounded-lg shadow p-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
                     <img
@@ -298,7 +333,7 @@ const FriendsPage = () => {
         {activeTab === 'sent' && (
           <div className="space-y-4">
             {sentRequests.map((req) => (
-              <div key={req.receiver_username} className="bg-white dark:bg-slate-800 dark:text-white rounded-lg shadow p-4">
+              <div key={req.receiver_username} className="bg-gray-100 dark:bg-slate-800 dark:text-white rounded-lg shadow p-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
                     <img

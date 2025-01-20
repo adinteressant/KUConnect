@@ -57,18 +57,18 @@ function ShowComments(props) {
                 </div>
             </div>):
             (<div className='flex flex-col w-[100%] h-[100%]'>
-                <div className='p-2 flex gap-2 dark:bg-slate-900 border-b border-slate-700'>
-                    <button onClick={() => setCategory(() => 'all')} className={`p-2 rounded hover:bg-gray-100 transition-bg dark:hover:bg-gray-700  duration-300 ${category==='all'?'bg-gray-200 dark:text-white dark:bg-gray-700':'dark:bg-slate-900 dark:text-gray-400'}`}>
+                <div className='p-2 flex gap-2 border-b border-slate-700'>
+                    <button onClick={() => setCategory(() => 'all')} className={`p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-300 ${category==='all'?'bg-gray-200 dark:text-white dark:bg-gray-700':'dark:bg-slate-900 dark:text-gray-400'}`}>
                     All({student+faculty})
                     </button>
-                    <button onClick={() => setCategory(() => 'student')} className={`p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-300 ${category==='student'?'bg-gray-200 text-white dark:bg-gray-700 ':'dark:bg-slate-900 dark:text-gray-400'}`}>
+                    <button onClick={() => setCategory(() => 'student')} className={`p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-300 ${category==='student'?'bg-gray-200 dark:text-white dark:bg-gray-700 ':'dark:bg-slate-900 dark:text-gray-400'}`}>
                     Students({student})
                     </button>
-                    <button onClick={() => setCategory(() => 'faculty')} className={`p-2 rounded hover:bg-gray-100 transition-all dark:hover:bg-gray-700 duration-300 ${category==='faculty'?'bg-gray-200 text-white dark:bg-gray-700':'dark:bg-slate-900 dark:text-gray-400'}`}>
+                    <button onClick={() => setCategory(() => 'faculty')} className={`p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-300 ${category==='faculty'?'bg-gray-200 dark:text-white dark:bg-gray-700':'dark:bg-slate-900 dark:text-gray-400'}`}>
                     Faculty({faculty})
                     </button>
                 </div>
-                <div className='p-4 overflow-y-auto dark:bg-slate-900 flex flex-col gap-4 w-[100%] h-[100%]'>
+                <div className='p-4 overflow-y-auto flex flex-col gap-4 w-[100%] h-[100%]'>
                     {comments.map((comment, index) => {
                     if(comment.role === 'student')
                         {
@@ -89,7 +89,6 @@ function ShowComments(props) {
                     return (
                             <div key={index} className='flex'>
                                 <Link onClick={() => {
-                                                        document.body.classList.toggle('overflow-hidden', false)
                                                         props.closeCommentOverlay()
                                                     }} className='mt-2 shrink-0' to={`/${comment.username}`}>
                                         <img src={`/api/get-pfp?id=${comment.pfp}`} alt="profile" className="w-8 h-8 rounded-full object-cover"/>
@@ -99,7 +98,6 @@ function ShowComments(props) {
                                         <div className='bg-gray-100 dark:bg-slate-800 p-2 rounded-xl'>
                                             <div className='flex gap-2 items-center'>
                                                 <Link onClick={() => {
-                                                        document.body.classList.toggle('overflow-hidden', false)
                                                         props.closeCommentOverlay()
                                                     }} to={`/${comment.username}`} className='text-gray-800 dark:text-slate-200 font-semibold text-sm'>
                                                     {comment.username}
