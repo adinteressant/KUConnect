@@ -281,7 +281,7 @@ export default function PostCreateSection({ parent ,user, setUser, setPosts, set
           Cancel
         </button>
         <button
-          disabled={!content.trim() || (post.content===content&&post.tags===tagList&&post.encodedImages===encodedImages)}
+          disabled={!content.trim() || (post.content===content&&post.tags===tagList&&(post.images===null?encodedImages.length===0:post.encodedImages===encodedImages))}
           className='py-2 px-4 rounded-xl text-white bg-cyan-600 hover:bg-cyan-700 disabled:bg-gray-400 dark:disabled:bg-slate-600 transition-all duration-300'
           onClick={() => {
             handlePostEdit()
