@@ -10,6 +10,7 @@ export default function Conversations({ conversations, loading }) {
   const {onlineUsers} = useSocketContext()
 
   useGetUnreadMessage()
+  console.log(localStorage.getItem('authUser'))
   const userProfiles = useGetFriends(JSON.parse(localStorage.getItem('authUser')))
   // const userProfiles = useGetProfile()
   const {newMessages,setNewMessages} = useNewMessages()

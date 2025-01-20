@@ -5,7 +5,8 @@ export const useGetConversations = () => {
   const [conversations,setConversations] = useState([])
 
   useEffect(()=>{
-    const user_id = JSON.parse(localStorage.getItem('authUser'))
+    console.log(localStorage.getItem('authUser'))
+    const user_id = JSON.parse(localStorage.getItem('authUser')?localStorage.getItem('authUser'):'')
     const getConversations = async () => {
       setLoading(true)
       try{
