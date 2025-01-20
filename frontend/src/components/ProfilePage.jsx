@@ -302,7 +302,7 @@ export default function ProfilePage() {
               </button>
               </div>
             ) : status === 'pending' ? (<>
-              <p className="mt-6 text-green-600">Friend Request Sent!</p>
+              <p className="mt-6 text-green-600">Friend Request Sent!</p><br />
               <div className = "flex items-center justify-center space-x-4">
               <button
                   onClick={cancelRequest}
@@ -323,10 +323,10 @@ export default function ProfilePage() {
                     Friends
                   </button>
                   {showDropdown && (
-                    <div className="absolute top-full left-0 mt-2 w-full bg-white rounded-md shadow-lg z-10">
+                    <div className="absolute top-full left-0 mt-2 w-full bg-white dark:bg-slate-900 rounded-md shadow-lg z-10">
                       <button 
                         onClick={() => setShowUnfriendPopup(true)}
-                        className="w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100 transition"
+                        className="w-full text-left px-4 py-2 text-red-600 dark:hover:bg-gray-700 hover:text-red-700 hover:bg-gray-100 transition"
                       >
                         Unfriend
                       </button>
@@ -344,15 +344,15 @@ export default function ProfilePage() {
             ) : status ==='incoming' ? (
                 <>
                 <p className="mt-6 text-green-600">User has sent you a friend request!</p><br />
-                <div className="flex items-center justify-center mt-6 space-x-4">
+                <div className="flex items-center justify-center space-x-4">
                 <button
                 onClick={confirmRequest}
-                className="mt-6 bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-blue-600 transition"
+                className="bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-blue-600 transition"
               >
                 Confirm Request
               </button>
               <button onClick={rejectRequest} 
-              className='mt-6 bg-red-500 text-white px-6 py-2 rounded-full hover:bg-red-700 transition'>
+              className='bg-red-500 text-white px-6 py-2 rounded-full hover:bg-red-700 transition'>
                 Cancel Request
               </button>
               </div>
