@@ -12,6 +12,7 @@ export default function Conversations({ conversations, loading }) {
   const [searchParams] = useSearchParams()
   const [userQueryId,setUserQueryId] = useState(searchParams.get('userId') || '')
   useGetUnreadMessage()
+  console.log(localStorage.getItem('authUser'))
   const userProfiles = useGetFriends(JSON.parse(localStorage.getItem('authUser')))
   const {newMessages,setNewMessages} = useNewMessages()
 

@@ -28,6 +28,10 @@ export default function LandingPage() {
     navigate('/register');
   };
 
+  if(userProfile) {
+    navigate('/home')
+  }
+
   return (
     <div className="relative h-full w-full overflow-hidden bg-white">
       {/* Expanded set of blobs with more random positions */}
