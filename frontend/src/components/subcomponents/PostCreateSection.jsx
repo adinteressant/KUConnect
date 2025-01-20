@@ -3,10 +3,14 @@ import { useOutletContext } from 'react-router-dom'
 import base64encode from '../../utils/base64encode.js'
 
 export default function PostCreateSection({ parent ,user, setUser, posts, setPosts, post, close }) {
-  const [content, setContent] = useState('')
+  const [content, setContent] = useState(
+    parent==='edit'?post.content:''
+  )
   const [showTags, setShowTags] = useState(false)
   const [tagValue, setTagValue] = useState('')
-  const [tagList, setTagList] = useState([])
+  const [tagList, setTagList] = useState(
+    parent==='edit'?post.tags:[]
+  )
   const [isTextareaFocused, setIsTextareaFocused] = useState(false)
   const [isTagsInputFocused, setIsTagsInputFocused] = useState(false)
   const [images, setImages] = useState([])
@@ -158,7 +162,7 @@ export default function PostCreateSection({ parent ,user, setUser, posts, setPos
         onBlur={handleTextareaBlur}
       />
 
-      <div className={`transition-all duration-500 overflow-y-auto ease-in-out ${isTextareaFocused || isTagsInputFocused || content.trim() || tagValue.trim() || tagList.length > 0 || images.length > 0 ? 'opacity-100 max-h-screen' : 'opacity-0 max-h-0'}`}>
+      <div className={`transition-all duration-500 overflow-y-auto ease-in-out ${isTextareaFocused || isTagsInputFocused || content.trim() || tagValue.trim() || tagList.length > 0 || images.length > 0 || parent ==='edit' ? 'opacity-100 max-h-screen' : 'opacity-0 max-h-0'}`}>
         {/*Tag Input Section*/}
         <div className='flex flex-col'>
           <input
