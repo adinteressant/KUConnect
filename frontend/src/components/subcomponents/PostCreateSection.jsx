@@ -13,8 +13,14 @@ export default function PostCreateSection({ parent ,user, setUser, posts, setPos
   )
   const [isTextareaFocused, setIsTextareaFocused] = useState(false)
   const [isTagsInputFocused, setIsTagsInputFocused] = useState(false)
-  const [images, setImages] = useState([])
-  const [encodedImages, setEncodedImages] = useState([])
+  const [images, setImages] = useState(
+    parent==='edit'&&post.images!==null?post.encodedImages:[]
+  )
+  const [encodedImages, setEncodedImages] = useState(
+    parent==='edit'&&post.images!==null?post.encodedImages:[]
+  )
+  const [createPostLoadingState, setCreatePostLoadingState] = useState(false)
+  const [updatePostLoadingState, setUpdatePostLoadingState] = useState(false)
   const { searchTrait, setSearchTrait } = useOutletContext()
 
   // Handle Post Submit
@@ -52,6 +58,55 @@ export default function PostCreateSection({ parent ,user, setUser, posts, setPos
           setUser(user.unread_count++)
           console.log('Post submitted:', data.post)
           //location.reload()
+        }
+      })
+      .catch((error) => {
+        console.error('Error submitting post:', error)
+      })
+    }
+    else {
+      alert('Post content cannot be empty.')
+    }
+  }
+
+  const handlePostEdit = () => {
+    if(!user) {
+      alert('You must be logged in')
+      return
+    }
+
+    if(content.trim()) {
+      const userInfo = user
+
+      const formData = new FormData()
+
+      formData.append('content', content)
+      formData.append('userInfo', JSON.stringify(userInfo))
+      formData.append('tags', JSON.stringify(tagList))
+      encodedImages.forEach((image) => {
+        formData.append('images', image)
+      })
+
+      fetch('/api/update-post', {
+        method: 'POST',
+        body: formData
+      })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.post) {
+          setPosts((prev) => 
+            prev.map(p => {
+              if(p._id === data.post._id)
+              {
+                return {...p, content:data.post.content, tags:data.post.tags}
+              }
+              else
+              {
+                return p
+              }
+            }
+          ))
+          close()
         }
       })
       .catch((error) => {
@@ -123,7 +178,7 @@ export default function PostCreateSection({ parent ,user, setUser, posts, setPos
     }
     else {
       setImages((prev) => {
-        const i = [...prev, ...selectedImages]
+        const i = [...prev, ...selectedImages.map(i => URL.createObjectURL(i))]
         if (i.length > 10) {
           i.splice(10)
         }
@@ -195,12 +250,12 @@ export default function PostCreateSection({ parent ,user, setUser, posts, setPos
             multiple
             onChange={(e) => handleImageChange(e)}
             className='hidden'
-            id='image-upload'
+            id={parent==='edit'?'edit-image-upload':'image-upload'}
           />
           <div className='flex flex-wrap gap-2'>
             {images.map((image, index) => (
               <div key={index} className='relative'>
-                <img src={URL.createObjectURL(image)} alt='Preview' className='w-20 h-20 object-cover rounded-lg' />
+                <img src={image} alt='Preview' className='w-20 h-20 object-cover rounded-lg' />
                 <button onClick={() => handleImageRemove(index)} className='p-0.5 absolute top-0 right-0 rounded-full bg-red-600 hover:bg-red-700 transition-all duration-300'>
                   <svg width='12' height='12' viewBox='0 0 24 24'
                     className='stroke-2 stroke-gray-100'
@@ -212,7 +267,7 @@ export default function PostCreateSection({ parent ,user, setUser, posts, setPos
             }
             {images.length >= 10 ||
               (<label
-                htmlFor='image-upload'
+                htmlFor={parent==='edit'?'edit-image-upload':'image-upload'}
                 className='flex flex-col dark:bg-slate-900 dark:border-slate-700 dark:text-gray-400 items-center justify-center text-center w-20 h-20 rounded-lg text-sm border-dashed border-2 border-gray-400 text-gray-400 hover:text-cyan-600 hover:border-cyan-600 cursor-pointer transition-all duration-300'
               >
                 Upload Images
@@ -221,13 +276,33 @@ export default function PostCreateSection({ parent ,user, setUser, posts, setPos
           </div>
         </div>
       </div>
+      {parent==='edit'?
+      <div className='flex justify-end gap-2'>
+        <button className='py-2 px-4 rounded-xl dark:text-gray-200 dark:hover:text-gray-300 text-gray-600 hover:text-white dark:bg-slate-700 bg-gray-200 dark:hover:bg-slate-900 hover:bg-gray-400 transition-all duration-300'
+          onClick={() => close()}>
+          Cancel
+        </button>
+        <button
+          disabled={!content.trim() || (post.content===content&&post.tags===tagList&&post.encodedImages===encodedImages)}
+          className='py-2 px-4 rounded-xl text-white bg-cyan-600 hover:bg-cyan-700 disabled:bg-gray-400 dark:disabled:bg-slate-600 transition-all duration-300'
+          onClick={() => {
+            handlePostEdit()
+          }}
+        >
+          Update
+        </button>
+      </div>
+      :
       <button
         disabled={!content.trim()}
-        onClick={handlePostSubmit}
+        onClick={() => { 
+          handlePostSubmit()
+        }}
         className="mt-4 bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:ring-offset-2 disabled:bg-gray-400 dark:disabled:bg-slate-600 transition-all duration-300"
       >
         Post
       </button>
+      }
     </div>
   )
 }

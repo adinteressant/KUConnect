@@ -48,3 +48,16 @@ export const validatePostDeletion = (req, res, next) => {
 
   next()
 }
+
+//Middleware to validate user
+export const validateUser = (req, res, next) => {
+  const userId = req.params.userId
+  const { post } = req.body
+  
+  if(userId !== post.userId)
+  {
+    return res.status(400).json({ message: 'Post cannot be deleted by another user' })
+  }
+
+  next()
+}

@@ -314,7 +314,9 @@ function Posts(props) {
 
     const openEditOverlay = (post) => 
     {
-      setShowEditOverlay(() => post)
+      setShowEditOverlay(() => {
+        return post.images===null?post:{ ...post, encodedImages: postImages.find(i => i._id === post.images).images }
+      })
       
       setTimeout(() => {
           setOverlayTransitionState(true)
@@ -1013,16 +1015,14 @@ function Posts(props) {
                           flex items-center justify-center
                           bg-black transition-all duration-300
                           ${overlayTransitionState?'bg-opacity-50':'bg-opacity-0'}
-                          `}      
-                          onClick={closeEditOverlay}
+                          `}
             >
-              <div onClick={(e) => e.stopPropagation()} 
-                  className={`w-[600px] max-w-[80%]
+              <div className={`w-[600px] max-w-[80%]
                     transition-all duration-300
                     ${overlayTransitionState?'opacity-100 scale-100':'opacity-0 scale-50'}
                     `}
               >
-                <PostCreateSection parent={'edit'} post={showEditOverlay} user={userProfile} close={closeEditOverlay}/>
+                <PostCreateSection parent={'edit'} post={showEditOverlay} posts={props.posts} setPosts={props.setPosts} user={userProfile} close={closeEditOverlay}/>
               </div>
             </div>
           )}
