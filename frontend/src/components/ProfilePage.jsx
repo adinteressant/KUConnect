@@ -20,7 +20,7 @@ export default function ProfilePage() {
   const [posts, setPosts] = useState([])
   const { incomingRequestsCount, setIncomingRequestsCount } = useRequestCount();
   const dropdownRef = useRef(null);
-
+  const [loading, setLoading] = useState(true);
   const scrollContainerRef = useRef(null)
   const location = useLocation()
 
@@ -218,6 +218,7 @@ export default function ProfilePage() {
       };
 
       fetchStatus();
+      setLoading(false);
     }
   }, [userProfile, profileData]);   
   
@@ -250,9 +251,61 @@ export default function ProfilePage() {
       });
   };
 
+  const LoadingSkeleton = () => {
+    return (
+      <div className="flex-1 dark:bg-slate-900 dark:text-gray-200 bg-gray-100 text-gray-800 p-6 overflow-y-auto">
+        <div className="max-w-2xl mx-auto border dark:border-slate-700 dark:bg-slate-800 space-y-4 p-8 rounded-lg shadow-md mb-4">
+          {/* Profile picture skeleton */}
+          <div className="w-32 h-32 md:w-40 md:h-40 rounded-full bg-gray-200 dark:bg-slate-700 mx-auto animate-pulse" />
+  
+          {/* Profile content skeleton */}
+          <div className="text-center mt-4 flex flex-col items-center space-y-4">
+            {/* Username skeleton */}
+            <div className="w-48 h-8 bg-gray-200 dark:bg-slate-700 rounded-lg animate-pulse" />
+            
+            {/* Role skeleton */}
+            <div className="w-32 h-6 bg-gray-200 dark:bg-slate-700 rounded-lg animate-pulse" />
+            
+            {/* Generic button skeleton */}
+            <div className="w-32 h-10 bg-gray-200 dark:bg-slate-700 rounded-full animate-pulse mt-6" />
+          </div>
+        </div>
+  
+        {/* Posts skeleton */}
+        <div className="space-y-4">
+          {[...Array(3)].map((_, index) => (
+            <div 
+              key={index} 
+              className="max-w-2xl mx-auto border dark:border-slate-700 dark:bg-slate-800 p-4 rounded-lg shadow-md"
+            >
+              {/* Post header */}
+              <div className="flex items-center space-x-3 mb-4">
+                <div className="w-10 h-10 bg-gray-200 dark:bg-slate-700 rounded-full animate-pulse" />
+                <div className="w-32 h-6 bg-gray-200 dark:bg-slate-700 rounded-lg animate-pulse" />
+              </div>
+              
+              {/* Post content */}
+              <div className="space-y-2">
+                <div className="w-full h-4 bg-gray-200 dark:bg-slate-700 rounded animate-pulse" />
+                <div className="w-3/4 h-4 bg-gray-200 dark:bg-slate-700 rounded animate-pulse" />
+                <div className="w-1/2 h-4 bg-gray-200 dark:bg-slate-700 rounded animate-pulse" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  if(loading){
+    return (
+      <LoadingSkeleton />
+    )
+  }
+
   return (
     <div className={`flex-1 dark:bg-slate-900 dark:text-gray-200 bg-gray-100 text-gray-800 p-6 overflow-y-auto `} ref={scrollContainerRef}>
-      <div className="max-w-2xl mx-auto border dark:border-slate-700 dark:bg-slate-800 space-y-4 p-8 rounded-lg shadow-md mb-4">
+      <div className="max-w-2xl mx-auto border dark:border-slate-700 bg-white dark:bg-slate-800 space-y-4 p-8 rounded-lg shadow-md mb-4">
         {/* Profile picture with hover effect */}
         <div
           className={`w-32 h-32 md:w-40 md:h-40 rounded-full bg-gray-300}
