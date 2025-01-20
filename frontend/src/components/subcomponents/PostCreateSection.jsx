@@ -103,7 +103,7 @@ export default function PostCreateSection({ parent ,user, setUser, setPosts, set
           const removed = prev.filter(i =>
             i._id !== post.images
           )
-          return data.updatedPost.images===null?removed:[...removed, data.updatedPostImages]
+          return data.updatedPost.images===null?removed:[...removed, {...data.updatedPostImages, current: 0}]
         })
         close()
       })
