@@ -48,8 +48,10 @@ export const getSpecificPost = async(req, res) => {
 export const createPost = async (req, res) => {
 
   const content = req.body.content
+  console.log(req.body.userInfo)
   const userInfo = JSON.parse(req.body.userInfo)
   const images = req.body.images
+  console.log(req.body.tags)
   const tags = JSON.parse(req.body.tags)
 
   // Validate content
