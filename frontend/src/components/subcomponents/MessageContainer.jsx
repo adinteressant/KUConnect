@@ -30,7 +30,7 @@ export default function MessageContainer() {
           </div>
 
           {/* Scrollable Messages Section */}
-          <div className="flex-1 overflow-y-auto mb-0 dark:bg-slate-900 dark:text-slate-100 bg-gray-50 pt-16 border-l border-gray-200 dark:border-slate-800 flex flex-col-reverse">
+          <div className="flex-1 overflow-y-auto dark:bg-slate-900 dark:text-slate-100 bg-gray-50 pt-16 border-l border-gray-200 dark:border-slate-800 flex flex-col-reverse">
             <div className="mt-auto p-4 space-y-4 dark:bg-slate-900">
               <Messages />
               {/* Empty div for scrolling to the bottom */}
