@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useOutletContext } from 'react-router-dom'
 import base64encode from '../../utils/base64encode.js'
 
-export default function PostCreateSection({ user, setUser, posts, setPosts }) {
+export default function PostCreateSection({ parent ,user, setUser, posts, setPosts, post, close }) {
   const [content, setContent] = useState('')
   const [showTags, setShowTags] = useState(false)
   const [tagValue, setTagValue] = useState('')

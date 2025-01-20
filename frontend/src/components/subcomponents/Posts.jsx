@@ -7,6 +7,7 @@ import SendToFriends from './ShareOverlay.jsx'
 import { useOutletContext } from 'react-router-dom'
 import { Loader2 } from 'lucide-react'
 import { useTheme } from '../context/themeContext.jsx'
+import PostCreateSection from './PostCreateSection.jsx'
 //Props include:
 //Posts (array) jun dekhauna parney cha
 //Also send the setPosts function for state variable posts
@@ -31,6 +32,7 @@ function Posts(props) {
     const [showShareOverlay, setShowShareOverlay] = useState('')
     const [overlayTransitionState, setOverlayTransitionState] = useState(false)
     const [postOptions, setPostOptions] = useState('')
+    const [showEditOverlay, setShowEditOverlay] = useState(false)
     const [confirmDeletePost, setConfirmDeletePost] = useState(false)
     const [deleteLoadingState, setDeleteLoadingState] = useState(false)
     const [postImages, setPostImages] = useState([])
@@ -308,6 +310,23 @@ function Posts(props) {
       }, 300)
       setOverlayTransitionState(false)
       
+    }
+
+    const openEditOverlay = (post) => 
+    {
+      setShowEditOverlay(() => post)
+      
+      setTimeout(() => {
+          setOverlayTransitionState(true)
+      }, 1) 
+    }
+
+    const closeEditOverlay = () =>
+    {
+      setTimeout(() => {
+        setShowEditOverlay(() => false)
+      }, 300)
+      setOverlayTransitionState(false)
     }
 
     const openConfirmDeletePost = (post) =>
@@ -768,7 +787,7 @@ function Posts(props) {
 
                           <button
                             disabled={postOptions!==post._id}
-                            // onClick={() => }
+                            onClick={() => openEditOverlay(post)}
                             className={`w-[100%] group/edit flex items-center gap-2 p-2 text-gray-600 dark:text-gray-400 dark:hover:text-cyan-600 hover:text-cyan-600 dark:hover:bg-gray-700 hover:bg-gray-200 hover:shadow-inner transition-all duration-300`}
                           >
                             <svg className='stroke-gray-600 dark:stroke-gray-400  fill-none stroke-2 group-hover/edit:stroke-cyan-600 transition-all duration-300' width="20" height="20" viewBox="0 0 24 24">
@@ -983,7 +1002,27 @@ function Posts(props) {
                     <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
                   </svg>
                 </button>
-                <SendToFriends postId={showShareOverlay} userProfile={userProfile} closeShareOverlay={closeShareOverlay}/>
+                <SendToFriends />
+              </div>
+            </div>
+          )}
+
+          {/* Edit Overlay */}
+          {showEditOverlay &&
+            (<div className={`fixed inset-0 z-50
+                          flex items-center justify-center
+                          bg-black transition-all duration-300
+                          ${overlayTransitionState?'bg-opacity-50':'bg-opacity-0'}
+                          `}      
+                          onClick={closeEditOverlay}
+            >
+              <div onClick={(e) => e.stopPropagation()} 
+                  className={`w-[600px] max-w-[80%]
+                    transition-all duration-300
+                    ${overlayTransitionState?'opacity-100 scale-100':'opacity-0 scale-50'}
+                    `}
+              >
+                <PostCreateSection parent={'edit'} post={showEditOverlay} user={userProfile} close={closeEditOverlay}/>
               </div>
             </div>
           )}
