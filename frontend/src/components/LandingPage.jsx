@@ -8,13 +8,15 @@ export default function LandingPage() {
   const { setIsSidebarVisible } = useOutletContext();
   const {userProfile} = useOutletContext();
 
-  useEffect(()=>{
-    function changeVal(){
-      setIsSidebarVisible(false);
+  useEffect(() => {
+    // Check authentication status immediately
+    const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
+    if (isAuthenticated) {
+      navigate('/home');
+      return;
     }
-    changeVal();
-  } 
-,[]);
+    setIsSidebarVisible(false);
+  }, [navigate, setIsSidebarVisible]);
 
   const redirectToLogin = (e) => {
     e.preventDefault();
@@ -25,10 +27,6 @@ export default function LandingPage() {
     e.preventDefault();
     navigate('/register');
   };
-
-  //if(userProfile) {
-  //  navigate('/home')
-  //}
 
   return (
     <div className="relative h-full w-full overflow-hidden bg-white">
