@@ -28,7 +28,7 @@ export default function Message({message}) {
     setShowMessageInfo(false)
   }
 
-  return <div className="overflow-auto scrollbar-custom">
+  return <div>
     <div className="flex flex-col w-full "> 
       
       <div className={`flex ${positionClass} space-x-4 items-center group`}>
@@ -61,7 +61,7 @@ export default function Message({message}) {
           )
         }
         <div className="flex flex-col items-end">
-          <div className={`${colorClass} p-3 rounded-lg max-w-xs cursor-pointer
+          <div className={`${colorClass} p-3 rounded-lg max-w-xs cursor-pointer break-all
             ${fromMe && `hovered-class`}
           `}
             onClick={displayTime}
