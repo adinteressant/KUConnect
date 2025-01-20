@@ -323,10 +323,10 @@ export default function ProfilePage() {
                     Friends
                   </button>
                   {showDropdown && (
-                    <div className="absolute top-full left-0 mt-2 w-full bg-white rounded-md shadow-lg z-10">
+                    <div className="absolute top-full left-0 mt-2 w-full bg-white dark:bg-slate-900 rounded-md shadow-lg z-10">
                       <button 
                         onClick={() => setShowUnfriendPopup(true)}
-                        className="w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100 transition"
+                        className="w-full text-left px-4 py-2 text-red-600 dark:hover:bg-gray-700 hover:text-red-700 hover:bg-gray-100 transition"
                       >
                         Unfriend
                       </button>
