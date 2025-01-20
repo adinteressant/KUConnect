@@ -12,6 +12,7 @@ import { useTheme } from '../context/themeContext.jsx'
 
 function Posts(props) {
 
+  const URL_REGEX = /(((https?:\/\/)|(www\.))[^\s]+)/g;
   const {theme, toggleTheme} = useTheme();
   useEffect(() => {
     if (theme === 'dark') {
@@ -37,7 +38,7 @@ function Posts(props) {
     const [urlPostId] = useState(useParams().postId)
     const [saveStatus, setSaveStatus] = useState(false)
     const [optionsState, setOptionsState] = useState(false)
-
+    let words;
     useEffect(() => {
       fetch('/api/get-user-profile')
         .then((response) => response.json())
@@ -48,7 +49,6 @@ function Posts(props) {
           console.error('Error fetching user profile:', e)
         })
     }, [])
-
     //For separate comments and images for separate posts
     useEffect(() => {
       
@@ -480,7 +480,11 @@ function Posts(props) {
                       </div>
                     </div>
                   </div>
-                  <p className="mt-2 dark:text-slate-200 text-gray-800">{post.content}</p>
+                  <p className="mt-2 dark:text-slate-200 text-gray-800"> 
+                {post.content.split(' ').map((word)=>{
+                  return word.match(URL_REGEX)?(<a target='_blank' className='text-blue-400' href={word}>{word}</a>):word
+                  })}
+                </p>
                   {post.tags.length > 0 && (
                     <div className="mt-2 text-sm text-gray-600 dark:text-gray-400">
                       Tags: {post.tags.join(', ')}
