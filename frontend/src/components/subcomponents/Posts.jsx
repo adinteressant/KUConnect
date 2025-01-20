@@ -532,7 +532,7 @@ function Posts(props) {
                   {/* <hr className='absolute left-0 right-0 mt-4'/> */}
                   
                   {/* Likes, Comments, Shares Information */}
-                  <div className={`mt-6 flex items-center gap-4 pt-2 transition-all border-t border-b pb-1 dark:border-slate-700 duration-300 ${isInfoDisplayed(post)?'opacity-100 h-max-screen':'opacity-0 h-max-0'}`}>
+                  <div className={`mt-6 flex items-center gap-4 pt-2 transition-all border-t pb-1 dark:border-slate-700 duration-300 ${isInfoDisplayed(post)?'opacity-100 h-max-screen':'opacity-0 h-max-0'}`}>
                     {/* like information */}
                       {post.likes>0 &&
                         <button 
@@ -567,7 +567,7 @@ function Posts(props) {
                   {/* <hr className={`transition-all duration-300 ${isInfoDisplayed(post)?'opacity-100 h-max-screen mt-2':'opacity-0 h-max-0 mt-0'}`}/> */}
 
                   {/* Like, Comment, Share Button */}
-                  <div className={`transition-all duration-1000 flex justify-evenly items-center gap-2 ${(!isInfoDisplayed(post)&&showCommentBox.find(obj => obj.postId===post._id).value)?'mt-0':'mt-2'}`}>
+                  <div className={`border-t dark:border-slate-700 transition-all duration-1000 flex justify-evenly items-center gap-2 pt-3 ${(!isInfoDisplayed(post)&&showCommentBox.find(obj => obj.postId===post._id).value)?'mt-0':'mt-2'}`}>
 
                     {/* like button */}
                     <button onClick = {() => handleLike(post)} className = 'flex justify-center items-center gap-2 group'>

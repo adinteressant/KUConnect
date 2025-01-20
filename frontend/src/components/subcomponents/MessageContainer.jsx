@@ -19,18 +19,18 @@ export default function MessageContainer() {
   }, [selectedConversation]);
 
   return (
-    <div className="h-screen flex flex-col relative">
+    <div className="h-screen flex flex-col relative overflow-hidden">
       {!selectedConversation ? (
         <NoChatSelected />
       ) : (
-        <>
+        <div>
           {/* Fixed Header */}
-          <div className=" w-full z-10 bg-white dark:bg-slate-900 fixed">
+          <div className=" w-full z-10 bg-white dark:bg-slate-900">
             <MessageHeader username={selectedConversation.username} />
           </div>
 
           {/* Scrollable Messages Section */}
-          <div className="flex-1  dark:bg-slate-900 dark:text-slate-100 bg-gray-50 pt-16 pb-16 border-l border-gray-200 dark:border-slate-800 flex flex-col">
+          <div className="flex-1  dark:bg-slate-900 dark:text-slate-100 bg-gray-50 pt-16 pb-16 border-l border-gray-200 dark:border-slate-700 flex flex-col">
             <div className="mt-auto p-4 space-y-4 dark:bg-slate-900">
               <Messages />
               {/* Empty div for scrolling to the bottom */}
@@ -39,10 +39,10 @@ export default function MessageContainer() {
           </div>
 
           {/* Fixed SendMessage */}
-          <div className="fixed bottom-0 left-[520px] right-0 z-20 bg-white border-t dark:border-slate-800 border-gray-200">
+          <div className="z-20 bg-white border-t dark:border-slate-800 border-gray-200">
             <SendMessage />
           </div>
-        </>
+        </div>
       )}
     </div>
   );

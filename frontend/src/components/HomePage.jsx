@@ -219,7 +219,7 @@ const HomePage = () => {
   }
 
   return (
-    <div className="flex-1 flex flex-col min-h-screen dark:bg-slate-900 bg-white">
+    <div className="flex-1 flex flex-col min-h-screen dark:bg-slate-900 bg-gray-200">
       {/* Displaying user profile */}
       {(user || googleUser) && showWelcomeModal && ( 
             <WelcomeModal

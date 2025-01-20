@@ -333,12 +333,13 @@ export default function ProfilePage() {
                     </div>
                   )}
                 </div>
-                <button
-                  onClick={() => console.log('Open message functionality')}
-                  className="bg-green-500 text-white px-4 py-2 rounded-full hover:bg-green-600 transition"
-                >
-                  Message
-                </button>
+              
+                  <Link to={`/messages?userId=${profileData.user_id}`}
+                    className="bg-green-500 text-white px-4 py-2 rounded-full hover:bg-green-600 transition"
+                  >
+                    Message
+                  </Link>
+                
               </div>
             ) : status ==='incoming' ? (
                 <>
