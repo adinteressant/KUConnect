@@ -174,7 +174,7 @@ const SearchBar = React.memo(({ searchTrait, setSearchTrait, onSearch }) => {
 
 
 // User dropdown component
-const UserDropdown = React.memo(({ isAuthenticated, userProfile, onLogout }) => {
+const UserDropdown = React.memo(({ isAuthenticated, userProfile, onLogout }) => { 
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
 
