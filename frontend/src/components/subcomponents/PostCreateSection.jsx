@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useOutletContext } from 'react-router-dom'
 import base64encode from '../../utils/base64encode.js'
 
-export default function PostCreateSection({ parent ,user, setUser, posts, setPosts, post, close }) {
+export default function PostCreateSection({ parent ,user, setUser, setPosts, setPostImages, post, close }) {
   const [content, setContent] = useState(
     parent==='edit'?post.content:''
   )
@@ -54,7 +54,7 @@ export default function PostCreateSection({ parent ,user, setUser, posts, setPos
           setTagList([])
           setImages([])
           setEncodedImages([])
-          setPosts([data.post, ...posts])
+          setPosts(prev => [data.post, ...prev])
           setUser(user.unread_count++)
           console.log('Post submitted:', data.post)
           //location.reload()
@@ -94,21 +94,18 @@ export default function PostCreateSection({ parent ,user, setUser, posts, setPos
       })
       .then((response) => response.json())
       .then((data) => {
-        if (data.post) {
-          setPosts((prev) => 
-            prev.map(p => {
-              if(p._id === data.post._id)
-              {
-                return {...p, content:data.post.content, tags:data.post.tags}
-              }
-              else
-              {
-                return p
-              }
-            }
-          ))
-          close()
-        }
+        setPosts((prev) => 
+          prev.map(p =>
+            p._id === data.updatedPost._id ? data.updatedPost : p
+          )
+        )
+        setPostImages((prev) => {
+          const removed = prev.filter(i =>
+            i._id !== post.images
+          )
+          return data.updatedPost.images===null?removed:[...removed, data.updatedPostImages]
+        })
+        close()
       })
       .catch((error) => {
         console.error('Error submitting post:', error)

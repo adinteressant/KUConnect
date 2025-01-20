@@ -1022,7 +1022,14 @@ function Posts(props) {
                     ${overlayTransitionState?'opacity-100 scale-100':'opacity-0 scale-50'}
                     `}
               >
-                <PostCreateSection parent={'edit'} post={showEditOverlay} posts={props.posts} setPosts={props.setPosts} user={userProfile} close={closeEditOverlay}/>
+                <PostCreateSection
+                  parent={'edit'}
+                  user={userProfile}
+                  post={showEditOverlay}
+                  setPosts={props.setPosts}
+                  setPostImages={setPostImages}
+                  close={closeEditOverlay}
+                />
               </div>
             </div>
           )}

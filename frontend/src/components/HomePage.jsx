@@ -87,7 +87,7 @@ const HomePage = () => {
         <div className="max-w-2xl mx-auto space-y-4">
           {/* Post creation section */}
           {(user || googleUser) ? (
-            <PostCreateSection user={userProfile} setUser={setUserProfile} posts={posts} setPosts={setPosts}/>
+            <PostCreateSection user={userProfile} setUser={setUserProfile} setPosts={setPosts}/>
           ) : (
             <div className="bg-yellow-100 text-yellow-800 p-4 rounded-lg shadow-md">
               Please <a href="/login" className="text-cyan-600">log in</a> to post.

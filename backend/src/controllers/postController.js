@@ -126,9 +126,9 @@ export const updatePost = async(req, res) => {
   try
   {
     let [updatedPost, updatedPostImages] = [null, null]
-    if(images.length===0)
+    if(!images)
     {
-      [updatedPost] = Promise.all([
+      [updatedPost] = await Promise.all([
         Post.findByIdAndUpdate(
           post._id,
           { $set: { content, tags, images: null } },
@@ -154,7 +154,7 @@ export const updatePost = async(req, res) => {
     }
     else
     {
-      [updatedPost, updatedPostImages] = Promise.all([
+      [updatedPost, updatedPostImages] = await Promise.all([
         Post.findByIdAndUpdate(
           post._id,
           { $set: { content, tags } },
