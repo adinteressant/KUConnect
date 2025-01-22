@@ -502,9 +502,21 @@ function Posts(props) {
                     </div>
                   </div>
                   <p className="mt-2 dark:text-slate-200 text-gray-800"> 
-                {post.content.split(' ').map((word)=>{
-                  return word.match(URL_REGEX)?(<a target='_blank' className='text-blue-400' href={word}>{word}</a>):word
+
+                {
+                  post.content.split('\n').map((line)=>{
+                  return <span>
+                  {line.split(' ').map((word)=>{
+                  return word.match(URL_REGEX)?(
+                   <a target='_blank' className='text-blue-400' href={word}>
+                    {word}
+                   </a>):
+                    word+' '
                   })}
+                    <br/>
+                 </span>
+                  })}
+
                 </p>
                   {post.tags.length > 0 && (
                     <div className="mt-2 text-sm text-gray-600 dark:text-gray-400">
