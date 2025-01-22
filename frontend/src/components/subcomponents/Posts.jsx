@@ -514,7 +514,8 @@ function Posts(props) {
                   navigate('/search', {
                     state: { 
                       searchQuery: `#tag:${tag}`,
-                      results: results
+                      results: results,
+                      isClick: true
                     }
                   });
                 }

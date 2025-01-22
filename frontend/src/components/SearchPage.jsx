@@ -11,6 +11,7 @@ const SearchPage = () => {
   const results = location.state?.results || [];
   const isUserSearch = searchQuery.startsWith('@user:');
   const isTagSearch = searchQuery.startsWith('#tag:');
+  const isClick = location.state?.isClick || false;
   // Function to extract multiple tags from the search query
   const extractTags = (query) => {
     const tagString = query.replace('#tag:', '').trim();
@@ -57,8 +58,11 @@ const SearchPage = () => {
           {isUserSearch 
             ? `User results for "${searchQuery.replace('@user:', '')}"` 
             : isTagSearch
-              ? `Tag search results for "${searchQuery.replace('#tag:', '').split(/[,\s]+/).join(', ')}"` 
+            ? isClick
+              ? `#${searchQuery.replace('#tag:', '')}`
+              : `Tag search results for "${searchQuery.replace('#tag:', '').split(/[,\s]+/).join(', ')}"` 
               : `Search results for "${searchQuery}"`}
+
         </h1>
       </div>
 
