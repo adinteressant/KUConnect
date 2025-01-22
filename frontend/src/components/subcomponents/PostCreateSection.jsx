@@ -27,6 +27,10 @@ export default function PostCreateSection({ parent ,user, setUser, setPosts, set
   const { searchTrait, setSearchTrait } = useOutletContext()
 
 
+  const handleTagRemove = (indexToRemove) => {
+    setTagList(tagList.filter((_, index) => index !== indexToRemove))
+  }
+
   const handleTagSelection = (tag) =>{
     if(!tagList.includes(tag)){
       setTagList([...tagList, tag])
@@ -277,9 +281,21 @@ export default function PostCreateSection({ parent ,user, setUser, setPosts, set
             {tagList.map((tag, index) => (
               <span
                 key={index}
-                className="bg-cyan-100 text-cyan-800 px-2 py-1 rounded-full text-sm"
+                className="inline-flex items-center bg-cyan-100 text-cyan-800 px-2 py-1 rounded-full text-sm"
+                onClick={() => handleTagRemove(index)}
               >
-                {tag}
+                <span>{tag}</span>
+
+                <svg 
+                  className="w-3 h-3 inline-block" 
+                  viewBox="0 0 24 24" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  strokeWidth="2"
+                >
+                  <path d="M18 6 6 18" />
+                  <path d="m6 6 12 12" />
+                </svg>
               </span>
             ))}
           </div>
