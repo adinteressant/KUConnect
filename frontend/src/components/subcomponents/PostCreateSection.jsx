@@ -28,7 +28,16 @@ export default function PostCreateSection({ parent ,user, setUser, setPosts, set
 
 
   const handleTagRemove = (indexToRemove) => {
-    setTagList(tagList.filter((_, index) => index !== indexToRemove))
+      const newTagList = tagList.filter((tag, index) => {
+        if(index === indexToRemove){
+          return false;
+        }
+        else{
+          return true;
+        }
+      })
+
+      setTagList(newTagList)
   }
 
   const handleTagSelection = (tag) =>{
