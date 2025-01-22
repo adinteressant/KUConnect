@@ -14,6 +14,8 @@ const FriendsPage = () => {
   const [userProfile, setUserProfile] = useState({});
   const { incomingRequestsCount, setIncomingRequestsCount } = useRequestCount();
 
+  const isAuthenticated = localStorage.getItem('isAuthenticated') == 'true'
+
   // Fetch user profile
   useEffect(() => {
     (async () => {
@@ -205,6 +207,13 @@ const FriendsPage = () => {
     </div>
   );
 
+  if(!isAuthenticated){
+    return (
+      <div className="bg-yellow-100 text-yellow-800 p-4 rounded-lg shadow-md mt-4">
+              Please <Link to="/login" className="text-cyan-600">log in</Link> to view friends.
+            </div>
+    )
+  }
   if (loading) {
     return (
         <LoadingSkeleton />
@@ -218,7 +227,6 @@ const FriendsPage = () => {
       </div>
     );
   }
-
   return (
     <div className="dark:text-white p-6 overflow-y-auto">
       <div className="mb-8 max-w-6xl mx-auto">

@@ -1,5 +1,5 @@
 import { useEffect, useState} from 'react'
-import { useOutletContext } from 'react-router-dom'
+import { useOutletContext,Link } from 'react-router-dom'
 import Posts from './subcomponents/Posts.jsx'
 import WelcomeModal from './subcomponents/WelcomeModal.jsx'
 import { useGetUnreadMessage } from './hooks/useGetUnreadMessage.js'
@@ -90,7 +90,7 @@ const HomePage = () => {
             <PostCreateSection user={userProfile} setUser={setUserProfile} setPosts={setPosts}/>
           ) : (
             <div className="bg-yellow-100 text-yellow-800 p-4 rounded-lg shadow-md">
-              Please <a href="/login" className="text-cyan-600">log in</a> to post.
+              Please <Link to="/login" className="text-cyan-600">log in</Link> to post.
             </div>
           )}
 
