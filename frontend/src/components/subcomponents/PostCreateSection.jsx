@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useOutletContext } from 'react-router-dom'
 import base64encode from '../../utils/base64encode.js'
+import tags from '../../data/tags.js'
 
 export default function PostCreateSection({ parent ,user, setUser, setPosts, setPostImages, post, close }) {
   const [content, setContent] = useState(
@@ -20,7 +21,7 @@ export default function PostCreateSection({ parent ,user, setUser, setPosts, set
     parent==='edit'&&post.images!==null?post.encodedImages:[]
   )
   const [showTagDropdown, setShowTagDropdown] = useState(false)
-  const predefinedTags = ['KUSOE', 'KUSOS', 'KUSOL', 'KUSOA', 'Research']
+  const predefinedTags = tags
 
   const [createPostLoadingState, setCreatePostLoadingState] = useState(false)
   const [updatePostLoadingState, setUpdatePostLoadingState] = useState(false)
