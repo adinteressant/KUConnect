@@ -192,17 +192,6 @@ export default function PostCreateSection({ parent ,user, setUser, setPosts, set
     }
   }
 
-  const handleTagsInputFocus = () => {
-    setIsTagsInputFocused(true)
-    setShowTags(true)
-  }
-
-  const handleTagsInputBlur = () => {
-    setIsTagsInputFocused(false)
-    if (!content.trim() && !isTextareaFocused && !tagValue.trim()) {
-      setShowTags(false)
-    }
-  }
 
   const handleImageChange = async (e) => {
     const selectedImages = Array.from(e.target.files)
