@@ -12,7 +12,9 @@ export const SocketContextProvider = (({children})=>{
   const [onlineUsers,setOnlineUsers] = useState([])
   let authUserId=''
   if(localStorage.getItem('isAuthenticated')=='true'){
-    authUserId = JSON.parse(localStorage.getItem('authUser'))
+    if(localStorage.getItem('authUser')!='undefined'){
+      authUserId = JSON.parse(localStorage.getItem('authUser'))
+    } 
   }
   useEffect(()=>{
     if(authUserId){
