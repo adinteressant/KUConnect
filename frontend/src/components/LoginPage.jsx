@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { Link } from 'react-router-dom';
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
@@ -107,6 +108,12 @@ export default function LoginPage() {
             Login with Google
             </div>
           </button>
+          <p className="mt-6 text-center dark:text-gray-400 text-slate-600 text-sm">
+          Don't have an account yet?{' '}
+          <Link to="/register" className="text-green-600 hover:text-green-500 font-medium">
+            Register
+          </Link>
+        </p>
         </form>
       </div>
     </div>

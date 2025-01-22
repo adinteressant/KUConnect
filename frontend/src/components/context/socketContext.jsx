@@ -10,8 +10,8 @@ export const useSocketContext = () => {
 export const SocketContextProvider = (({children})=>{
   const [socket,setSocket] = useState(null)
   const [onlineUsers,setOnlineUsers] = useState([])
-  let authUserId
-  if(localStorage.getItem('isLoggedIn') == 'true'){
+  let authUserId=''
+  if(localStorage.getItem('isAuthenticated')=='true'){
     authUserId = JSON.parse(localStorage.getItem('authUser'))
   }
   useEffect(()=>{

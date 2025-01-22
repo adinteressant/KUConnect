@@ -1,6 +1,6 @@
 import express from 'express'
-import { createPost, getAllPosts, getImages,  sharePost, searchPostsByTag, userPosts, getSpecificPost,  searchPostsByContent, deletePost } from '../controllers/postController.js'
-import { upload, validatePost, validatePostDeletion } from '../middlewares/postMiddleware.js'
+import { createPost, updatePost, getAllPosts, getImages,  sharePost, searchPostsByTag, userPosts, getSpecificPost,  searchPostsByContent, deletePost } from '../controllers/postController.js'
+import { upload, validatePost, validateUser, validatePostDeletion } from '../middlewares/postMiddleware.js'
 // import generateFolderName from '../utils/generateFolderName.js'
 
 const router = express.Router()
@@ -10,6 +10,9 @@ router.get('/api/get-posts', getAllPosts)
 
 // Route to create a new post
 router.post('/api/create-post', upload, validatePost, createPost)
+
+// Route to update post
+router.post('/api/update-post', upload, validatePost, validateUser, updatePost)
 
 // Route to get post images
 router.get('/api/post/images/:imageId', getImages)

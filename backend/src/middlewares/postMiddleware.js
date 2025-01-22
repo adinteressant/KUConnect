@@ -48,3 +48,16 @@ export const validatePostDeletion = (req, res, next) => {
 
   next()
 }
+
+//Middleware to validate user for edit
+export const validateUser = (req, res, next) => {
+  const post = JSON.parse(req.body.post)
+  const userInfo = JSON.parse(req.body.userInfo)
+  
+  if(userInfo.user_id !== post.userId)
+  {
+    return res.status(400).json({ message: 'Post cannot be edited by another user' })
+  }
+
+  next()
+}
