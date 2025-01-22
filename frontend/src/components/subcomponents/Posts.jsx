@@ -7,9 +7,15 @@ import SendToFriends from './ShareOverlay.jsx'
 import { useOutletContext } from 'react-router-dom'
 import { Loader2 } from 'lucide-react'
 import PostCreateSection from './PostCreateSection.jsx'
+import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
 //Props include:
 //Posts (array) jun dekhauna parney cha
 //Also send the setPosts function for state variable posts
+
+
+
+
 
 function Posts(props) {
 
@@ -40,6 +46,11 @@ function Posts(props) {
     const [urlPostId] = useState(useParams().postId)
     const [saveStatus, setSaveStatus] = useState(false)
     const [optionsState, setOptionsState] = useState(false)
+    const [tagResults, setTagResults] = useState({});
+    const [isLoading, setIsLoading] = useState(false);
+
+    const navigate = useNavigate();
+
     let words;
     useEffect(() => {
       fetch('/api/get-user-profile')
@@ -460,6 +471,64 @@ function Posts(props) {
       }
     }
 
+    const handleTagSearch = async (tags) => {
+      if (!tags || tags.length === 0) return null;
+    
+      try {
+        const response = await fetch(`/api/posts/search/tag?query=${tags}`, {
+          method: 'GET'
+        });
+    
+        const searchResults = await response.json();
+        console.log('API Response:', searchResults);
+    
+        if (response.ok) {
+          const formattedResults = Array.isArray(searchResults.posts) 
+            ? searchResults.posts 
+            : Array.isArray(searchResults) 
+              ? searchResults 
+              : [];
+          return formattedResults;
+        } else {
+          console.error('Error searching tags:', searchResults.message);
+          return null;
+        }
+      } catch (error) {
+        console.error('Error performing tag search:', error);
+        return null;
+      }
+    };
+
+    const renderTags = (tags) => {
+      if (!tags || tags.length === 0) return null;
+    
+      return (
+        <div className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+          Tags: 
+          {tags.map((tag, index) => (
+            <button
+              key={index}
+              onClick={async () => {
+                const results = await handleTagSearch(tag);
+                if (results) {
+                  navigate('/search', {
+                    state: { 
+                      searchQuery: `#tag:${tag}`,
+                      results: results
+                    }
+                  });
+                }
+              }}
+              className="text-blue-500 hover:underline ml-2 cursor-pointer"
+            >
+              #{tag}
+            </button>
+          ))}
+        </div>
+      );
+    };
+    
+
     return(
 
         <div>
@@ -518,11 +587,7 @@ function Posts(props) {
                   })}
 
                 </p>
-                  {post.tags.length > 0 && (
-                    <div className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                      Tags: {post.tags.join(', ')}
-                    </div>
-                  )}
+                {post.tags && post.tags.length > 0 && renderTags(post.tags)}
 
                   {/* Display Images */}
                   {post.images === null ||

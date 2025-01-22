@@ -1,5 +1,6 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Fuse from 'fuse.js';
 import Posts from '../components/subcomponents/Posts';
 import UserSearchResults from './UserSearchResults';

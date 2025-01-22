@@ -315,6 +315,9 @@ const Navigation = ({ setVisibility, setPadding, searchTrait, setSearchTrait, us
         response = await axios.get(`/api/posts/search/content?query=${trimmedQuery}`);
       }
 
+      console.log(trimmedQuery)
+      console.log(response.data)
+
       navigate('/search', {
         state: {
           results: response.data,
