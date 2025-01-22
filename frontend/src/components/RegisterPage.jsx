@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
-import {Link} from 'react-router-dom'
+import { Link } from "react-router-dom";
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
     username: "",
