@@ -84,7 +84,7 @@ export default function Sidebar({userProfile,setUserProfile}) {
       animate={{ width: isHovered ? 220 : 60 }}
       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
       className ={ `shadow-md p-2 fixed z-10 bottom-0 top-16 h-screen border-r dark:border-slate-800 border-gray-200  transition-colors bg-white dark:bg-slate-800
-    }`}
+    `}
     >
       <nav>
       <ul className={`space-y-2 ${isHovered ? 'justify-start': 'place-items-center'}`}>
