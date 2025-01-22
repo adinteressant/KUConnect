@@ -21,7 +21,6 @@ export default function PostCreateSection({ parent ,user, setUser, setPosts, set
     parent==='edit'&&post.images!==null?post.encodedImages:[]
   )
   const [showTagDropdown, setShowTagDropdown] = useState(false)
-  const predefinedTags = tags
 
   const [createPostLoadingState, setCreatePostLoadingState] = useState(false)
   const [updatePostLoadingState, setUpdatePostLoadingState] = useState(false)
@@ -246,7 +245,7 @@ export default function PostCreateSection({ parent ,user, setUser, setPosts, set
         onBlur={handleTextareaBlur}
       />
 
-      <div className={`transition-all duration-500 overflow-y-auto ease-in-out ${isTextareaFocused || isTagsInputFocused || content.trim() || tagValue.trim() || tagList.length > 0 || images.length > 0 || parent ==='edit' ? 'opacity-100 max-h-screen' : 'opacity-0 max-h-0'}`}>
+      <div className={`transition-all duration-500 ease-in-out ${isTextareaFocused || isTagsInputFocused || content.trim() || tagValue.trim() || tagList.length > 0 || images.length > 0 || parent ==='edit' ? 'opacity-100 max-h-screen' : 'opacity-0 max-h-0 overflow-hidden'}`}>
         {/*Tag Input Section*/}
         <div className='flex flex-col relative'>
           <input
@@ -260,21 +259,19 @@ export default function PostCreateSection({ parent ,user, setUser, setPosts, set
             onBlur={handleTagInputBlur}
           />
 
-            {showTagDropdown && (
-                    <div className="absolute top-full left-0 mt-1 w-full bg-white dark:bg-slate-900 border dark:border-slate-700 rounded-lg shadow-lg z-10">
-                      {predefinedTags
-                        .filter(tag => !tagList.includes(tag))
-                        .map((tag, index) => (
-                          <div
-                            key={index}
-                            className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-slate-800 dark:text-gray-200 cursor-pointer transition-all duration-300"
-                            onClick={() => handleTagSelection(tag)}
-                          >
-                            {tag}
-                          </div>
-                        ))}
-                    </div>
-                  )}
+          <div className={`absolute top-full mt-1 w-full bg-gray-100 dark:bg-slate-900 rounded-lg shadow-lg z-10 transition-all duration-300 ${showTagDropdown?'max-h-60 overflow-y-auto':'max-h-0 overflow-hidden'}`}>
+            {tags
+              .filter(tag => (!tagList.includes(tag) && tag.toUpperCase().includes(tagValue.toUpperCase())))
+              .map((tag, index) => (
+                <button
+                  key={index}
+                  className="text-left w-full px-4 py-2 hover:bg-gray-200 dark:hover:bg-slate-700 dark:text-gray-200 transition-all duration-300"
+                  onClick={() => handleTagSelection(tag)}
+                >
+                  {tag}
+                </button>
+              ))}
+          </div>
           
           <div className="mt-2 flex flex-wrap gap-2">
             {tagList.map((tag, index) => (
@@ -335,7 +332,7 @@ export default function PostCreateSection({ parent ,user, setUser, setPosts, set
         </div>
       </div>
       {parent==='edit'?
-      <div className='flex justify-end gap-2'>
+      <div className='mt-4 flex justify-end gap-2'>
         <button className='py-2 px-4 rounded-xl dark:text-gray-200 dark:hover:text-gray-300 text-gray-600 hover:text-white dark:bg-slate-700 bg-gray-200 dark:hover:bg-slate-900 hover:bg-gray-400 transition-all duration-300'
           onClick={() => close()}>
           Cancel
