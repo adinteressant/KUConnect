@@ -16,11 +16,10 @@ export default function ProfilePage() {
   const [showDropdown, setShowDropdown] = useState(false);
   const [incomingRequests, setIncomingRequests] = useState([]);
   const [sentRequests, setSentRequests] = useState([]);
-  const [status, setStatus] = useState('none')
+  const [status, setStatus] = useState()
   const [posts, setPosts] = useState([])
   const { incomingRequestsCount, setIncomingRequestsCount } = useRequestCount();
   const dropdownRef = useRef(null);
-  const [loading, setLoading] = useState(true);
   const scrollContainerRef = useRef(null)
   const location = useLocation()
 
@@ -218,7 +217,6 @@ export default function ProfilePage() {
       };
 
       fetchStatus();
-      setLoading(false);
     }
   }, [userProfile, profileData]);   
   
@@ -297,7 +295,7 @@ export default function ProfilePage() {
     );
   };
 
-  if(loading){
+  if(!status){
     return (
       <LoadingSkeleton />
     )
@@ -420,9 +418,9 @@ export default function ProfilePage() {
 
       {showUnfriendPopup && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-            <p className="text-lg font-semibold mb-4">Unfriend {username}</p>
-            <p className="text-sm text-gray-600 mb-6">Are you sure you want to remove {username} as your friend?</p>
+          <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-lg w-full max-w-md">
+            <p className="text-lg dark:text-gray-200 font-semibold mb-4">Unfriend {username}</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">Are you sure you want to remove {username} as your friend?</p>
             <div className="flex justify-end space-x-2">
               <button
                 onClick={() => setShowUnfriendPopup(false)}

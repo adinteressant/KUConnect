@@ -6,7 +6,6 @@ import ShowComments from './CommentOverlay.jsx'
 import SendToFriends from './ShareOverlay.jsx'
 import { useOutletContext } from 'react-router-dom'
 import { Loader2 } from 'lucide-react'
-import { useTheme } from '../context/themeContext.jsx'
 import PostCreateSection from './PostCreateSection.jsx'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
@@ -21,14 +20,14 @@ import axios from 'axios'
 function Posts(props) {
 
   const URL_REGEX = /(((https?:\/\/)|(www\.))[^\s]+)/g;
-  const {theme, toggleTheme} = useTheme();
-  useEffect(() => {
-    if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, [theme]);
+  // const {theme, toggleTheme} = useTheme();
+  // useEffect(() => {
+  //   if (theme === 'dark') {
+  //     document.documentElement.classList.add('dark');
+  //   } else {
+  //     document.documentElement.classList.remove('dark');
+  //   }
+  // }, [theme]);
     const {userProfile, setUserProfile} = useOutletContext()
     const [posts, setPosts] = useState([])
     const [likedPosts, setLikedPosts] = useState([])
@@ -572,9 +571,21 @@ function Posts(props) {
                     </div>
                   </div>
                   <p className="mt-2 dark:text-slate-200 text-gray-800"> 
-                {post.content.split(' ').map((word)=>{
-                  return word.match(URL_REGEX)?(<a target='_blank' className='text-blue-400' href={word}>{word}</a>):word
+
+                {
+                  post.content.split('\n').map((line)=>{
+                  return <span>
+                  {line.split(' ').map((word)=>{
+                  return word.match(URL_REGEX)?(
+                   <a target='_blank' className='text-blue-400' href={word}>
+                    {word}
+                   </a>):
+                    word+' '
                   })}
+                    <br/>
+                 </span>
+                  })}
+
                 </p>
                 {post.tags && post.tags.length > 0 && renderTags(post.tags)}
 
