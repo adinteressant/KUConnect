@@ -6,7 +6,6 @@ import ShowComments from './CommentOverlay.jsx'
 import SendToFriends from './ShareOverlay.jsx'
 import { useOutletContext } from 'react-router-dom'
 import { Loader2 } from 'lucide-react'
-import { useTheme } from '../context/themeContext.jsx'
 import PostCreateSection from './PostCreateSection.jsx'
 //Props include:
 //Posts (array) jun dekhauna parney cha
@@ -15,14 +14,14 @@ import PostCreateSection from './PostCreateSection.jsx'
 function Posts(props) {
 
   const URL_REGEX = /(((https?:\/\/)|(www\.))[^\s]+)/g;
-  const {theme, toggleTheme} = useTheme();
-  useEffect(() => {
-    if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, [theme]);
+  // const {theme, toggleTheme} = useTheme();
+  // useEffect(() => {
+  //   if (theme === 'dark') {
+  //     document.documentElement.classList.add('dark');
+  //   } else {
+  //     document.documentElement.classList.remove('dark');
+  //   }
+  // }, [theme]);
     const {userProfile, setUserProfile} = useOutletContext()
     const [posts, setPosts] = useState([])
     const [likedPosts, setLikedPosts] = useState([])

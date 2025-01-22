@@ -12,7 +12,6 @@ import axios from 'axios'
 import { useState, useEffect } from 'react'
 import useRequestCount from '../zustand/useRequestCount'
 import useNewMessages from '../zustand/useNewMessages'
-import { useTheme } from './context/themeContext';
 
 export default function Sidebar({userProfile,setUserProfile}) {
   const [userUnreadCount, setUserUnreadCount] = useState(userProfile.unread_count)
@@ -20,15 +19,16 @@ export default function Sidebar({userProfile,setUserProfile}) {
   const {incomingRequestsCount, setIncomingRequestsCount} = useRequestCount() 
   const {newMessages} = useNewMessages()
   const uniqueSendersCount = new Set(newMessages.map(msg => msg.senderId)).size;
+  
   // const [selected, setSelected] = useState(localStorage.getItem('darkmode') || "light");
-  const {theme, toggleTheme} = useTheme();
-useEffect(() => {
-  if (theme === 'dark') {
-    document.documentElement.classList.add('dark');
-  } else {
-    document.documentElement.classList.remove('dark');
-  }
-}, [theme]);
+//   const {theme, toggleTheme} = useTheme();
+// useEffect(() => {
+//   if (theme === 'dark') {
+//     document.documentElement.classList.add('dark');
+//   } else {
+//     document.documentElement.classList.remove('dark');
+//   }
+// }, [theme]);
 
      //Fetch user profile
     useEffect(() => {
@@ -74,8 +74,8 @@ useEffect(() => {
 
   return (
     <div
-    className={`grid place-content-center transition-colors ${
-      theme === "light" ? "bg-white text-black" : "bg-slate-800 text-white"
+    className={`grid place-content-center transition-colors 
+  bg-white text-black dark:bg-slate-800 dark:text-white
     }`}
   >
     <motion.div
@@ -92,10 +92,10 @@ useEffect(() => {
         <li>
           <NavLink to="/home" className={({ isActive }) =>     
                       `${isActive
-                        ? theme === 'dark'
-                          ? 'text-white hover:bg-gray-700 bg-gray-700 shadow-inner'  
-                          : 'bg-gray-200 shadow-inner'  
-                        : 'hover:bg-gray-200'} flex items-center p-3 rounded-lg cursor-pointer transition-all dark:hover:bg-gray-700`}>          
+                        ?
+                          'dark:text-white dark:hover:bg-gray-700 dark:bg-gray-700 dark:shadow-inner bg-gray-200 shadow-inner'
+                        : 'hover:bg-gray-200' }
+                        flex items-center p-3 rounded-lg cursor-pointer transition-all dark:hover:bg-gray-700`}>          
                   <div className="flex items-center gap-2">
               <HomeIcon className="text-cyan-600 h-5 w-5" />
                {isHovered && <span className="truncate whitespace-nowrap">Home</span>}
@@ -104,11 +104,11 @@ useEffect(() => {
         </li>
         <li>
         <NavLink to="/messages" className={({ isActive }) =>     
-            `${isActive
-      ? theme === 'dark'
-        ? 'text-white hover:bg-gray-700 bg-gray-700 shadow-inner'  
-        : 'bg-gray-200 shadow-inner'  
-      : 'hover:bg-gray-200'} flex items-center p-3 rounded-lg cursor-pointer transition-all dark:hover:bg-gray-700`}>          
+                        `${isActive
+                          ?
+                            'dark:text-white dark:hover:bg-gray-700 dark:bg-gray-700 dark:shadow-inner bg-gray-200 shadow-inner'
+                          : 'hover:bg-gray-200' }
+                          flex items-center p-3 rounded-lg cursor-pointer transition-all dark:hover:bg-gray-700`}>            
         <div className="flex gap-2 items-center">
               <div className="relative h-6 w-6 flex justify-center items-center">
                 {newMessages.length > 0 && (
@@ -123,11 +123,12 @@ useEffect(() => {
           </NavLink>
         </li>
         <li>
-          <NavLink to="/friends" className={({ isActive }) =>             `${isActive
-      ? theme === 'dark'
-        ? 'text-white hover:bg-gray-700 bg-gray-700 shadow-inner'  
-        : 'bg-gray-200 shadow-inner'  
-      : 'hover:bg-gray-200'} flex items-center p-3 rounded-lg cursor-pointer transition-all dark:hover:bg-gray-700`}>          
+          <NavLink to="/friends" className={({ isActive }) =>             
+                            `${isActive
+                              ?
+                                'dark:text-white dark:hover:bg-gray-700 dark:bg-gray-700 dark:shadow-inner bg-gray-200 shadow-inner'
+                              : 'hover:bg-gray-200' }
+                              flex items-center p-3 rounded-lg cursor-pointer transition-all dark:hover:bg-gray-700`}>        
             <div className="flex items-center gap-2">
               <div className="relative h-6 w-6 flex justify-center items-center">
                 <FriendsIcon className="text-cyan-600 h-5 w-5" />
@@ -142,11 +143,12 @@ useEffect(() => {
           </NavLink>
         </li>
         <li>
-          <NavLink to="/notifications" className={({ isActive }) =>             `${isActive
-      ? theme === 'dark'
-        ? 'text-white hover:bg-gray-700 bg-gray-700 shadow-inner'  
-        : 'bg-gray-200 shadow-inner'  
-       : 'hover:bg-gray-200'} flex items-center p-3 rounded-lg cursor-pointer transition-all dark:hover:bg-gray-700`}>          
+          <NavLink to="/notifications" className={({ isActive }) =>                               
+          `${isActive
+                        ?
+                          'dark:text-white dark:hover:bg-gray-700 dark:bg-gray-700 dark:shadow-inner bg-gray-200 shadow-inner'
+                        : 'hover:bg-gray-200' }
+                        flex items-center p-3 rounded-lg cursor-pointer transition-all dark:hover:bg-gray-700`}>   
             <div className="flex items-center gap-2">
               <div className="relative h-6 w-6 flex justify-center items-center">
                 <Bell className="text-cyan-600 h-5 w-5" />
@@ -164,11 +166,11 @@ useEffect(() => {
           </NavLink>
         </li>
         <li>
-          <NavLink to="/posts/saved" className={({ isActive }) =>             `${isActive
-      ? theme === 'dark'
-        ? 'text-white hover:bg-gray-700 bg-gray-700 shadow-inner'  
-        : 'bg-gray-200 shadow-inner'  
-         : 'hover:bg-gray-200'} flex items-center p-3 rounded-lg cursor-pointer transition-all dark:hover:bg-gray-700`}>          
+          <NavLink to="/posts/saved" className={({ isActive }) =>                              `${isActive
+                        ?
+                          'dark:text-white dark:hover:bg-gray-700 dark:bg-gray-700 dark:shadow-inner bg-gray-200 shadow-inner'
+                        : 'hover:bg-gray-200' }
+                        flex items-center p-3 rounded-lg cursor-pointer transition-all dark:hover:bg-gray-700`}>      
             <div className="flex items-center gap-2">
               <SaveIcon className="text-cyan-600 h-5 w-5" />
               {isHovered && <span className="truncate whitespace-nowrap">Saved Posts</span>}
