@@ -59,52 +59,7 @@ export default function MessageHeader({ username }) {
 
     loadUserProfile();
   }, []);
-
-  // const confirmRequest = () => {
-  //   const receiver_id = userProfile.user_id;
-  //   const sender_id = profileData.user_id;
-
-  //   fetch('/api/confirm-request', {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //     body: JSON.stringify({ sender_id, receiver_id }),
-  //     credentials: 'same-origin',
-  //   })
-  //     .then((response) => {
-  //       if (!response.ok) throw new Error('Failed to accept request');
-  //       return response.json();
-  //     })
-  //     .then(() => {
-  //       setStatus('accepted');
-  //     })
-  //     .catch((err) => console.error('Error accepting request:', err));
-  // };
-
-  // const rejectRequest = () => {
-  //   const receiver_id = userProfile.user_id;
-  //   const sender_id = profileData.user_id;
-
-  //   fetch('/api/reject-request', {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //     body: JSON.stringify({ sender_id, receiver_id }),
-  //     credentials: 'same-origin',
-  //   })
-  //     .then((response) => {
-  //       if (!response.ok) throw new Error('Failed to deny request');
-  //       return response.json();
-  //     })
-  //     .then(() => {
-  //       setStatus('none');
-  //     })
-  //     .catch((err) => console.error('Error denying request:', err));
-  // };
-
-  
+ 
   return (
     <div className="px-4 py-3 border-b border-gray-200 dark:border-slate-800 dark:bg-slate-900 sticky">
       <div className="flex items-center gap-3">
@@ -117,7 +72,6 @@ export default function MessageHeader({ username }) {
     className="w-10 h-10 rounded-full object-cover border border-gray-200"
     onError={() => {
       setError(true);
-      // setProfilePic(null);
     }}
   />
 ) : (

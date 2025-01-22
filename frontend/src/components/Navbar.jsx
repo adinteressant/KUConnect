@@ -241,14 +241,14 @@ const UserDropdown = React.memo(({ isAuthenticated, userProfile, onLogout }) => 
                       <Link
                         to="/login"
                         // onClick={() => checkLoginOrRegister('/login')}
-                        className="flex items-center px-4 py-2 dark:hover:bg-slate-900 hover:bg-gray-200 transition-colors"
+                        className="flex items-center px-4 py-2 dark:hover:bg-slate-900 hover:bg-gray-200 transition-colors hover:rounded-t-md"
                       >
                         <LogIn className="h-4 w-4 mr-2" /> Login
                       </Link>
                       <Link
                         to="/register"
                         // onClick={() => checkLoginOrRegister('/register')}
-                        className="flex items-center px-4 py-2 hover:bg-gray-200 dark:hover:bg-slate-900 transition-colors"
+                        className="flex items-center px-4 py-2 hover:bg-gray-200 dark:hover:bg-slate-900 hover:rounded-b-md transition-colors"
                       >
                         <UserPlus className="h-4 w-4 mr-2" /> Register
                       </Link>
