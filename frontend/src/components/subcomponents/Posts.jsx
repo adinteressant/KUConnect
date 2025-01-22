@@ -1004,6 +1004,7 @@ function Posts(props) {
             <img src={viewImage}
                 onClick={(e) => e.stopPropagation()}
                 className={`max-w-[80%] max-h-[80%]
+                  bg-white dark:bg-slate-900
                   rounded-lg shadow-2xl
                   transition-all duration-300
                   ${overlayTransitionState?'opacity-100 scale-100':'opacity-0 scale-50'}
