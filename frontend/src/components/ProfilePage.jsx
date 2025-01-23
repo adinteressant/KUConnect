@@ -287,10 +287,10 @@ export default function ProfilePage() {
 
         {/* Rest of the profile content */}
         <div className="text-center mt-4 flex flex-col">
-          <h1 className="text-3xl font-serif font-bold">
+          <h1 className="text-3xl font-bold">
             {username}
           </h1>
-          <h2 className="text-2xl font-serif font-semibold">Role: {profileData.role}</h2>
+          <h2 className="text-2xl font-semibold">Role: {profileData.role}</h2>
 
           {/* Add Friend button */}
           {userProfile.username === username?

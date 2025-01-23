@@ -65,7 +65,7 @@ const HomePage = () => {
         setPosts(() => data)
         setTimeout(() => {
           setPostLoadingState(() => false)
-        }, 2000)
+        }, 500)
       })
       .catch((e) => {
         console.error('Error fetching posts:', e)

@@ -16,7 +16,7 @@ export default function SpecificPost()
             setPosts(() => data.post)
             setTimeout(() => {
                 setLoadingState(() => false)
-            }, 1000)
+            }, 500)
         })
         .catch(error => {
             console.error('Error fetching post', error)

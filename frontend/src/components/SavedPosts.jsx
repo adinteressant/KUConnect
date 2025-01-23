@@ -20,7 +20,7 @@ export default function SavedPosts()
                 setPosts(() => postdata.posts)
                 setTimeout(() => {
                     setLoadingState(() => false)
-                }, 1000)
+                }, 500)
             })
             .catch(err => {
                 console.error('Error fetching saved posts:', err)

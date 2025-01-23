@@ -557,17 +557,23 @@ function Posts(props) {
                           {post.role.charAt(0).toUpperCase() + post.role.slice(1)}
                         </div>
                         &#183;
+                        
+                        {urlPostId===post._id?
                         <div>
-                          {formatTimeAgo(post.createdAt)} ago
-                          {/*new Date(post.createdAt).toLocaleDateString('en-US', { 
+                          {new Date(post.createdAt).toLocaleTimeString([], { 
+                            hour: '2-digit', 
+                            minute: '2-digit' 
+                          })},&nbsp;
+                          {new Date(post.createdAt).toLocaleDateString('en-US', { 
                             day: '2-digit', 
                             month: 'long', 
                             year: 'numeric' 
-                          })}, {new Date(post.createdAt).toLocaleTimeString([], { 
-                            hour: '2-digit', 
-                            minute: '2-digit' 
-                          })*/}
+                          })}
                         </div>
+                        :
+                        <div>
+                          {formatTimeAgo(post.createdAt)} ago
+                        </div>}
                       </div>
                     </div>
                   </div>
