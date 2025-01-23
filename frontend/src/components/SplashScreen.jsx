@@ -1,11 +1,13 @@
 import { useEffect } from "react"
 import { useNavigate } from "react-router-dom"
-import { useLocation } from "react-router-dom"
+import { useLocation,useSearchParams } from "react-router-dom"
 
 export default function SplashScreen({ setLoad }) {
     
     const navigate = useNavigate()
     const  location = useLocation()
+    const [query] = useSearchParams()
+    const email = query.get('email')
 
     useEffect(() => {
         const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true'
@@ -15,6 +17,10 @@ export default function SplashScreen({ setLoad }) {
             if(location.pathname==='/')
             {
                 isAuthenticated?navigate(`/home`):navigate('/login')
+                return
+            }
+            if(email){
+                navigate(`${location.pathname}?email=${email}`)
                 return
             }
             navigate(`${location.pathname}`)

@@ -19,11 +19,10 @@ export const setUserInfo = async (req,res) => {
     }
   }
   
-  console.log('role is '+role)
   const userId = uuidv4()
 
   const publicInfo = new PublicInfo({
-    pfp_id:1,
+    pfp_id: 1,
     user_id: userId,
     username:username,
     tags:[],
@@ -37,8 +36,10 @@ export const setUserInfo = async (req,res) => {
     role: role,
   })
   try{
-    await privateInfo.save()
-    await publicInfo.save()
+    await Promise.all([
+      privateInfo.save(),
+      publicInfo.save()
+    ])
   }catch(e){
     console.log('didnt save'+e)
     return res.status(500).send({error:'failed to register'})

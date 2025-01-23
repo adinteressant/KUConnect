@@ -32,7 +32,7 @@ export default function SavedPosts()
     }, [])
     if(!isAuthenticated){
         return (
-          <div className="bg-yellow-100 text-yellow-800 p-4 rounded-lg shadow-md mt-4">
+          <div className="bg-yellow-100 text-yellow-800 p-4 rounded-lg shadow-md m-4">
                   Please <Link to="/login" className="text-cyan-600">log in</Link> to view saved posts.
                 </div>
         )

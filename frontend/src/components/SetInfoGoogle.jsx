@@ -12,7 +12,7 @@ export default function SetInfoGoogle(){
     e.preventDefault()
 
     const gmail = queryParams.get('email')
-
+    console.log(gmail)
     
     fetch('/api/set-user-info',{
       method: 'POST',
@@ -26,8 +26,7 @@ export default function SetInfoGoogle(){
     })
     .then(response => response.json())
     .then((data)=>{
-      console.log('Success:', data);
-      alert('Setup successful!');
+      console.log('Success:', data)
       window.location.href = `/`
     })
     .catch((e)=>{
