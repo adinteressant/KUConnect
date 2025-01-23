@@ -5,6 +5,7 @@ import useNewMessages from '../../zustand/useNewMessages'
 import useGetFriends from '../hooks/useGetFriends'
 import { useSocketContext } from '../context/socketContext'
 import { useSearchParams } from 'react-router-dom'
+import ConversationsSkeleton from './ConversationsSkeleton'
 
 export default function Conversations({ conversations, loading }) {
   const { selectedConversation, setSelectedConversation } = useConversation()
@@ -66,7 +67,7 @@ export default function Conversations({ conversations, loading }) {
   return (
     <div className="flex flex-col mt-5">
       {loading ? (
-        <div>Loading...</div>
+        <ConversationsSkeleton/>
       ) : (
         enhancedConversations.map((conversation, index) =>
           (

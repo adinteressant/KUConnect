@@ -4,10 +4,10 @@ import { X } from 'lucide-react';
 const WelcomeModal = ({ email, username, onClose, pfp_id }) => {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-8 max-w-md w-full mx-4 relative">
+      <div className="bg-white dark:bg-slate-800 rounded-lg p-8 max-w-md w-full mx-4 relative">
         <button 
           onClick={onClose}
-          className="absolute right-4 top-4 text-gray-500 hover:text-gray-700"
+          className="absolute right-4 top-4 text-gray-500 dark:text-slate-200 dark:hover:text-slate-400 hover:text-gray-700"
         >
           <X size={20} />
         </button>
@@ -28,9 +28,9 @@ const WelcomeModal = ({ email, username, onClose, pfp_id }) => {
           
           <div className="text-center">
             <h2 className="text-2xl font-bold text-cyan-600 mb-2">Welcome to KUConnect</h2>
-            <p className="text-gray-600 mb-4">You are now connected with the email: <br /> {email}<br />
+            <p className="text-gray-600  dark:text-slate-400 mb-4">You are now connected with the email: <br /> {email}<br />
             You are visible to other users with the username</p>
-            <h3 className="text-xl font-semibold mb-4">{username}</h3>
+            <h3 className="text-xl font-semibold dark:text-slate-200 mb-4">{username}</h3>
           </div>
           
           <button 

@@ -1,9 +1,13 @@
-import useConversation from "../../zustand/useConversation"
+import { useState } from 'react'
+import useConversation from '../../zustand/useConversation'
+import { Loader2 } from 'lucide-react'
 
 export default function MessageInfo({isVisible,id}){
+  const [loading,setLoading] = useState(false)
   const {selectedConversation,setMessages} = useConversation()  
   const handleDelete = async () => {
     try{
+      setLoading(true)
       const response = await fetch(`
         /api/delete-message?messageId=${id}&receiverId=${selectedConversation.user_id}
         `,{
@@ -14,9 +18,22 @@ export default function MessageInfo({isVisible,id}){
       })
       const data = await response.json()
       setMessages(data.messages)
+      setLoading(false)
     }catch(e){
       console.log(e)
     }
+  }
+  if(loading){
+    return (
+      <div className={`mr-[26px] flex shadow-sm flex-col border bg-white dark:bg-slate-800 rounded-md border-gray-200 dark:border-slate-700 h-20 w-24
+        justify-center items-center
+        ${isVisible?`absolute z-50`:`hidden`}
+      `}>
+        <div>
+        <Loader2 className="w-5 h-5 animate-spin" />
+        </div>
+        </div>
+    )
   }
   return <div className={`mr-[26px] flex shadow-sm flex-col border bg-white dark:bg-slate-800 rounded-md border-gray-200 dark:border-slate-700
     ${isVisible?`absolute z-50`:`hidden`}
