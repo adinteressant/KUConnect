@@ -223,7 +223,7 @@ const UserDropdown = React.memo(({ isAuthenticated, userProfile, onLogout }) => 
                     <>
                       <Link
                         to={`/${userProfile.username}`}
-                        onClick={() => checkLoginOrRegister(`/${userProfile.username}`)}
+                        // onClick={() => checkLoginOrRegister(`/${userProfile.username}`)}
                         className="flex items-center px-4 py-2 hover:bg-gray-200 dark:hover:bg-slate-900 hover:rounded-t-md transition-colors"
                       >
                         <UserCircle className="h-4 w-4 mr-2" /> My Profile
@@ -240,15 +240,15 @@ const UserDropdown = React.memo(({ isAuthenticated, userProfile, onLogout }) => 
                     <>
                       <Link
                         to="/login"
-                        onClick={() => checkLoginOrRegister('/login')}
-                        className="flex items-center px-4 py-2 dark:hover:bg-slate-800 hover:bg-gray-200 transition-colors"
+                        // onClick={() => checkLoginOrRegister('/login')}
+                        className="flex items-center px-4 py-2 dark:hover:bg-slate-900 hover:bg-gray-200 transition-colors hover:rounded-t-md"
                       >
                         <LogIn className="h-4 w-4 mr-2" /> Login
                       </Link>
                       <Link
                         to="/register"
-                        onClick={() => checkLoginOrRegister('/register')}
-                        className="flex items-center px-4 py-2 hover:bg-gray-200 dark:hover:bg-slate-800 transition-colors"
+                        // onClick={() => checkLoginOrRegister('/register')}
+                        className="flex items-center px-4 py-2 hover:bg-gray-200 dark:hover:bg-slate-900 hover:rounded-b-md transition-colors"
                       >
                         <UserPlus className="h-4 w-4 mr-2" /> Register
                       </Link>
@@ -349,10 +349,10 @@ const Navigation = ({ setVisibility, setPadding, searchTrait, setSearchTrait, us
 
   return (
     <div className="w-full border-b dark:border-b-slate-800 fixed z-20 dark:bg-slate-800 bg-white dark:text-gray-100 top-0">
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="flex items-center justify-between h-16 ">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex items-center justify-between h-16">
           <Link to="/home" className={`text-2xl font-serif ${theme === 'light' ? 'text-gray-800' : 'text-white'}`}>
-            KUConnect
+            <img src="../public/logo/KUConnect.png" className="h-14 w-15"/>
           </Link>
 
           {/* Search */}
