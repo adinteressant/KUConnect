@@ -110,7 +110,7 @@ const SearchBar = React.memo(({ searchTrait, setSearchTrait, onSearch }) => {
   }, [searchTrait, showDropdown]);
 
   return (
-    <div className="w-full max-w-md mx-32">
+    <div className="w-full max-w-md">
       <div className="relative card-wrapper">
         <div className='animate-slide opacity-0 mt-2 text-center text-gray-400 text-xl absolute'>Welcome Aboard!</div> 
         <Search className="absolute left-3 animate-fade top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-100 h-5 w-5" />
@@ -193,7 +193,7 @@ const UserDropdown = React.memo(({ isAuthenticated, userProfile, onLogout }) => 
   };
 
   return (
-          <div className="flex items-center space-x-7">
+          <div className="flex items-center space-x-7 mx-4">
             {/* Dropdown Section */}
             <div
               className="relative dropdown-area"
@@ -205,7 +205,7 @@ const UserDropdown = React.memo(({ isAuthenticated, userProfile, onLogout }) => 
           <img
             src={`/api/get-pfp?id=${userProfile?.pfp_id || 5}`}
             alt="Profile"
-            className="h-8 w-8 rounded-full object-cover"
+            className="h-8 min-w-8 rounded-full object-cover"
           />
         ) : (
           <User className="h-8 w-8" />
@@ -349,10 +349,10 @@ const Navigation = ({ setVisibility, setPadding, searchTrait, setSearchTrait, us
 
   return (
     <div className="w-full border-b dark:border-b-slate-800 fixed z-20 dark:bg-slate-800 bg-white dark:text-gray-100 top-0">
-      <div className="max-w-7xl mx-auto">
+      <div className="w-full">
         <div className="flex items-center justify-between h-16">
           <Link to="/home" className={`text-2xl font-serif ${theme === 'light' ? 'text-gray-800' : 'text-white'}`}>
-            <img src="../public/logo/KUConnect.png" className="h-14 w-15"/>
+            <img src="../public/logo/KUConnect.png" className="object-contain max-h-12 min-w-[60px] mx-4"/>
           </Link>
 
           {/* Search */}
