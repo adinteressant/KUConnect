@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from 'mongoose'
 
 const PublicInfoSchema = new mongoose.Schema({
   pfp_id: { type: Number, required:true , unique:false },
@@ -9,8 +9,8 @@ const PublicInfoSchema = new mongoose.Schema({
     type: String, // either 'student' or 'faculty'
     required: true,
     enum: ['student', 'faculty'], // Only these two roles are allowed
-  },
-});
+  }
+}, {timestamps: true})
 
-const PublicInfo = mongoose.model('PublicInfo', PublicInfoSchema);
-export default PublicInfo;
+const PublicInfo = mongoose.model('PublicInfo', PublicInfoSchema)
+export default PublicInfo

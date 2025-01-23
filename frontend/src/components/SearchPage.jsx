@@ -54,7 +54,7 @@ const SearchPage = () => {
   return (
     <div className="flex flex-col dark:text-slate-200 p-4 overflow-y-auto">
       <div className="mx-auto">
-        <h1 className="text-2xl font-bold">
+        <h1 className="text-2xl font-bold mb-2">
           {isUserSearch 
             ? `User results for "${searchQuery.replace('@user:', '')}"` 
             : isTagSearch

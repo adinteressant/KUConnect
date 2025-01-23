@@ -8,7 +8,7 @@ const UserSearchResults = ({ users }) => {
         <Link 
           key={user.user_id} 
           to={`/${user.username}`}
-          className="flex items-center p-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-300"
+          className="flex items-center bg-gray-100 dark:bg-slate-800 p-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-300"
         >
           <img 
             src={`/api/get-pfp?id=${user.pfp_id}`} 
