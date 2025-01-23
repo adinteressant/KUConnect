@@ -19,9 +19,50 @@ export default function PostCreateSection({ parent ,user, setUser, setPosts, set
   const [encodedImages, setEncodedImages] = useState(
     parent==='edit'&&post.images!==null?post.encodedImages:[]
   )
+  const [showTagDropdown, setShowTagDropdown] = useState(false)
+  const predefinedTags = ['KUSOE', 'KUSOS', 'KUSOL', 'KUSOA', 'Research']
+
   const [createPostLoadingState, setCreatePostLoadingState] = useState(false)
   const [updatePostLoadingState, setUpdatePostLoadingState] = useState(false)
   const { searchTrait, setSearchTrait } = useOutletContext()
+
+
+  const handleTagRemove = (indexToRemove) => {
+      const newTagList = tagList.filter((tag, index) => {
+        if(index === indexToRemove){
+          return false;
+        }
+        else{
+          return true;
+        }
+      })
+
+      setTagList(newTagList)
+  }
+
+  const handleTagSelection = (tag) =>{
+    if(!tagList.includes(tag)){
+      setTagList([...tagList, tag])
+    }
+    setShowTagDropdown(false)
+    setTagValue('')
+  }
+
+  const handleTagInputFocus = () =>{
+    setIsTagsInputFocused(true)
+    setShowTags(true)
+    setShowTagDropdown(true)
+  }
+
+  const handleTagInputBlur = () => {
+    setIsTagsInputFocused(false)
+    setTimeout (() =>{
+      if(!content.trim() && !isTextareaFocused && !tagValue.trim()){
+        setShowTags(false)
+      }
+      setShowTagDropdown(false)
+    }, 200)
+  }
 
   // Handle Post Submit
   const handlePostSubmit = () => {
@@ -151,17 +192,6 @@ export default function PostCreateSection({ parent ,user, setUser, setPosts, set
     }
   }
 
-  const handleTagsInputFocus = () => {
-    setIsTagsInputFocused(true)
-    setShowTags(true)
-  }
-
-  const handleTagsInputBlur = () => {
-    setIsTagsInputFocused(false)
-    if (!content.trim() && !isTextareaFocused && !tagValue.trim()) {
-      setShowTags(false)
-    }
-  }
 
   const handleImageChange = async (e) => {
     const selectedImages = Array.from(e.target.files)
@@ -217,7 +247,7 @@ export default function PostCreateSection({ parent ,user, setUser, setPosts, set
 
       <div className={`transition-all duration-500 overflow-y-auto ease-in-out ${isTextareaFocused || isTagsInputFocused || content.trim() || tagValue.trim() || tagList.length > 0 || images.length > 0 || parent ==='edit' ? 'opacity-100 max-h-screen' : 'opacity-0 max-h-0'}`}>
         {/*Tag Input Section*/}
-        <div className='flex flex-col'>
+        <div className='flex flex-col relative'>
           <input
             type="text"
             placeholder="Add tags (space-separated)"
@@ -225,16 +255,45 @@ export default function PostCreateSection({ parent ,user, setUser, setPosts, set
             value={tagValue}
             onChange={handleTagInputChange}
             onKeyDown={handleTagInputKeyDown}
-            onFocus={handleTagsInputFocus}
-            onBlur={handleTagsInputBlur}
+            onFocus={handleTagInputFocus}
+            onBlur={handleTagInputBlur}
           />
+
+            {showTagDropdown && (
+                    <div className="absolute top-full left-0 mt-1 w-full bg-white dark:bg-slate-900 border dark:border-slate-700 rounded-lg shadow-lg z-10">
+                      {predefinedTags
+                        .filter(tag => !tagList.includes(tag))
+                        .map((tag, index) => (
+                          <div
+                            key={index}
+                            className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-slate-800 dark:text-gray-200 cursor-pointer transition-all duration-300"
+                            onClick={() => handleTagSelection(tag)}
+                          >
+                            {tag}
+                          </div>
+                        ))}
+                    </div>
+                  )}
+          
           <div className="mt-2 flex flex-wrap gap-2">
             {tagList.map((tag, index) => (
               <span
                 key={index}
-                className="bg-cyan-100 text-cyan-800 px-2 py-1 rounded-full text-sm"
+                className="inline-flex items-center bg-cyan-100 text-cyan-800 px-2 py-1 rounded-full text-sm"
+                onClick={() => handleTagRemove(index)}
               >
-                {tag}
+                <span>{tag}</span>
+
+                <svg 
+                  className="w-3 h-3 inline-block" 
+                  viewBox="0 0 24 24" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  strokeWidth="2"
+                >
+                  <path d="M18 6 6 18" />
+                  <path d="m6 6 12 12" />
+                </svg>
               </span>
             ))}
           </div>
