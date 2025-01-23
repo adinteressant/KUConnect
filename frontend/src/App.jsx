@@ -3,6 +3,7 @@ import Navbar from "./components/Navbar.jsx"
 import Sidebar from "./components/Sidebar.jsx"
 import { useTheme } from "./components/context/themeContext.jsx"
 import { useState, useEffect } from "react"
+import SplashScreen from "./components/SplashScreen.jsx"
 
 export default function App() {
   const [isSidebarVisible, setIsSidebarVisible] = useState(true)
@@ -12,6 +13,7 @@ export default function App() {
   const [searchTrait,setSearchTrait] = useState("")
   const [userPosts,setUserPosts] = useState([])
   const [userProfile,setUserProfile] = useState({})
+  const [load, setLoad] = useState(true)
 
   useEffect(() => {
     // Hide sidebar for login and register pages
@@ -35,7 +37,10 @@ export default function App() {
     }, [theme])
 
   return (
-    <div className = {`${theme === 'dark' ? 'bg-slate-900' : 'bg-white'}`}>
+    load?
+    <SplashScreen setLoad={setLoad}/>
+    :
+    (<div className = {`${theme === 'dark' ? 'bg-slate-900' : 'bg-white'}`}>
       {/* Navbar */}
       {isSidebarVisible&&<Navbar setVisibility={setIsSidebarVisible} setPadding={setPaddingValue} searchTrait={searchTrait} setSearchTrait={setSearchTrait} userProfile={userProfile} setUserProfile={setUserProfile}/>}
 
@@ -49,6 +54,6 @@ export default function App() {
           <Outlet context={{ searchTrait, setSearchTrait ,userPosts,setUserPosts,userProfile,setUserProfile,setIsSidebarVisible}} />
         </div>
       </div>
-    </div>
+    </div>)
   )
 }

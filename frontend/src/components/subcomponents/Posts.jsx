@@ -574,11 +574,11 @@ function Posts(props) {
                   <p className="mt-2 dark:text-slate-200 text-gray-800"> 
 
                 {
-                  post.content.split('\n').map((line)=>{
-                  return <span>
-                  {line.split(' ').map((word)=>{
+                  post.content.split('\n').map((line, i)=>{
+                  return <span key={i}>
+                  {line.split(' ').map((word, i)=>{
                   return word.match(URL_REGEX)?(
-                   <a target='_blank' className='text-blue-400' href={word}>
+                   <a key={i} target='_blank' className='text-blue-400' href={word}>
                     {word}
                    </a>):
                     word+' '

@@ -16,10 +16,9 @@ import SetInfoGoogle from './components/SetInfoGoogle.jsx'
 import ProfilePage from './components/ProfilePage.jsx'
 import ResultPage from './components/ResultPage.jsx'
 import SearchPage from './components/SearchPage.jsx'
-import SearchResults from './components/SearchResults.jsx'
 import VideoCall from './components/VideoCall.jsx'
 import PushNotification from './components/pushNotifications.jsx'
-import LandingPage from './components/LandingPage.jsx'
+// import LandingPage from './components/LandingPage.jsx'
 import SpecificPost from './components/subcomponents/SpecificPost.jsx'
 import SavedPosts from './components/SavedPosts.jsx'
 import { ThemeProvider } from "./components/context/themeContext.jsx";
@@ -34,10 +33,6 @@ const router = createBrowserRouter([
     </SocketContextProvider>
   ),
     children:[
-      {
-        path:'/',
-        element: <LandingPage/>
-      },
       {
         path:'/home',
         element: <HomePage/>
