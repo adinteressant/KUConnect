@@ -1,52 +1,46 @@
 import React, { useState, useEffect, useRef } from 'react';
-import {createOffer }from '../utils/webRTC.js';
-import { useSocketContext } from './context/socketContext.jsx';
+import { createOffer, answerOffer } from '../utils/webRTC.js';
 
 export default function VideoCall() {
   const [localStream, setLocalStream] = useState(null);
-  const [remoteStream, setRemoteStream] = useState(null);
+  const [callId, setCallId] = useState('');
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);
-  
 
   useEffect(() => {
-    async function setup() {
+    const setupMedia = async () => {
       try {
-        const mediaStream = await navigator.mediaDevices.getUserMedia({
-          video: true,
-          audio: true,
-        }); // mediaSteam is the video object we obtain after granting perms
-        setLocalStream(mediaStream); //sets the local stream state 
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        setLocalStream(stream);
       } catch (error) {
         console.error('Error accessing media devices:', error);
       }
-    }
-    
-    setup();
+    };
 
-    // Cleanup function
+    setupMedia();
+
     return () => {
-      if (localStream) {
-        localStream.getTracks().forEach(track => track.stop());
-      }
+      localStream?.getTracks().forEach(track => track.stop());
     };
   }, []);
-  
+
   useEffect(() => {
-    if (localStream && localVideoRef.current) { // if both localStream is incoming and video element is mounted
+    if (localStream && localVideoRef.current) {
       localVideoRef.current.srcObject = localStream;
-
-    createOffer(remoteVideoRef,localStream,remoteStream)
     }
-  }, [localStream]); 
+  }, [localStream]);
 
-  useEffect(() => {
-    if (remoteStream && remoteVideoRef.current) {  
-    remoteVideoRef.current.srcObject = localStream;
-    createOffer(remoteVideoRef,localStream)
+  const handleCreateOffer = async () => {
+    const generatedCallId = await createOffer(remoteVideoRef, localStream);
+    setCallId(generatedCallId|| '');
+  };
+
+  const handleAnswerOffer = async () => {
+    if (callId) {
+      await answerOffer(callId, remoteVideoRef, localStream);
     }
-  }, [remoteStream]); 
- 
+  };
+
   return (
     <div className="p-12">
       <div className="grid grid-cols-2 gap-12 max-w-4xl mx-auto">
@@ -65,6 +59,36 @@ export default function VideoCall() {
           autoPlay
           playsInline
         />
+      </div>
+      
+      <div className="mt-8 space-y-4 max-w-4xl mx-auto">
+        <div className="flex gap-4">
+          <button
+            onClick={handleCreateOffer}
+            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+          >
+            Start Call
+          </button>
+          
+        <input
+          type="text"
+          value={callId || ''}
+          onChange={(e) => setCallId((e.target.value.trim() || ''))}
+          placeholder="Enter Call ID"
+          className="flex-1 px-4 py-2 border rounded-lg"
+        />
+          
+          <button
+            onClick={handleAnswerOffer}
+            className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+          >
+            Join Call
+          </button>
+        </div>
+        
+        <div className="text-gray-600 text-sm">
+          {callId && `Call ID: ${callId}`}
+        </div>
       </div>
     </div>
   );

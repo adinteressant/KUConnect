@@ -18,8 +18,6 @@ export const getReceiverSocketId = (receiverId)=>{
   return socketMap[receiverId]
 }
 
-
-
 //listen to connect and disconnect events
 socketIo.on('connection',(socket)=>{
   console.log('user connected',socket.id)
