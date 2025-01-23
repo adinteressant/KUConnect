@@ -38,8 +38,8 @@ export default function VerifyOtp(){
   }
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center">
-      <div className="w-full max-w-md p-8 rounded-lg shadow-md">
+    <div className="min-h-screen w-full flex dark:bg-slate-900 items-center justify-center">
+      <div className="w-full max-w-md p-8 rounded-lg dark:bg-slate-800 shadow-md">
         <h1 className="text-4xl font-serif mb-8 text-center dark:text-gray-200 text-gray-800">Verify OTP</h1>
         <p className="text-center dark:text-gray-300 text-gray-600 mb-6">
           Enter the OTP sent to {queryParams.get('email')}
@@ -51,7 +51,7 @@ export default function VerifyOtp(){
               placeholder="Enter 4-digit OTP"
               value={otp}
               onChange={(e) => setOtp(e.target.value)}
-              className="w-full px-4 py-3 rounded-md text-base transition-colors bg-gray-100 focus:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full px-4 py-3 rounded-md text-base border dark:bg-slate-900 dark:text-gray-200 dark:border-slate-800 transition-colors bg-gray-100 focus:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-cyan-500"
               required
               maxLength="4"
               pattern="\d{4}"
