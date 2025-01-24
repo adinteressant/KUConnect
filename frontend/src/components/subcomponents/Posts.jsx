@@ -529,17 +529,7 @@ function Posts(props) {
           ))}
         </div>
       );
-    };
-
-    
-    const extractYouTubeUrl = (content) =>{
-        const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/;
-        const match = content.match(youtubeRegex);
-        return match ? match[0] : null;
-    };
-
-    
-    
+    };    
 
     return(
 
