@@ -6,7 +6,7 @@ export const app = express()
 export const server = http.createServer(app)
 export const socketIo = new Server(server,{
   cors:{
-    origin:'http://localhost:5173',
+    origin:'https://localhost:5173',
     methods:['GET','POST','PATCH','PUT','DELETE']
   }
 })

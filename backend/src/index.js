@@ -25,7 +25,7 @@ app.use("/public",express.static("../public/"))
 
 app.use(
   cors({
-    origin: 'http://localhost:5173', // Frontend URL
+    origin: 'https://localhost:5173', // Frontend URL
     methods: ['GET', 'POST', 'PUT','PATCH', 'DELETE'],
     credentials: true, // Allow cookies to be sent with requests
   })
