@@ -22,9 +22,9 @@ export default function PostCreateSection({ parent ,user, setUser, setPosts, set
   const [showTagDropdown, setShowTagDropdown] = useState(false)
   const predefinedTags = ['KUSOE', 'KUSOS', 'KUSOL', 'KUSOA', 'Research']
 
-  const [createPostLoadingState, setCreatePostLoadingState] = useState(false)
-  const [updatePostLoadingState, setUpdatePostLoadingState] = useState(false)
-  const { searchTrait, setSearchTrait } = useOutletContext()
+
+
+  
 
 
   const handleTagRemove = (indexToRemove) => {
