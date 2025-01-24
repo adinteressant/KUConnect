@@ -30,10 +30,10 @@ import { setUserInfo } from '../controllers/setUserInfo.js'
   router.get('/api/auth/google',(req,res,next)=>{
     frontendPort = req.query.port
     next()
-  },passport.authenticate('google',{failureRedirect:`http://localhost:${frontendPort}/login`}))
+  },passport.authenticate('google',{failureRedirect:`https://localhost:${frontendPort}/login`}))
   
 router.get('/api/google/callback',passport.authenticate('google',{
-  failureRedirect:`http://localhost:${frontendPort}/login`,
+  failureRedirect:`https://localhost:${frontendPort}/login`,
   failureFlash: true,
 }),
     async (req,res)=>{
@@ -41,10 +41,10 @@ router.get('/api/google/callback',passport.authenticate('google',{
 
     const privateProfile = await PrivateInfo.findOne({email:email});
     if(!privateProfile){
-      return res.redirect(`http://localhost:${frontendPort}/set-google-profile?email=${email}`)
+      return res.redirect(`https://localhost:${frontendPort}/set-google-profile?email=${email}`)
     }
 
-    return res.redirect(`http://localhost:${frontendPort}/home`);  
+    return res.redirect(`https://localhost:${frontendPort}/home`);  
   }
 )
 
