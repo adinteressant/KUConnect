@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app"
-import { getFirestore, collection, addDoc, setDoc, getDoc, doc, onSnapshot } from "firebase/firestore"
+import { getFirestore, collection, addDoc, setDoc, getDoc, doc, updateDoc,onSnapshot, deleteField} from "firebase/firestore"
 
 const firebaseConfig = {
   apiKey: "AIzaSyDEcunpMzfEC4vRfThBraiA2O7gNVJdR_o",
@@ -22,17 +22,21 @@ const servers = {
   ],
   iceCandidatePoolSize: 10,
 }
+const peerConnection = new RTCPeerConnection(servers);
 
 const createOffer = async (
+
   remoteStreamRef,
   localStream,
   remoteStream,
-) => {
-  const callCollection = collection(firestore, "calls")
-  const callDoc = await addDoc(callCollection, {}) // Firestore generates ID
 
-  const offerCandidates = collection(callDoc, "offerCandidates")
-  const answerCandidates = collection(callDoc, "answerCandidates")
+) => {
+
+  const callCollection = collection(firestore, "calls") //call collection
+  const callDoc = await addDoc(callCollection, {}) //auto generated id
+
+  const offerCandidates = collection(callDoc, "offerCandidates") // offer table 
+  const answerCandidates = collection(callDoc, "answerCandidates") // answer table
 
   const peerConnection = new RTCPeerConnection(servers)
 
@@ -67,6 +71,8 @@ const createOffer = async (
     })
   }
 
+
+  // Handling when the callDoc has any data, ie, an offer
   onSnapshot(callDoc, (snapshot) => {
     const data = snapshot.data()
     if (!peerConnection.currentRemoteDescription && data?.answer) {
@@ -74,7 +80,7 @@ const createOffer = async (
       peerConnection.setRemoteDescription(answerDescription)
     }
   })
-
+  //Handling when there's an answer from the remote if there had been an offer prior
   onSnapshot(answerCandidates, (snapshot) => {
     snapshot.docChanges().forEach((change) => {
       if (change.type === "added") {
@@ -94,7 +100,6 @@ async function answerOffer(callId, remoteStreamRef, localStream) {
   const offerCandidates = collection(callDocRef, "offerCandidates");
   const answerCandidates = collection(callDocRef, "answerCandidates");
 
-  const peerConnection = new RTCPeerConnection(servers);
 
   // Setup remote stream for answerer
   const remoteStream = new MediaStream();
@@ -118,8 +123,9 @@ async function answerOffer(callId, remoteStreamRef, localStream) {
     });
   };
 
-  const callSnapshot = await getDoc(callDocRef);
-  const callData = callSnapshot.data();
+  
+  const callSnapshot = await getDoc(callDocRef); // gets the value of the offer, with the callID associated with the snapshot
+  const callData = callSnapshot.data(); // gets the value of the offer
 
   if (!callData?.sdp) {
     throw new Error("No offer found in Firestore.");
@@ -127,14 +133,17 @@ async function answerOffer(callId, remoteStreamRef, localStream) {
 
   const offerDescription = new RTCSessionDescription(callData);
   await peerConnection.setRemoteDescription(offerDescription);
+  //Remote descrition(Peer B) = offer (Peer A)
 
   const answerDescription = await peerConnection.createAnswer();
   await peerConnection.setLocalDescription(answerDescription);
+  //localDescription (Peer B) = answer(Peer B)
 
   const answer = {
     type: answerDescription.type,
     sdp: answerDescription.sdp,
   };
+
   await setDoc(callDocRef, { answer }, { merge: true });
 
   onSnapshot(offerCandidates, (snapshot) => {
@@ -145,9 +154,35 @@ async function answerOffer(callId, remoteStreamRef, localStream) {
       }
     });
   });
-
   return peerConnection;
 }
 
-export { createOffer, answerOffer }
+async function createEndCall(peer){
+
+  const callCollection = collection(firestore, "calls") //call collection
+  const callDoc = await addDoc(callCollection, {}) //auto generated id
+  const offerCandidates = collection(callDoc, "offerCandidates") // offer table 
+  const answerCandidates = collection(callDoc, "answerCandidates") // answer table
+  
+  console.log(peer)      
+  // Remove all event listeners
+  peer.ontrack = null;
+  peer.onremovetrack = null;
+  peer.onicecandidate = null;
+  peer.oniceconnectionstatechange = null;
+  peer.onsignalingstatechange = null;
+  
+  // Close the connection
+  peer.close();
+  
+  // Empty the array
+  peer = null
+
+  updateDoc(callDoc,{offerCandidates:deleteField()}) 
+  updateDoc(callDoc,{offerCandidates:deleteField()})
+  peerConnection.close()
+}
+
+
+export { createOffer, answerOffer, createEndCall}
 

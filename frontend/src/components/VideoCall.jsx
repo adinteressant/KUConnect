@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { createOffer, answerOffer } from '../utils/webRTC.js';
+import { createOffer, answerOffer, createEndCall } from '../utils/webRTC.js';
 
 export default function VideoCall() {
   const [localStream, setLocalStream] = useState(null);
   const [callId, setCallId] = useState('');
+  const [peerConnection,setPeerConnection] = useState(null);
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);
 
@@ -32,14 +33,18 @@ export default function VideoCall() {
 
   const handleCreateOffer = async () => {
     const generatedCallId = await createOffer(remoteVideoRef, localStream);
-    setCallId(generatedCallId|| '');
+    setCallId(generatedCallId||'');
   };
 
   const handleAnswerOffer = async () => {
     if (callId) {
-      await answerOffer(callId, remoteVideoRef, localStream);
+      setPeerConnection(await answerOffer(callId, remoteVideoRef, localStream));
     }
   };
+  
+  const endCall = async ()=>{
+    await createEndCall(peerConnection);
+  }
 
   return (
     <div className="p-12">
@@ -79,6 +84,12 @@ export default function VideoCall() {
         />
           
           <button
+            onClick={endCall}
+            className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
+          End Call
+          </button>
+          
+       <button
             onClick={handleAnswerOffer}
             className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
           >
