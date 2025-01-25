@@ -352,7 +352,7 @@ const Navigation = ({ setVisibility, setPadding, searchTrait, setSearchTrait, us
       <div className="w-full">
         <div className="flex items-center justify-between h-16">
           <Link to="/home" className={`text-2xl font-serif ${theme === 'light' ? 'text-gray-800' : 'text-white'}`}>
-            <img src="../public/logo/KUConnect.png" className="object-contain max-h-12 min-w-[60px] mx-4"/>
+            <img src="../public/logo/KUConnect.svg" className="object-contain max-h-12 min-w-[60px] mx-4"/>
           </Link>
 
           {/* Search */}
