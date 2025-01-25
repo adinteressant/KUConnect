@@ -1,6 +1,7 @@
 import { useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { useLocation,useSearchParams } from "react-router-dom"
+import { KUConnectSvg } from "../../public/logo/KUConnectSvg"
 
 export default function SplashScreen({ setLoad }) {
     
@@ -30,12 +31,12 @@ export default function SplashScreen({ setLoad }) {
                 }
             navigate(`${location.pathname}`)
             return
-        }, 1500)
+        }, 3000)
     } ,[])
 
     return (
-        <div className='flex flex-col justify-center items-center min-h-screen'>
-            <img className='max-h-28 object-contain' src='../public/logo/KUConnectTab.png'></img>
+        <div className='flex flex-col justify-center items-center min-h-screen max-h-screen'>
+            <KUConnectSvg/>
         </div>
     )
 }

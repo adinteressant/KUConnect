@@ -68,6 +68,7 @@ export default function Message({message}) {
                 <circle cx="5" cy="12" r="1"/>
               </svg>
             </div>
+            <MessageInfo isVisible={showMessageInfo} id={message._id}/>
           </div>
         )
       }
