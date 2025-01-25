@@ -38,7 +38,6 @@ const incrementCount = async (tags) => {
     ) 
     console.log("Incremented by 1!")
     const updatedUsers = await PrivateInfo.find({ user_id: { $in: publicUid } });
-    console.log(updatedUsers)
     return updatedUsers || [];
         }
         return [];
@@ -63,7 +62,6 @@ const decrementCount = async(tags) => {
     ); 
     console.log("Decremented by 1!");
         const updatedUsers = await PrivateInfo.find({ user_id: { $in: publicUid } });
-        console.log(updatedUsers)
         return updatedUsers || [];
   }
   return [];

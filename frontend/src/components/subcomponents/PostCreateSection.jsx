@@ -145,7 +145,6 @@ export default function PostCreateSection({ parent ,user, setUser, setPosts, set
             p._id === data.updatedPost._id ? data.updatedPost : p
           )
         )
-        console.log(data.updatedUsers)
         const incrementedUsers = data.updatedUsers.incremented
         let loggedInUser = incrementedUsers.find(
           (updatedUser) => updatedUser.user_id === user.user_id
