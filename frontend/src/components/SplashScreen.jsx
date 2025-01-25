@@ -23,6 +23,11 @@ export default function SplashScreen({ setLoad }) {
                 navigate(`${location.pathname}?email=${email}`)
                 return
             }
+            if(isAuthenticated && 
+                (location.pathname==='/login' ||location.pathname==='/register')){
+                    navigate('/home')
+                    return
+                }
             navigate(`${location.pathname}`)
             return
         }, 1500)
