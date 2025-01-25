@@ -320,7 +320,7 @@ export const deletePost = async(req, res) => {
   try
   {
     const { post } = req.body
-    decrementCount(post.tags);
+    const updatedUsers = await decrementCount(post.tags);
 
     const [deletedPost] = await Promise.all([
       Post.findByIdAndDelete(post._id),
@@ -341,7 +341,7 @@ export const deletePost = async(req, res) => {
     //  fs.rmdirSync(folderPath, { recursive: true })
     //}
 
-    return res.status(200).json({ message: 'Post deleted successfully' , deletedPost })
+    return res.status(200).json({ message: 'Post deleted successfully' , deletedPost, updatedUsers })
   }
   catch(error)
   {
