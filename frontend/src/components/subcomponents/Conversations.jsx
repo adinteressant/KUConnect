@@ -12,8 +12,9 @@ import { sortArray } from '../../utils/sortArray'
 export default function Conversations({ conversations, loading }) {
   const { selectedConversation, setSelectedConversation } = useConversation()
   const {onlineUsers} = useSocketContext()
-  const [searchParams] = useSearchParams()
+  const [searchParams,setSearchParams] = useSearchParams()
   const [userQueryId,setUserQueryId] = useState(searchParams.get('userId') || '')
+  // const newSearchParams = new URLSearchParams(searchParams)
   useGetUnreadMessage()
   let authUser
   if(localStorage.getItem('authUser') && localStorage.getItem('authUser') != 'undefined' )
@@ -24,7 +25,10 @@ export default function Conversations({ conversations, loading }) {
 
   useEffect(()=>{
     conversations.forEach(conversation=>{
-      if(conversation.user_id == userQueryId){
+      if(!userQueryId){
+        setSelectedConversation(null)
+      }
+      else if(conversation.user_id == userQueryId){
         console.log('inside useEffect'+Math.random().toFixed(2))
         setSelectedConversation(conversation)
         return
@@ -108,6 +112,8 @@ export default function Conversations({ conversations, loading }) {
               }
             onClick={() => {
               setSelectedConversation(conversation)
+              searchParams.set('userId',conversation.user_id)
+              setSearchParams(searchParams)
               changeMessageStatus(conversation.user_id)
               if(conversation.count) setNewMessages([])
             }}
