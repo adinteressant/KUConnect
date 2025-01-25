@@ -27,6 +27,7 @@ export default function Conversations({ conversations, loading }) {
     conversations.forEach(conversation=>{
       if(!userQueryId){
         setSelectedConversation(null)
+        return
       }
       else if(conversation.user_id == userQueryId){
         console.log('inside useEffect'+Math.random().toFixed(2))
