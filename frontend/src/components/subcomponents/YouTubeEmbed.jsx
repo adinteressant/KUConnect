@@ -27,7 +27,7 @@ const YouTubeEmbed = ({videoUrl}) => {
     if (!videoId) return null;
 
     return (
-        <div className = "youtube-embed">
+        <>
             <iframe
                 width = "640"
                 height = "400"
@@ -37,7 +37,7 @@ const YouTubeEmbed = ({videoUrl}) => {
                 allowFullScreen
                 style = {{marginBottom: '-50px'}}
             />
-        </div>
+        </>
     )
 }
 
