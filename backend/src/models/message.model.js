@@ -20,8 +20,13 @@ const messageSchema = new mongoose.Schema({
   read:{
     type:Boolean,
     default:false
+  },
+  replyOf:{
+    type:mongoose.Schema.Types.ObjectId,
+    ref:'Message',
+    default:null
   }
-},{timestamps:true}) //timestamps:true will record the time when the message was saved
+},{timestamps:true}) //timestamps:true will record the time when the message is saved
 
 const Message = mongoose.model('Message',messageSchema)
 

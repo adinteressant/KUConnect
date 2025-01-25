@@ -3,7 +3,8 @@ import MessageInfo from './MessageInfo'
 
 import { getHours,getMinutes } from '../../utils/timeConversion'
 import { useState } from 'react'
-import { MoreHorizontal } from 'lucide-react'
+import { Reply } from 'lucide-react'
+import useReply from '../../zustand/useReply'
 
 export default function Message({message}) {
   //logged in user
@@ -17,6 +18,7 @@ export default function Message({message}) {
   const positionClass = fromMe ? 'items-end justify-end' : 'items-start justify-start'
   const colorClass = fromMe ? `${!timeDisplay?`bg-cyan-500`:`bg-cyan-600`} text-white`:`${!timeDisplay?`bg-gray-200 dark:bg-slate-500 dark:text-slate-200`:`bg-gray-300`} text-gray-900`
   
+  const{setReplyOf,setReply} = useReply()
 
   const displayTime = () => {
     setTimeDisplay(timeDisplay => !timeDisplay)
@@ -43,7 +45,7 @@ export default function Message({message}) {
         (
           <div className="flex flex-col items-end relative"
           onMouseLeave={removeMessageInfo}>
-            <MessageInfo isVisible={showMessageInfo} id={message._id}/>
+            <MessageInfo isVisible={showMessageInfo} msg={message}/>
             <div className={`p-1 hidden affected-class group-hover:block cursor-pointer
               hover:bg-gray-200 dark:hover:bg-gray-700 rounded-full`}
               onClick={displayMessageInfo}  
@@ -71,6 +73,13 @@ export default function Message({message}) {
           {getHours(message.createdAt)} : {getMinutes(message.createdAt)}
         </div>
       </div>
+      {!fromMe&&
+        (<div className="p-1 hidden group-hover:block cursor-pointer
+              hover:bg-gray-200 dark:hover:bg-gray-700 rounded-full"
+              onClick={()=>{setReply(true);setReplyOf(message)}}>
+          <Reply className="dark:text-slate-200 text-gray-600"/>
+        </div>)
+      }
 
     </div>
   )

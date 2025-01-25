@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import useConversation from '../../zustand/useConversation'
 
-const useSendMessage = () => {
+const useSendMessage = (replyOf) => {
   const [loading,setLoading] = useState(false)
   const {messages,setMessages,selectedConversation} = useConversation()
-
+  
   const sendMessage = async (message) => {
     setLoading(true)
     try {
@@ -14,7 +14,7 @@ const useSendMessage = () => {
           headers:{
             'Content-Type':'application/json'
           },
-          body:JSON.stringify({message})
+          body:JSON.stringify({message,replyOf})
         }
       )
       const data = await response.json()
@@ -23,6 +23,7 @@ const useSendMessage = () => {
       console.log(error)
     }finally{
       setLoading(false)
+
     }
   }
   return {loading,sendMessage}
