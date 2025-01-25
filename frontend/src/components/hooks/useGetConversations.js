@@ -27,3 +27,35 @@ export const useGetConversations = () => {
 
   return {loading,conversations}
 }
+
+export const useGetConversationsWithDate = () => {
+  const [conversations,setConversations] = useState([])
+  useEffect(()=>{
+    const getConversations = async () => {
+      try{
+        const res = await fetch(`/api/conversations`)
+        const data = await res.json()
+        if(data.error){
+          throw new Error(data.error)
+        }
+        
+        const updatedConversations = data.map(conversation=>{
+          const givenId = conversation._id
+          const givenParticipants = conversation.participants
+          const givenDate = new Date(conversation.updatedAt)
+  
+          const epoch = new Date("2000-01-01T00:00:00.000+00:00")
+          const latestMessageDate = Math.floor((givenDate - epoch) / 1000)
+  
+          return {givenId,givenParticipants,latestMessageDate}
+        })
+        setConversations(updatedConversations)
+
+      }catch(e){
+        console.log(e)
+      }
+    }
+    getConversations()
+  },[])
+  return conversations
+}
