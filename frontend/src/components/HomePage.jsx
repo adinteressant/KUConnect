@@ -73,7 +73,7 @@ const HomePage = () => {
   }, [])
 
   return (
-    <div className="flex-1 flex flex-col dark:bg-slate-900 bg-gray-200 overflow-y-auto">
+    <div className="flex-1 flex flex-col dark:bg-slate-900 bg-gray-200 overflow-y-auto scrollbar dark:scrollbar-dark">
       {/* Displaying user profile */}
       {(user || googleUser) && showWelcomeModal && ( 
             <WelcomeModal
