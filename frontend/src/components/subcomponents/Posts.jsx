@@ -505,7 +505,7 @@ function Posts(props) {
       if (!tags || tags.length === 0) return null;
     
       return (
-        <div className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+        <div className="mt-1 text-sm text-gray-600 dark:text-gray-400">
           Tags: 
           {tags.map((tag, index) => (
             <button
@@ -614,8 +614,13 @@ function Posts(props) {
                   ))}
 
                 </p>
-                {post.tags && post.tags.length > 0 && renderTags(post.tags)}
-
+                {post.tags && post.tags.length > 0 && 
+                
+                (<div className='mb-0.5'>
+                      {renderTags(post.tags)}
+                  </div>
+                  )
+                }
                   {/* Display Images */}
                   {post.images === null ||
                     (postImages.some(i => i._id === post.images)?
