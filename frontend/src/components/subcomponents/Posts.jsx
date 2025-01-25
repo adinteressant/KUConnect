@@ -572,7 +572,7 @@ function Posts(props) {
                       </div>
                     </div>
                   </div>
-                  <p className="mt-2 dark:text-slate-200 text-gray-800"> 
+                  <div className="mt-2 dark:text-slate-200 text-gray-800"> 
 
                   {post.content.split('\n').map((line, lineIndex) => (
                     <span key={lineIndex}>
@@ -613,7 +613,7 @@ function Posts(props) {
                     </span>
                   ))}
 
-                </p>
+                </div>
                 {post.tags && post.tags.length > 0 && 
                 
                 (<div className='mb-0.5'>
