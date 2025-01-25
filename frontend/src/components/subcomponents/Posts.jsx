@@ -387,13 +387,18 @@ function Posts(props) {
               p._id !== deletedPost.deletedPost._id
             )
           )
-          console.log(deletedPost+ "Unread Count!:"+userProfile.unread_count)
-          deletedPost.deletedPost.tags.forEach(e => {
-            if (userProfile.tags.includes(e) && userProfile.unread_count>0){
-              userProfile.unread_count--
-              return
-            } 
-          })
+          console.log(`${deletedPost}+ Unread Count!:+${userProfile.unread_count}`)
+          const loggedInUser = deletedPost.updatedUsers.find(
+          (updatedUser) => updatedUser.user_id === userProfile.user_id
+          );
+          if (loggedInUser) {
+            if(loggedInUser.unread_count > 0){
+            setUserProfile(loggedInUser.unread_count--)
+            }
+            else{
+              setUserProfile(loggedInUser.unread_count = 0 );
+            }
+            }
         }
         else
         {
@@ -505,7 +510,7 @@ function Posts(props) {
       if (!tags || tags.length === 0) return null;
     
       return (
-        <div className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+        <div className="mt-1 text-sm text-gray-600 dark:text-gray-400">
           Tags: 
           {tags.map((tag, index) => (
             <button
@@ -578,7 +583,7 @@ function Posts(props) {
                       </div>
                     </div>
                   </div>
-                  <p className="mt-2 dark:text-slate-200 text-gray-800"> 
+                  <div className="mt-2 dark:text-slate-200 text-gray-800"> 
 
                   {post.content.split('\n').map((line, lineIndex) => (
                     <span key={lineIndex}>
@@ -619,9 +624,14 @@ function Posts(props) {
                     </span>
                   ))}
 
-                </p>
-                {post.tags && post.tags.length > 0 && renderTags(post.tags)}
-
+                </div>
+                {post.tags && post.tags.length > 0 && 
+                
+                (<div className='mb-0.5'>
+                      {renderTags(post.tags)}
+                  </div>
+                  )
+                }
                   {/* Display Images */}
                   {post.images === null ||
                     (postImages.some(i => i._id === post.images)?
@@ -1139,6 +1149,7 @@ function Posts(props) {
                 <PostCreateSection
                   parent={'edit'}
                   user={userProfile}
+                  setUser={setUserProfile}
                   post={showEditOverlay}
                   setPosts={props.setPosts}
                   setPostImages={setPostImages}

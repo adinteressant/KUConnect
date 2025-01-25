@@ -96,7 +96,12 @@ export default function PostCreateSection({ parent ,user, setUser, setPosts, set
           setImages([])
           setEncodedImages([])
           setPosts(prev => [data.post, ...prev])
-          setUser(user.unread_count++)
+          const loggedInUser = data.updatedUsers.find(
+            (updatedUser) => updatedUser.user_id === user.user_id
+          );
+          if (loggedInUser) {
+            setUser(loggedInUser.unread_count++);
+          }
           setCreatePostLoadingState(() => false)
           //location.reload()
         }
@@ -140,6 +145,25 @@ export default function PostCreateSection({ parent ,user, setUser, setPosts, set
             p._id === data.updatedPost._id ? data.updatedPost : p
           )
         )
+        const incrementedUsers = data.updatedUsers.incremented
+        let loggedInUser = incrementedUsers.find(
+          (updatedUser) => updatedUser.user_id === user.user_id
+        );
+        if (loggedInUser) {
+          setUser(loggedInUser.unread_count++);
+        }
+        const decrementedUsers = data.updatedUsers.decremented
+        loggedInUser = decrementedUsers.find(
+          (updatedUser) => updatedUser.user_id === user.user_id
+          );
+          if (loggedInUser) {
+            if(loggedInUser.unread_count > 0){
+            setUser(loggedInUser.unread_count--)
+            }
+            else{
+              setUser(loggedInUser.unread_count = 0 );
+            }
+            }
         setPostImages((prev) => {
           const removed = prev.filter(i =>
             i._id !== post.images
