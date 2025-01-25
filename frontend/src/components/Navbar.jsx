@@ -110,12 +110,12 @@ const SearchBar = React.memo(({ searchTrait, setSearchTrait, onSearch }) => {
   }, [searchTrait, showDropdown]);
 
   return (
-    <div className="w-full max-w-md">
+    <div className="w-full ml-4 max-w-[600px]">
       <div className="relative card-wrapper">
         <div className='animate-slide opacity-0 mt-2 text-center text-gray-400 text-xl absolute'>Welcome Aboard!</div> 
         <Search className="absolute left-3 animate-fade top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-100 h-5 w-5" />
         <form onSubmit={onSearch}>   
-          <div className="animate-fade w-full dark:text-white placeholder:text-gray-400 border border-gray-200 dark:border-slate-700 dark:bg-slate-900 card-content pl-10 pr-4 py-2 rounded-full bg-gray-100 focus-within:ring-2 focus-within:ring-cyan-500 focus-within:bg-white transition-all duration-700 flex items-center gap-2 ">
+          <div className="animate-fade w-full  dark:text-white placeholder:text-gray-400 border border-gray-200 dark:border-slate-700 dark:bg-slate-900 card-content pl-10 pr-4 py-2 rounded-full bg-gray-100 focus-within:ring-2 focus-within:ring-cyan-500 focus-within:bg-white transition-all duration-700 flex items-center gap-2 ">
             {searchTrait.startsWith('@user:') && (
               <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-sm whitespace-nowrap">
                 @user:
@@ -350,32 +350,38 @@ const Navigation = ({ setVisibility, setPadding, searchTrait, setSearchTrait, us
   return (
     <div className="w-full border-b dark:border-b-slate-800 fixed z-20 dark:bg-slate-800 bg-white dark:text-gray-100 top-0">
       <div className="w-full">
-        <div className="flex items-center justify-between h-16">
-          <Link to="/home" className={`text-2xl font-serif ${theme === 'light' ? 'text-gray-800' : 'text-white'}`}>
-            <img src="../public/logo/KUConnect.png" className="object-contain max-h-12 min-w-[60px] mx-4"/>
-          </Link>
+        <div className="flex items-center h-16">
+          <div className="w-56">
+            <Link to="/home" className={`text-2xl font-serif ${theme === 'light' ? 'text-gray-800' : 'text-white'}`}>
+              <img src="../public/logo/KUConnect.png" className="object-contain max-h-12 min-w-[60px] mx-4"/>
+            </Link>
+          </div>
 
           {/* Search */}
-          <SearchBar
-            searchTrait={searchTrait}
-            setSearchTrait={setSearchTrait}
-            onSearch={handleSearch}
-          />
+          <div className="flex-1 flex ml-4 justify-center">
+            <SearchBar
+              searchTrait={searchTrait}
+              setSearchTrait={setSearchTrait}
+              onSearch={handleSearch}
+            />
+          </div>
 
-          {/* Theme Toggle */}
-          <SliderToggle
-            selected={selected}
-            setSelected={setSelected}
-            toggleTheme={toggleTheme}
-            isLoading={isLoading}
-          />
+          <div className="w-56 flex items-center justify-end gap-6 mr-4">
+            {/* Theme Toggle */}
+            <SliderToggle
+              selected={selected}
+              setSelected={setSelected}
+              toggleTheme={toggleTheme}
+              isLoading={isLoading}
+            />
 
-          {/* User Menu */}
-          <UserDropdown
-            isAuthenticated={isAuthenticated}
-            userProfile={userProfile}
-            onLogout={handleLogout}
-          />
+            {/* User Menu */}
+            <UserDropdown
+              isAuthenticated={isAuthenticated}
+              userProfile={userProfile}
+              onLogout={handleLogout}
+            />
+          </div>
         </div>
       </div>
     </div>
