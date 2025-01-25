@@ -1,10 +1,12 @@
 import { Router } from 'express'
-import { changeStatus, deleteMessageController, getStatus, sendMessageController } from '../controllers/messageController.js'
+import { changeStatus, deleteMessageController, getConversations, getStatus, sendMessageController } from '../controllers/messageController.js'
 import { messageMiddleware } from '../middlewares/messageMiddleware.js'
 import authenticateJWT from '../middlewares/authenticateJWT.js'
 import { getMessageController } from '../controllers/messageController.js'
 
 const router = Router()
+
+router.get('/api/conversations',getConversations)
 
 router.post('/api/message/send/:receiverId',authenticateJWT,messageMiddleware,sendMessageController)
 
