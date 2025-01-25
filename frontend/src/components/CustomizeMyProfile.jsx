@@ -109,7 +109,7 @@ const CustomizeMyProfile = () => {
   };
 
   return (
-    <div className="flex items-center justify-center max-h-screen dark:bg-slate-900  bg-gray-100 p-4 overflow-y-auto">
+    <div className="flex items-center justify-center max-h-screen dark:bg-slate-900  bg-gray-100 p-4 overflow-y-auto scrollbar">
       <div className="w-full max-w-md p-6 bg-white dark:bg-slate-800 border dark:border-slate-950 rounded-lg shadow-lg">
         {/* Profile picture section */}
         <div className="relative w-32 h-32 mx-auto mb-6 md:w-40 md:h-40">

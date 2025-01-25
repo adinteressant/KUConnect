@@ -27,7 +27,7 @@ export default function MessageInfo({isVisible,msg}){
   }
   if(loading){
     return (
-      <div className={`mr-[26px] flex shadow-sm flex-col border bg-white dark:bg-slate-800 rounded-md border-gray-200 dark:border-slate-700 w-24 h-[124px]
+      <div className={`right-[100%] bottom-0 flex shadow-sm flex-col border bg-white dark:bg-slate-800 rounded-md border-gray-200 dark:border-slate-700 w-24 h-[124px]
         justify-center items-center z-50
         ${isVisible?`absolute`:`hidden`}
       `}>
@@ -35,8 +35,8 @@ export default function MessageInfo({isVisible,msg}){
         </div>
     )
   }
-  return <div className={`mr-[100%] bottom-0 flex shadow-sm flex-col border bg-white dark:bg-slate-800 rounded-md border-gray-200 dark:border-slate-700 w-24
-    ${isVisible?`absolute z-20`:`hidden`}
+  return <div className={`right-[100%] bottom-0 flex shadow-sm flex-col border bg-white dark:bg-slate-800 rounded-md border-gray-200 dark:border-slate-700 w-24
+    ${isVisible?`absolute z-50`:`hidden`}
   `}>
     <div className="p-2 hover:bg-gray-200 dark:hover:bg-slate-900 cursor-pointer      hover:rounded-t-md border-b border-gray-200 dark:border-slate-700"
     onClick={()=>{setReply(true);setReplyOf(msg)}}>

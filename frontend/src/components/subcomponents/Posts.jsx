@@ -799,7 +799,7 @@ function Posts(props) {
                   </div>
 
                   {/* comment button thichda dekhauney */}
-                  <div className={`border-t dark:border-slate-700 border-gray-200 transition-all duration-500 overflow-y-auto ease-in-out ${showCommentBox.find(obj => obj.postId===post._id).value? 'opacity-100 max-h-screen mt-2' : 'opacity-0 max-h-0 mt-0'}`}>
+                  <div className={`border-t dark:border-slate-700 border-gray-200 transition-all duration-500 overflow-y-auto scrollbar ease-in-out ${showCommentBox.find(obj => obj.postId===post._id).value? 'opacity-100 max-h-screen mt-2' : 'opacity-0 max-h-0 mt-0'}`}>
                     {/* <hr className='absolute left-0 right-0'/> */}
 
                     {/* Bhakhar gareko comment bhayo hai bhanera display garna ko lagi (ani overall comments chai paxi xuttai overlay maa dekhauney) */}

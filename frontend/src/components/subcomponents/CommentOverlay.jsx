@@ -68,7 +68,7 @@ function ShowComments(props) {
                     Faculty({faculty})
                     </button>
                 </div>
-                <div className='p-4 overflow-y-auto flex flex-col gap-4 w-[100%] h-[100%]'>
+                <div className='p-4 overflow-y-auto scrollbar flex flex-col gap-4 w-[100%] h-[100%]'>
                     {comments.map((comment, index) => {
                     if(comment.role === 'student')
                         {

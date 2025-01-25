@@ -300,7 +300,7 @@ export default function PostCreateSection({ parent ,user, setUser, setPosts, set
                 onBlur={handleTagInputBlur}
               />
 
-              <div className={`absolute top-full mt-1 w-full bg-gray-100 dark:bg-slate-900 rounded-lg shadow-lg z-10 transition-all duration-300 ${showTagDropdown?'max-h-60 overflow-y-auto':'max-h-0 overflow-hidden'}`}>
+              <div className={`absolute top-full mt-1 w-full bg-gray-100 dark:bg-slate-900 rounded-lg shadow-lg z-10 transition-all duration-300 ${showTagDropdown?'max-h-60 overflow-y-auto scrollbar':'max-h-0 overflow-hidden'}`}>
                 {tags
                   .filter(tag => (!tagList.includes(tag) && tag.toUpperCase().includes(tagValue.toUpperCase())))
                   .map((tag, index) => (

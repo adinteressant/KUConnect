@@ -66,7 +66,7 @@ function ShowLikes(props) {
                     Faculty({faculty})
                     </button>
                 </div>
-                <div className='p-2 overflow-y-auto flex flex-col gap-2 w-[100%] h-[100%]'>
+                <div className='p-2 overflow-y-auto scrollbar flex flex-col gap-2 w-[100%] h-[100%]'>
                     {likes.map((like, index) => {
                         if(like.role === 'student')
                         {

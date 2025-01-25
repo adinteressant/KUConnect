@@ -258,7 +258,7 @@ export default function ProfilePage() {
 
   if(!status || postLoadingState){
     return (
-      <div className='p-4 overflow-y-auto'>
+      <div className='p-4 overflow-y-auto scrollbar'>
         <ProfileSkeleton />
         <PostSkeleton />
       </div>
@@ -266,7 +266,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className={`flex-1 dark:bg-slate-900 dark:text-gray-200 bg-gray-100 text-gray-800 p-6 overflow-y-auto `} ref={scrollContainerRef}>
+    <div className={`flex-1 dark:bg-slate-900 dark:text-gray-200 bg-gray-100 text-gray-800 p-6 overflow-y-auto scrollbar`} ref={scrollContainerRef}>
       <div className="max-w-2xl mx-auto border dark:border-slate-700 bg-white dark:bg-slate-800 space-y-4 p-8 rounded-lg shadow-md mb-4">
         {/* Profile picture with hover effect */}
         <div

@@ -26,7 +26,7 @@ export default function MessageSidebar() {
 
   return (
     <div className="dark:bg-slate-800 bg-white w-[264px]">
-      <div className="p-4 fixed overflow-y-auto">
+      <div className="p-4 fixed overflow-y-auto scrollbar">
         {/* Search Section */}
         <div className="relative">
           <input
