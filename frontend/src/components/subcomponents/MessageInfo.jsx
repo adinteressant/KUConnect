@@ -2,7 +2,7 @@ import { useState } from 'react'
 import useConversation from '../../zustand/useConversation'
 import { Loader2 } from 'lucide-react'
 
-export default function MessageInfo({isVisible,id,isBottomMessage}){
+export default function MessageInfo({isVisible,id}){
   const [loading,setLoading] = useState(false)
   const {selectedConversation,setMessages} = useConversation()  
   const handleDelete = async () => {

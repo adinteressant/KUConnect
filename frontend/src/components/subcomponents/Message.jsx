@@ -2,7 +2,7 @@ import useConversation from '../../zustand/useConversation'
 import MessageInfo from './MessageInfo'
 
 import { getHours,getMinutes } from '../../utils/timeConversion'
-import { useState, useEffect, useRef } from 'react'
+import { useState } from 'react'
 import { MoreHorizontal } from 'lucide-react'
 
 export default function Message({message}) {
@@ -10,24 +10,12 @@ export default function Message({message}) {
 
   const [timeDisplay,setTimeDisplay] = useState(false)
   const [showMessageInfo,setShowMessageInfo] = useState(false)
-  const [isBottomMessage, setIsBottomMessage] = useState(false)
-  const messageRef = useRef(null)
-
-  useEffect(() => {
-    if (messageRef.current) {
-      const rect = messageRef.current.getBoundingClientRect()
-      const container = messageRef.current.closest('.overflow-y-auto')
-      const containerRect = container.getBoundingClientRect()
-      const distanceFromBottom = containerRect.bottom - rect.bottom
-      setIsBottomMessage(distanceFromBottom < 100) // If message is within 100px of bottom
-    }
-  }, [showMessageInfo])
 
   const authUserId = JSON.parse(localStorage.getItem('authUser'))
   const {selectedConversation} = useConversation()
   const fromMe = message.senderId == authUserId
   const positionClass = fromMe ? 'items-end justify-end' : 'items-start justify-start'
-  const colorClass = fromMe ? `${!timeDisplay?`bg-cyan-500`:`bg-cyan-600`} text-white`:`${!timeDisplay?`bg-gray-200 dark:bg-slate-600 dark:text-slate-200`:`dark:bg-slate-500 dark:text-slate-200 bg-gray-300`} text-gray-900`
+  const colorClass = fromMe ? `${!timeDisplay?`bg-cyan-500`:`bg-cyan-600`} text-white`:`${!timeDisplay?`bg-gray-200 dark:bg-slate-500 dark:text-slate-200`:`bg-gray-300`} text-gray-900`
   
 
   const displayTime = () => {
@@ -54,9 +42,7 @@ export default function Message({message}) {
         fromMe &&
         (
           <div className="flex flex-col items-end relative"
-          ref={messageRef}
           onMouseLeave={removeMessageInfo}>
-            <MessageInfo isVisible={showMessageInfo} id={message._id} isBottomMessage={isBottomMessage}/>
             <div className={`p-1 hidden affected-class group-hover:block cursor-pointer
               hover:bg-gray-200 dark:hover:bg-gray-700 rounded-full`}
               onClick={displayMessageInfo}  
