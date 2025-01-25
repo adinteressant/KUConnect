@@ -6,6 +6,8 @@ import useGetFriends from '../hooks/useGetFriends'
 import { useSocketContext } from '../context/socketContext'
 import { useSearchParams } from 'react-router-dom'
 import ConversationsSkeleton from './ConversationsSkeleton'
+import { useGetConversationsWithDate } from '../hooks/useGetConversations'
+import { sortArray } from '../../utils/sortArray'
 
 export default function Conversations({ conversations, loading }) {
   const { selectedConversation, setSelectedConversation } = useConversation()
@@ -13,7 +15,11 @@ export default function Conversations({ conversations, loading }) {
   const [searchParams] = useSearchParams()
   const [userQueryId,setUserQueryId] = useState(searchParams.get('userId') || '')
   useGetUnreadMessage()
-  const userProfiles = useGetFriends(JSON.parse(localStorage.getItem('authUser')))
+  let authUser
+  if(localStorage.getItem('authUser') && localStorage.getItem('authUser') != 'undefined' )
+  authUser = JSON.parse(localStorage.getItem('authUser')) 
+  const conversationsWithDate = useGetConversationsWithDate()
+  const userProfiles = useGetFriends(authUser)
   const {newMessages,setNewMessages} = useNewMessages()
 
   useEffect(()=>{
@@ -28,6 +34,7 @@ export default function Conversations({ conversations, loading }) {
 
 
   // Memoize the count calculation for better performance
+  let sortedEnhancedConversations
     const enhancedConversations = useMemo(() => {
       return conversations.map((conversation) => {
         let pfp_id
@@ -37,16 +44,34 @@ export default function Conversations({ conversations, loading }) {
             return
           }
         })
+        
+        let latestMessageDate = 0
+        conversationsWithDate.forEach(conversationWithDate => {
+          if((conversation.user_id == conversationWithDate.givenParticipants[0]
+            &&authUser == conversationWithDate.givenParticipants[1])
+            ||
+            (conversation.user_id == conversationWithDate.givenParticipants[1]
+              &&authUser == conversationWithDate.givenParticipants[0])
+          ){
+            if(conversationWithDate.latestMessageDate){
+              latestMessageDate = conversationWithDate.latestMessageDate
+            }
+            return
+          }
+        })
+
         let count = newMessages.filter(
           (unreadMessage) => unreadMessage.senderId === conversation.user_id
         ).length;
   
         if (selectedConversation?.user_id === conversation.user_id) count = 0
   
-        return { ...conversation, count,pfp_id }
+        return { ...conversation, count,pfp_id,latestMessageDate }
       })
     }, [conversations, newMessages, selectedConversation])
-  
+
+    sortArray(enhancedConversations)
+
     const changeMessageStatus = (id) => {
       fetch(`/api/change-message-status/${id}`, {
         method: 'PATCH',
@@ -69,7 +94,8 @@ export default function Conversations({ conversations, loading }) {
         <ConversationsSkeleton/>
       ) : (
         enhancedConversations.map((conversation, index) =>
-          (
+          {
+            return(
           <div
             key={index}
             className={`hover:bg-gray-200 dark:hover:bg-gray-700 mb-2 dark:text-slate-100 cursor-pointer hover:rounded-md flex justify-between
@@ -111,7 +137,7 @@ export default function Conversations({ conversations, loading }) {
               </div>
             </div>
           </div>
-        ))
+        )})
       )}
     </div>
   )

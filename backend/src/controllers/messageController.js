@@ -2,6 +2,12 @@ import Conversation from '../models/conversation.model.js'
 import Message from '../models/message.model.js'
 import { getReceiverSocketId, socketIo } from '../utils/socket/socket.js'
 
+
+export const getConversations = async (req,res) => {
+  const conversations = await Conversation.find().select('participants updatedAt')
+  res.send(conversations)
+}
+
 export const sendMessageController = async (req,res) => {
   try{
     const { senderId } = req
