@@ -1,5 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef} from 'react';
+import { useSearchParams} from 'react-router-dom';
 import { createOffer, answerOffer, createEndCall } from '../utils/webRTC.js';
+import { useSocketContext } from './context/socketContext.jsx';
 
 export default function VideoCall() {
   const [localStream, setLocalStream] = useState(null);
@@ -7,6 +9,23 @@ export default function VideoCall() {
   const [peerConnection,setPeerConnection] = useState(null);
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);
+  const [queries]= useSearchParams();
+  const isFirstRender = useRef(0);
+  const socket = useSocketContext();
+
+  useEffect(()=>{
+    if(isFirstRender.current == 0 && localStream != null){   
+    async function generateCallIdOnLoad(){
+      if(!!(queries.get('start_call'))){
+        await handleCreateOffer();
+      }
+    }
+    generateCallIdOnLoad();
+    }
+    //return ()=>{
+    //  isFirstRender.current=1
+    //};
+  },[localStream])
 
   useEffect(() => {
     const setupMedia = async () => {
@@ -19,10 +38,7 @@ export default function VideoCall() {
     };
 
     setupMedia();
-
-    return () => {
-      localStream?.getTracks().forEach(track => track.stop());
-    };
+return () => { localStream?.getTracks().forEach(track => track.stop()); };
   }, []);
 
   useEffect(() => {
@@ -32,7 +48,7 @@ export default function VideoCall() {
   }, [localStream]);
 
   const handleCreateOffer = async () => {
-    const generatedCallId = await createOffer(remoteVideoRef, localStream);
+    const generatedCallId = await createOffer(remoteVideoRef, localStream,socket);
     setCallId(generatedCallId||'');
   };
 
@@ -45,6 +61,10 @@ export default function VideoCall() {
   const endCall = async ()=>{
     await createEndCall(peerConnection);
   }
+
+socket?.on('call_incoming',(callId)=>{
+  console.log('work?')
+})
 
   return (
     <div className="p-12">
@@ -97,7 +117,7 @@ export default function VideoCall() {
           </button>
         </div>
         
-        <div className="text-gray-600 text-sm">
+        <div className="text-gray-600 text-sm" >
           {callId && `Call ID: ${callId}`}
         </div>
       </div>

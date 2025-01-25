@@ -22,16 +22,16 @@ const servers = {
   ],
   iceCandidatePoolSize: 10,
 }
-const peerConnection = new RTCPeerConnection(servers);
 
 const createOffer = async (
 
   remoteStreamRef,
   localStream,
   remoteStream,
+  socket
 
 ) => {
-
+  
   const callCollection = collection(firestore, "calls") //call collection
   const callDoc = await addDoc(callCollection, {}) //auto generated id
 
@@ -90,11 +90,13 @@ const createOffer = async (
     })
   })
 
+  socket?.emit('call_incoming',call_id)
   return callDoc.id // Return the call ID for future use
 }
 
 async function answerOffer(callId, remoteStreamRef, localStream) {
   
+  const peerConnection = new RTCPeerConnection(servers);
   const callCollection = collection(firestore, "calls");
   const callDocRef = doc(callCollection, callId);
   const offerCandidates = collection(callDocRef, "offerCandidates");
@@ -161,8 +163,8 @@ async function createEndCall(peer){
 
   const callCollection = collection(firestore, "calls") //call collection
   const callDoc = await addDoc(callCollection, {}) //auto generated id
-  const offerCandidates = collection(callDoc, "offerCandidates") // offer table 
-  const answerCandidates = collection(callDoc, "answerCandidates") // answer table
+  //const offerCandidates = collection(callDoc, "offerCandidates") // offer table 
+  //const answerCandidates = collection(callDoc, "answerCandidates") // answer table
   
   console.log(peer)      
   // Remove all event listeners
@@ -179,8 +181,7 @@ async function createEndCall(peer){
   peer = null
 
   updateDoc(callDoc,{offerCandidates:deleteField()}) 
-  updateDoc(callDoc,{offerCandidates:deleteField()})
-  peerConnection.close()
+  updateDoc(callDoc,{answerCandidates:deleteField()})
 }
 
 
