@@ -3,22 +3,24 @@
 @tailwind utilities;
 
 /* Light mode scrollbar */
-.scrollbar {
+.scrollbar-light {
   scrollbar-width: 12px;
   scrollbar-color: #949494 #cccdce;
 }
 
-.scrollbar::-webkit-scrollbar {
+.scrollbar-light::-webkit-scrollbar {
   width: 12px;
 }
 
-.scrollbar::-webkit-scrollbar-thumb {
+.scrollbar-light::-webkit-scrollbar-thumb {
   background-color: #949494;
   border-radius: 6px;
 }
 
-.scrollbar::-webkit-scrollbar-track {
+.scrollbar-light::-webkit-scrollbar-track {
   background-color: #cccdce;
+  margin-top: 200px; 
+  padding-bottom: 90px;
 }
 
 /* Dark mode Scrollbar */
