@@ -26,14 +26,12 @@ export default function SplashScreen({ setLoad }) {
             }
             navigate(`${location.pathname}`)
             return
-        }, 1500)
+        }, 3000)
     } ,[])
 
     return (
-        <div className='flex flex-col justify-center items-center min-h-screen'>
-            <div className='min-w-32'>
-                <KUConnectSvg/>
-            </div>
+        <div className='flex flex-col justify-center items-center min-h-screen max-h-screen'>
+            <KUConnectSvg/>
         </div>
     )
 }
