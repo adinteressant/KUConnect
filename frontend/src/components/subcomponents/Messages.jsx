@@ -12,9 +12,17 @@ export default function Messages() {
       {loading ? (
         <MessagesSketeleton/>
       ) : messages.length > 0 ? (
-        messages.map((message) => (
-          <Message key={message._id} message={message} />
-        ))
+        messages.map((message) => {
+          let replyMessage
+          messages.forEach((msg)=>{
+            if(message?.replyOf==msg._id){
+              replyMessage = msg
+              return
+            }
+          })
+          return(
+          <Message key={message._id} message={message} replyMessage={replyMessage}/>
+        )})
       ) : (
         <div className="flex items-center justify-center h-full text-gray-500">
           Start a conversation

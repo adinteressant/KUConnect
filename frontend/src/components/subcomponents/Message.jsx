@@ -6,7 +6,7 @@ import { useState } from 'react'
 import { Reply } from 'lucide-react'
 import useReply from '../../zustand/useReply'
 
-export default function Message({message}) {
+export default function Message({message,replyMessage}) {
   //logged in user
 
   const [timeDisplay,setTimeDisplay] = useState(false)
@@ -61,6 +61,14 @@ export default function Message({message}) {
         )
       }
       <div className="flex flex-col items-end max-w-[60%]">
+      {replyMessage?.message && (
+        <div className="dark:bg-slate-800 p-2 rounded-md flex gap-2 pr-3">
+            <Reply/>
+            <div>
+              {replyMessage.message}
+            </div>
+          </div>
+      )}
         <div className={`${colorClass} p-3 rounded-lg cursor-pointer break-all
           ${fromMe && `hovered-class`}
         `}
