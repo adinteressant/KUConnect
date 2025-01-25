@@ -1,4 +1,4 @@
-import { React, useEffect, useState, useRef } from 'react'
+import {useEffect, useState, useRef } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import formatTimeAgo from '../../utils/generateTimeAgo.js'
 import ShowLikes from './LikeOverlay.jsx'
@@ -8,6 +8,8 @@ import { useOutletContext } from 'react-router-dom'
 import { Loader2 } from 'lucide-react'
 import PostCreateSection from './PostCreateSection.jsx'
 import { useNavigate } from 'react-router-dom'
+import YouTubeEmbed from './YouTubeEmbed.jsx'
+import React from 'react'
 import axios from 'axios'
 //Props include:
 //Posts (array) jun dekhauna parney cha
@@ -527,8 +529,7 @@ function Posts(props) {
           ))}
         </div>
       );
-    };
-    
+    };    
 
     return(
 
@@ -579,19 +580,44 @@ function Posts(props) {
                   </div>
                   <p className="mt-2 dark:text-slate-200 text-gray-800"> 
 
-                {
-                  post.content.split('\n').map((line, i)=>{
-                  return <span key={i}>
-                  {line.split(' ').map((word, i)=>{
-                  return word.match(URL_REGEX)?(
-                   <a key={i} target='_blank' className='text-blue-400' href={word}>
-                    {word}
-                   </a>):
-                    word+' '
-                  })}
-                    <br/>
-                 </span>
-                  })}
+                  {post.content.split('\n').map((line, lineIndex) => (
+                    <span key={lineIndex}>
+                      {line.split(' ').map((word, wordIndex) => {
+                        const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/;
+                        const youtubeMatch = word.match(youtubeRegex);
+                        
+                        if (word.match(URL_REGEX)) {
+                          if (youtubeMatch) {
+                            return (
+                              <React.Fragment key={wordIndex}>
+                                <a 
+                                  target='_blank' 
+                                  className='text-blue-400' 
+                                  href={word}
+                                >
+                                  {word}
+                                </a>
+                                <YouTubeEmbed videoUrl={word} />
+                              </React.Fragment>
+                            );
+                          } else {
+                            return (
+                              <a 
+                                target='_blank' 
+                                className='text-blue-400' 
+                                href={word}
+                              >
+                                {word}
+                              </a>
+                            );
+                          }
+                        } else {
+                          return word + ' ';
+                        }
+                      })}
+                      <br/>
+                    </span>
+                  ))}
 
                 </p>
                 {post.tags && post.tags.length > 0 && renderTags(post.tags)}
