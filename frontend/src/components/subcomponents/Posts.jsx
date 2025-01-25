@@ -388,12 +388,13 @@ function Posts(props) {
             )
           )
           console.log(deletedPost+ "Unread Count!:"+userProfile.unread_count)
-          deletedPost.deletedPost.tags.forEach(e => {
-            if (userProfile.tags.includes(e) && userProfile.unread_count>0){
-              userProfile.unread_count--
-              return
-            } 
-          })
+          const decrementedUsers = deletedPost.updatedUsers.decremented
+          const loggedInUser = decrementedUsers.find(
+          (updatedUser) => updatedUser.user_id === user.user_id
+          );
+          if (loggedInUser && loggedInUser.unread_count > 0) {
+            setUser(loggedInUser.unread_count--)
+            }
         }
         else
         {
@@ -1139,6 +1140,7 @@ function Posts(props) {
                 <PostCreateSection
                   parent={'edit'}
                   user={userProfile}
+                  setUser={setUserProfile}
                   post={showEditOverlay}
                   setPosts={props.setPosts}
                   setPostImages={setPostImages}

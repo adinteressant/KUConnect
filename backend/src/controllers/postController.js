@@ -24,6 +24,53 @@ export const getAllPosts = async (req, res) => {
   }
 }
 
+const incrementCount = async (tags) => {
+  if (tags.length != 0){
+    let UsersWithTags = await PublicInfo.find({ tags: { $in: tags } })
+    if (UsersWithTags.length>0){
+    const publicUid = UsersWithTags.map((e)=>e.user_id) 
+    const PrivUsersWithTags = await PrivateInfo.find({user_id:{$in:publicUid}})
+
+    console.log(PrivUsersWithTags[0].unread_count)
+    await PrivateInfo.updateMany(
+    { user_id: { $in: publicUid } }, 
+    { $inc: { unread_count: 1  } } 
+    ) 
+    console.log("Incremented by 1!")
+    const updatedUsers = await PrivateInfo.find({ user_id: { $in: publicUid } });
+    console.log(updatedUsers)
+    return updatedUsers || [];
+        }
+        return [];
+    }
+    return [];
+
+}
+
+const decrementCount = async(tags) => {
+  if (tags && tags.length > 0) {
+    let UsersWithTags = await PublicInfo.find({ tags: { $in: tags } });
+    if (UsersWithTags.length>0){
+    const publicUid = UsersWithTags.map((e)=>e.user_id); 
+    const PrivUsersWithTags = await PrivateInfo.find(
+      {$and: [{user_id:{$in:publicUid}},
+       {unread_count:{$gt:0}}]});
+    console.log("Priv-Values:",PrivUsersWithTags);
+    await PrivateInfo.updateMany(
+    {$and: [{user_id:{$in:publicUid}}
+     ,{unread_count:{$gt:0}}]}, 
+    { $inc: { unread_count: -1  } } 
+    ); 
+    console.log("Decremented by 1!");
+        const updatedUsers = await PrivateInfo.find({ user_id: { $in: publicUid } });
+        console.log(updatedUsers)
+        return updatedUsers || [];
+  }
+  return [];
+      }
+      return [];
+}
+
 export const getSpecificPost = async(req, res) => {
   try
   {
@@ -93,25 +140,12 @@ export const createPost = async (req, res) => {
       tags: tags || [],
     })
 
-    if (tags.length != 0){
-    let UsersWithTags = await PublicInfo.find({ tags: { $in: tags } })
-    if (UsersWithTags.length>0){
-    const publicUid = UsersWithTags.map((e)=>e.user_id) 
-    const PrivUsersWithTags = await PrivateInfo.find({user_id:{$in:publicUid}})
-
-    console.log(PrivUsersWithTags[0].unread_count)
-    await PrivateInfo.updateMany(
-    { user_id: { $in: publicUid } }, 
-    { $inc: { unread_count: 1  } } 
-    ) 
-    console.log("Incremented by 1!")
-        }
-    }
+    const updatedUsers = await incrementCount(tags);
     
     // Save the post in the database
     const savedPost = await newPost.save()
 
-    res.status(201).json({ message: 'Post created successfully!', post: savedPost })
+    res.status(201).json({ message: 'Post created successfully!', post: savedPost, updatedUsers: updatedUsers })
   } catch (error) {
     console.error('Error creating post:', error)
     res.status(500).json({ message: 'Internal Server Error', error })
@@ -123,10 +157,14 @@ export const updatePost = async(req, res) => {
   const post = JSON.parse(req.body.post)
   const content = req.body.content
   const images = req.body.images
+  const oldTags = post.tags
   const tags = JSON.parse(req.body.tags)
-
+  const removedTags = oldTags.filter((tag) => !tags.includes(tag));
+  const newTags = tags.filter((tag) => !oldTags.includes(tag));
   try
   {
+    const incrementedUsers = await incrementCount(newTags);
+    const decrementedUsers = await decrementCount(removedTags);
     let [updatedPost, updatedPostImages] = [null, null]
     if(!images)
     {
@@ -170,7 +208,12 @@ export const updatePost = async(req, res) => {
       ])
     }
 
-    return res.status(200).json({ message: 'Post updated successfully', updatedPost, updatedPostImages })
+    return res.status(200).json({ message: 'Post updated successfully', updatedPost, updatedPostImages,       
+      updatedUsers: 
+      {
+      incremented: incrementedUsers,
+      decremented: decrementedUsers},
+    });
   }
   catch(err)
   {
@@ -279,22 +322,7 @@ export const deletePost = async(req, res) => {
   try
   {
     const { post } = req.body
-    if (post.tags && post.tags.length > 0) {
-      let UsersWithTags = await PublicInfo.find({ tags: { $in: post.tags } });
-      if (UsersWithTags.length>0){
-      const publicUid = UsersWithTags.map((e)=>e.user_id); 
-      const PrivUsersWithTags = await PrivateInfo.find(
-        {$and: [{user_id:{$in:publicUid}},
-         {unread_count:{$gt:0}}]});
-      console.log("Priv-Values:",PrivUsersWithTags);
-      await PrivateInfo.updateMany(
-      {$and: [{user_id:{$in:publicUid}}
-       ,{unread_count:{$gt:0}}]}, 
-      { $inc: { unread_count: -1  } } 
-      ); 
-      console.log("Decremented by 1!");
-          }
-        }
+    decrementCount(post.tags);
 
     const [deletedPost] = await Promise.all([
       Post.findByIdAndDelete(post._id),
