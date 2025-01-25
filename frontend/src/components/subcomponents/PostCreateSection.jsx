@@ -271,8 +271,8 @@ export default function PostCreateSection({ parent ,user, setUser, setPosts, set
       (
         createPostLoadingState?
         <div className='w-full h-full flex justify-center items-center dark:text-gray-200 gap-2'>
-        <div>Creating Post...</div>
-        <Loader2 className='animate-spin text-cyan-600'/>
+          <div>Creating Post...</div>
+          <Loader2 className='animate-spin text-cyan-600'/>
         </div>
         :
         <>

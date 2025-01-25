@@ -43,7 +43,6 @@ export default function Message({message}) {
         (
           <div className="flex flex-col items-end relative"
           onMouseLeave={removeMessageInfo}>
-            <MessageInfo isVisible={showMessageInfo} id={message._id}/>
             <div className={`p-1 hidden affected-class group-hover:block cursor-pointer
               hover:bg-gray-200 dark:hover:bg-gray-700 rounded-full`}
               onClick={displayMessageInfo}  
@@ -55,6 +54,7 @@ export default function Message({message}) {
                 <circle cx="5" cy="12" r="1"/>
               </svg>
             </div>
+            <MessageInfo isVisible={showMessageInfo} id={message._id}/>
           </div>
         )
       }
