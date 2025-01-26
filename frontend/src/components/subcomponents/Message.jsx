@@ -8,7 +8,7 @@ import useReply from '../../zustand/useReply'
 import { Link } from 'react-router-dom'
 
 export default function Message({ message, replyMessage }) {
-  //logged in user
+  //logged in user 
 
   const [timeDisplay, setTimeDisplay] = useState(false)
   const [showMessageInfo, setShowMessageInfo] = useState(false)
