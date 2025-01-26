@@ -18,7 +18,7 @@ router.post('/api/update-post', upload, validatePost, validateUser, updatePost)
 router.get('/api/post/images/:imageId', getImages)
 
 // Share a post
-router.post('/api/posts/:postId/share', sharePost)
+// router.post('/api/post/:postId/sender/:senderId/receiver/:receiverId', sharePost)
 
 //Search a post by content
 router.get('/api/posts/search/content', searchPostsByContent)

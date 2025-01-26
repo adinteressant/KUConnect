@@ -12,7 +12,7 @@ export const sendMessageController = async (req,res) => {
   try{
     const { senderId } = req
     const { receiverId } = req.params
-    const { message,replyOf } = req.body
+    const { message,replyOf, postId } = req.body
 
     let conversation = await Conversation.findOne({
       participants:{$all : [senderId,receiverId]}
@@ -28,7 +28,8 @@ export const sendMessageController = async (req,res) => {
       senderId,
       receiverId,
       message,
-      replyOf:replyOf?._id
+      replyOf:replyOf?._id,
+      postId
     })
 
     if(newMessage){

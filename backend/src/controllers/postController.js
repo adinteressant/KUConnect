@@ -244,9 +244,19 @@ export const getImages = async(req, res) =>
 }
 
 // Share a post
-export const sharePost = async (req, res) => {
-  // implement sharing functionality as required
-}
+// export const sharePost = async (req, res) => {
+//   const { postId, senderId, receiverId } = req.params
+
+//   try
+//   {
+
+//   }
+//   catch(err)
+//   {
+//     console.error('Error sharing post:', error)
+//     return res.status(500).json({ message: 'Error in sharing post', error })
+//   }
+// }
 
 
 // Search posts by content
