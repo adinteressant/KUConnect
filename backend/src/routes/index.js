@@ -14,9 +14,11 @@ import updatePictureRouter from '../routes/updatePictureRouter.js'
 import profileRouter from '../routes/profileRoute.js'
 import messageRouter from '../routes/messageRoutes.js'
 import friendRouter from '../routes/friendRoutes.js'
+import getEmbedRouter from '../routes/embeds.js'
 
 const router = Router()
 
+router.use(getEmbedRouter)
 router.use(loginRouter)
 router.use(registerRouter)
 router.use(userRouter)

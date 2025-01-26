@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { PhoneCall } from 'lucide-react';
+import {useSocketContext} from '../context/socketContext.jsx';
 
 export default function MessageHeader({ username }) {
   const [profileData, setProfileData] = useState({
@@ -11,7 +13,7 @@ export default function MessageHeader({ username }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [profilePic, setProfilePic] = useState(null);
-
+  const {socket,onlineUsers} = useSocketContext();
   // Fetch profile data based on username
   useEffect(() => {
     const loadProfileData = async () => {
@@ -59,6 +61,10 @@ export default function MessageHeader({ username }) {
 
     loadUserProfile();
   }, []);
+
+  const onCallHandler = ()=>{
+    window.open("/call?start_call=true", "_blank");
+  }
  
   return (
     <div className="px-4 py-3 border-b border-gray-200 dark:border-slate-800 dark:bg-slate-900 sticky">
@@ -89,6 +95,15 @@ export default function MessageHeader({ username }) {
                   >{username}
                   </Link>
                   </div>
+    {(onlineUsers.includes(profileData.user_id))?
+        <div className='bg-cyan-100'>
+          <button onClick={onCallHandler}><PhoneCall className='cyan-500'/>
+          </button>
+        </div>
+      :
+      <div>
+      </div>
+    }
       </div>
     
   </div>
