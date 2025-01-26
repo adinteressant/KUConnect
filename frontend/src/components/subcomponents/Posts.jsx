@@ -10,6 +10,11 @@ import PostCreateSection from './PostCreateSection.jsx'
 import { useNavigate } from 'react-router-dom'
 import YouTubeEmbed from './YouTubeEmbed.jsx'
 import React from 'react'
+import rehypeRaw from 'rehype-raw'
+import remarkGfm from 'remark-gfm'
+import ReactMarkdown from 'react-markdown';
+
+
 import axios from 'axios'
 //Props include:
 //Posts (array) jun dekhauna parney cha
@@ -387,13 +392,18 @@ function Posts(props) {
               p._id !== deletedPost.deletedPost._id
             )
           )
-          console.log(deletedPost+ "Unread Count!:"+userProfile.unread_count)
-          deletedPost.deletedPost.tags.forEach(e => {
-            if (userProfile.tags.includes(e) && userProfile.unread_count>0){
-              userProfile.unread_count--
-              return
-            } 
-          })
+          console.log(`${deletedPost}+ Unread Count!:+${userProfile.unread_count}`)
+          const loggedInUser = deletedPost.updatedUsers.find(
+          (updatedUser) => updatedUser.user_id === userProfile.user_id
+          );
+          if (loggedInUser) {
+            if(loggedInUser.unread_count > 0){
+            setUserProfile(loggedInUser.unread_count--)
+            }
+            else{
+              setUserProfile(loggedInUser.unread_count = 0 );
+            }
+            }
         }
         else
         {
@@ -505,7 +515,7 @@ function Posts(props) {
       if (!tags || tags.length === 0) return null;
     
       return (
-        <div className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+        <div className="mt-1 text-sm text-gray-600 dark:text-gray-400">
           Tags: 
           {tags.map((tag, index) => (
             <button
@@ -578,49 +588,53 @@ function Posts(props) {
                       </div>
                     </div>
                   </div>
-                  <p className="mt-2 dark:text-slate-200 text-gray-800"> 
+                  
+                  <div className="mt-2 dark:text-slate-200 text-gray-800">
 
-                  {post.content.split('\n').map((line, lineIndex) => (
-                    <span key={lineIndex}>
-                      {line.split(' ').map((word, wordIndex) => {
+                  <ReactMarkdown 
+                    components={{
+                      // Custom link rendering to keep existing link behavior
+                      a: ({node, ...props}) => {
                         const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/;
-                        const youtubeMatch = word.match(youtubeRegex);
+                        const youtubeMatch = props.href.match(youtubeRegex);
                         
-                        if (word.match(URL_REGEX)) {
-                          if (youtubeMatch) {
-                            return (
-                              <React.Fragment key={wordIndex}>
-                                <a 
-                                  target='_blank' 
-                                  className='text-blue-400' 
-                                  href={word}
-                                >
-                                  {word}
-                                </a>
-                                <YouTubeEmbed videoUrl={word} />
-                              </React.Fragment>
-                            );
-                          } else {
-                            return (
+                        if (youtubeMatch) {
+                          return (
+                            <>
                               <a 
                                 target='_blank' 
                                 className='text-blue-400' 
-                                href={word}
+                                {...props}
                               >
-                                {word}
+                                {props.children}
                               </a>
-                            );
-                          }
-                        } else {
-                          return word + ' ';
+                              {post.images===null && <YouTubeEmbed videoUrl={props.href} />}
+                            </>
+                          );
                         }
-                      })}
-                      <br/>
-                    </span>
-                  ))}
+                        
+                        return (
+                          <a 
+                            target='_blank' 
+                            className='text-blue-400' 
+                            {...props}
+                          />
+                        );
+                      }
+                    }}
+                    rehypePlugins={[rehypeRaw]}
+                    remarkPlugins={[remarkGfm]}
+                  >
+                    {post.content}
+                  </ReactMarkdown>
 
-                </p>
-                {post.tags && post.tags.length > 0 && renderTags(post.tags)}
+                  </div>
+
+                  {post.tags && post.tags.length > 0 &&
+                  (<div className='mb-0.5'>
+                        {renderTags(post.tags)}
+                    </div>
+                  )}
 
                   {/* Display Images */}
                   {post.images === null ||
@@ -1139,6 +1153,7 @@ function Posts(props) {
                 <PostCreateSection
                   parent={'edit'}
                   user={userProfile}
+                  setUser={setUserProfile}
                   post={showEditOverlay}
                   setPosts={props.setPosts}
                   setPostImages={setPostImages}

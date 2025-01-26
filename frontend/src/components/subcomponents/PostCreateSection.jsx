@@ -3,6 +3,7 @@ import { useOutletContext } from 'react-router-dom'
 import base64encode from '../../utils/base64encode.js'
 import tags from '../../data/tags.js'
 import { Loader2 } from 'lucide-react'
+import {Bold, Italic, Strikethrough} from 'lucide-react'
 
 export default function PostCreateSection({ parent ,user, setUser, setPosts, setPostImages, post, close }) {
   const [content, setContent] = useState(
@@ -96,7 +97,12 @@ export default function PostCreateSection({ parent ,user, setUser, setPosts, set
           setImages([])
           setEncodedImages([])
           setPosts(prev => [data.post, ...prev])
-          setUser(user.unread_count++)
+          const loggedInUser = data.updatedUsers.find(
+            (updatedUser) => updatedUser.user_id === user.user_id
+          );
+          if (loggedInUser) {
+            setUser(loggedInUser.unread_count++);
+          }
           setCreatePostLoadingState(() => false)
           //location.reload()
         }
@@ -140,6 +146,25 @@ export default function PostCreateSection({ parent ,user, setUser, setPosts, set
             p._id === data.updatedPost._id ? data.updatedPost : p
           )
         )
+        const incrementedUsers = data.updatedUsers.incremented
+        let loggedInUser = incrementedUsers.find(
+          (updatedUser) => updatedUser.user_id === user.user_id
+        );
+        if (loggedInUser) {
+          setUser(loggedInUser.unread_count++);
+        }
+        const decrementedUsers = data.updatedUsers.decremented
+        loggedInUser = decrementedUsers.find(
+          (updatedUser) => updatedUser.user_id === user.user_id
+          );
+          if (loggedInUser) {
+            if(loggedInUser.unread_count > 0){
+            setUser(loggedInUser.unread_count--)
+            }
+            else{
+              setUser(loggedInUser.unread_count = 0 );
+            }
+            }
         setPostImages((prev) => {
           const removed = prev.filter(i =>
             i._id !== post.images
@@ -234,6 +259,43 @@ export default function PostCreateSection({ parent ,user, setUser, setPosts, set
     setEncodedImages((prev) => prev.filter((_, i) => i !== index))
   }
 
+  const applyFormatting = (formatType) => {
+    const textarea = document.getElementById('post-content');
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selectedText = content.substring(start,end);
+
+    let formattedText;
+    switch(formatType) {
+      case 'bold':
+        // If no text is selected, place cursor between the markers
+        formattedText = `**${selectedText}**` 
+        break;
+      case 'italic':
+        formattedText = `*${selectedText}*` 
+        break;
+      case 'strikethrough':
+        formattedText = `~~${selectedText}~~` 
+        break;
+    }
+
+    const newContent = 
+    content.substring(0,start) + formattedText + content.substring(end);
+    setContent(newContent);
+
+    setTimeout(() => {
+    if (!selectedText) {
+      // If no text was selected, place cursor between the markers
+      textarea.selectionStart = start + 2;
+      textarea.selectionEnd = start + 2;
+    } else {
+      textarea.selectionStart = start + formattedText.length;
+      textarea.selectionEnd = start + formattedText.length;
+    }
+    textarea.focus();
+  }, 0);
+  }
+
   return (
     <div
       className={`dark:bg-slate-800 bg-white dark:shadow-black p-4 rounded-lg shadow-md transition-all duration-300 h-auto`}
@@ -247,13 +309,40 @@ export default function PostCreateSection({ parent ,user, setUser, setPosts, set
       (
         createPostLoadingState?
         <div className='w-full h-full flex justify-center items-center dark:text-gray-200 gap-2'>
-        <div>Creating Post...</div>
-        <Loader2 className='animate-spin text-cyan-600'/>
+          <div>Creating Post...</div>
+          <Loader2 className='animate-spin text-cyan-600'/>
         </div>
         :
         <>
-          <textarea
-            placeholder="What's on your mind?"
+    
+      {/* Formatting Toolbar */}
+      <div className="flex gap-2 mb-2">
+        <button 
+          onClick={() => applyFormatting('bold')}
+          className="p-1 hover:bg-gray-200 dark:hover:bg-slate-700 rounded transition-all"
+          title="Bold"
+        >
+          <Bold size={20} />
+        </button>
+        <button 
+          onClick={() => applyFormatting('italic')}
+          className="p-1 hover:bg-gray-200 dark:hover:bg-slate-700 rounded transition-all"
+          title="Italic"
+        >
+          <Italic size={20} />
+        </button>
+        <button 
+          onClick={() => applyFormatting('strikethrough')}
+          className="p-1 hover:bg-gray-200 dark:hover:bg-slate-700 rounded transition-all"
+          title="Strikethrough"
+        >
+          <Strikethrough size={20} />
+        </button>
+      </div>
+
+      <textarea
+            id = "post-content"
+        placeholder="What's on your mind?"
             className={`w-full p-2 border rounded-lg dark:bg-slate-900 dark:border-slate-800 dark:text-gray-200 bg-gray-100 focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-600 transition-all duration-300 ${isTextareaFocused || isTagsInputFocused ? 'h-28' : 'h-20'
               }`}
             value={content}
