@@ -1,15 +1,19 @@
 import { useState } from 'react'
 import useSendMessage from '../hooks/useSendMessage'
 import { Send, Loader2 } from 'lucide-react' // Add this import
+import useReply from '../../zustand/useReply'
 
 
 export default function SendMessage(){
 
   const [message,setMessage] = useState('')
-  const {loading,sendMessage} = useSendMessage()
+  const {replyOf,setReplyOf,setReply} = useReply()
+  const {loading,sendMessage} = useSendMessage(replyOf)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    setReplyOf({})
+    setReply(false)
     if(!message) return
     await sendMessage(message)
     setMessage('')

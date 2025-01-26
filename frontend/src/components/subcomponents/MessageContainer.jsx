@@ -4,6 +4,7 @@ import MessageHeader from './MessageHeader.jsx';
 import Messages from './Messages.jsx';
 import NoChatSelected from './NoChatSelected.jsx';
 import SendMessage from './SendMessage.jsx';
+import ReplyMessageBlock from './ReplyMessageBlock.jsx'
 
 export default function MessageContainer() {
   const { selectedConversation } = useConversation();
@@ -40,6 +41,7 @@ export default function MessageContainer() {
 
           {/* Fixed SendMessage */}
           <div className="w-full bg-white border-t dark:border-slate-800 border-gray-200">
+            <ReplyMessageBlock/>
             <SendMessage />
           </div>
         </>
