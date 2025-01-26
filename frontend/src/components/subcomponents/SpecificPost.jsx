@@ -24,7 +24,7 @@ export default function SpecificPost()
     }, [postId])
 
     return(
-        <div className='p-4 pt-0 overflow-y-auto scrollbar'>
+        <div className='p-4 pt-0 overflow-y-auto scrollbar h-full bg-gray-200 dark:bg-slate-900'>
             {loadingState?
             <PostSkeleton />
             :
