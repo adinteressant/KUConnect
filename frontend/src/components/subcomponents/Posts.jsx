@@ -10,6 +10,11 @@ import PostCreateSection from './PostCreateSection.jsx'
 import { useNavigate } from 'react-router-dom'
 import YouTubeEmbed from './YouTubeEmbed.jsx'
 import React from 'react'
+import rehypeRaw from 'rehype-raw'
+import remarkGfm from 'remark-gfm'
+import ReactMarkdown from 'react-markdown';
+
+
 import axios from 'axios'
 //Props include:
 //Posts (array) jun dekhauna parney cha
@@ -586,44 +591,42 @@ function Posts(props) {
                   
                   <div className="mt-2 dark:text-slate-200 text-gray-800">
 
-                  {post.content.split('\n').map((line, lineIndex) => (
-                    <span key={lineIndex}>
-                      {line.split(' ').map((word, wordIndex) => {
+                  <ReactMarkdown 
+                    components={{
+                      // Custom link rendering to keep existing link behavior
+                      a: ({node, ...props}) => {
                         const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/;
-                        const youtubeMatch = word.match(youtubeRegex);
+                        const youtubeMatch = props.href.match(youtubeRegex);
                         
-                        if (word.match(URL_REGEX)) {
-                          if (youtubeMatch) {
-                            return (
-                              <React.Fragment key={wordIndex}>
-                                <a 
-                                  target='_blank' 
-                                  className='text-blue-400' 
-                                  href={word}
-                                >
-                                  {word}
-                                </a>
-                                {post.images===null && <YouTubeEmbed videoUrl={word} />}
-                              </React.Fragment>
-                            );
-                          } else {
-                            return (
+                        if (youtubeMatch) {
+                          return (
+                            <>
                               <a 
                                 target='_blank' 
                                 className='text-blue-400' 
-                                href={word}
+                                {...props}
                               >
-                                {word}
+                                {props.children}
                               </a>
-                            );
-                          }
-                        } else {
-                          return word + ' ';
+                              <YouTubeEmbed videoUrl={props.href} />
+                            </>
+                          );
                         }
-                      })}
-                      <br/>
-                    </span>
-                  ))}
+                        
+                        return (
+                          <a 
+                            target='_blank' 
+                            className='text-blue-400' 
+                            {...props}
+                          />
+                        );
+                      }
+                    }}
+                    rehypePlugins={[rehypeRaw]}
+                    remarkPlugins={[remarkGfm]}
+                  >
+                    {post.content}
+                  </ReactMarkdown>
 
                   </div>
 
