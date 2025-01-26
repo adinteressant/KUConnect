@@ -41,29 +41,10 @@ export default function Message({ message, replyMessage }) {
           </div>
         )
       }
-      {
-        fromMe &&
-        (
-          <div className="flex flex-col items-end relative"
-            onMouseLeave={removeMessageInfo}>
-            <div className={`p-1 hidden affected-class group-hover:block cursor-pointer
-              hover:bg-gray-200 dark:hover:bg-gray-700 rounded-full`}
-              onClick={displayMessageInfo}
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24"
-                className='stroke-1 stroke-gray-600 dark:stroke-slate-200'>
-                <circle cx="12" cy="12" r="1" />
-                <circle cx="19" cy="12" r="1" />
-                <circle cx="5" cy="12" r="1" />
-              </svg>
-            </div>
-            <MessageInfo isVisible={showMessageInfo} msg={message} />
-          </div>
-        )
-      }
-      <div className="flex flex-col items-end max-w-[60%]">
+      <div className={`flex flex-col ${!fromMe? 'items-start' : 'items-end'}  max-w-[60%]`}>
         {replyMessage?.message && (
-          <div className="dark:bg-slate-800 p-2 rounded-md flex gap-2 pr-3">
+          <div className="dark:bg-slate-800 p-2 rounded-md flex gap-2 pr-3
+          bg-gray-100 text-gray-800 dark:text-gray-200">
             <Reply />
             <div>
               {replyMessage.message}
@@ -75,6 +56,28 @@ export default function Message({ message, replyMessage }) {
             Shared a post
           </Link>
           :
+          <div className="flex items-center gap-2">
+            {
+              fromMe &&
+              (
+                <div className="flex flex-col items-end relative"
+                  onMouseLeave={removeMessageInfo}>
+                  <div className={`p-1 hidden affected-class group-hover:block cursor-pointer
+                    hover:bg-gray-200 dark:hover:bg-gray-700 rounded-full`}
+                    onClick={displayMessageInfo}
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24"
+                      className='stroke-1 stroke-gray-600 dark:stroke-slate-200'>
+                      <circle cx="12" cy="12" r="1" />
+                      <circle cx="19" cy="12" r="1" />
+                      <circle cx="5" cy="12" r="1" />
+                    </svg>
+                  </div>
+                  <MessageInfo isVisible={showMessageInfo} msg={message} />
+                </div>
+              )
+          }
+          <div className="flex flex-col items-end">
           <div className={`${colorClass} p-3 rounded-lg cursor-pointer break-all
             ${fromMe && `hovered-class`}
           `}
@@ -82,19 +85,22 @@ export default function Message({ message, replyMessage }) {
           >
             {message.message}
           </div>
-        }
-        <div className={`text-[0.6rem] text-gray-500 transition-all duration-150 ease-in-out
+          <div className={`text-[0.6rem] text-gray-500 transition-all duration-150 ease-in-out
             ${!timeDisplay ? `opacity-0 invisible max-h-0 overflow-hidden` : `opacity-100 visible`}`}>
           {getHours(message.createdAt)} : {getMinutes(message.createdAt)}
-        </div>
-      </div>
-      {!fromMe &&
+          </div>
+          </div>
+          {!fromMe &&
         (<div className="p-1 hidden group-hover:block cursor-pointer
               hover:bg-gray-200 dark:hover:bg-gray-700 rounded-full"
           onClick={() => { setReply(true); setReplyOf(message) }}>
           <Reply className="dark:text-slate-200 text-gray-600" />
         </div>)
       }
+          </div>
+          
+        }
+      </div>
 
     </div>
   )

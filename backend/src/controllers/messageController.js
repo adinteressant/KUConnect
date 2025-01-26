@@ -127,3 +127,29 @@ export const deleteMessageController = async (req,res) => {
   
   return res.status(200).json({messages:conversation.messages,msg:'success'})
 }
+
+export const editMessageController = async (req,res) => {
+  const { senderId } = req
+  const { receiverId } = req.query
+  const {message,id} = req.body
+  if (!message) {
+    return res.status(400).json({ error: 'Content is required to update the message.' });
+  }
+  let conversation
+  try{
+    await Message.findByIdAndUpdate(id,
+      {message}
+    )
+    conversation = await Conversation.findOne({
+      participants:{$all:[senderId,receiverId]}
+    }).populate('messages')
+  
+    if(!conversation) {
+      return res.status(200).json([])
+    }
+  }catch(e){
+    console.log(e)
+    return res.status(500).json({e})
+  }
+  return res.status(200).json({messages:conversation.messages,msg:'success'})
+}
