@@ -608,7 +608,7 @@ function Posts(props) {
                               >
                                 {props.children}
                               </a>
-                              <YouTubeEmbed videoUrl={props.href} />
+                              {post.images===null && <YouTubeEmbed videoUrl={props.href} />}
                             </>
                           );
                         }
