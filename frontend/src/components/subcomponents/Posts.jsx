@@ -594,6 +594,9 @@ function Posts(props) {
                   <ReactMarkdown 
                     components={{
                       // Custom link rendering to keep existing link behavior
+                      p: ({node, children}) => {
+                        return <>{children}</>
+                      },
                       a: ({node, ...props}) => {
                         //const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/;
                         const youtubeMatch = props.href.match(URL_REGEX);
