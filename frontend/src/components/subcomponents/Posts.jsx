@@ -704,7 +704,7 @@ function Posts(props) {
                   {/* <hr className='absolute left-0 right-0 mt-4'/> */}
                   
                   {/* Likes, Comments, Shares Information */}
-                  <div className={`flex items-center gap-4 pt-2 transition-all border-t pb-1 dark:border-slate-700 duration-300 ${isInfoDisplayed(post)?'mt-6 opacity-100 h-max-screen':'opacity-0 max-h-0'}`}>
+                  <div className={`flex items-center gap-4 pt-2 transition-all border-t pb-1 dark:border-slate-700 duration-300 ${isInfoDisplayed(post)?'mt-4 opacity-100 h-max-screen':'opacity-0 max-h-0'}`}>
                     {/* like information */}
                       {post.likes>0 &&
                         <button 
