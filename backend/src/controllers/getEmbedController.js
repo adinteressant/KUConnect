@@ -3,7 +3,8 @@ import axios from 'axios';
 
 export default async function getEmbedController(req,res){
   const url = req.body?.url;
-  const response = await axios.get(url);
+  let axios_instance = axios.create({timeout: 9999})
+  const response = await axios_instance.get(url);
   const $ = cheerio.load(response.data);
   const metaTags = [];
 
