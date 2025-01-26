@@ -35,6 +35,9 @@ export default function Conversations({ conversations, loading }) {
         return
       }
     })
+    return ()=>{
+      setSelectedConversation(null)
+    }
   },[userQueryId,conversations])
 
 

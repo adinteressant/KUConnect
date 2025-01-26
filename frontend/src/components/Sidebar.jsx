@@ -18,7 +18,7 @@ export default function Sidebar({userProfile,setUserProfile}) {
   const [isHovered, setIsHovered] = useState(false);
   const {incomingRequestsCount, setIncomingRequestsCount} = useRequestCount() 
   const {newMessages} = useNewMessages()
-  const uniqueSendersCount = new Set(newMessages.map(msg => msg.senderId)).size;
+  const uniqueSendersCount = new Set(newMessages?.map(msg => msg.senderId)).size;
   
   // const [selected, setSelected] = useState(localStorage.getItem('darkmode') || "light");
 //   const {theme, toggleTheme} = useTheme();
@@ -97,7 +97,7 @@ export default function Sidebar({userProfile,setUserProfile}) {
                 to: "/messages", 
                 icon: (
                   <div className="relative h-6 w-6 flex justify-center items-center">
-                    {newMessages.length > 0 && (
+                    {newMessages?.length > 0 && (
                       <div className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-medium text-white">
                         {uniqueSendersCount}
                       </div>

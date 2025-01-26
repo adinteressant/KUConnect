@@ -12,6 +12,6 @@ export const useGetUnreadMessage = () => {
     .catch(e => {
       console.log(e)
     })
-  },[newMessages.length]) 
+  },[newMessages?.length]) 
   // return newMessages
 }
