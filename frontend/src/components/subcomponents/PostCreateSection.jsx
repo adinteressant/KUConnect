@@ -286,8 +286,8 @@ export default function PostCreateSection({ parent ,user, setUser, setPosts, set
     setTimeout(() => {
     if (!selectedText) {
       // If no text was selected, place cursor between the markers
-      textarea.selectionStart = start + 2;
-      textarea.selectionEnd = start + 2;
+      textarea.selectionStart = formatType==='italic'?start + 1:start + 2;
+      textarea.selectionEnd = formatType==='italic'?start + 1:start + 2;
     } else {
       textarea.selectionStart = start + formattedText.length;
       textarea.selectionEnd = start + formattedText.length;
@@ -319,24 +319,24 @@ export default function PostCreateSection({ parent ,user, setUser, setPosts, set
       <div className="flex gap-2 mb-2">
         <button 
           onClick={() => applyFormatting('bold')}
-          className="p-1 hover:bg-gray-200 dark:hover:bg-slate-700 rounded transition-all"
+          className="p-1 hover:bg-gray-200 dark:hover:bg-slate-700 rounded transition-all duration-300 group/boldbtn"
           title="Bold"
         >
-          <Bold size={20} />
+          <Bold size={20} className='stroke-gray-600 dark:stroke-gray-400 group-hover/boldbtn:stroke-cyan-600 transition-all duration-300' />
         </button>
         <button 
           onClick={() => applyFormatting('italic')}
-          className="p-1 hover:bg-gray-200 dark:hover:bg-slate-700 rounded transition-all"
+          className="p-1 hover:bg-gray-200 dark:hover:bg-slate-700 rounded transition-all duration-300 group/italicbtn"
           title="Italic"
         >
-          <Italic size={20} />
+          <Italic size={20} className='stroke-gray-600 dark:stroke-gray-400 group-hover/italicbtn:stroke-cyan-600 transition-all duration-300' />
         </button>
         <button 
           onClick={() => applyFormatting('strikethrough')}
-          className="p-1 hover:bg-gray-200 dark:hover:bg-slate-700 rounded transition-all"
+          className="p-1 hover:bg-gray-200 dark:hover:bg-slate-700 rounded transition-all duration-300 group/strikebtn"
           title="Strikethrough"
         >
-          <Strikethrough size={20} />
+          <Strikethrough size={20} className='stroke-gray-600 dark:stroke-gray-400 group-hover/strikebtn:stroke-cyan-600 transition-all duration-300' />
         </button>
       </div>
 
