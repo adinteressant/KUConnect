@@ -51,8 +51,8 @@ const YouTubeEmbed = ({ videoUrl }) => {
     
 
     return (
-    <div className="h-[400px] flex justify-center items-center bg-gray-900">
-      <div className="max-w-lg w-full bg-gray-800 text-white rounded-2xl shadow-lg p-4 border border-gray-700">
+    <div className="py-2">
+      <div className="w-full bg-gray-100 dark:bg-gray-800 rounded-xl shadow-md p-4 border border-gray-200 dark:border-gray-700">
         <div className="flex items-start gap-4">
       {metaData['og:image']?<img 
             src={metaData['og:image'] || ""}
@@ -63,7 +63,7 @@ const YouTubeEmbed = ({ videoUrl }) => {
           />:<div></div>
       }
           
-          <div className="flex-1">
+          <div>
             <a 
               href={metaData['og:url']} 
               target="_blank" 
@@ -72,9 +72,9 @@ const YouTubeEmbed = ({ videoUrl }) => {
             >
               {metaData['og:title'] || ""}
             </a>
-            <p className="text-gray-400 text-sm mt-1">
+            <div className="text-gray-400 text-sm mt-1">
               {metaData['og:description']|| ""}
-            </p>
+            </div>
             <div className="text-xs text-gray-500 mt-2 flex items-center gap-2">
               <span>{metaData['og:site_name'] || ""}</span>
             </div>
