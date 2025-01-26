@@ -571,15 +571,16 @@ function Posts(props) {
                         
                         {urlPostId===post._id?
                         <div>
-                          {new Date(post.createdAt).toLocaleTimeString([], { 
-                            hour: '2-digit', 
-                            minute: '2-digit' 
-                          })},&nbsp;
                           {new Date(post.createdAt).toLocaleDateString('en-US', { 
                             day: '2-digit', 
                             month: 'long', 
                             year: 'numeric' 
                           })}
+                          &nbsp;at&nbsp;
+                          {new Date(post.createdAt).toLocaleTimeString([], { 
+                            hour: '2-digit', 
+                            minute: '2-digit' 
+                          })} 
                         </div>
                         :
                         <div>
@@ -588,56 +589,56 @@ function Posts(props) {
                       </div>
                     </div>
                   </div>
-                  
-                  <div className="mt-2 dark:text-slate-200 text-gray-800">
-
-                  <ReactMarkdown 
-                    components={{
-                      // Custom link rendering to keep existing link behavior
-                      p: ({node, children}) => {
-                        return <>{children}</>
-                      },
-                      a: ({node, ...props}) => {
-                        //const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/;
-                        const youtubeMatch = props.href.match(URL_REGEX);
-                        
-                        if (youtubeMatch) {
-                          return (
-                            <>
-                              <a 
-                                target='_blank' 
-                                className='text-blue-400' 
-                                {...props}
-                              >
-                                {props.children}
-                              </a>
-                              {post.images===null && <YouTubeEmbed videoUrl={props.href} />}
-                            </>
-                          );
-                        }
-                        
-                        return (
-                          <a
-                            target='_blank' 
-                            className='text-blue-400' 
-                            {...props}
-                          />
-                        );
-                      }
-                    }}
-                    rehypePlugins={[rehypeRaw]}
-                    remarkPlugins={[remarkGfm]}
-                  >
-                    {post.content}
-                  </ReactMarkdown>
-
-                  </div>
 
                   {post.tags && post.tags.length > 0 &&
-                  (<div className='mb-0.5'>
+                  (<div className='mt-4'>
                         {renderTags(post.tags)}
                     </div>
                   )}
+                  
+                  <div className="mt-4 dark:text-slate-200 text-gray-800 break-all whitespace-pre-line">
+
+                    <ReactMarkdown 
+                      components={{
+                        // Custom link rendering to keep existing link behavior
+                        p: ({node, children}) => {
+                          return <>{children}</>
+                        },
+                        a: ({node, ...props}) => {
+                          //const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/;
+                          const youtubeMatch = props.href.match(URL_REGEX);
+                          
+                          if (youtubeMatch) {
+                            return (
+                              <>
+                                <a 
+                                  target='_blank' 
+                                  className='text-blue-400' 
+                                  {...props}
+                                >
+                                  {props.children}
+                                </a>
+                                {post.images===null && <YouTubeEmbed videoUrl={props.href} />}
+                              </>
+                            );
+                          }
+                          
+                          return (
+                            <a
+                              target='_blank' 
+                              className='text-blue-400' 
+                              {...props}
+                            />
+                          );
+                        }
+                      }}
+                      rehypePlugins={[rehypeRaw]}
+                      remarkPlugins={[remarkGfm]}
+                    >
+                      {post.content}
+                    </ReactMarkdown>
+
+                  </div>
 
                   {/* Display Images */}
                   {post.images === null ||
@@ -703,7 +704,7 @@ function Posts(props) {
                   {/* <hr className='absolute left-0 right-0 mt-4'/> */}
                   
                   {/* Likes, Comments, Shares Information */}
-                  <div className={`mt-6 flex items-center gap-4 pt-2 transition-all border-t pb-1 dark:border-slate-700 duration-300 ${isInfoDisplayed(post)?'opacity-100 h-max-screen':'opacity-0 h-max-0'}`}>
+                  <div className={`flex items-center gap-4 pt-2 transition-all border-t pb-1 dark:border-slate-700 duration-300 ${isInfoDisplayed(post)?'mt-6 opacity-100 h-max-screen':'opacity-0 max-h-0'}`}>
                     {/* like information */}
                       {post.likes>0 &&
                         <button 
