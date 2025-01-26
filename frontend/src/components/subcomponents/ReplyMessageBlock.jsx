@@ -13,7 +13,7 @@ export default function ReplyMessageBlock(){
   },[searchParams.get('userId')])
 
   if(reply){
-  return <div className="flex justify-between px-4">
+  return <div className="flex dark:bg-slate-900 dark:text-slate-200 border-t border-slate-700 justify-between px-4">
     <div>
       Replying to: {replyOf?.message}
     </div>

@@ -16,8 +16,8 @@ export default function Message({message,replyMessage}) {
   const {selectedConversation} = useConversation()
   const fromMe = message.senderId == authUserId
   const positionClass = fromMe ? 'items-end justify-end' : 'items-start justify-start'
-  const colorClass = fromMe ? `${!timeDisplay?`bg-cyan-500`:`bg-cyan-600`} text-white`:`${!timeDisplay?`bg-gray-200 dark:bg-slate-500 dark:text-slate-200`:`bg-gray-300`} text-gray-900`
-  
+  const colorClass = fromMe ? `${!timeDisplay?`bg-cyan-500`:`bg-cyan-600`} text-white`:`${!timeDisplay?`bg-gray-200 dark:bg-slate-600 dark:text-slate-200`:`dark:bg-slate-500 dark:text-slate-200 bg-gray-300`} text-gray-900`
+
   const{setReplyOf,setReply} = useReply()
 
   const displayTime = () => {
@@ -57,7 +57,7 @@ export default function Message({message,replyMessage}) {
                 <circle cx="5" cy="12" r="1"/>
               </svg>
             </div>
-            <MessageInfo isVisible={showMessageInfo} id={message._id}/>
+            
           </div>
         )
       }
