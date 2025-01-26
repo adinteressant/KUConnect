@@ -1,5 +1,5 @@
 import express from 'express'
-import { createPost, updatePost, getAllPosts, getImages,  sharePost, searchPostsByTag, userPosts, getSpecificPost,  searchPostsByContent, deletePost } from '../controllers/postController.js'
+import { createPost, updatePost, getAllPosts, getImages, searchPostsByTag, userPosts, getSpecificPost,  searchPostsByContent, deletePost } from '../controllers/postController.js'
 import { upload, validatePost, validateUser, validatePostDeletion } from '../middlewares/postMiddleware.js'
 // import generateFolderName from '../utils/generateFolderName.js'
 

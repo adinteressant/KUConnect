@@ -15,7 +15,7 @@ export default function SendMessage(){
     setReplyOf({})
     setReply(false)
     if(!message) return
-    await sendMessage(message)
+    await sendMessage(message, null, null)
     setMessage('')
   }
 

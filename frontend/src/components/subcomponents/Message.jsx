@@ -5,6 +5,7 @@ import { getHours, getMinutes } from '../../utils/timeConversion'
 import { useState } from 'react'
 import { Reply } from 'lucide-react'
 import useReply from '../../zustand/useReply'
+import { Link } from 'react-router-dom'
 
 export default function Message({ message, replyMessage }) {
   //logged in user

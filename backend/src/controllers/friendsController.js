@@ -95,6 +95,7 @@ export const getFriends = async (req, res) => {
       user_id:friend.user_id,     //Include user_id
       username: friend.username, // Include username
       pfp_id: friend.pfp_id,    // Include profile picture ID
+      role: friend.role
     }));
 
     res.status(200).json({ friends: friendsWithUsernames });

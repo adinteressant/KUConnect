@@ -39,7 +39,6 @@ export default function Conversations({ conversations, loading }) {
 
 
   // Memoize the count calculation for better performance
-  let sortedEnhancedConversations
     const enhancedConversations = useMemo(() => {
       return conversations.map((conversation) => {
         let pfp_id
