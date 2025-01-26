@@ -1,5 +1,18 @@
 import React from "react";
 import { useState, useEffect } from "react";
+import axios from 'axios';
+import * as cheerio from 'cheerio';
+
+async function scrapeMetaTags(url) {
+    try {
+        const response = await axios.post('/api/get-embed',{ url });
+        const metaTags = response;
+        return metaTags;
+    } catch (error) {
+        console.error(`Error scraping ${url}:`, error.message);
+        return [];
+    }
+}
 
 const YouTubeEmbed = ({ videoUrl }) => {
     const [videoId, setVideoId] = useState(null);
@@ -23,6 +36,12 @@ const YouTubeEmbed = ({ videoUrl }) => {
         setVideoId(extractVideoId(videoUrl))
 
     }, [videoUrl])
+
+  useEffect(()=>{
+  async function execute(){
+    console.log(await scrapeMetaTags("https://github.com"))
+    }execute()
+  },[])
 
     if (!videoId) return null;
 
