@@ -583,7 +583,8 @@ function Posts(props) {
                       </div>
                     </div>
                   </div>
-                  <div className="mt-2 dark:text-slate-200 text-gray-800"> 
+                  
+                  <div className="mt-2 dark:text-slate-200 text-gray-800">
 
                   {post.content.split('\n').map((line, lineIndex) => (
                     <span key={lineIndex}>
@@ -602,7 +603,7 @@ function Posts(props) {
                                 >
                                   {word}
                                 </a>
-                                <YouTubeEmbed videoUrl={word} />
+                                {post.images===null && <YouTubeEmbed videoUrl={word} />}
                               </React.Fragment>
                             );
                           } else {
@@ -624,14 +625,14 @@ function Posts(props) {
                     </span>
                   ))}
 
-                </div>
-                {post.tags && post.tags.length > 0 && 
-                
-                (<div className='mb-0.5'>
-                      {renderTags(post.tags)}
                   </div>
-                  )
-                }
+
+                  {post.tags && post.tags.length > 0 &&
+                  (<div className='mb-0.5'>
+                        {renderTags(post.tags)}
+                    </div>
+                  )}
+
                   {/* Display Images */}
                   {post.images === null ||
                     (postImages.some(i => i._id === post.images)?

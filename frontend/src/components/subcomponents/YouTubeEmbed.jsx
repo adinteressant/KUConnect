@@ -27,10 +27,9 @@ const YouTubeEmbed = ({ videoUrl }) => {
     if (!videoId) return null;
 
     return (
-        <div className="youtube-embed">
+        <div className="h-[400px]">
             <iframe
-                width="640"
-                height="400"
+                className='w-full h-full rounded-lg'
                 src={`https://www.youtube.com/embed/${videoId}`}
                 title="Youtube Video Player"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
