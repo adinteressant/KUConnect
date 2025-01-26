@@ -595,8 +595,8 @@ function Posts(props) {
                     components={{
                       // Custom link rendering to keep existing link behavior
                       a: ({node, ...props}) => {
-                        const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/;
-                        const youtubeMatch = props.href.match(youtubeRegex);
+                        //const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/;
+                        const youtubeMatch = props.href.match(URL_REGEX);
                         
                         if (youtubeMatch) {
                           return (
@@ -614,7 +614,7 @@ function Posts(props) {
                         }
                         
                         return (
-                          <a 
+                          <a
                             target='_blank' 
                             className='text-blue-400' 
                             {...props}
