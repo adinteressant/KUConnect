@@ -20,7 +20,8 @@ const useSendMessage = (replyOf) => {
       )
       const data = await response.json()
       setMessages([...messages,data])
-    } catch (error) {
+      return true
+      } catch (error) {
       console.log(error)
     }finally{
       setLoading(false)

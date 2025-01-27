@@ -4,16 +4,16 @@ import { sortArray } from "../../utils/sortArray"
 import { useGetConversationsWithDate, useGetConversations } from "../hooks/useGetConversations"
 import useGetFriends from "../hooks/useGetFriends"
 import useSendMessage from "../hooks/useSendMessage"
-import { Search } from 'lucide-react'
+import { Loader2, Search } from 'lucide-react'
 
 export default function SendToFriends({ closeShareOverlay, postId }) {
 
   const [friendList, setFriendList] = useState([])
-  const [filteredFriendList, setFilteredFriendList] = useState([])
+  const [searchValue, setSearchValue] = useState('')
   const [loadingList, setLoadingListState] = useState(true)
   const conversationsWithDate = useGetConversationsWithDate()
   const { conversations } = useGetConversations()
-  const { loading, sendMessage } = useSendMessage(null)
+  const { sendMessage } = useSendMessage(null)
 
   let authUser
   if (localStorage.getItem('authUser') && localStorage.getItem('authUser') != 'undefined')
@@ -51,24 +51,33 @@ export default function SendToFriends({ closeShareOverlay, postId }) {
       return { ...conversation, pfp_id, role, latestMessageDate }
     })
 
-    
     sortArray(arr)
-    setFriendList(() => arr)
-    setFilteredFriendList(() => arr)
+
+    setFriendList(() => arr.map(f => {return {...f, state: 'Send' }}))
 
     if(conversations.length && userProfiles.length) {
       setLoadingListState(() => false)
     }
   }, [conversations, userProfiles])
 
-  const sendMessageFunc = (receiverId) => {
-    sendMessage(null, postId, receiverId)
-  }
-
-  const handleChange = (e) => {
-    setFilteredFriendList(() =>
-      friendList.filter(friend => 
-        friend.username.toLowerCase().includes(e.target.value.toLowerCase())
+  const sendMessageFunc = async(friend) => {
+    
+    setFriendList(prev => 
+      prev.map(f => 
+        f.user_id===friend.user_id?
+        {...f, state:'Sending'}
+        :
+        f
+      )
+    )
+   
+    await sendMessage(null, postId, friend.user_id) &&
+    setFriendList(prev => 
+      prev.map(f => 
+        f.user_id===friend.user_id?
+        {...f, state:'Sent'}
+        :
+        f
       )
     )
   }
@@ -97,7 +106,7 @@ export default function SendToFriends({ closeShareOverlay, postId }) {
               <input
                 type="text"
                 placeholder="Search friends..."
-                onChange={(e) => handleChange(e)}
+                onChange={(e) => setSearchValue(e.target.value)}
                 className="w-full px-4 py-2 text-sm rounded-lg border dark:bg-slate-900 dark:text-slate-200 dark:border-slate-700 border-gray-200  dark:focus:ring-slate-700 focus:border-gray-300 focus:ring-2 focus:ring-gray-300 focus:outline-none transition-all placeholder:text-gray-400"
               />
               <label
@@ -116,9 +125,11 @@ export default function SendToFriends({ closeShareOverlay, postId }) {
             </button>
           </div>
           <div className='p-3 overflow-y-auto scrollbar flex flex-col gap-2 w-[100%] h-[100%]'>
-            {filteredFriendList.map((friend, index) =>
-              <div key={index} className='flex items-center'>
-                <Link className='mt-2 shrink-0' to={`/${friend.username}`}>
+            {friendList
+              .filter(friend => friend.username.toLowerCase().includes(searchValue.toLowerCase()))
+              .map((friend, index) =>
+              <div key={index} className='flex items-center pb-2 border-b border-gray-200 dark:border-slate-700'>
+                <Link className=' shrink-0' to={`/${friend.username}`}>
                   <img src={`/api/get-pfp?id=${friend.pfp_id}`} alt="profile" className="w-8 h-8 rounded-full object-cover" />
                 </Link>
                 <div className='ml-2'>
@@ -129,12 +140,19 @@ export default function SendToFriends({ closeShareOverlay, postId }) {
                     {friend.role.charAt(0).toUpperCase() + friend.role.slice(1)}
                   </div>
                 </div>
-                <button className='ml-auto' onClick={() => sendMessageFunc(friend.user_id)}>
-                  Send
+                <button className='ml-auto px-4 py-2 rounded-full hover:shadow-lg text-sm text-white bg-cyan-600 hover:bg-cyan-700 disabled:bg-cyan-800'
+                  onClick={() => sendMessageFunc(friend)}
+                  disabled={friend.state!=='Send'}
+                >
+                  {friend.state==='Sending'?
+                  <Loader2 className='text-white animate-spin p-1'/>
+                  :
+                  friend.state
+                  }
                 </button>
               </div>
             )}
-            {filteredFriendList.length===0 && <div className="leading-none m-auto dark:text-gray-400 text-gray-600">No friends</div>}
+            {(friendList.length===0 || friendList.filter(friend => friend.username.toLowerCase().includes(searchValue.toLowerCase())).length===0) && <div className="leading-none m-auto dark:text-gray-400 text-gray-600">No friends</div>}
           </div>
         </div>)}
     </div>
