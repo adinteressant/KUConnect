@@ -597,6 +597,9 @@ function Posts(props) {
                       a: ({node, ...props}) => {
                         const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/;
                         const youtubeMatch = props.href.match(youtubeRegex);
+
+                        const isLastYouTubeLink = youtubeMatch && post.content.includes(props.href) &&
+                        props.href === post.content.split(/\s+/).reverse().find((link) => youtubeRegex.test(link));
                         
                         if (youtubeMatch) {
                           return (
@@ -608,7 +611,7 @@ function Posts(props) {
                               >
                                 {props.children}
                               </a>
-                              {post.images===null && <YouTubeEmbed videoUrl={props.href} />}
+                              {post.images===null && isLastYouTubeLink && <YouTubeEmbed videoUrl={props.href} />}
                             </>
                           );
                         }
