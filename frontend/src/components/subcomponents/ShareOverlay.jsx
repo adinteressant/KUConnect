@@ -140,7 +140,7 @@ export default function SendToFriends({ closeShareOverlay, postId }) {
                     {friend.role.charAt(0).toUpperCase() + friend.role.slice(1)}
                   </div>
                 </div>
-                <button className='ml-auto px-4 py-2 rounded-full hover:shadow-lg text-sm text-white bg-cyan-600 hover:bg-cyan-700 disabled:bg-cyan-800'
+                <button className='ml-auto px-4 py-2 rounded-full hover:shadow-lg text-sm text-white bg-cyan-600 hover:bg-cyan-700 disabled:bg-cyan-900'
                   onClick={() => sendMessageFunc(friend)}
                   disabled={friend.state!=='Send'}
                 >
