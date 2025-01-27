@@ -77,13 +77,11 @@ export default function SendToFriends({ closeShareOverlay, postId }) {
     <div className='flex flex-col w-[100%] h-[100%]'>
       {loadingList ?
         (<div className='flex flex-col w-[100%] dark:bg-slate-800 h-[100%]'>
-          <div className='p-2 flex gap-2 border-b dark:border-slate-700'>
-            {[1, 2, 3].map((_, index) => (
-              <button key={index} className={`pl-7 pr-7 pt-4 pb-4 rounded-2xl bg-gray-200 dark:bg-slate-900 animate-pulse`}>
-              </button>
-            ))}
+          <div className='p-2 flex border-b dark:border-slate-700'>
+            <button className={`w-[80%] py-4 rounded-lg bg-gray-200 dark:bg-slate-900 animate-pulse`}>
+            </button>
           </div>
-          <div className='p-2 overflow-hidden flex flex-col gap-6 w-[100%] h-[100%]'>
+          <div className='p-3 overflow-hidden flex flex-col gap-6 w-[100%] h-[100%]'>
             {[1, 2, 3, 4].map((_, index) => (<div key={index} className='flex'>
               <div className='mt-2 shrink-0 w-8 h-8 rounded-full object-cover dark:bg-slate-900 bg-gray-200 animate-pulse'>
               </div>
@@ -100,7 +98,7 @@ export default function SendToFriends({ closeShareOverlay, postId }) {
                 type="text"
                 placeholder="Search friends..."
                 onChange={(e) => handleChange(e)}
-                className="w-full px-4 py-2 pr-10 text-sm rounded-lg border dark:bg-slate-900 dark:text-slate-200 dark:border-slate-700 border-gray-200  dark:focus:ring-slate-700 focus:border-gray-300 focus:ring-2 focus:ring-gray-300 focus:outline-none transition-all placeholder:text-gray-400"
+                className="w-full px-4 py-2 text-sm rounded-lg border dark:bg-slate-900 dark:text-slate-200 dark:border-slate-700 border-gray-200  dark:focus:ring-slate-700 focus:border-gray-300 focus:ring-2 focus:ring-gray-300 focus:outline-none transition-all placeholder:text-gray-400"
               />
               <label
                 className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-md "
