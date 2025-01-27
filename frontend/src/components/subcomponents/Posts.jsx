@@ -554,7 +554,7 @@ function Posts(props) {
                     post.isUpdating ? 'scale-105' : 'scale-100'
                   }`}
                 >
-                  <div className='flex gap-2 dark:text-slate-200 items-center'>
+                  <div className='flex gap-2 dark:text-slate-200 items-center mb-4'>
                     <Link to={`/${post.username}`}>
                       <img src={`/api/get-pfp?id=${post.pfp_id}`} className="h-9 w-9 rounded-full object-cover"/>
                     </Link>
@@ -591,22 +591,27 @@ function Posts(props) {
                   </div>
 
                   {post.tags && post.tags.length > 0 &&
-                  (<div className='mt-4'>
+                  (<div className='mb-2'>
                         {renderTags(post.tags)}
                     </div>
                   )}
                   
-                  <div className="mt-4 dark:text-slate-200 text-gray-800 break-all whitespace-pre-line">
+                  <div className="dark:text-slate-200 text-gray-800 break-all whitespace-pre-line">
 
                     <ReactMarkdown 
                       components={{
-                        // Custom link rendering to keep existing link behavior
                         p: ({node, children}) => {
                           return <>{children}</>
                         },
                         a: ({node, ...props}) => {
-                          //const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/;
-                          const youtubeMatch = props.href.match(URL_REGEX);
+
+                          //Shriharsh's code commented
+                          //const youtubeMatch = props.href.match(URL_REGEX);
+
+                          const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/;
+                          const youtubeMatch = props.href.match(youtubeRegex);
+                          const isLastYouTubeLink = youtubeMatch && post.content.includes(props.href) &&
+                          props.href === post.content.split(/\s+/).reverse().find((link) => youtubeRegex.test(link));
                           
                           if (youtubeMatch) {
                             return (
@@ -618,7 +623,7 @@ function Posts(props) {
                                 >
                                   {props.children}
                                 </a>
-                                {post.images===null && <YouTubeEmbed videoUrl={props.href} />}
+                                {post.images===null && isLastYouTubeLink && <YouTubeEmbed videoUrl={props.href} />}
                               </>
                             );
                           }
