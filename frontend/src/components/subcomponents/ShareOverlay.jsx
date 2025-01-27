@@ -8,10 +8,12 @@ import { Search } from 'lucide-react'
 
 export default function SendToFriends({ closeShareOverlay, postId }) {
 
-  const [loading, setLoadingState] = useState(true)
+  const [friendList, setFriendList] = useState([])
+  const [filteredFriendList, setFilteredFriendList] = useState([])
+  const [loadingList, setLoadingListState] = useState(true)
   const conversationsWithDate = useGetConversationsWithDate()
   const { conversations } = useGetConversations()
-  const {sendMessage} = useSendMessage(null)
+  const { loading, sendMessage } = useSendMessage(null)
 
   let authUser
   if (localStorage.getItem('authUser') && localStorage.getItem('authUser') != 'undefined')
@@ -19,7 +21,7 @@ export default function SendToFriends({ closeShareOverlay, postId }) {
 
   const userProfiles = useGetFriends(authUser)
 
-  const friendList = useMemo(() => {
+  useMemo(() => {
     const arr = conversations.map((conversation) => {
       let pfp_id
       let role
@@ -49,24 +51,31 @@ export default function SendToFriends({ closeShareOverlay, postId }) {
       return { ...conversation, pfp_id, role, latestMessageDate }
     })
 
-    if (conversations.length && userProfiles.length) {
-      setLoadingState(() => false)
+    
+    sortArray(arr)
+    setFriendList(() => arr)
+    setFilteredFriendList(() => arr)
+
+    if(conversations.length && userProfiles.length) {
+      setLoadingListState(() => false)
     }
-
-    return arr
   }, [conversations, userProfiles])
-
-  sortArray(friendList)
 
   const sendMessageFunc = (receiverId) => {
     sendMessage(null, postId, receiverId)
-    console.log(postId, receiverId)
-    
+  }
+
+  const handleChange = (e) => {
+    setFilteredFriendList(() =>
+      friendList.filter(friend => 
+        friend.username.toLowerCase().includes(e.target.value.toLowerCase())
+      )
+    )
   }
 
   return (
     <div className='flex flex-col w-[100%] h-[100%]'>
-      {loading ?
+      {loadingList ?
         (<div className='flex flex-col w-[100%] dark:bg-slate-800 h-[100%]'>
           <div className='p-2 flex gap-2 border-b dark:border-slate-700'>
             {[1, 2, 3].map((_, index) => (
@@ -89,8 +98,8 @@ export default function SendToFriends({ closeShareOverlay, postId }) {
             <div className='p-1 relative flex-1'>
               <input
                 type="text"
-                placeholder="Search conversations..."
-                // onChange={handleChange}
+                placeholder="Search friends..."
+                onChange={(e) => handleChange(e)}
                 className="w-full px-4 py-2 pr-10 text-sm rounded-lg border dark:bg-slate-900 dark:text-slate-200 dark:border-slate-700 border-gray-200  dark:focus:ring-slate-700 focus:border-gray-300 focus:ring-2 focus:ring-gray-300 focus:outline-none transition-all placeholder:text-gray-400"
               />
               <label
@@ -108,8 +117,8 @@ export default function SendToFriends({ closeShareOverlay, postId }) {
               </svg>
             </button>
           </div>
-          <div className='p-2 overflow-y-auto scrollbar flex flex-col gap-2 w-[100%] h-[100%]'>
-            {friendList.map((friend, index) =>
+          <div className='p-3 overflow-y-auto scrollbar flex flex-col gap-2 w-[100%] h-[100%]'>
+            {filteredFriendList.map((friend, index) =>
               <div key={index} className='flex items-center'>
                 <Link className='mt-2 shrink-0' to={`/${friend.username}`}>
                   <img src={`/api/get-pfp?id=${friend.pfp_id}`} alt="profile" className="w-8 h-8 rounded-full object-cover" />
@@ -127,7 +136,7 @@ export default function SendToFriends({ closeShareOverlay, postId }) {
                 </button>
               </div>
             )}
-            {friendList.length===0 && <div className="leading-none m-auto dark:text-gray-400 text-gray-600">No friends</div>}
+            {filteredFriendList.length===0 && <div className="leading-none m-auto dark:text-gray-400 text-gray-600">No friends</div>}
           </div>
         </div>)}
     </div>
