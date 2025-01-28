@@ -1,3 +1,4 @@
+import { getDate, getMonth } from '../../utils/timeConversion.js'
 import useGetMessage from '../hooks/useGetMessage.js';
 import useListenMessage from '../hooks/useListenMessage.js';
 import Message from './Message.jsx';
@@ -6,6 +7,7 @@ import MessagesSketeleton from './MessagesSkeleton.jsx'
 export default function Messages() {
   const { loading, messages } = useGetMessage()
   useListenMessage()
+  let MM='', DD=''
 
   return (
     <div className="space-y-4 dark:bg-slate-900 dark:text-slate-100 flex flex-col">
@@ -20,8 +22,16 @@ export default function Messages() {
               return
             }
           })
+          const dd= getDate(message.createdAt)
+          const mm = getMonth(message.createdAt)
+          const prevDD = DD
+          const prevMM = MM
+
+          DD = dd
+          MM = mm
           return(
-          <Message key={message._id} message={message} replyMessage={replyMessage}/>
+          <Message key={message._id} message={message} replyMessage={replyMessage}
+          dd={dd} mm={mm} prevDD={prevDD} prevMM={prevMM}/>
         )})
       ) : (
         <div className="flex items-center justify-center h-full text-gray-500">
