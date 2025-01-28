@@ -418,69 +418,76 @@ function Posts(props) {
 
     const savePost = async(postId, userId) =>
     {
-      try
+      if(postId && userId)
       {
-        const response = await fetch(`/api/save/post/${postId}/user/${userId}`,{
-          method: 'POST'
-        })
-
-        const data = await response.json()
-
-        if(response.ok)
+        try
         {
-          props.setPosts((prevPosts) =>
-            prevPosts.map((p) =>
-                p._id === postId ? { ...p, isUpdating: true } : p
-            ))
-          setTimeout(() => {
-            props.setPosts((prevPosts) =>
-              prevPosts.map((p) =>
-                p._id === postId ? { ...p, isUpdating: false } : p
-              )
-          )
-          }, 300)
-          if(props.savePage === true)
+          const response = await fetch(`/api/save/post/${postId}/user/${userId}`,{
+            method: 'POST'
+          })
+
+          const data = await response.json()
+
+          if(response.ok)
           {
             props.setPosts((prevPosts) =>
-              prevPosts.filter((p) =>
-                p._id !== postId
-              )
+              prevPosts.map((p) =>
+                  p._id === postId ? { ...p, isUpdating: true } : p
+              ))
+            setTimeout(() => {
+              props.setPosts((prevPosts) =>
+                prevPosts.map((p) =>
+                  p._id === postId ? { ...p, isUpdating: false } : p
+                )
             )
+            }, 300)
+            if(props.savePage === true)
+            {
+              props.setPosts((prevPosts) =>
+                prevPosts.filter((p) =>
+                  p._id !== postId
+                )
+              )
+            }
+
+            if(data.value)
+            {
+              setSaveStatus((prev) => !prev)
+            }
           }
-          setSaveStatus((prev) => !prev)
+          else
+          {
+            console.error('Error saving post:', data.message)
+          }
         }
-        else
+        catch(err)
         {
-          console.error('Error saving post:', data.message)
+          console.error('Error saving post:', err)
         }
-      }
-      catch(err)
-      {
-        console.error('Error saving post:', err)
       }
     }
 
     const getSaveStatus = async(postId, userId) => {
-      try
-      {
-        const response = await fetch(`/api/save/get-status/post/${postId}/user/${userId}`)
-        
-        const data = await response.json()
+        try
+        {
+          const response = await fetch(`/api/save/get-status/post/${postId}/user/${userId}`)
+          
+          const data = await response.json()
 
-        if(response.ok)
-        {
-          setSaveStatus(() => data.status)
-          setOptionsState(() => true)
+          if(response.ok)
+          {
+            setSaveStatus(() => data.status)
+            setOptionsState(() => true)
+          }
+          else
+          {
+            console.error('Error getting save status:', data.message)
+          }
         }
-        else
+        catch(err)
         {
-          console.error('Error getting save status:', data.message)
+          console.error('Error getting save status:',err)
         }
-      }
-      catch(err)
-      {
-        console.error('Error getting save status:',err)
-      }
     }
 
     const handleTagSearch = async (tags) => {
