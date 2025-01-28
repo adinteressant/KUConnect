@@ -714,7 +714,7 @@ function Posts(props) {
                       {post.likes>0 &&
                         <button 
                           onClick={() => openLikeOverlay(post._id)} 
-                          className="text-sm text-gray-600 dark:text-gray-400 hover:text-cyan-600 transition-all duration-300"
+                          className="text-sm text-gray-600 dark:text-gray-400 hover:text-cyan-600 dark:hover:text-cyan-600 transition-all duration-300"
                         >  
                           {(post.likes<3
                             ? `Liked by ${post.recentLikes.join(' and ')}`
@@ -727,14 +727,14 @@ function Posts(props) {
                       
                         {/* comment information */}
                         {post.comments>0 &&
-                          <button onClick={() => openCommentOverlay(post._id)} className="text-sm dark:text-gray-400 text-gray-600 hover:text-cyan-600 transition-all duration-300">  
+                          <button onClick={() => openCommentOverlay(post._id)} className="text-sm dark:text-gray-400 dark:hover:text-cyan-600 text-gray-600 hover:text-cyan-600 transition-all duration-300">  
                             {post.comments }{post.comments === 1 ? ` comment`: ` comments`}
                           </button>
                         }
 
                         {/* share information */}
                         {post.shares.length>0 &&
-                          <button className="text-sm text-gray-600 dark:text-gray-400 hover:text-cyan-600 transition-all duration-300">  
+                          <button className="text-sm text-gray-600 dark:text-gray-400 dark:hover:text-cyan-600 hover:text-cyan-600 transition-all duration-300">  
                             {post.shares.length} shares
                           </button>
                         }
