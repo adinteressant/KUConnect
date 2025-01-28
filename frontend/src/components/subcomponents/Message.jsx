@@ -17,9 +17,9 @@ export default function Message({ message, replyMessage }) {
   const { selectedConversation } = useConversation()
   const fromMe = message.senderId == authUserId
   const positionClass = fromMe ? 'items-end justify-end' : 'items-start justify-start'
-  const colorClass = fromMe ? `${!timeDisplay?`bg-cyan-500`:`bg-cyan-600`} text-white`:`${!timeDisplay?`bg-gray-200 dark:bg-slate-600 dark:text-slate-200`:`dark:bg-slate-500 dark:text-slate-200 bg-gray-300`} text-gray-900`
+  const colorClass = fromMe ? `${!timeDisplay ? `bg-cyan-500` : `bg-cyan-600`} text-white` : `${!timeDisplay ? `bg-gray-200 dark:bg-slate-600 dark:text-slate-200` : `dark:bg-slate-500 dark:text-slate-200 bg-gray-300`} text-gray-900`
 
-  const{setReplyOf,setReply} = useReply()
+  const { setReplyOf, setReply } = useReply()
 
   const displayTime = () => {
     setTimeDisplay(timeDisplay => !timeDisplay)
@@ -41,7 +41,7 @@ export default function Message({ message, replyMessage }) {
           </div>
         )
       }
-      <div className={`flex flex-col ${!fromMe? 'items-start' : 'items-end'}  max-w-[60%]`}>
+      <div className={`flex flex-col ${!fromMe ? 'items-start' : 'items-end'}  max-w-[60%]`}>
         {replyMessage?.message && (
           <div className="dark:bg-slate-800 p-2 rounded-md flex gap-2 pr-3
           bg-gray-100 text-gray-800 dark:text-gray-200">
@@ -51,11 +51,6 @@ export default function Message({ message, replyMessage }) {
             </div>
           </div>
         )}
-        {message.postId ?
-          <Link className='p-4' to={`/post/${message.postId}`}>
-            Shared a post
-          </Link>
-          :
           <div className="flex items-center gap-2">
             {
               fromMe &&
@@ -73,38 +68,42 @@ export default function Message({ message, replyMessage }) {
                       <circle cx="5" cy="12" r="1" />
                     </svg>
                   </div>
-                  <MessageInfo isVisible={showMessageInfo} msg={message} />
+                  <MessageInfo isVisible={showMessageInfo} msg={message} post={message.postId}/>
                 </div>
               )
-          }
-          <div className="flex flex-col items-end">
-          <div className={`${colorClass} p-3 rounded-lg cursor-pointer break-all
-            ${fromMe && `hovered-class`}
-          `}
-            onClick={displayTime}
-          >
-            {message.message}
-          </div>
-          <div className={`flex justify-between w-full px-2
-            ${!timeDisplay ? `opacity-0 invisible max-h-0 overflow-hidden` : `opacity-100 visible`}`}>
-          <div className={`text-[0.6rem] text-gray-500 transition-all duration-150 ease-in-out`}>
-            {message.edited ? 'Edited': ''}
-          </div>
-          <div className={`text-[0.6rem] text-gray-500 transition-all duration-150 ease-in-out`}>
-          {getHours(message.createdAt)} : {getMinutes(message.createdAt)}
-          </div>
-          </div>
-          </div>
-          {!fromMe &&
-        (<div className="p-1 hidden group-hover:block cursor-pointer
+            }
+            <div className="flex flex-col items-end">
+              
+              {message.postId?
+                <Link className={`p-3 ${colorClass} rounded-lg cursor-pointer`} to={`/post/${message.postId}`}>
+                  {fromMe?'You sent a post':'username sent a post'}
+                </Link>
+                :
+                <div className={`${colorClass} p-3 rounded-lg cursor-pointer break-all
+                    ${fromMe && `hovered-class`}
+                  `}
+                  onClick={displayTime}
+                >
+                  {message.message}
+                </div>}
+              <div className={`flex justify-between w-full px-2
+                ${!timeDisplay ? `opacity-0 invisible max-h-0 overflow-hidden` : `opacity-100 visible`}`}>
+                <div className={`text-[0.6rem] text-gray-500 transition-all duration-150 ease-in-out`}>
+                  {message.edited ? 'Edited' : ''}
+                </div>
+                <div className={`text-[0.6rem] text-gray-500 transition-all duration-150 ease-in-out`}>
+                  {getHours(message.createdAt)} : {getMinutes(message.createdAt)}
+                </div>
+              </div>
+            </div>
+            {!fromMe &&
+              (<div className="p-1 hidden group-hover:block cursor-pointer
               hover:bg-gray-200 dark:hover:bg-gray-700 rounded-full"
-          onClick={() => { setReply(true); setReplyOf(message) }}>
-          <Reply className="dark:text-slate-200 text-gray-600" />
-        </div>)
-      }
+                onClick={() => { setReply(true); setReplyOf(message) }}>
+                <Reply className="dark:text-slate-200 text-gray-600" />
+              </div>)
+            }
           </div>
-          
-        }
       </div>
 
     </div>

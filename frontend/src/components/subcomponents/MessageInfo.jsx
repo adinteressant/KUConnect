@@ -4,7 +4,7 @@ import useReply from '../../zustand/useReply'
 import { Loader2 } from 'lucide-react'
 import useEditMessage from '../../zustand/useEditMessage'
 
-export default function MessageInfo({isVisible,msg}){
+export default function MessageInfo({isVisible,msg,post}){
   const [loading,setLoading] = useState(false)
   const {selectedConversation,setMessages} = useConversation()  
   const {reply,setReply,setReplyOf} = useReply()
@@ -52,11 +52,11 @@ export default function MessageInfo({isVisible,msg}){
       Reply
     </div>
 
-    <div className="p-2 hover:bg-gray-200 dark:hover:bg-slate-900 cursor-pointer
+    {post===null && <div className="p-2 hover:bg-gray-200 dark:hover:bg-slate-900 cursor-pointer
     border-b border-gray-200 dark:border-slate-700"
     onClick={()=>{handleEdit(msg)}}
     >Edit
-    </div>
+    </div>}
 
     <div className="dark:hover:bg-slate-900 dark:border-slate-700 p-2 hover:bg-gray-200 cursor-pointer hover:rounded-b-md"
       onClick={async () => {
