@@ -21,6 +21,10 @@ const messageSchema = new mongoose.Schema({
     type:Boolean,
     default:false
   },
+  edited:{
+    type:Boolean,
+    default:false
+  },
   replyOf:{
     type:mongoose.Schema.Types.ObjectId,
     ref:'Message',

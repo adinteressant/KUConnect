@@ -129,6 +129,7 @@ export const deleteMessageController = async (req,res) => {
 }
 
 export const editMessageController = async (req,res) => {
+  console.log('edited called')
   const { senderId } = req
   const { receiverId } = req.query
   const {message,id} = req.body
@@ -138,7 +139,10 @@ export const editMessageController = async (req,res) => {
   let conversation
   try{
     await Message.findByIdAndUpdate(id,
-      {message}
+      {
+        message,
+        edited:true
+      }
     )
     conversation = await Conversation.findOne({
       participants:{$all:[senderId,receiverId]}

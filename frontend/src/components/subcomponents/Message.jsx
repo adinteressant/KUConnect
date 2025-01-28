@@ -85,9 +85,14 @@ export default function Message({ message, replyMessage }) {
           >
             {message.message}
           </div>
-          <div className={`text-[0.6rem] text-gray-500 transition-all duration-150 ease-in-out
+          <div className={`flex justify-between w-full px-2
             ${!timeDisplay ? `opacity-0 invisible max-h-0 overflow-hidden` : `opacity-100 visible`}`}>
+          <div className={`text-[0.6rem] text-gray-500 transition-all duration-150 ease-in-out`}>
+            {message.edited ? 'Edited': ''}
+          </div>
+          <div className={`text-[0.6rem] text-gray-500 transition-all duration-150 ease-in-out`}>
           {getHours(message.createdAt)} : {getMinutes(message.createdAt)}
+          </div>
           </div>
           </div>
           {!fromMe &&
