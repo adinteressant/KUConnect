@@ -1,13 +1,15 @@
-import useConversation from '../../zustand/useConversation'
 import MessageInfo from './MessageInfo'
 
 import { getHours, getMinutes } from '../../utils/timeConversion'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Reply } from 'lucide-react'
+
 import useReply from '../../zustand/useReply'
+import useConversation from '../../zustand/useConversation'
+
 import { Link } from 'react-router-dom'
 
-export default function Message({ message, replyMessage }) {
+export default function Message({ message, replyMessage, mm, dd, prevMM,prevDD }) {
   //logged in user 
 
   const [timeDisplay, setTimeDisplay] = useState(false)
@@ -30,8 +32,15 @@ export default function Message({ message, replyMessage }) {
   const removeMessageInfo = () => {
     setShowMessageInfo(false)
   }
-
-  return (
+  return (<div>
+    {(dd!=prevDD || mm!=prevMM) &&
+    (<div className="text-[.75rem] text-gray-500 w-full flex justify-center">
+      <div>
+      {mm}&nbsp;{dd}
+      </div>
+    </div>
+    )
+    }
     <div className={`w-full flex ${positionClass} space-x-4 items-center group`}>
       {!fromMe &&
         (
@@ -107,5 +116,6 @@ export default function Message({ message, replyMessage }) {
       </div>
 
     </div>
+  </div>
   )
 }

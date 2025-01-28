@@ -85,16 +85,16 @@ export default function SendToFriends({ closeShareOverlay, postId }) {
   return (
     <div className='flex flex-col w-[100%] h-[100%]'>
       {loadingList ?
-        (<div className='flex flex-col w-[100%] dark:bg-slate-800 h-[100%]'>
+        (<div className='flex flex-col w-[100%] dark:bg-slate-900 h-[100%]'>
           <div className='p-2 flex border-b dark:border-slate-700'>
-            <button className={`w-[80%] py-4 rounded-lg bg-gray-200 dark:bg-slate-900 animate-pulse`}>
+            <button className={`w-[80%] py-4 rounded-lg bg-gray-200 dark:bg-slate-800 animate-pulse`}>
             </button>
           </div>
           <div className='p-3 overflow-hidden flex flex-col gap-6 w-[100%] h-[100%]'>
             {[1, 2, 3, 4].map((_, index) => (<div key={index} className='flex'>
-              <div className='mt-2 shrink-0 w-8 h-8 rounded-full object-cover dark:bg-slate-900 bg-gray-200 animate-pulse'>
+              <div className='mt-2 shrink-0 w-8 h-8 rounded-full object-cover dark:bg-slate-800 bg-gray-200 animate-pulse'>
               </div>
-              <div className='ml-2 bg-gray-200 dark:bg-slate-900 w-[40%] h-[120%] rounded-xl animate-pulse object-cover'>
+              <div className='ml-2 bg-gray-200 dark:bg-slate-800 w-[40%] h-[120%] rounded-xl animate-pulse object-cover'>
               </div>
             </div>))}
           </div>
@@ -128,7 +128,7 @@ export default function SendToFriends({ closeShareOverlay, postId }) {
             {friendList
               .filter(friend => friend.username.toLowerCase().includes(searchValue.toLowerCase()))
               .map((friend, index) =>
-              <div key={index} className='flex items-center pb-2 border-b border-gray-200 dark:border-slate-700'>
+              <div key={index} className='flex items-center pb-2 dark:border-slate-700'>
                 <Link className=' shrink-0' to={`/${friend.username}`}>
                   <img src={`/api/get-pfp?id=${friend.pfp_id}`} alt="profile" className="w-8 h-8 rounded-full object-cover" />
                 </Link>
