@@ -28,7 +28,12 @@ export default function SpecificPost()
             {loadingState?
             <PostSkeleton />
             :
+            posts?
             <Posts posts={posts} setPosts={setPosts}/>
+            :
+            <div className="max-w-2xl m-auto mt-4 bg-white dark:bg-slate-800 dark:text-gray-200 p-4 rounded-lg shadow-md text-center">
+                This post is no longer available.
+            </div>
             }
         </div>
     )
