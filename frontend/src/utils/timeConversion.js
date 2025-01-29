@@ -16,66 +16,72 @@ export function getMinutes(stringTime){
   return nepaliTime.getUTCMinutes().toString().length<2?`0${nepaliTime.getUTCMinutes()}`:nepaliTime.getUTCMinutes()
 }
 
-export function getMonth(stringTime){
+export function getMonthAndDate(stringTime){
   const time = new Date(stringTime)
 
   const offsetMinutes = 5 * 60 + 45
   const nepaliTime = new Date(time.getTime() + offsetMinutes * 60 * 1000)
 
   const month = nepaliTime.getUTCMonth() + 1
-  let monthString
+  let mm
   switch(month){
     case 1:
-      monthString = 'JAN'
+      mm = 'JAN'
       break
     case 2:
-      monthString = 'FEB'
+      mm = 'FEB'
       break
     case 3:
-      monthString = 'MAR'
+      mm = 'MAR'
       break
     case 4:
-      monthString = 'APR'
+      mm = 'APR'
       break
     case 5:
-      monthString = 'MAY'
+      mm = 'MAY'
       break
     case 6:
-      monthString = 'JUN'
+      mm = 'JUN'
       break
     case 7:
-      monthString = 'JUL'
+      mm = 'JUL'
       break
     case 8:
-      monthString = 'AUG'
+      mm = 'AUG'
       break
     case 9:
-      monthString = 'SEP'
+      mm = 'SEP'
       break
     case 10:
-      monthString = 'OCT'
+      mm = 'OCT'
       break
     case 11:
-      monthString = 'NOV'
+      mm = 'NOV'
       break
     case 12:
-      monthString = 'DEC'
+      mm = 'DEC'
       break
     default:
-      monthString = ''
+      mm = ''
       break
   }
-  return monthString
-  
-}
-
-export function getDate(stringTime){
-  const time = new Date(stringTime)
-
-  const offsetMinutes = 5 * 60 + 45
-  const nepaliTime = new Date(time.getTime() + offsetMinutes * 60 * 1000)
 
   const date = nepaliTime.getUTCDate()
   const dd = date.toString().length < 2 ? `0${date}` : date
-  return dd
+
+  const {MM,DD} = todaysDate()
+  if(month==MM && dd==DD){
+    return {mm:'TODAY',dd:''}
+  }
+
+  return {mm,dd}
+  
+}
+
+function todaysDate(){
+  const today = new Date()
+  const MM = today.getMonth()+1
+  const DD= today.getDate()
+  
+  return {MM,DD}
 }
