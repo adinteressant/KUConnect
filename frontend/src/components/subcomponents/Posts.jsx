@@ -577,18 +577,25 @@ function Posts(props) {
                         &#183;
                         
                         {urlPostId===post._id?
-                        <div>
-                          {new Date(post.createdAt).toLocaleDateString('en-US', { 
-                            day: '2-digit', 
-                            month: 'long', 
-                            year: 'numeric' 
-                          })}
-                          &nbsp;at&nbsp;
-                          {new Date(post.createdAt).toLocaleTimeString([], { 
-                            hour: '2-digit', 
-                            minute: '2-digit' 
-                          })} 
-                        </div>
+                        <>
+                          <div>
+                            {new Date(post.createdAt).toLocaleDateString('en-US', { 
+                              day: '2-digit', 
+                              month: 'long', 
+                              year: 'numeric' 
+                            })}
+                            &nbsp;at&nbsp;
+                            {new Date(post.createdAt).toLocaleTimeString([], { 
+                              hour: '2-digit', 
+                              minute: '2-digit' 
+                            })}
+                          </div>
+                          {post.edited &&
+                          <div>
+                            &#183;
+                            Edited
+                          </div>}
+                        </>
                         :
                         <div>
                           {formatTimeAgo(post.createdAt)} ago

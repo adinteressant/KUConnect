@@ -13,7 +13,7 @@ const postSchema = new mongoose.Schema({
   recentLikes: { type: [String], default:[] },
   shares: { type: Number, default: 0 },
   comments: { type: Number, default: 0 },
-  createdAt: { type: Date, default: Date.now },
-});
+  edited: { type:Boolean, default: false }
+}, { timestamps: true });
 
 export default mongoose.model('Post', postSchema);

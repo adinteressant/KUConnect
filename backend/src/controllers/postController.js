@@ -169,7 +169,7 @@ export const updatePost = async(req, res) => {
       [updatedPost] = await Promise.all([
         Post.findByIdAndUpdate(
           post._id,
-          { $set: { content, tags, images: null } },
+          { $set: { content, tags, images: null, edited: true } },
           { new: true }
         ),
         PostImages.findByIdAndDelete(
@@ -186,7 +186,7 @@ export const updatePost = async(req, res) => {
 
       updatedPost = await Post.findByIdAndUpdate(
         post._id,
-        { $set: { content, tags, images: updatedPostImages._id } },
+        { $set: { content, tags, images: updatedPostImages._id, edited: true } },
         { new: true }
       )
     }
@@ -195,7 +195,7 @@ export const updatePost = async(req, res) => {
       [updatedPost, updatedPostImages] = await Promise.all([
         Post.findByIdAndUpdate(
           post._id,
-          { $set: { content, tags } },
+          { $set: { content, tags, edited: true } },
           { new: true }
         ),
         PostImages.findByIdAndUpdate(
