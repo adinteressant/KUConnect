@@ -1,4 +1,4 @@
-import { getDate, getMonth } from '../../utils/timeConversion.js'
+import { getMonthAndDate } from '../../utils/timeConversion.js'
 import useGetMessage from '../hooks/useGetMessage.js';
 import useListenMessage from '../hooks/useListenMessage.js';
 import Message from './Message.jsx';
@@ -22,8 +22,7 @@ export default function Messages() {
               return
             }
           })
-          const dd= getDate(message.createdAt)
-          const mm = getMonth(message.createdAt)
+          const {mm,dd} = getMonthAndDate(message.createdAt)
           const prevDD = DD
           const prevMM = MM
 
