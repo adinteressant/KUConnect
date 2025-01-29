@@ -4,6 +4,8 @@ import Posts from './Posts'
 import PostSkeleton from './PostSkeleton'
 import { Loader2 } from 'lucide-react'
 import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
+import rehypeRaw from 'rehype-raw'
 
 export default function SpecificPost({ msgPostId }) {
   const postId = msgPostId || useParams().postId
@@ -38,7 +40,10 @@ export default function SpecificPost({ msgPostId }) {
                   {posts[0].username}'s Post
                 </div>
                 <div className='py-4 px-2 border-b border-white dark:border-gray-400 text-sm'>
-                  <ReactMarkdown>
+                  <ReactMarkdown
+                    rehypePlugins={[rehypeRaw]}
+                    remarkPlugins={[remarkGfm]}
+                  >
                     {
                       posts[0].content.length>50?
                         posts[0].content.slice(0,50) + '...'
