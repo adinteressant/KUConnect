@@ -1,4 +1,5 @@
 import MessageInfo from './MessageInfo'
+import SpecificPost from './SpecificPost'
 
 import { getHours, getMinutes } from '../../utils/timeConversion'
 import { useEffect, useState } from 'react'
@@ -66,7 +67,7 @@ export default function Message({ message, replyMessage, mm, dd, prevMM,prevDD }
               (
                 <div className="flex flex-col items-end relative"
                   onMouseLeave={removeMessageInfo}>
-                  <div className={`p-1 hidden affected-class group-hover:block cursor-pointer
+                  <div className={`p-1 opacity-0 affected-class group-hover:opacity-100 cursor-pointer
                     hover:bg-gray-200 dark:hover:bg-gray-700 rounded-full`}
                     onClick={displayMessageInfo}
                   >
@@ -84,8 +85,8 @@ export default function Message({ message, replyMessage, mm, dd, prevMM,prevDD }
             <div className="flex flex-col items-end">
               
               {message.postId?
-                <Link className={`p-3 ${colorClass} rounded-lg cursor-pointer`} to={`/post/${message.postId}`}>
-                  {fromMe?'You sent a post':'username sent a post'}
+                <Link className='rounded-lg shadow-md bg-sky-200 hover:bg-sky-100 dark:bg-sky-800 dark:hover:bg-sky-900' to={`/post/${message.postId}`}>
+                  <SpecificPost msgPostId={message.postId} />
                 </Link>
                 :
                 <div className={`${colorClass} p-3 rounded-lg cursor-pointer break-all

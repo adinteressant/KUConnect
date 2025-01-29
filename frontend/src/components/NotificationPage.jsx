@@ -3,6 +3,7 @@ import axios from 'axios';
 import formatTimeAgo from '../utils/generateTimeAgo.js';
 import { useOutletContext } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import ReactMarkdown from 'react-markdown';
 
 const NotificationPage = () => {
   const [userProfiletags, setUserProfile] = useState({tags:[]});
@@ -108,7 +109,7 @@ const NotificationPage = () => {
                   <h3 className="text-lg font-semibold dark:text-gray-300 text-gray-800">
                     A new post by {post.username}!
                   </h3>
-                  <p className="text-gray-600 dark:text-gray-400">{post.content}</p>
+                  <p className="text-gray-600 dark:text-gray-400"><ReactMarkdown>{post.content}</ReactMarkdown></p>
                 </div>
                 <div className="text-gray-400 dark:text-gray-500">{formatTimeAgo(post.createdAt)}</div>
               </div>
