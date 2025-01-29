@@ -16,7 +16,7 @@ export default function ReplyMessageBlock(){
   return <div className="flex justify-between px-4 py-2
   bg-gray-100 dark:bg-slate-900 dark:text-gray-200">
     <div>
-      Replying to: {replyOf?.message}
+      Replying to: {replyOf?.message || 'Post'}
     </div>
     <div onClick={()=>{setReplyOf({});setReply(false)}}
     className="cursor-pointer">

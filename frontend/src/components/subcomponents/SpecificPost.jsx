@@ -33,7 +33,7 @@ export default function SpecificPost({ msgPostId }) {
           </div>
           :
           posts ?
-              <div className={`rounded-lg shadow-md text-gray-600 dark:text-white`}>
+              <div className={`text-gray-600 dark:text-white`}>
                 <div className='py-2 px-3 border-b border-white dark:border-gray-400 text-sm'>
                   {posts[0].username}'s Post
                 </div>

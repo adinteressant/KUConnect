@@ -52,12 +52,15 @@ export default function Message({ message, replyMessage, mm, dd, prevMM,prevDD }
         )
       }
       <div className={`flex flex-col ${!fromMe ? 'items-start' : 'items-end'}  max-w-[60%]`}>
-        {replyMessage?.message && (
-          <div className="dark:bg-slate-800 p-2 rounded-md flex gap-2 pr-3
+        {replyMessage && (
+          <div className="dark:bg-slate-800 p-2 rounded-md flex items-center gap-2 pr-3
           bg-gray-100 text-gray-800 dark:text-gray-200">
             <Reply />
             <div>
-              {replyMessage.message}
+              {replyMessage.message || 
+              <div className='border border-gray-400 rounded-lg'>
+                <SpecificPost msgPostId={replyMessage.postId}/>
+              </div>}
             </div>
           </div>
         )}
