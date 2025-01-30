@@ -110,8 +110,8 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')).render(
   <ThemeProvider>
-  <StrictMode>
+  {/* <StrictMode> */}
       <RouterProvider router={router} />
-  </StrictMode>
+  {/* </StrictMode> */}
   </ThemeProvider>
 );
