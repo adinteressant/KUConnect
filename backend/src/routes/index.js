@@ -15,6 +15,7 @@ import profileRouter from '../routes/profileRoute.js'
 import messageRouter from '../routes/messageRoutes.js'
 import friendRouter from '../routes/friendRoutes.js'
 import getEmbedRouter from '../routes/embeds.js'
+import deleteAccountRouter from '../controllers/deleteAccountController.js'
 
 const router = Router()
 
@@ -33,5 +34,6 @@ router.use(updatePictureRouter)
 router.use(profileRouter)
 router.use(messageRouter)
 router.use(friendRouter)
+router.use(deleteAccountRouter)
 
 export default router
