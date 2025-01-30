@@ -36,9 +36,9 @@ export default function SetInfoGoogle(){
   }
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center">
-      <div className="w-full max-w-md p-8 rounded-lg shadow-md">
-        <h1 className="text-4xl font-serif mb-8 text-center text-gray-800 dark:text-gray-200">Enter details</h1>
+    <div className="min-h-screen w-full flex dark:bg-gray-900 items-center justify-center">
+      <div className="w-full max-w-md p-8 dark:bg-gray-800 rounded-lg shadow-md">
+        <h1 className="text-4xl font-serif mb-8 text-center  text-gray-800 dark:text-gray-200">Enter details</h1>
         <form className="w-full space-y-6" onSubmit={handleSubmit}>
           <div className="w-full space-y-2">
             <input 
@@ -46,7 +46,7 @@ export default function SetInfoGoogle(){
               placeholder="Enter username" 
               required
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full px-4 py-3 rounded-md text-base transition-colors bg-gray-100 focus:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full px-4 py-3 rounded-md text-base dark:bg-slate-900 dark:text-gray-200 dark:border-slate-800 transition-colors bg-gray-100 focus:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-cyan-500"
             />
           </div>
           <div className="pt-2">

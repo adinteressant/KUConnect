@@ -143,7 +143,7 @@ export default function SettingsPage(user) {
 
   const handlepasswordchange = async (e) => {
     e.preventDefault();
-    if (passwordform.newpassword !== passwordform.confirmpassword) {
+    if (passwordform.newPassword !== passwordform.confirmPassword) {
       alert("passwords don't match");
       return;
     }
@@ -169,9 +169,26 @@ export default function SettingsPage(user) {
     }
   };
 
-  const handleDeleteAccount = (e) => {
+  const handleDeleteAccount = async (e) => {
     e.preventDefault();
-    setIsDeleteModalOpen(false);
+    try{
+        await axios.post('/api/delete-account',
+            {
+                user_id: userProfile.user_id,
+            },
+            { withCredentials: true }
+        );
+        alert('account deleted successfully');
+        window.location.href = '/';
+        setIsDeleteModalOpen(false);
+        localStorage.setItem('isAuthenticated', false)
+        localStorage.setItem('isLoggedIn', false)
+    }
+    catch (error) {
+        console.error('error deleting account:', error);
+        alert('failed to delete account');
+        }
+   
   };
 
   return (
