@@ -94,7 +94,7 @@ export const getComments = async(req, res) =>
         username: user.username,
         role: user.role,
         comment: comment.content,
-        likeStatus: like.userId.includes(userId),
+        likeStatus: like?.userId.includes(userId),
         likes: comment.likes,
         replies: comment.replies,
         created: comment.createdAt
