@@ -188,7 +188,7 @@ function Posts(props) {
         }
         
         try {
-        const response = await fetch(`/api/posts/${post._id.toString()}/users/${userProfile.user_id.toString()}/add-comment`, {
+        const response = await fetch(`/api/post/${post._id.toString()}/user/${userProfile.user_id.toString()}/add-comment`, {
             method: 'POST',
             headers: {
             'Content-Type': 'application/json'
