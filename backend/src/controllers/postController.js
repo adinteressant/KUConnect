@@ -24,6 +24,12 @@ export const getAllPosts = async (req, res) => {
   }
 }
 
+// Get homepage posts
+export const getHomepagePosts = async(req, res) =>
+{
+  
+}
+
 const incrementCount = async (tags) => {
   if (tags.length != 0){
     let UsersWithTags = await PublicInfo.find({ tags: { $in: tags } })

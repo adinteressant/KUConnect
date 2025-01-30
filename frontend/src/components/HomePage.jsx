@@ -58,8 +58,23 @@ const HomePage = () => {
   }, [])
 
   // Fetch all posts on mount
+  // useEffect(() => {
+  //   fetch(`/api/get-posts`)
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       setPosts(() => data)
+  //       setTimeout(() => {
+  //         setPostLoadingState(() => false)
+  //       }, 500)
+  //     })
+  //     .catch((e) => {
+  //       console.error('Error fetching posts:', e)
+  //     })
+  // }, [])
+
+  // Fetch posts acc to user
   useEffect(() => {
-    fetch(`/api/get-posts`)
+    fetch(`/api/homepage/posts/user/:userId/get-posts`)
       .then((response) => response.json())
       .then((data) => {
         setPosts(() => data)

@@ -1,5 +1,5 @@
 import express from 'express'
-import { createPost, updatePost, getAllPosts, getImages, searchPostsByTag, userPosts, getSpecificPost,  searchPostsByContent, deletePost } from '../controllers/postController.js'
+import { createPost, updatePost, getAllPosts, getHomepagePosts, getImages, searchPostsByTag, userPosts, getSpecificPost,  searchPostsByContent, deletePost } from '../controllers/postController.js'
 import { upload, validatePost, validateUser, validatePostDeletion } from '../middlewares/postMiddleware.js'
 // import generateFolderName from '../utils/generateFolderName.js'
 
@@ -7,6 +7,9 @@ const router = express.Router()
 
 // Route to get all posts
 router.get('/api/get-posts', getAllPosts)
+
+// Route to get filtered posts
+router.get('/api/homepage/posts/user/:userId/get-posts', getHomepagePosts)
 
 // Route to create a new post
 router.post('/api/create-post', upload, validatePost, createPost)
