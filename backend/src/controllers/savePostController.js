@@ -10,7 +10,7 @@ export const savePost = async(req, res) =>
         const save = await Save.findOneAndDelete({ postId, userId })
         if(save)
         {
-            return res.status(200).json({ message: 'Post has been unsaved successfully' })
+            return res.status(200).json({ message: 'Post has been unsaved successfully', value: true })
         }
 
         const savePost = new Save({
@@ -19,7 +19,7 @@ export const savePost = async(req, res) =>
         })
         savePost.save()
 
-        return res.status(200).json({ message: 'Post has been saved successfully' })
+        return res.status(200).json({ message: 'Post has been saved successfully', value: true })
     }
     catch(err)
     {

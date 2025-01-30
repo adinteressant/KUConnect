@@ -15,9 +15,13 @@ const messageSchema = new mongoose.Schema({
   },
   message:{
     type:String,
-    required:true
+    default: null
   },
   read:{
+    type:Boolean,
+    default:false
+  },
+  edited:{
     type:Boolean,
     default:false
   },
@@ -25,6 +29,11 @@ const messageSchema = new mongoose.Schema({
     type:mongoose.Schema.Types.ObjectId,
     ref:'Message',
     default:null
+  },
+  postId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref:'Post',
+    default: null
   }
 },{timestamps:true}) //timestamps:true will record the time when the message is saved
 

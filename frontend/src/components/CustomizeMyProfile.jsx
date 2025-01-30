@@ -48,33 +48,6 @@ const CustomizeMyProfile = () => {
     })();
   }, []);
 
-  const handlepasswordchange = async (e) => {
-    e.preventDefault();
-    if (passwordform.newpassword !== passwordform.confirmpassword) {
-      alert("passwords don't match");
-      return;
-    }
-
-    try {
-      await axios.post('/api/change-password', {
-        currentPassword: passwordform.currentpassword,
-        newPassword: passwordform.newpassword,
-        user_id: userprofile.user_id
-      }, { withCredentials: true });
-
-      alert('password changed successfully');
-      setshowpasswordmodal(false);
-      setpasswordform({
-        currentpassword: '',
-        newpassword: '',
-        confirmpassword: ''
-      });
-    } catch (error) {
-      console.error('error changing password:', error);
-      alert('failed to change password');
-    }
-  };
-
   const handleprofilepicselect = async (p) => {
     try {
       await axios.post(`/api/update-pfp?id=${p}`,
@@ -109,7 +82,7 @@ const CustomizeMyProfile = () => {
   };
 
   return (
-    <div className="flex items-center justify-center max-h-screen dark:bg-slate-900  bg-gray-100 p-4 overflow-y-auto">
+    <div className="flex items-center justify-center max-h-screen dark:bg-slate-900  bg-gray-100 p-4 overflow-y-auto scrollbar">
       <div className="w-full max-w-md p-6 bg-white dark:bg-slate-800 border dark:border-slate-950 rounded-lg shadow-lg">
         {/* Profile picture section */}
         <div className="relative w-32 h-32 mx-auto mb-6 md:w-40 md:h-40">

@@ -171,7 +171,7 @@ const FriendsPage = () => {
   };
 
   const LoadingSkeleton = () => (
-    <div className="dark:text-white p-6 overflow-y-auto">
+    <div className="dark:text-white p-6 overflow-y-auto scrollbar">
       <div className="mb-8 max-w-6xl mx-auto">
         {/* Title skeleton */}
         <div className="w-32 h-8 bg-gray-200 dark:bg-slate-800 rounded-lg mb-6 animate-pulse" />
@@ -228,7 +228,7 @@ const FriendsPage = () => {
     );
   }
   return (
-    <div className="dark:text-white p-6 overflow-y-auto">
+    <div className="dark:text-white p-6 overflow-y-auto scrollbar">
       <div className="mb-8 max-w-6xl mx-auto">
         <h1 className="text-2xl font-bold mb-6">Friends</h1>
         

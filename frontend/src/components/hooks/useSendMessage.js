@@ -5,21 +5,23 @@ const useSendMessage = (replyOf) => {
   const [loading,setLoading] = useState(false)
   const {messages,setMessages,selectedConversation} = useConversation()
   
-  const sendMessage = async (message) => {
+  const sendMessage = async (message, postId, receiverId) => {
     setLoading(true)
     try {
-      const response = await fetch(`/api/message/send/${selectedConversation.user_id}`,
+      const r = receiverId || selectedConversation.user_id
+      const response = await fetch(`/api/message/send/${r}`,
         {
           method:'POST',
           headers:{
             'Content-Type':'application/json'
           },
-          body:JSON.stringify({message,replyOf})
+          body:JSON.stringify({message,replyOf,postId})
         }
       )
       const data = await response.json()
       setMessages([...messages,data])
-    } catch (error) {
+      return true
+      } catch (error) {
       console.log(error)
     }finally{
       setLoading(false)

@@ -418,69 +418,76 @@ function Posts(props) {
 
     const savePost = async(postId, userId) =>
     {
-      try
+      if(postId && userId)
       {
-        const response = await fetch(`/api/save/post/${postId}/user/${userId}`,{
-          method: 'POST'
-        })
-
-        const data = await response.json()
-
-        if(response.ok)
+        try
         {
-          props.setPosts((prevPosts) =>
-            prevPosts.map((p) =>
-                p._id === postId ? { ...p, isUpdating: true } : p
-            ))
-          setTimeout(() => {
-            props.setPosts((prevPosts) =>
-              prevPosts.map((p) =>
-                p._id === postId ? { ...p, isUpdating: false } : p
-              )
-          )
-          }, 300)
-          if(props.savePage === true)
+          const response = await fetch(`/api/save/post/${postId}/user/${userId}`,{
+            method: 'POST'
+          })
+
+          const data = await response.json()
+
+          if(response.ok)
           {
             props.setPosts((prevPosts) =>
-              prevPosts.filter((p) =>
-                p._id !== postId
-              )
+              prevPosts.map((p) =>
+                  p._id === postId ? { ...p, isUpdating: true } : p
+              ))
+            setTimeout(() => {
+              props.setPosts((prevPosts) =>
+                prevPosts.map((p) =>
+                  p._id === postId ? { ...p, isUpdating: false } : p
+                )
             )
+            }, 300)
+            if(props.savePage === true)
+            {
+              props.setPosts((prevPosts) =>
+                prevPosts.filter((p) =>
+                  p._id !== postId
+                )
+              )
+            }
+
+            if(data.value)
+            {
+              setSaveStatus((prev) => !prev)
+            }
           }
-          setSaveStatus((prev) => !prev)
+          else
+          {
+            console.error('Error saving post:', data.message)
+          }
         }
-        else
+        catch(err)
         {
-          console.error('Error saving post:', data.message)
+          console.error('Error saving post:', err)
         }
-      }
-      catch(err)
-      {
-        console.error('Error saving post:', err)
       }
     }
 
     const getSaveStatus = async(postId, userId) => {
-      try
-      {
-        const response = await fetch(`/api/save/get-status/post/${postId}/user/${userId}`)
-        
-        const data = await response.json()
+        try
+        {
+          const response = await fetch(`/api/save/get-status/post/${postId}/user/${userId}`)
+          
+          const data = await response.json()
 
-        if(response.ok)
-        {
-          setSaveStatus(() => data.status)
-          setOptionsState(() => true)
+          if(response.ok)
+          {
+            setSaveStatus(() => data.status)
+            setOptionsState(() => true)
+          }
+          else
+          {
+            console.error('Error getting save status:', data.message)
+          }
         }
-        else
+        catch(err)
         {
-          console.error('Error getting save status:', data.message)
+          console.error('Error getting save status:',err)
         }
-      }
-      catch(err)
-      {
-        console.error('Error getting save status:',err)
-      }
     }
 
     const handleTagSearch = async (tags) => {
@@ -554,7 +561,7 @@ function Posts(props) {
                     post.isUpdating ? 'scale-105' : 'scale-100'
                   }`}
                 >
-                  <div className='flex gap-2 dark:text-slate-200 items-center'>
+                  <div className='flex gap-2 dark:text-slate-200 items-center mb-4'>
                     <Link to={`/${post.username}`}>
                       <img src={`/api/get-pfp?id=${post.pfp_id}`} className="h-9 w-9 rounded-full object-cover"/>
                     </Link>
@@ -570,17 +577,25 @@ function Posts(props) {
                         &#183;
                         
                         {urlPostId===post._id?
-                        <div>
-                          {new Date(post.createdAt).toLocaleTimeString([], { 
-                            hour: '2-digit', 
-                            minute: '2-digit' 
-                          })},&nbsp;
-                          {new Date(post.createdAt).toLocaleDateString('en-US', { 
-                            day: '2-digit', 
-                            month: 'long', 
-                            year: 'numeric' 
-                          })}
-                        </div>
+                        <>
+                          <div>
+                            {new Date(post.createdAt).toLocaleDateString('en-US', { 
+                              day: '2-digit', 
+                              month: 'long', 
+                              year: 'numeric' 
+                            })}
+                            &nbsp;at&nbsp;
+                            {new Date(post.createdAt).toLocaleTimeString([], { 
+                              hour: '2-digit', 
+                              minute: '2-digit' 
+                            })}
+                          </div>
+                          {post.edited &&
+                          <div>
+                            &#183;
+                            Edited
+                          </div>}
+                        </>
                         :
                         <div>
                           {formatTimeAgo(post.createdAt)} ago
@@ -588,53 +603,61 @@ function Posts(props) {
                       </div>
                     </div>
                   </div>
-                  
-                  <div className="mt-2 dark:text-slate-200 text-gray-800">
-
-                  <ReactMarkdown 
-                    components={{
-                      // Custom link rendering to keep existing link behavior
-                      a: ({node, ...props}) => {
-                        //const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/;
-                        const youtubeMatch = props.href.match(URL_REGEX);
-                        
-                        if (youtubeMatch) {
-                          return (
-                            <>
-                              <a 
-                                target='_blank' 
-                                className='text-blue-400' 
-                                {...props}
-                              >
-                                {props.children}
-                              </a>
-                              {post.images===null && <YouTubeEmbed videoUrl={props.href} />}
-                            </>
-                          );
-                        }
-                        
-                        return (
-                          <a
-                            target='_blank' 
-                            className='text-blue-400' 
-                            {...props}
-                          />
-                        );
-                      }
-                    }}
-                    rehypePlugins={[rehypeRaw]}
-                    remarkPlugins={[remarkGfm]}
-                  >
-                    {post.content}
-                  </ReactMarkdown>
-
-                  </div>
 
                   {post.tags && post.tags.length > 0 &&
-                  (<div className='mb-0.5'>
+                  (<div className='mb-2'>
                         {renderTags(post.tags)}
                     </div>
                   )}
+                  
+                  <div className="dark:text-slate-200 text-gray-800 break-all whitespace-pre-line">
+
+                    <ReactMarkdown 
+                      components={{
+                        p: ({node, children}) => {
+                          return <>{children}</>
+                        },
+                        a: ({node, ...props}) => {
+
+                          //Shriharsh's code commented
+                          //const youtubeMatch = props.href.match(URL_REGEX);
+
+                          const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/;
+                          const youtubeMatch = props.href.match(youtubeRegex);
+                          const isLastYouTubeLink = youtubeMatch && post.content.includes(props.href) &&
+                          props.href === post.content.split(/\s+/).reverse().find((link) => youtubeRegex.test(link));
+                          
+                          if (youtubeMatch) {
+                            return (
+                              <>
+                                <a 
+                                  target='_blank' 
+                                  className='text-blue-400' 
+                                  {...props}
+                                >
+                                  {props.children}
+                                </a>
+                                {post.images===null && isLastYouTubeLink && <YouTubeEmbed videoUrl={props.href} />}
+                              </>
+                            );
+                          }
+                          
+                          return (
+                            <a
+                              target='_blank' 
+                              className='text-blue-400' 
+                              {...props}
+                            />
+                          );
+                        }
+                      }}
+                      rehypePlugins={[rehypeRaw]}
+                      remarkPlugins={[remarkGfm]}
+                    >
+                      {post.content}
+                    </ReactMarkdown>
+
+                  </div>
 
                   {/* Display Images */}
                   {post.images === null ||
@@ -700,12 +723,12 @@ function Posts(props) {
                   {/* <hr className='absolute left-0 right-0 mt-4'/> */}
                   
                   {/* Likes, Comments, Shares Information */}
-                  <div className={`mt-6 flex items-center gap-4 pt-2 transition-all border-t pb-1 dark:border-slate-700 duration-300 ${isInfoDisplayed(post)?'opacity-100 h-max-screen':'opacity-0 h-max-0'}`}>
+                  <div className={`flex items-center gap-4 pt-2 transition-all border-t pb-1 dark:border-slate-700 duration-300 ${isInfoDisplayed(post)?'mt-4 opacity-100 h-max-screen':'opacity-0 max-h-0'}`}>
                     {/* like information */}
                       {post.likes>0 &&
                         <button 
                           onClick={() => openLikeOverlay(post._id)} 
-                          className="text-sm text-gray-600 dark:text-gray-400 hover:text-cyan-600 transition-all duration-300"
+                          className="text-sm text-gray-600 dark:text-gray-400 hover:text-cyan-600 dark:hover:text-cyan-600 transition-all duration-300"
                         >  
                           {(post.likes<3
                             ? `Liked by ${post.recentLikes.join(' and ')}`
@@ -718,14 +741,14 @@ function Posts(props) {
                       
                         {/* comment information */}
                         {post.comments>0 &&
-                          <button onClick={() => openCommentOverlay(post._id)} className="text-sm dark:text-gray-400 text-gray-600 hover:text-cyan-600 transition-all duration-300">  
+                          <button onClick={() => openCommentOverlay(post._id)} className="text-sm dark:text-gray-400 dark:hover:text-cyan-600 text-gray-600 hover:text-cyan-600 transition-all duration-300">  
                             {post.comments }{post.comments === 1 ? ` comment`: ` comments`}
                           </button>
                         }
 
                         {/* share information */}
                         {post.shares.length>0 &&
-                          <button className="text-sm text-gray-600 dark:text-gray-400 hover:text-cyan-600 transition-all duration-300">  
+                          <button className="text-sm text-gray-600 dark:text-gray-400 dark:hover:text-cyan-600 hover:text-cyan-600 transition-all duration-300">  
                             {post.shares.length} shares
                           </button>
                         }
@@ -802,7 +825,7 @@ function Posts(props) {
                   </div>
 
                   {/* comment button thichda dekhauney */}
-                  <div className={`border-t dark:border-slate-700 border-gray-200 transition-all duration-500 overflow-y-auto ease-in-out ${showCommentBox.find(obj => obj.postId===post._id).value? 'opacity-100 max-h-screen mt-2' : 'opacity-0 max-h-0 mt-0'}`}>
+                  <div className={`border-t dark:border-slate-700 border-gray-200 transition-all duration-500 overflow-y-auto scrollbar ease-in-out ${showCommentBox.find(obj => obj.postId===post._id).value? 'opacity-100 max-h-screen mt-2' : 'opacity-0 max-h-0 mt-0'}`}>
                     {/* <hr className='absolute left-0 right-0'/> */}
 
                     {/* Bhakhar gareko comment bhayo hai bhanera display garna ko lagi (ani overall comments chai paxi xuttai overlay maa dekhauney) */}
@@ -1124,15 +1147,7 @@ function Posts(props) {
                     ${overlayTransitionState?'opacity-100 scale-100':'opacity-0 scale-50'}
                     `}
               >
-                <button onClick={closeShareOverlay} className='absolute top-2 right-2 p-2 rounded-full dark:hover:bg-gray-700 hover:bg-gray-200 transition-all duration-300'>
-                  <svg width='24' height='24' viewBox='0 0 24 24'
-                    className='stroke-gray-600 dark:stroke-white fill-none'
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
-                  </svg>
-                </button>
-                <SendToFriends />
+                <SendToFriends closeShareOverlay={closeShareOverlay} postId={showShareOverlay} />
               </div>
             </div>
           )}

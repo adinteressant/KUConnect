@@ -5,6 +5,7 @@ import Messages from './Messages.jsx';
 import NoChatSelected from './NoChatSelected.jsx';
 import SendMessage from './SendMessage.jsx';
 import ReplyMessageBlock from './ReplyMessageBlock.jsx'
+import EditMessageBlock from './EditMessageBlock.jsx'
 
 export default function MessageContainer() {
   const { selectedConversation } = useConversation();
@@ -20,19 +21,19 @@ export default function MessageContainer() {
   // }, [selectedConversation]);
 
   return (
-    <div className="flex-1 flex flex-col">
+    <div className="flex-1 flex flex-col relative">
       {!selectedConversation ? (
         <NoChatSelected />
       ) : (
         <>
           {/* Fixed Header */}
-          <div className="w-full bg-white dark:bg-slate-900">
+          <div className="absolute z-10 top-0 w-full bg-white dark:bg-slate-900">
             <MessageHeader username={selectedConversation.username} />
           </div>
 
           {/* Scrollable Messages Section */}
-          <div className="flex-1 overflow-y-auto dark:bg-slate-900 dark:text-slate-100 bg-gray-50 pt-16 border-l border-gray-200 dark:border-slate-800 flex flex-col-reverse">
-            <div className="mt-auto p-4 space-y-4 dark:bg-slate-900">
+          <div className="flex-1 overflow-y-auto scrollbar-msg dark:bg-slate-900 dark:text-slate-100 bg-gray-50 border-l border-gray-200 dark:border-slate-800 flex flex-col-reverse">
+            <div className="pt-[80px] pb-[91px] px-4 space-y-4 dark:bg-slate-900">
               <Messages />
               {/* Empty div for scrolling to the bottom */}
               {/* <div ref={messagesEndRef}></div> */}
@@ -40,8 +41,9 @@ export default function MessageContainer() {
           </div>
 
           {/* Fixed SendMessage */}
-          <div className="w-full bg-white border-t dark:border-slate-800 border-gray-200">
+          <div className="absolute z-10 bottom-0 w-full bg-white border-t dark:border-slate-800 border-gray-200">
             <ReplyMessageBlock/>
+            <EditMessageBlock/>
             <SendMessage />
           </div>
         </>

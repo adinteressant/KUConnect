@@ -2,30 +2,72 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom Scrollbar Styles */
-.scrollbar-custom::-webkit-scrollbar {
+/* Base scrollbar styles */
+.scrollbar::-webkit-scrollbar {
   width: 12px;
 }
 
-.scrollbar-custom::-webkit-scrollbar-thumb {
+.scrollbar::-webkit-scrollbar-track {
+  background: #d9d9d9;
+  border-radius: 6px;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
   background: #888;
   border-radius: 6px;
 }
 
-.scrollbar-custom::-webkit-scrollbar-thumb:hover {
+.scrollbar::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
 
-.scrollbar-custom::-webkit-scrollbar-track {
-  background: #f1f1f1;
+/* Dark mode scrollbar */
+.dark .scrollbar::-webkit-scrollbar-track {
+  background: #2d2d2d;
+}
+
+.dark .scrollbar::-webkit-scrollbar-thumb {
+  background: #444;
+}
+
+.dark .scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #666;
+}
+
+/* for messages */
+.scrollbar-msg::-webkit-scrollbar {
+  width: 12px;
+}
+
+.scrollbar-msg::-webkit-scrollbar-track {
+  background: #d9d9d9;
+  border-radius: 6px;
+  margin-top: 64px;
+  margin-bottom: 75px;
+}
+
+.scrollbar-msg::-webkit-scrollbar-thumb {
+  background: #888;
   border-radius: 6px;
 }
 
-/* Firefox Scrollbar Styles */
-.scrollbar-custom {
-  scrollbar-width: thin;
-  scrollbar-color: #888 #f1f1f1;
+.scrollbar-msg::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
+
+/* for messages dark mode*/
+.dark .scrollbar-msg::-webkit-scrollbar-track {
+  background: #2d2d2d;
+}
+
+.dark .scrollbar-msg::-webkit-scrollbar-thumb {
+  background: #444;
+}
+
+.dark .scrollbar-msg::-webkit-scrollbar-thumb:hover {
+  background: #666;
+}
+
 body{
   font-family: roboto;  
 }

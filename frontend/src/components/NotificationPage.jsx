@@ -3,6 +3,9 @@ import axios from 'axios';
 import formatTimeAgo from '../utils/generateTimeAgo.js';
 import { useOutletContext } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm'
+import rehypeRaw from 'rehype-raw'
 
 const NotificationPage = () => {
   const [userProfiletags, setUserProfile] = useState({tags:[]});
@@ -93,7 +96,7 @@ const NotificationPage = () => {
 
 
   return (
-    <div className="p-8 rounded-lg w-full max-w-full overflow-y-auto">
+    <div className="p-8 rounded-lg w-full max-w-full overflow-y-auto scrollbar">
       <h1 className="text-4xl font-serif dark:text-gray-300 text-gray-800 mb-6">Notifications</h1>
       {userFilteredPosts.length === 0 ? ( 
         <p className="dark:text-gray-500 text-gray-600">No notifications yet</p>
@@ -108,7 +111,19 @@ const NotificationPage = () => {
                   <h3 className="text-lg font-semibold dark:text-gray-300 text-gray-800">
                     A new post by {post.username}!
                   </h3>
-                  <p className="text-gray-600 dark:text-gray-400">{post.content}</p>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    <ReactMarkdown
+                      rehypePlugins={[rehypeRaw]}
+                      remarkPlugins={[remarkGfm]}
+                    >
+                      {
+                        post.content.length>100?
+                          post.content.slice(0,100) + '...'
+                          :
+                          post.content
+                      }
+                    </ReactMarkdown>
+                  </p>
                 </div>
                 <div className="text-gray-400 dark:text-gray-500">{formatTimeAgo(post.createdAt)}</div>
               </div>

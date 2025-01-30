@@ -38,7 +38,7 @@ export default function SavedPosts()
         )
       }
     return(
-        <div className='p-4 pt-0 overflow-y-auto'>
+        <div className='p-4 pt-0 overflow-y-auto scrollbar h-full bg-gray-200 dark:bg-slate-900'>
             {loadingState?
             <PostSkeleton/>
             :

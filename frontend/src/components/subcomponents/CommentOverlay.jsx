@@ -40,18 +40,18 @@ function ShowComments(props) {
     return(
         <div className = 'flex flex-col w-[100%] h-[100%]'>
             {loading?
-            (<div className='flex flex-col w-[100%] h-[100%] dark:bg-slate-800'>
+            (<div className='flex flex-col w-[100%] h-[100%] dark:bg-slate-900'>
                 <div className='p-2 flex gap-2 border-b dark:border-slate-700'>
                     {[1,2,3].map((_,index) => (
-                        <button key={index} className={`pl-8 pr-8 pt-4 pb-4 rounded-2xl bg-gray-200 dark:bg-slate-900 animate-pulse`}>
+                        <button key={index} className={`pl-8 pr-8 pt-4 pb-4 rounded-2xl bg-gray-200 dark:bg-slate-800 animate-pulse`}>
                         </button>
                     ))}
                 </div>
                 <div className='p-4 overflow-hidden flex flex-col gap-8 w-[100%] h-[100%]'>
                     {[1,2,3,4].map((_,index) => (<div key={index} className='flex'>
-                        <div className='mt-2 shrink-0 w-8 h-8 rounded-full object-cover bg-gray-200 dark:bg-slate-900 animate-pulse'>
+                        <div className='mt-2 shrink-0 w-8 h-8 rounded-full object-cover bg-gray-200 dark:bg-slate-800 animate-pulse'>
                         </div>
-                        <div className='ml-2 bg-gray-200 dark:bg-slate-900 w-[50%] h-[120%] rounded-xl animate-pulse object-cover'>
+                        <div className='ml-2 bg-gray-200 dark:bg-slate-800 w-[50%] h-[120%] rounded-xl animate-pulse object-cover'>
                         </div>
                     </div>))}
                 </div>
@@ -68,7 +68,7 @@ function ShowComments(props) {
                     Faculty({faculty})
                     </button>
                 </div>
-                <div className='p-4 overflow-y-auto flex flex-col gap-4 w-[100%] h-[100%]'>
+                <div className='p-4 overflow-y-auto scrollbar flex flex-col gap-4 w-[100%] h-[100%]'>
                     {comments.map((comment, index) => {
                     if(comment.role === 'student')
                         {

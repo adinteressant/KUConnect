@@ -169,7 +169,7 @@ export const updatePost = async(req, res) => {
       [updatedPost] = await Promise.all([
         Post.findByIdAndUpdate(
           post._id,
-          { $set: { content, tags, images: null } },
+          { $set: { content, tags, images: null, edited: true } },
           { new: true }
         ),
         PostImages.findByIdAndDelete(
@@ -186,7 +186,7 @@ export const updatePost = async(req, res) => {
 
       updatedPost = await Post.findByIdAndUpdate(
         post._id,
-        { $set: { content, tags, images: updatedPostImages._id } },
+        { $set: { content, tags, images: updatedPostImages._id, edited: true } },
         { new: true }
       )
     }
@@ -195,7 +195,7 @@ export const updatePost = async(req, res) => {
       [updatedPost, updatedPostImages] = await Promise.all([
         Post.findByIdAndUpdate(
           post._id,
-          { $set: { content, tags } },
+          { $set: { content, tags, edited: true } },
           { new: true }
         ),
         PostImages.findByIdAndUpdate(
@@ -244,9 +244,19 @@ export const getImages = async(req, res) =>
 }
 
 // Share a post
-export const sharePost = async (req, res) => {
-  // implement sharing functionality as required
-}
+// export const sharePost = async (req, res) => {
+//   const { postId, senderId, receiverId } = req.params
+
+//   try
+//   {
+
+//   }
+//   catch(err)
+//   {
+//     console.error('Error sharing post:', error)
+//     return res.status(500).json({ message: 'Error in sharing post', error })
+//   }
+// }
 
 
 // Search posts by content
