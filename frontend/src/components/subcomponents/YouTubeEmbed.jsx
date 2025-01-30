@@ -39,7 +39,6 @@ const YouTubeEmbed = ({ videoUrl }) => {
         };
 
         setVideoId(extractVideoId(videoUrl))
-
     }, [videoUrl])
 
   useEffect(()=>{
