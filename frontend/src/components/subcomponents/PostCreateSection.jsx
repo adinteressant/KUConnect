@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef} from 'react'
 import { useOutletContext } from 'react-router-dom'
 import base64encode from '../../utils/base64encode.js'
 import tags from '../../data/tags.js'
@@ -26,6 +26,7 @@ export default function PostCreateSection({ parent ,user, setUser, setPosts, set
 
   const [createPostLoadingState, setCreatePostLoadingState] = useState(false)
   const [updatePostLoadingState, setUpdatePostLoadingState] = useState(false)
+  const editorRef = useRef(null);
 
 
   const handleTagRemove = (indexToRemove) => {
@@ -260,40 +261,33 @@ export default function PostCreateSection({ parent ,user, setUser, setPosts, set
   }
 
   const applyFormatting = (formatType) => {
-    const textarea = document.getElementById(`post-content-${parent}`);
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const selectedText = content.substring(start,end);
-
-    let formattedText;
+    const selection = window.getSelection();
+    const range = selection.getRangeAt(0);
+    
+    // Apply the formatting
+    document.execCommand('styleWithCSS', false, true);
     switch(formatType) {
       case 'bold':
-        // If no text is selected, place cursor between the markers
-        formattedText = `**${selectedText}**` 
+        document.execCommand('bold', false, null);
         break;
       case 'italic':
-        formattedText = `_${selectedText}_` 
+        document.execCommand('italic', false, null);
         break;
       case 'strikethrough':
-        formattedText = `~~${selectedText}~~` 
+        document.execCommand('strikethrough', false, null);
+        break;
+      default:
         break;
     }
 
-    const newContent = 
-    content.substring(0,start) + formattedText + content.substring(end);
-    setContent(newContent);
+    // Ensure the editor keeps focus
+    editorRef.current.focus();
+  };
 
-    setTimeout(() => {
-    if (!selectedText) {
-      // If no text was selected, place cursor between the markers
-      textarea.selectionStart = formatType==='italic'?start + 1:start + 2;
-      textarea.selectionEnd = formatType==='italic'?start + 1:start + 2;
-    } else {
-      textarea.selectionStart = start + formattedText.length;
-      textarea.selectionEnd = start + formattedText.length;
+  const handleChange = () => {
+    if (editorRef.current) {
+      setContent(editorRef.current.innerHTML);
     }
-    textarea.focus();
-  }, 0);
   }
 
   return (
@@ -340,16 +334,18 @@ export default function PostCreateSection({ parent ,user, setUser, setPosts, set
           </button>
         </div>
 
-        <textarea
-            id = {`post-content-${parent}`}
-            placeholder="What's on your mind?"
-            className={`w-full p-2 border rounded-lg dark:bg-slate-900 dark:border-slate-800 dark:text-gray-200 bg-gray-100 focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-600 transition-all duration-300 ${isTextareaFocused || isTagsInputFocused ? 'h-28' : 'h-20'
-              }`}
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            onFocus={handleTextareaFocus}
-            onBlur={handleTextareaBlur}
-          />
+      <div
+        placeholder="What's on your mind?"
+        ref={editorRef}
+        contentEditable
+        className={`w-full p-2 border rounded-lg dark:bg-slate-900 dark:border-slate-800 dark:text-gray-200 bg-gray-100 focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-600 transition-all duration-300 ${isTextareaFocused || isTagsInputFocused ? 'h-28' : 'h-20'
+        }`}        
+        onInput={handleChange}
+        onFocus={handleTextareaFocus}
+        onBlur={handleTextareaBlur}
+        role="textbox"
+        aria-label="Post content"
+      />
 
           <div className={`transition-all duration-500 ease-in-out ${isTextareaFocused || isTagsInputFocused || content.trim() || tagValue.trim() || tagList.length > 0 || images.length > 0 || parent ==='edit' ? 'opacity-100 max-h-screen' : 'opacity-0 max-h-0 overflow-hidden'}`}>
             {/*Tag Input Section*/}

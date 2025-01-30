@@ -1,10 +1,13 @@
 import { comparePassword, hashPassword } from "../utils/hashPassword.js";
 import PrivateInfo from "../models/PrivateInfo.js";
+import PublicInfo from "../models/PublicInfo.js"
 import jwt from "jsonwebtoken";
 
 
 export default async function userPasswordChangeController(req,res){
  
+  let type = req.body.type;
+  if (type === "password"){
   let formPassword = req.body; 
 
   let currPassword = formPassword["currentPassword"];
@@ -32,3 +35,34 @@ export default async function userPasswordChangeController(req,res){
     { message: "Password changed successfully"}
   )
 }
+
+else if ( type === 'username'){
+  let existingPublicInfo
+  const user_id = req.body.user_id;
+  const username = req.body.username;
+  const publicInfo = await PublicInfo.findOne({ user_id });
+  if (!publicInfo) {
+    return res.status(404).json({ message: "User not found" });
+  }
+  try{
+    existingPublicInfo = await PublicInfo.findOne({ username })
+  }catch(e){
+    console.log(e)
+  }
+  if(existingPublicInfo){
+    return res.status(400).json({ message: 'Username is already taken' })
+  }
+  // if(privateInfo.username != username){
+  //   return res.status(400).json({ message: "Enter your new username" });
+  // }
+  publicInfo.username = username;
+  await publicInfo.save();
+
+  return res.status(200).json(
+    { message: "Username changed successfully"}
+  )
+}
+ else {
+  return res.status(400).json({ message: "Invalid request" });
+  }
+  }

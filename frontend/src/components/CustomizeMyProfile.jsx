@@ -48,33 +48,6 @@ const CustomizeMyProfile = () => {
     })();
   }, []);
 
-  const handlepasswordchange = async (e) => {
-    e.preventDefault();
-    if (passwordform.newpassword !== passwordform.confirmpassword) {
-      alert("passwords don't match");
-      return;
-    }
-
-    try {
-      await axios.post('/api/change-password', {
-        currentPassword: passwordform.currentpassword,
-        newPassword: passwordform.newpassword,
-        user_id: userprofile.user_id
-      }, { withCredentials: true });
-
-      alert('password changed successfully');
-      setshowpasswordmodal(false);
-      setpasswordform({
-        currentpassword: '',
-        newpassword: '',
-        confirmpassword: ''
-      });
-    } catch (error) {
-      console.error('error changing password:', error);
-      alert('failed to change password');
-    }
-  };
-
   const handleprofilepicselect = async (p) => {
     try {
       await axios.post(`/api/update-pfp?id=${p}`,

@@ -1,60 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, User, ChevronDown, LogOut, LogIn, UserPlus, UserCircle } from 'lucide-react';
+import { Search, User, ChevronDown, LogOut, LogIn, UserPlus, UserCircle, Settings } from 'lucide-react';
 import axios from 'axios';
-import { motion, AnimatePresence } from "framer-motion";
-import { FiMoon, FiSun } from "react-icons/fi";
-import { useTheme } from './context/themeContext';
-
-// Separate the theme slider into its own component
-const SliderToggle = React.memo(({ selected, setSelected, toggleTheme, isLoading }) => {
-  const handleThemeToggle = useCallback(() => {
-    const newTheme = selected === "dark" ? "light" : "dark";
-    setSelected(newTheme);
-    toggleTheme();
-  }, [selected, setSelected, toggleTheme]);
-
-  return (
-    <div className="relative flex items-center">
-      <button
-        onClick={handleThemeToggle}
-        className="relative w-16 h-8 rounded-full bg-slate-200 dark:bg-slate-700 transition-colors duration-300"
-        aria-label="Toggle theme"
-      >
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={selected}
-            className="absolute top-1 left-1 w-6 h-6 rounded-full bg-violet-600 flex items-center justify-center"
-            initial={{ x: selected === "dark" ? "0rem" : "2rem" }}
-            animate={{ x: selected === "dark" ? "2rem" : "0rem" }}
-            transition={{
-              type: "spring",
-              stiffness: 300,
-              damping: 25,
-              duration: isLoading ? 0 : undefined
-            }}
-          >
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={selected}
-                initial={{ rotate: -180, opacity: 0 }}
-                animate={{ rotate: 0, opacity: 1 }}
-                exit={{ rotate: 180, opacity: 0 }}
-                transition={{ duration: isLoading ? 0 : 0.2 }}
-              >
-                {selected === "dark" ? (
-                  <FiMoon className="w-4 h-4 text-white" />
-                ) : (
-                  <FiSun className="w-4 h-4 text-white" />
-                )}
-              </motion.div>
-            </AnimatePresence>
-          </motion.div>
-        </AnimatePresence>
-      </button>
-    </div>
-  );
-});
 
 // Separate search component
 const SearchBar = React.memo(({ searchTrait, setSearchTrait, onSearch }) => {
@@ -228,6 +175,12 @@ const UserDropdown = React.memo(({ isAuthenticated, userProfile, onLogout }) => 
                       >
                         <UserCircle className="h-4 w-4 mr-2" /> My Profile
                       </Link>
+                      <Link
+                        to={`/settings`}
+                        className="flex items-center px-4 py-2 hover:bg-gray-200 dark:hover:bg-slate-900 hover:rounded-t-md transition-colors"
+                      >
+                        <Settings className="h-4 w-4 mr-2" /> Settings
+                      </Link>
                       <button
                         onClick={onLogout}
                         className="w-full flex items-center px-4 py-2 hover:bg-gray-200 dark:hover:bg-slate-900 hover:rounded-b-md transition-colors text-left"
@@ -263,16 +216,15 @@ const UserDropdown = React.memo(({ isAuthenticated, userProfile, onLogout }) => 
 
 const Navigation = ({ setVisibility, setPadding, searchTrait, setSearchTrait, userProfile, setUserProfile }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem('isAuthenticated') === 'true');
-  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
-  const { theme, toggleTheme } = useTheme();
-  const [selected, setSelected] = useState(theme || 'light');
+  // const { theme, toggleTheme } = useTheme();
+  // // const [selected, setSelected] = useState(theme || 'light');
 
-  useEffect(() => {
-    setSelected(theme);
-    const timer = setTimeout(() => setIsLoading(false), 100);
-    return () => clearTimeout(timer);
-  }, [theme]);
+  // // useEffect(() => {
+  // //   setSelected(theme);
+  // //   const timer = setTimeout(() => setIsLoading(false), 100);
+  // //   return () => clearTimeout(timer);
+  // // }, [theme]);
 
   useEffect(() => {
     const checkAuthentication = async () => {
@@ -352,7 +304,7 @@ const Navigation = ({ setVisibility, setPadding, searchTrait, setSearchTrait, us
       <div className="w-full">
         <div className="flex items-center h-16">
           <div className="w-56">
-            <Link to="/home" className={`text-2xl font-serif ${theme === 'light' ? 'text-gray-800' : 'text-white'}`}>
+            <Link to="/home" className={`text-2xl font-serif text-gray-800  dark:text-white`}>
               <img src="../public/logo/KUConnect.svg" className="object-contain max-h-12 min-w-[60px] mx-4"/>
             </Link>
           </div>
@@ -367,14 +319,6 @@ const Navigation = ({ setVisibility, setPadding, searchTrait, setSearchTrait, us
           </div>
 
           <div className="w-56 flex items-center justify-end gap-6 mr-4">
-            {/* Theme Toggle */}
-            <SliderToggle
-              selected={selected}
-              setSelected={setSelected}
-              toggleTheme={toggleTheme}
-              isLoading={isLoading}
-            />
-
             {/* User Menu */}
             <UserDropdown
               isAuthenticated={isAuthenticated}
