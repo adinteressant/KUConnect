@@ -27,7 +27,7 @@ export const getAllPosts = async (req, res) => {
 // Get homepage posts
 export const getHomepagePosts = async(req, res) =>
 {
-  
+  const userId = req.params.userId
 }
 
 const incrementCount = async (tags) => {

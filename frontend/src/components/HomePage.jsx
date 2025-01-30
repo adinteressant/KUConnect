@@ -74,18 +74,19 @@ const HomePage = () => {
 
   // Fetch posts acc to user
   useEffect(() => {
-    fetch(`/api/homepage/posts/user/:userId/get-posts`)
+    fetch(`/api/homepage/posts/user/${userProfile.user_id}/get-posts`)
       .then((response) => response.json())
       .then((data) => {
-        setPosts(() => data)
-        setTimeout(() => {
+        setPosts(() => data.posts)
+        if(userProfile.user_id)
+        {
           setPostLoadingState(() => false)
-        }, 500)
+        }
       })
       .catch((e) => {
         console.error('Error fetching posts:', e)
       })
-  }, [])
+  }, [userProfile])
 
   return (
     <div className="flex-1 flex flex-col dark:bg-slate-900 bg-gray-200 overflow-y-auto scrollbar">
