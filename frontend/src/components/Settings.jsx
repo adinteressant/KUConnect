@@ -117,7 +117,6 @@ export default function SettingsPage(user) {
   };
 
   const handleUsernameSubmit = async (e) => {
-    console.log(userProfile)
     e.preventDefault();
     try{
         await axios.post('/api/change',
