@@ -5,7 +5,7 @@ import Comment from '../models/comment.js'
 // Add a comment to a post
 export const addComment = async (req, res) => {
     const postId = req.params.postId
-    const parentId = req.params.parentId
+    const parentId = req.query.parentId || null
     const userId = req.params.userId
     const { content } = req.body
   
@@ -36,12 +36,12 @@ export const addComment = async (req, res) => {
         content
       })
       post.comments = post.comments + 1
-      comment.replies = comment.replies + 1
+      comment && (comment.replies = comment.replies + 1)
 
       await Promise.all([
         newComment.save(),
         post.save(),
-        comment.save()
+        comment?.save()
       ])
 
       res.status(201).json({
@@ -60,31 +60,37 @@ export const addComment = async (req, res) => {
     }
 }
 
-//Get comments for a post
-export const getComments = async(req, res) => 
+// Get comments for a post
+export const getComments = async(req, res) =>
 {
   const postId = req.params.postId
+  const parentId = req.query.parentId || null
 
   try
   {
-    const rawCommentArray = await Comment.find({ postId }).sort({ createdAt: -1 })
-    const userInfo = await PublicInfo.find({ user_id: {$in: rawCommentArray.map((comment) => comment.userId) } },
-                                           { user_id: 1, username: 1, role: 1, pfp_id: 1, likesCount: 1 ,repliesCount: 1  })
+    const rawComments = await Comment.find({ postId, parentId }).sort({ createdAt: -1 })
+    const userInfo = await PublicInfo.find(
+      { user_id: {$in: rawComments.map(comment => comment.userId)} },
+      { user_id: 1, username: 1, role: 1, pfp_id: 1 }
+    )
 
-    const commentArray = rawCommentArray.map((comment) => {
-        const user = userInfo.find((obj) => obj.user_id===comment.userId)
+    const comments = rawComments.map(comment => {
+        const user = userInfo.find(obj => obj.user_id===comment.userId)
         return {
+          commentId: comment._id,
           pfp: user.pfp_id,
           username: user.username,
           role: user.role,
           comment: comment.content,
+          likes: comment.likes,
+          replies: comment.replies,
           created: comment.createdAt
         }
       })
 
     res.status(201).json({ 
       message: 'Comments fetched sucessfully', 
-      commentArray: commentArray })
+      comments })
   }
   catch(error)
   {

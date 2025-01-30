@@ -5,7 +5,7 @@ import { validateComment } from '../middlewares/commentMiddleware.js'
 const router = express.Router()
 
 // Add a comment to a post
-router.post('/api/post/:postId/parent/:parentId/user/:userId/add-comment', validateComment, addComment)
+router.post('/api/post/:postId/user/:userId/add-comment', validateComment, addComment)
 
 // Get comments for a post
 router.get('/api/post/:postId/get-comments', getComments)
