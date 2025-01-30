@@ -11,7 +11,6 @@ import SeenPost from '../models/seenPosts.js'
 import fs from 'fs'
 import path from 'path'
 import accepts from 'accepts'
-import seenPosts from '../models/seenPosts.js'
 //import { fileURLToPath } from 'url'
 
 //const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -37,7 +36,7 @@ export const getHomepagePosts = async(req, res) =>
   {
     try
     {
-      const [rawTags, rawFriends, rawSeenPosts] = await Promise.all([
+      const [rawTags, rawFriends, rawSeenPosts, totalPosts] = await Promise.all([
         PublicInfo.findOne(
           {
             user_id: userId
@@ -63,7 +62,8 @@ export const getHomepagePosts = async(req, res) =>
           {
             posts: 1
           }
-        )
+        ),
+        Post.countDocuments()
       ])
 
       const tags = rawTags?.tags || []
@@ -148,7 +148,7 @@ export const getHomepagePosts = async(req, res) =>
       }
 
       // console.log('after',filteredPosts.length)
-      res.status(200).json({ message: 'Posts fetched successfully', posts: filteredPosts })
+      res.status(200).json({ message: 'Posts fetched successfully', posts: filteredPosts, value: seenPosts.posts.length!==totalPosts })
     }
     catch(err)
     {

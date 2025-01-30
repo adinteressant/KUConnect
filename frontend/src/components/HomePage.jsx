@@ -14,6 +14,7 @@ const HomePage = () => {
   const [showWelcomeModal, setShowWelcomeModal] = useState(false)
   const [postLoadingState, setPostLoadingState] = useState(true)
   const [moreLoading, setMoreLoading] = useState(false)
+  const [showState, setShowState] = useState(true)
   const [fetchOnce, setFetchOnce] = useState(false)
   // Check for logged-in user based on isAuthenticated
   if(localStorage.getItem('isLoggedIn') === 'true') useGetUnreadMessage()
@@ -93,6 +94,7 @@ const HomePage = () => {
     .then((response) => response.json())
     .then((data) => {
       setPosts((prev) => [...prev, ...data.posts])
+      setShowState(() => data.value)
       setMoreLoading(() => false)
       setPostLoadingState(() => false)
     })
@@ -130,9 +132,10 @@ const HomePage = () => {
         :
         <>
           <Posts posts={posts} setPosts={setPosts}/>
-          {(moreLoading?
+          {moreLoading?
           <PostSkeleton />
           :
+          (showState?
           <div 
             className='max-w-2xl mx-auto rounded-full
               shadow-md bg-white hover:bg-gray-100 hover:text-cyan-600
@@ -147,6 +150,23 @@ const HomePage = () => {
             >
               Show more
             </button>
+          </div>
+          :
+          <div
+              className='max-w-2xl p-4 mx-auto rounded-xl text-cyan-600 font-bold text-xl tracking-wide
+              flex flex-col justify-center items-center gap-2
+              shadow-md bg-white dark:shadow-black dark:bg-slate-800'
+          >
+            <svg width="60" height="60" viewBox="0 0 24 24" stroke-linejoin="round" stroke-linecap="round"
+              className='fill-none stroke-cyan-600 stroke-2'
+            >
+              <path d="M2 20h20"/>
+              <path d="m9 10 2 2 4-4"/>
+              <rect x="3" y="4" width="18" height="12" rx="2"/>
+            </svg>
+            <div className='text-center'>
+              That's everything we've got for now!
+            </div>
           </div>)}
         </>
         }
