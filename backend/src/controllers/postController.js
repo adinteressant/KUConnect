@@ -6,8 +6,12 @@ import Comment from '../models/comment.js'
 import Save from '../models/savePost.js'
 import PublicInfo from '../models/PublicInfo.js'
 import PrivateInfo from '../models/PrivateInfo.js'
+import FriendRequest from '../models/friendRequest.js'
+import SeenPost from '../models/seenPosts.js'
 import fs from 'fs'
 import path from 'path'
+import accepts from 'accepts'
+import seenPosts from '../models/seenPosts.js'
 //import { fileURLToPath } from 'url'
 
 //const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -28,6 +32,130 @@ export const getAllPosts = async (req, res) => {
 export const getHomepagePosts = async(req, res) =>
 {
   const userId = req.params.userId
+
+  if(userId)
+  {
+    try
+    {
+      const [rawTags, rawFriends, rawSeenPosts] = await Promise.all([
+        PublicInfo.findOne(
+          {
+            user_id: userId
+          },
+          {
+            tags: 1
+          }
+        ),
+        FriendRequest.find(
+          {
+            $or: [{sender_id: userId}, {receiver_id: userId}],
+            status: 'accepted'
+          },
+          {
+            sender_id: 1,
+            receiver_id: 1
+          }
+        ),
+        SeenPost.findOne(
+          {
+            userId
+          },
+          {
+            posts: 1
+          }
+        )
+      ])
+
+      const tags = rawTags?.tags || []
+      const friends = rawFriends?.map(f => f.sender_id===userId?f.receiver_id:f.sender_id) || []
+      const seenPosts = rawSeenPosts || new SeenPost({ userId })
+
+      let filteredPosts = []
+
+      // Get posts from friends as well as tags that is not seen
+      if (friends.length && tags.length)
+      {
+        filteredPosts = await Post
+          .find({
+            $and: [
+              {
+                userId: { $in: friends }
+              },
+              {
+                tags: { $in: tags }
+              },
+              {
+                _id: { $nin: seenPosts.posts }
+              }
+            ]
+          })
+          .sort({ createdAt: -1 })
+          .limit(10)
+      }
+
+      // Get posts from either friends or tags that is not seen
+      if(filteredPosts.length===0 && (friends.length || tags.length))
+      {
+        filteredPosts = await Post
+          .find({
+            $and: [
+              {
+                $or: [
+                  {
+                    userId: { $in: friends }
+                  },
+                  {
+                    tags: { $in: tags }
+                  }
+                ]
+              },
+              {
+                _id: { $nin: seenPosts.posts }
+              }
+            ]
+          })
+          .sort({ createdAt: -1 })
+          .limit(10)
+      }
+      
+      // Get other posts that is not seen
+      if(filteredPosts.length===0)
+      {
+        filteredPosts = await Post
+          .find({
+            _id: { $nin: seenPosts.posts }
+          })
+          .sort({ createdAt: -1 })
+          .limit(10)
+      }
+
+      // Get already seen posts
+      if(filteredPosts.length===0)
+      {
+        filteredPosts = await Post
+          .find()
+          .sort({ createdAt: -1 })
+          .limit(10)
+      }
+
+      console.log('before',filteredPosts.length)
+      const newSeenPosts = filteredPosts.filter(post => !seenPosts.posts.includes(post._id))
+
+      if(newSeenPosts.length>0)
+      {
+        seenPosts.posts.push(...newSeenPosts.map(p => p._id))
+        await seenPosts.save()
+      }
+
+      console.log('after',filteredPosts.length)
+      res.status(200).json({ message: 'Posts fetched successfully', posts: filteredPosts })
+    }
+    catch(err)
+    {
+      console.error('Error fetching homepage posts:', err)
+      res.status(500).json({ message: 'Error fetching homepage posts', err })
+    }
+  }
 }
 
 const incrementCount = async (tags) => {

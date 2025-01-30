@@ -13,6 +13,7 @@ const HomePage = () => {
   const {userPosts:posts, setUserPosts:setPosts} = useOutletContext()
   const [showWelcomeModal, setShowWelcomeModal] = useState(false)
   const [postLoadingState, setPostLoadingState] = useState(true)
+  const [fetchOnce, setFetchOnce] = useState(false)
   // Check for logged-in user based on isAuthenticated
   if(localStorage.getItem('isLoggedIn') === 'true') useGetUnreadMessage()
   
@@ -74,19 +75,29 @@ const HomePage = () => {
 
   // Fetch posts acc to user
   useEffect(() => {
-    fetch(`/api/homepage/posts/user/${userProfile.user_id}/get-posts`)
-      .then((response) => response.json())
-      .then((data) => {
-        setPosts(() => data.posts)
-        if(userProfile.user_id)
-        {
-          setPostLoadingState(() => false)
-        }
-      })
-      .catch((e) => {
-        console.error('Error fetching posts:', e)
-      })
+    if(userProfile.user_id)
+    {
+      if(!fetchOnce)
+      {
+        setFetchOnce(() => true)
+        setPosts(() => [])
+        getHomepagePosts()
+      }
+    }
   }, [userProfile])
+
+  function getHomepagePosts()
+  {
+    fetch(`/api/homepage/posts/user/${userProfile.user_id}/get-posts`)
+    .then((response) => response.json())
+    .then((data) => {
+      setPosts((prev) => [...prev, ...data.posts])
+      setPostLoadingState(() => false)
+    })
+    .catch((e) => {
+      console.error('Error fetching posts:', e)
+    })
+  }
 
   return (
     <div className="flex-1 flex flex-col dark:bg-slate-900 bg-gray-200 overflow-y-auto scrollbar">
