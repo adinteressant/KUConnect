@@ -1,5 +1,5 @@
 import express from 'express'
-import { addComment, getComments, deleteComment, addReply, getReplies, deleteReply } from '../controllers/commentController.js'
+import { addComment, getComments } from '../controllers/commentController.js'
 import { validateComment } from '../middlewares/commentMiddleware.js'
 
 const router = express.Router()
@@ -11,7 +11,7 @@ router.post('/api/post/:postId/parent/:parentId/user/:userId/add-comment', valid
 router.get('/api/post/:postId/get-comments', getComments)
 
 // Get replies for a comment
-router.get('/api/comment/:commentId', getReplies)
+// router.get('/api/comment/:commentId', getReplies)
 
 // // Delete a comment of a post
 // router.post('/api/posts/:postId/comments/:commentId/delete-comment', deleteComment)
