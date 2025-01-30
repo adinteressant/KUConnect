@@ -13,6 +13,7 @@ const HomePage = () => {
   const {userPosts:posts, setUserPosts:setPosts} = useOutletContext()
   const [showWelcomeModal, setShowWelcomeModal] = useState(false)
   const [postLoadingState, setPostLoadingState] = useState(true)
+  const [moreLoading, setMoreLoading] = useState(false)
   const [fetchOnce, setFetchOnce] = useState(false)
   // Check for logged-in user based on isAuthenticated
   if(localStorage.getItem('isLoggedIn') === 'true') useGetUnreadMessage()
@@ -92,6 +93,7 @@ const HomePage = () => {
     .then((response) => response.json())
     .then((data) => {
       setPosts((prev) => [...prev, ...data.posts])
+      setMoreLoading(() => false)
       setPostLoadingState(() => false)
     })
     .catch((e) => {
@@ -126,7 +128,27 @@ const HomePage = () => {
         {postLoadingState?
         <PostSkeleton />
         :
-        <Posts posts={posts} setPosts={setPosts}/>
+        <>
+          <Posts posts={posts} setPosts={setPosts}/>
+          {(moreLoading?
+          <PostSkeleton />
+          :
+          <div 
+            className='max-w-2xl mx-auto rounded-full
+              shadow-md bg-white hover:bg-gray-100 hover:text-cyan-600
+              dark:shadow-black dark:bg-slate-800 dark:text-slate-200 dark:hover:text-cyan-600 dark:hover:bg-slate-700
+              transition-all duration-300'
+          >
+            <button className='rounded-full p-4 w-full text-center'
+              onClick={() => {
+                setMoreLoading(() => true)
+                getHomepagePosts()
+              }}
+            >
+              Show more
+            </button>
+          </div>)}
+        </>
         }
         
       </main>

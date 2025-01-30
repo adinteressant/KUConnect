@@ -138,7 +138,7 @@ export const getHomepagePosts = async(req, res) =>
           .limit(10)
       }
 
-      console.log('before',filteredPosts.length)
+      // console.log('before',filteredPosts.length)
       const newSeenPosts = filteredPosts.filter(post => !seenPosts.posts.includes(post._id))
 
       if(newSeenPosts.length>0)
@@ -147,7 +147,7 @@ export const getHomepagePosts = async(req, res) =>
         await seenPosts.save()
       }
 
-      console.log('after',filteredPosts.length)
+      // console.log('after',filteredPosts.length)
       res.status(200).json({ message: 'Posts fetched successfully', posts: filteredPosts })
     }
     catch(err)
