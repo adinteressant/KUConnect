@@ -23,6 +23,8 @@ import SpecificPost from './components/subcomponents/SpecificPost.jsx'
 import SavedPosts from './components/SavedPosts.jsx'
 import { ThemeProvider } from "./components/context/themeContext.jsx";
  import { SocketContextProvider } from './components/context/socketContext.jsx'
+ import SettingsPage from './components/Settings.jsx'
+import { m } from 'framer-motion'
 
 const router = createBrowserRouter([
   {
@@ -92,9 +94,14 @@ const router = createBrowserRouter([
       {
         path:'/push-notifications',
         element:<PushNotification/>
+      },
+      {
+        path: '/settings',
+        element: <SettingsPage />
       }
     ]
   },
+  
   {
       path:'/call',
       element:<VideoCall/>,

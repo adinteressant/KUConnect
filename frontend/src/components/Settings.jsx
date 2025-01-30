@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Lock, Settings, ChevronRight, X } from 'lucide-react';
+import { Lock, Settings, ChevronRight, X, EyeIcon, EyeOffIcon } from 'lucide-react';
 import { motion, AnimatePresence } from "framer-motion";
 import { FiMoon, FiSun } from "react-icons/fi";
 import { useTheme } from './context/themeContext';
+import axios from 'axios';
+import { useOutletContext } from 'react-router-dom';
 
-// Modal Component
 const Modal = ({ isOpen, onClose, title, children }) => {
   if (!isOpen) return null;
   
@@ -78,7 +79,7 @@ const SliderToggle = React.memo(({ selected, setSelected, toggleTheme, isLoading
 });
 
 export default function SettingsPage(user) {
-    const userProfile = user || useParams().userProfile;
+    const {userProfile, setUserProfile} = useOutletContext()
   const [activeSection, setActiveSection] = useState('general');
   const { theme, toggleTheme } = useTheme();
   const [selected, setSelected] = useState(theme || 'light');
@@ -91,9 +92,16 @@ export default function SettingsPage(user) {
   
   // Form states
   const [username, setUsername] = useState('');
-  const [currentPassword, setCurrentPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordform, setpasswordform] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: ''
+  });
+  const [passwordVisibility, setPasswordVisibility] = useState({
+    current: false,
+    new: false,
+    confirm: false
+  });
 
   useEffect(() => {
     setSelected(theme);
@@ -101,19 +109,65 @@ export default function SettingsPage(user) {
     return () => clearTimeout(timer);
   }, [theme]);
 
-  const handleUsernameSubmit = (e) => {
-    e.preventDefault();
-    // Handle username change logic here
-    setIsUsernameModalOpen(false);
-    setUsername('');
+  const togglePasswordVisibility = (field) => {
+    setPasswordVisibility(prev => ({
+      ...prev,
+      [field]: !prev[field]
+    }));
   };
 
-  const handlePasswordSubmit = (e) => {
+  const handleUsernameSubmit = async (e) => {
+    console.log(userProfile)
     e.preventDefault();
-    setIsPasswordModalOpen(false);
-    setCurrentPassword('');
-    setNewPassword('');
-    setConfirmPassword('');
+    try{
+        await axios.post('/api/change',
+            {
+                username: username,
+                user_id: userProfile.user_id,
+                type: 'username'
+            },
+            { withCredentials: true}
+        )
+        alert ('Username changed successfully');
+        setIsUsernameModalOpen(false);
+        setUsername('');
+        setUserProfile((prev) => ({
+            ...prev,
+            username: username,
+          }));
+    }
+    catch (error) {
+        console.error('error changing username:', error);
+        alert('failed to change username');
+      }
+  };
+
+  const handlepasswordchange = async (e) => {
+    e.preventDefault();
+    if (passwordform.newpassword !== passwordform.confirmpassword) {
+      alert("passwords don't match");
+      return;
+    }
+
+    try {
+      await axios.post('/api/change', {
+        currentPassword: passwordform.currentPassword,
+        newPassword: passwordform.newPassword,
+        user_id: userProfile.user_id,
+        type: "password"
+      }, { withCredentials: true });
+
+      alert('password changed successfully');
+      setIsPasswordModalOpen(false);
+      setpasswordform({
+        currentpassword: '',
+        newpassword: '',
+        confirmpassword: ''
+      });
+    } catch (error) {
+      console.error('error changing password:', error);
+      alert('failed to change password');
+    }
   };
 
   const handleDeleteAccount = (e) => {
@@ -275,43 +329,94 @@ export default function SettingsPage(user) {
         onClose={() => setIsPasswordModalOpen(false)}
         title="Change Password"
       >
-        <form onSubmit={handlePasswordSubmit}>
+        <form onSubmit={handlepasswordchange}>
           <div className="space-y-4">
-            <div>
+            <div className="relative">
               <label className="block text-sm font-medium mb-2">Current Password</label>
               <input
-                type="password"
-                value={currentPassword}
-                onChange={(e) => setCurrentPassword(e.target.value)}
-                className="w-full p-2 border rounded-lg dark:bg-slate-700 dark:border-slate-600"
+                type={passwordVisibility.current ? "text" : "password"}
+                value={passwordform.currentPassword}
+                onChange={(e) => setpasswordform(prev => ({
+                  ...prev,
+                  currentPassword: e.target.value
+                }))}
+                className="w-full p-2 border rounded-lg dark:bg-slate-700 dark:border-slate-600 pr-10"
                 required
               />
+              <button
+                type="button"
+                onClick={() => togglePasswordVisibility('current')}
+                className="absolute right-3 bottom-3 text-gray-400 hover:text-gray-600"
+              >
+                {passwordVisibility.current ? 
+                  <EyeOffIcon className="w-5 h-5" /> : 
+                  <EyeIcon className="w-5 h-5" />
+                }
+              </button>
             </div>
-            <div>
+            <div className="relative">
               <label className="block text-sm font-medium mb-2">New Password</label>
               <input
-                type="password"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                className="w-full p-2 border rounded-lg dark:bg-slate-700 dark:border-slate-600"
+                type={passwordVisibility.new ? "text" : "password"}
+                value={passwordform.newPassword}
+                onChange={(e) => setpasswordform(prev => ({
+                  ...prev,
+                  newPassword: e.target.value
+                }))}
+                className="w-full p-2 border rounded-lg dark:bg-slate-700 dark:border-slate-600 pr-10"
                 required
               />
+              <button
+                type="button"
+                onClick={() => togglePasswordVisibility('new')}
+                className="absolute right-3 bottom-3 text-gray-400 hover:text-gray-600"
+              >
+                {passwordVisibility.new ? 
+                  <EyeOffIcon className="w-5 h-5" /> : 
+                  <EyeIcon className="w-5 h-5" />
+                }
+              </button>
             </div>
-            <div>
+            <div className="relative">
               <label className="block text-sm font-medium mb-2">Confirm New Password</label>
               <input
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full p-2 border rounded-lg dark:bg-slate-700 dark:border-slate-600"
+                type={passwordVisibility.confirm ? "text" : "password"}
+                value={passwordform.confirmPassword}
+                onChange={(e) => setpasswordform(prev => ({
+                  ...prev,
+                  confirmPassword: e.target.value
+                }))}
+                className="w-full p-2 border rounded-lg dark:bg-slate-700 dark:border-slate-600 pr-10"
                 required
               />
+              <button
+                type="button"
+                onClick={() => togglePasswordVisibility('confirm')}
+                className="absolute right-3 bottom-3 text-gray-400 hover:text-gray-600"
+              >
+                {passwordVisibility.confirm ? 
+                  <EyeOffIcon className="w-5 h-5" /> : 
+                  <EyeIcon className="w-5 h-5" />
+                }
+              </button>
             </div>
           </div>
           <div className="flex justify-end gap-2 mt-6">
             <button
               type="button"
-              onClick={() => setIsPasswordModalOpen(false)}
+              onClick={() => {
+                setIsPasswordModalOpen(false);
+                setpasswordform({
+                  currentPassword: '',
+                  newPassword: '',
+                  confirmPassword: ''
+                });
+                setPasswordVisibility({
+                  current: false,
+                  new: false,
+                  confirm: false
+                });
+              }}
               className="px-4 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg"
             >
               Cancel
@@ -354,4 +459,3 @@ export default function SettingsPage(user) {
     </div>
   );
 }
-
