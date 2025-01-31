@@ -74,122 +74,109 @@ export const getHomepagePosts = async(req, res) =>
 
       let filteredPosts = []
 
+      const fetchPosts = async(query, limit) =>
+      {
+        filteredPosts.push(...await Post
+          .find(query)
+          .sort({ createdAt: -1 })
+          .limit(limit)
+        )
+
+        seenPosts.posts.push(...filteredPosts.filter(post => !seenPosts.posts.includes(post._id)).map(p => p._id))
+      }
+
       // Get posts from friends as well as tags that is not seen
       if (friends.length && tags.length)
       {
-        filteredPosts = await Post
-          .find({
-            $and: [
-              {
-                userId: { $in: friends }
-              },
-              {
-                tags: { $in: tags }
-              },
-              {
-                _id: { $nin: seenPosts.posts }
-              }
-            ]
-          })
-          .sort({ createdAt: -1 })
-          .limit(n)
-
-        seenPosts.posts.push(...filteredPosts.filter(post => !seenPosts.posts.includes(post._id)).map(p => p._id))
+        await fetchPosts({
+          $and: [
+            {
+              userId: { $in: friends }
+            },
+            {
+              tags: { $in: tags }
+            },
+            {
+              _id: { $nin: seenPosts.posts }
+            }
+          ]
+        }, n)
       }
 
       // Get posts from either friends or tags that is not seen
       if(filteredPosts.length<n && (friends.length || tags.length))
       {
-        filteredPosts.push(...await Post
-          .find({
-            $and: [
-              {
-                $or: [
-                  {
-                    userId: { $in: friends }
-                  },
-                  {
-                    tags: { $in: tags }
-                  }
-                ]
-              },
-              {
-                _id: { $nin: seenPosts.posts }
-              }
-            ]
-          })
-          .sort({ createdAt: -1 })
-          .limit(n-filteredPosts.length))
-
-        seenPosts.posts.push(...filteredPosts.filter(post => !seenPosts.posts.includes(post._id)).map(p => p._id))
+        await fetchPosts({
+          $and: [
+            {
+              $or: [
+                {
+                  userId: { $in: friends }
+                },
+                {
+                  tags: { $in: tags }
+                }
+              ]
+            },
+            {
+              _id: { $nin: seenPosts.posts }
+            }
+          ]
+        }, n-filteredPosts.length)
       }
       
       // Get other posts that is not seen
       if(filteredPosts.length<n)
       {
-        filteredPosts.push(...await Post
-          .find({
-            _id: { $nin: seenPosts.posts }
-          })
-          .sort({ createdAt: -1 })
-          .limit(n-filteredPosts.length))
-
-          seenPosts.posts.push(...filteredPosts.filter(post => !seenPosts.posts.includes(post._id)).map(p => p._id))
+        await fetchPosts({
+          _id: { $nin: seenPosts.posts }
+        }, n-filteredPosts.length)
       }
 
       // if all posts are already seen then get the seen posts in the order just like above but that is not displayed in the news feed currently
       if(filteredPosts.length<n && friends.length && tags.length)
       {
-        filteredPosts.push(...await Post
-          .find({
-            $and: [
-              {
-                userId: { $in: friends }
-              },
-              {
-                tags: { $in: tags }
-              },
-              {
-                _id: { $nin: [...homepagePosts, ...filteredPosts] }
-              }
-            ]
-          })
-          .sort({ createdAt: -1 })
-          .limit(n-filteredPosts.length))
+        await fetchPosts({
+          $and: [
+            {
+              userId: { $in: friends }
+            },
+            {
+              tags: { $in: tags }
+            },
+            {
+              _id: { $nin: [...homepagePosts, ...filteredPosts] }
+            }
+          ]
+        }, n-filteredPosts.length)
       }
 
       if(filteredPosts.length<n && (friends.length || tags.length))
       {
-        filteredPosts.push(...await Post
-          .find({
-            $and: [
-              {
-                $or: [
-                  {
-                    userId: { $in: friends }
-                  },
-                  {
-                    tags: { $in: tags }
-                  }
-                ]
-              },
-              {
-                _id: { $nin: [...homepagePosts, ...filteredPosts] }
-              }
-            ]
-          })
-          .sort({ createdAt: -1 })
-          .limit(n-filteredPosts.length))
+        await fetchPosts({
+          $and: [
+            {
+              $or: [
+                {
+                  userId: { $in: friends }
+                },
+                {
+                  tags: { $in: tags }
+                }
+              ]
+            },
+            {
+              _id: { $nin: [...homepagePosts, ...filteredPosts] }
+            }
+          ]
+        }, n-filteredPosts.length)
       }
 
       if(filteredPosts.length<n)
       {
-        filteredPosts.push(...await Post
-          .find({
-            _id: { $nin: [...homepagePosts, ...filteredPosts] }
-          })
-          .sort({ createdAt: -1 })
-          .limit(n-filteredPosts.length))
+        await fetchPosts({
+          _id: { $nin: [...homepagePosts, ...filteredPosts] }
+        }, n-filteredPosts.length)
       }
 
       await seenPosts.save()
