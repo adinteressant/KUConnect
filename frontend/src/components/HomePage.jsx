@@ -157,7 +157,7 @@ const HomePage = () => {
               flex flex-col justify-center items-center gap-2
               shadow-md bg-white dark:shadow-black dark:bg-slate-800'
           >
-            <svg width="60" height="60" viewBox="0 0 24 24" stroke-linejoin="round" stroke-linecap="round"
+            <svg width="60" height="60" viewBox="0 0 24 24" strokeLinejoin="round" strokeLinecap="round"
               className='fill-none stroke-cyan-600 stroke-2'
             >
               <path d="M2 20h20"/>
