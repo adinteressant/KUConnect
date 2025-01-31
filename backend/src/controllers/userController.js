@@ -95,7 +95,7 @@ export const searchUsers = async (req, res) => {
         { username: { $regex: query, $options: 'i' } },
         { tags: { $regex: query, $options: 'i' } }
       ]
-    }).select('username pfp_id role');
+    }).select('username user_id pfp_id role');
     res.json(users);
   } catch (error) {
     res.status(500).json({ message: error.message });

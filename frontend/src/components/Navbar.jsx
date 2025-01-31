@@ -304,8 +304,8 @@ const Navigation = ({ setVisibility, setPadding, searchTrait, setSearchTrait, us
       <div className="w-full">
         <div className="flex items-center h-16">
           <div className="w-56">
-            <Link to="/home" className={`text-2xl font-serif text-gray-800  dark:text-white`}>
-              <img src="../public/logo/KUConnect.svg" className="object-contain max-h-12 min-w-[60px] mx-4"/>
+            <Link to="/home">
+            <img src="../public/logo/KUConnect.svg" className="object-contain max-h-12 min-w-[60px] mx-4 inline-block"/>
             </Link>
           </div>
 
