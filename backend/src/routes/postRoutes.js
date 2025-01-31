@@ -9,7 +9,7 @@ const router = express.Router()
 router.get('/api/get-posts', getAllPosts)
 
 // Route to get filtered posts
-router.get('/api/homepage/posts/user/:userId/get-posts', getHomepagePosts)
+router.post('/api/homepage/posts/user/:userId/get-posts', getHomepagePosts)
 
 // Route to create a new post
 router.post('/api/create-post', upload, validatePost, createPost)

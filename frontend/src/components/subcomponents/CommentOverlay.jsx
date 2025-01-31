@@ -1,6 +1,8 @@
 import { React, useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 import formatTimeAgo from "../../utils/generateTimeAgo.js"
+import ReplySection from "./ReplySection.jsx"
+import { post } from "simple-get"
 
 function ShowComments({ postId, userProfile, closeCommentOverlay }) {
 
@@ -9,6 +11,7 @@ function ShowComments({ postId, userProfile, closeCommentOverlay }) {
   const [student, setStudent] = useState(0)
   const [faculty, setFaculty] = useState(0)
   const [loading, setLoading] = useState(true)
+  const [replyTo, setReplyTo] = useState(false)
 
   useEffect(() => {
     setLoading(() => true)
@@ -114,10 +117,10 @@ function ShowComments({ postId, userProfile, closeCommentOverlay }) {
                             <path d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z' />
                           </svg>
                         </button>
-                        <button className='group'>
+                        <button className='group' onClick={() => setReplyTo((prev) => prev===comment.commentId?false:comment.commentId)}>
                           <svg width='18' height='18' viewBox='0 0 24 24'
                             className={`transition-all duration-300 fill-none
-                                                        ${false
+                                                        ${replyTo===comment.commentId
                                 ? 'stroke-cyan-600 group-hover:stroke-cyan-700'
                                 : 'stroke-gray-600 group-hover:stroke-cyan-600'
                               }`}
@@ -132,15 +135,34 @@ function ShowComments({ postId, userProfile, closeCommentOverlay }) {
                       <div>
                         {formatTimeAgo(comment.created)} ago
                       </div>
-                      <div>Likes: 0</div>
-                      <div>Replies: 0</div>
+                      {comment.likes>0 &&
+                      <button>
+                        Likes: {comment.likes}
+                      </button>
+                      }
+                      {comment.replies>0 &&
+                      <button>
+                        Replies: {comment.replies}
+                      </button>
+                      }
+                      <button>
+                        <svg width="16" height="16" viewBox="0 0 24 24"
+                          className='stroke-1 stroke-gray-600 dark:stroke-gray-400'>
+                          <circle cx="12" cy="12" r="1" />
+                          <circle cx="19" cy="12" r="1" />
+                          <circle cx="5" cy="12" r="1" />
+                        </svg>
+                      </button>
                     </div>
                   </div>
                 </div>
               )
             })}
             {((category === 'faculty' && faculty === 0) || (category === 'student' && student === 0)) && <div className="leading-none m-auto text-gray-600">No comments</div>}
-          </div>
+          </div>  
+          {replyTo &&
+            <ReplySection commentId={replyTo} postId={postId}/>
+          }
         </div>)}
     </div>
   );

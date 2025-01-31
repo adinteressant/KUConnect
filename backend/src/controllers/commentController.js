@@ -260,6 +260,7 @@ export const deleteComment = async(req, res) =>
 
   try
   {
+    const post = await Post.findById(comment.postId)
     await deleteComments(comment._id)
 
     res.status(200).json({ message: 'Comment and its replies are deleted successfully' })

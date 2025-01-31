@@ -14,8 +14,8 @@ const HomePage = () => {
   const [showWelcomeModal, setShowWelcomeModal] = useState(false)
   const [postLoadingState, setPostLoadingState] = useState(true)
   const [moreLoading, setMoreLoading] = useState(false)
-  const [showState, setShowState] = useState(true)
   const [fetchOnce, setFetchOnce] = useState(false)
+  const [totalPosts, setTotalPosts] = useState(0)
   // Check for logged-in user based on isAuthenticated
   if(localStorage.getItem('isLoggedIn') === 'true') useGetUnreadMessage()
   
@@ -90,11 +90,21 @@ const HomePage = () => {
 
   function getHomepagePosts()
   {
-    fetch(`/api/homepage/posts/user/${userProfile.user_id}/get-posts`)
+    fetch(`/api/homepage/posts/user/${userProfile.user_id}/get-posts`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          homepagePosts: posts.map(p => p._id)
+        })
+      }
+    )
     .then((response) => response.json())
     .then((data) => {
       setPosts((prev) => [...prev, ...data.posts])
-      setShowState(() => data.value)
+      setTotalPosts(() => data.totalPostsInDB)
       setMoreLoading(() => false)
       setPostLoadingState(() => false)
     })
@@ -135,29 +145,13 @@ const HomePage = () => {
           {moreLoading?
           <PostSkeleton />
           :
-          (showState?
-          <div 
-            className='max-w-2xl mx-auto rounded-full
-              shadow-md bg-white hover:bg-gray-100 hover:text-cyan-600
-              dark:shadow-black dark:bg-slate-800 dark:text-slate-200 dark:hover:text-cyan-600 dark:hover:bg-slate-700
-              transition-all duration-300'
-          >
-            <button className='rounded-full p-4 w-full text-center'
-              onClick={() => {
-                setMoreLoading(() => true)
-                getHomepagePosts()
-              }}
-            >
-              Show more
-            </button>
-          </div>
-          :
+          (totalPosts===posts.length?
           <div
               className='max-w-2xl p-4 mx-auto rounded-xl text-cyan-600 font-bold text-xl tracking-wide
               flex flex-col justify-center items-center gap-2
               shadow-md bg-white dark:shadow-black dark:bg-slate-800'
           >
-            <svg width="60" height="60" viewBox="0 0 24 24" stroke-linejoin="round" stroke-linecap="round"
+            <svg width="60" height="60" viewBox="0 0 24 24" strokeLinejoin="round" strokeLinecap="round"
               className='fill-none stroke-cyan-600 stroke-2'
             >
               <path d="M2 20h20"/>
@@ -167,6 +161,22 @@ const HomePage = () => {
             <div className='text-center'>
               That's everything we've got for now!
             </div>
+          </div>
+          :
+          <div
+            className='max-w-2xl mx-auto rounded-full
+              shadow-md bg-white hover:bg-gray-100 hover:text-cyan-600
+              dark:shadow-black dark:bg-slate-800 dark:text-slate-200 dark:hover:text-cyan-600 dark:hover:bg-slate-700
+              transition-all duration-300'
+            >
+            <button className='rounded-full p-4 w-full text-center'
+              onClick={() => {
+                setMoreLoading(() => true)
+                getHomepagePosts()
+              }}
+            >
+              Show more
+            </button>
           </div>)}
         </>
         }

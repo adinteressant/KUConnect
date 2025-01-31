@@ -31,11 +31,13 @@ export const getAllPosts = async (req, res) => {
 export const getHomepagePosts = async(req, res) =>
 {
   const userId = req.params.userId
+  const { homepagePosts } = req.body
 
   if(userId)
   {
     try
     {
+      const n = 5 //num of posts to display in feed (in one load hai)
       const [rawTags, rawFriends, rawSeenPosts, totalPosts] = await Promise.all([
         PublicInfo.findOne(
           {
@@ -68,7 +70,7 @@ export const getHomepagePosts = async(req, res) =>
 
       const tags = rawTags?.tags || []
       const friends = rawFriends?.map(f => f.sender_id===userId?f.receiver_id:f.sender_id) || []
-      const seenPosts = rawSeenPosts || new SeenPost({ userId })
+      let seenPosts = rawSeenPosts || new SeenPost({ userId })
 
       let filteredPosts = []
 
@@ -90,13 +92,15 @@ export const getHomepagePosts = async(req, res) =>
             ]
           })
           .sort({ createdAt: -1 })
-          .limit(10)
+          .limit(n)
+
+        seenPosts.posts.push(...filteredPosts.filter(post => !seenPosts.posts.includes(post._id)).map(p => p._id))
       }
 
       // Get posts from either friends or tags that is not seen
-      if(filteredPosts.length===0 && (friends.length || tags.length))
+      if(filteredPosts.length<n && (friends.length || tags.length))
       {
-        filteredPosts = await Post
+        filteredPosts.push(...await Post
           .find({
             $and: [
               {
@@ -115,40 +119,82 @@ export const getHomepagePosts = async(req, res) =>
             ]
           })
           .sort({ createdAt: -1 })
-          .limit(10)
+          .limit(n-filteredPosts.length))
+
+        seenPosts.posts.push(...filteredPosts.filter(post => !seenPosts.posts.includes(post._id)).map(p => p._id))
       }
       
       // Get other posts that is not seen
-      if(filteredPosts.length===0)
+      if(filteredPosts.length<n)
       {
-        filteredPosts = await Post
+        filteredPosts.push(...await Post
           .find({
             _id: { $nin: seenPosts.posts }
           })
           .sort({ createdAt: -1 })
-          .limit(10)
+          .limit(n-filteredPosts.length))
+
+          seenPosts.posts.push(...filteredPosts.filter(post => !seenPosts.posts.includes(post._id)).map(p => p._id))
       }
 
-      // Get already seen posts
-      if(filteredPosts.length===0)
+      // if all posts are already seen then get the seen posts in the order just like above but that is not displayed in the news feed currently
+      if(filteredPosts.length<n && friends.length && tags.length)
       {
-        filteredPosts = await Post
-          .find()
+        filteredPosts.push(...await Post
+          .find({
+            $and: [
+              {
+                userId: { $in: friends }
+              },
+              {
+                tags: { $in: tags }
+              },
+              {
+                _id: { $nin: [...homepagePosts, ...filteredPosts] }
+              }
+            ]
+          })
           .sort({ createdAt: -1 })
-          .limit(10)
+          .limit(n-filteredPosts.length))
       }
 
-      // console.log('before',filteredPosts.length)
-      const newSeenPosts = filteredPosts.filter(post => !seenPosts.posts.includes(post._id))
-
-      if(newSeenPosts.length>0)
+      if(filteredPosts.length<n && (friends.length || tags.length))
       {
-        seenPosts.posts.push(...newSeenPosts.map(p => p._id))
-        await seenPosts.save()
+        filteredPosts.push(...await Post
+          .find({
+            $and: [
+              {
+                $or: [
+                  {
+                    userId: { $in: friends }
+                  },
+                  {
+                    tags: { $in: tags }
+                  }
+                ]
+              },
+              {
+                _id: { $nin: [...homepagePosts, ...filteredPosts] }
+              }
+            ]
+          })
+          .sort({ createdAt: -1 })
+          .limit(n-filteredPosts.length))
       }
 
-      // console.log('after',filteredPosts.length)
-      res.status(200).json({ message: 'Posts fetched successfully', posts: filteredPosts, value: seenPosts.posts.length!==totalPosts })
+      if(filteredPosts.length<n)
+      {
+        filteredPosts.push(...await Post
+          .find({
+            _id: { $nin: [...homepagePosts, ...filteredPosts] }
+          })
+          .sort({ createdAt: -1 })
+          .limit(n-filteredPosts.length))
+      }
+
+      await seenPosts.save()
+
+      res.status(200).json({ message: 'Posts fetched successfully', posts: filteredPosts, totalPostsInDB: totalPosts })
     }
     catch(err)
     {
