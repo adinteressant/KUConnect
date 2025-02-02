@@ -105,7 +105,7 @@ export default function Message({ message, replyMessage, mm, dd, prevMM,prevDD }
                   {message.edited ? 'Edited' : ''}
                 </div>
                 <div className={`text-[0.6rem] text-gray-500 transition-all duration-150 ease-in-out`}>
-                  {getHours(message.createdAt)} : {getMinutes(message.createdAt)}
+                  {getHours(message.updatedAt)} : {getMinutes(message.updatedAt)}
                 </div>
               </div>
             </div>
