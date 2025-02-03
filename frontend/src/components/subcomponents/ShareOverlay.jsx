@@ -10,16 +10,16 @@ export default function SendToFriends({ closeShareOverlay, postId }) {
 
   const [friendList, setFriendList] = useState([])
   const [searchValue, setSearchValue] = useState('')
-  const [loadingList, setLoadingListState] = useState(true)
+  // const [loadingList, setLoadingListState] = useState(true)
   const conversationsWithDate = useGetConversationsWithDate()
-  const { conversations } = useGetConversations()
+  const { loading, conversations } = useGetConversations()
   const { sendMessage } = useSendMessage(null)
 
   let authUser
   if (localStorage.getItem('authUser') && localStorage.getItem('authUser') != 'undefined')
     authUser = JSON.parse(localStorage.getItem('authUser'))
 
-  const userProfiles = useGetFriends(authUser)
+  const { userProfilesLoading, userProfiles } = useGetFriends(authUser)
 
   useMemo(() => {
     const arr = conversations.map((conversation) => {
@@ -55,9 +55,6 @@ export default function SendToFriends({ closeShareOverlay, postId }) {
 
     setFriendList(() => arr.map(f => {return {...f, state: 'Send' }}))
 
-    if(conversations.length && userProfiles.length) {
-      setLoadingListState(() => false)
-    }
   }, [conversations, userProfiles])
 
   const sendMessageFunc = async(friend) => {
@@ -84,7 +81,7 @@ export default function SendToFriends({ closeShareOverlay, postId }) {
 
   return (
     <div className='flex flex-col w-[100%] h-[100%]'>
-      {loadingList ?
+      {(loading || userProfilesLoading)?
         (<div className='flex flex-col w-[100%] dark:bg-slate-900 h-[100%]'>
           <div className='p-2 flex border-b dark:border-slate-700'>
             <button className={`w-[80%] py-4 rounded-lg bg-gray-200 dark:bg-slate-800 animate-pulse`}>
@@ -137,7 +134,7 @@ export default function SendToFriends({ closeShareOverlay, postId }) {
                     {friend.username}
                   </Link>
                   <div className='text-gray-600 dark:text-gray-400 text-xs'>
-                    {friend.role.charAt(0).toUpperCase() + friend.role.slice(1)}
+                    {friend.role && (friend.role.charAt(0).toUpperCase() + friend.role.slice(1))}
                   </div>
                 </div>
                 <button className='ml-auto px-4 py-2 rounded-full hover:shadow-lg text-sm text-white bg-cyan-600 hover:bg-cyan-700 disabled:bg-cyan-900'

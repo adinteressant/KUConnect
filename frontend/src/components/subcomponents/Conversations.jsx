@@ -20,7 +20,7 @@ export default function Conversations({ conversations, loading }) {
   if(localStorage.getItem('authUser') && localStorage.getItem('authUser') != 'undefined' )
   authUser = JSON.parse(localStorage.getItem('authUser')) 
   const conversationsWithDate = useGetConversationsWithDate()
-  const userProfiles = useGetFriends(authUser)
+  const {userProfiles} = useGetFriends(authUser)
   const {newMessages,setNewMessages} = useNewMessages()
 
   useEffect(()=>{
