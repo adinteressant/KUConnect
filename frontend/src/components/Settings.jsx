@@ -90,6 +90,7 @@ export default function SettingsPage(user) {
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isUpdateTagsModalOpen,setIsUpdateTagsModalOpen] = useState(false)
+  const [isChangeProfilePicOpen,setIsChangeProfilePicOpen] = useState(false)
   
   // Form states
   const [username, setUsername] = useState('');
@@ -194,6 +195,10 @@ export default function SettingsPage(user) {
 
   const handleUpdateTags = () => {
     console.log('updatee')
+  }
+
+  const handleProfilePicChange = () => {
+    console.log('profile picture change')
   }
 
   return (
@@ -307,6 +312,20 @@ export default function SettingsPage(user) {
               </div>
               <div 
                 className="bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 rounded-lg shadow-sm p-4 cursor-pointer transition-colors duration-300"
+                onClick={()=>setIsChangeProfilePicOpen(true)}
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="font-medium">Change Profile Picture</h3>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                      Change your profile picture
+                    </p>
+                  </div>
+                  <ChevronRight className="w-5 h-5 text-gray-400 dark:text-gray-500" />
+                </div>
+              </div>
+              <div 
+                className="bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 rounded-lg shadow-sm p-4 cursor-pointer transition-colors duration-300"
                 onClick={()=>setIsUpdateTagsModalOpen(true)}
               >
                 <div className="flex items-center justify-between">
@@ -319,6 +338,7 @@ export default function SettingsPage(user) {
                   <ChevronRight className="w-5 h-5 text-gray-400 dark:text-gray-500" />
                 </div>
               </div>
+              
             </div>
           </div>
         )}
@@ -487,6 +507,30 @@ export default function SettingsPage(user) {
               className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
             >
               Delete Account
+            </button>
+          </div>
+        </div>
+      </Modal>
+
+      <Modal isOpen={isChangeProfilePicOpen}
+      onClose={()=>setIsChangeProfilePicOpen(false)}
+      title="Change Profile Picture">
+        <div className="space-y-4">
+          <p className="text-gray-600 dark:text-gray-300">
+            change picture
+          </p>
+          <div className="flex justify-end gap-2">
+            <button
+              onClick={() => setIsChangeProfilePicOpen(false)}
+              className="px-4 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleProfilePicChange}
+              className="px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700"
+            >
+              Change
             </button>
           </div>
         </div>
