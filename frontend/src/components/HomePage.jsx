@@ -164,7 +164,7 @@ const HomePage = () => {
           </div>
           :
           <div
-            className='max-w-2xl mx-auto rounded-full
+            className='max-w-2xl mx-auto rounded-full my-3
               shadow-md bg-white hover:bg-gray-100 hover:text-cyan-600
               dark:shadow-black dark:bg-slate-800 dark:text-slate-200 dark:hover:text-cyan-600 dark:hover:bg-slate-700
               transition-all duration-300'

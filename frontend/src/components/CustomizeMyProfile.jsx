@@ -168,14 +168,14 @@ const CustomizeMyProfile = () => {
         </div>
 
         {/* Change password button */}
-        <div className="text-center">
+        {/* <div className="text-center">
           <button
             className="w-full bg-cyan-500 text-white px-4 py-2 rounded hover:bg-cyan-600 transition-colors"
             onClick={() => setshowpasswordmodal(true)}
           >
             Change Password
           </button>
-        </div>
+        </div> */}
 
         {/* Password change modal */}
         {showpasswordmodal && (
