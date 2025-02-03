@@ -5,6 +5,8 @@ import Posts from './subcomponents/Posts.jsx'
 import useRequestCount from '../zustand/useRequestCount.js';
 import PostSkeleton from './subcomponents/PostSkeleton.jsx'
 import ProfileSkeleton from './subcomponents/ProfileSkeleton.jsx'
+import { Calendar } from 'lucide-react'
+import { getMonthAndYear } from '../utils/timeConversion.js';
 
 export default function ProfilePage() {
   const { username } = useParams();
@@ -264,14 +266,15 @@ export default function ProfilePage() {
       </div>
     )
   }
-
+  
+  const {mm,yy} = getMonthAndYear(userProfile.createdAt)
   return (
     <div className={`flex-1 dark:bg-slate-900 dark:text-gray-200 bg-gray-100 text-gray-800 p-6 overflow-y-auto scrollbar`} ref={scrollContainerRef}>
-      <div className="max-w-2xl mx-auto border dark:border-slate-700 bg-white dark:bg-slate-800 space-y-4 p-8 rounded-lg shadow-md mb-4">
+      <div className="max-w-2xl mx-auto border dark:border-slate-700 bg-white dark:bg-slate-800 space-y-4 p-8 rounded-lg shadow-md mb-4
+       flex flex-col items-start">
         {/* Profile picture with hover effect */}
         <div
-          className={`w-32 h-32 md:w-40 md:h-40 rounded-full bg-gray-300}
-                     flex items-center justify-center mx-auto
+          className={`w-32 h-32 md:w-40 md:h-40 rounded-full bg-gray-300
                      relative group cursor-pointer`}
         >
           {profileData.pfp_id ? (
@@ -286,12 +289,20 @@ export default function ProfilePage() {
         </div>
 
         {/* Rest of the profile content */}
-        <div className="text-center mt-4 flex flex-col">
-          <h1 className="text-3xl font-bold">
-            {username}
-          </h1>
-          <h2 className="text-2xl font-semibold">Role: {profileData.role}</h2>
-
+        <div className="flex items-end justify-between w-full">
+          <div className="text-start mx-1 flex flex-col gap-1">
+            <h1 className="text-3xl font-semibold mb-4">
+              {username} 
+            </h1>
+            <h2 className="text-sm text-slate-400 mx-1">{profileData.role.charAt(0).toUpperCase()+profileData.role.slice(1)}</h2>
+            <div className="mx-1 flex gap-1">
+              <Calendar className="w-4 h-4 text-slate-400"/>
+              <div className="text-sm text-slate-400">Joined {mm} {yy}</div>
+            </div>
+          </div>
+          
+        {/* customize buttons */}
+        <div>
           {/* Add Friend button */}
           {userProfile.username === username?
             (
@@ -302,7 +313,7 @@ export default function ProfilePage() {
                     <circle cx="10" cy="8" r="5"/>
                   </svg>
                   <div>
-                    Customize Profile
+                    Edit Profile
                   </div>
               </Link>
             )
@@ -374,6 +385,7 @@ export default function ProfilePage() {
               </>
               ) : null)
           }
+        </div>
         </div>
       </div>
 

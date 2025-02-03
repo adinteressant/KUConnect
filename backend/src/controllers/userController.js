@@ -19,7 +19,8 @@ export const getUserProfileController = async (req, res) => {
           user_id: '',
           username: '',
           email: email,  
-          role: ''
+          role: '',
+          createdAt:''
         });
       }
       publicProfile = await PublicInfo.findOne({ user_id: privateProfile.user_id });
@@ -38,7 +39,8 @@ export const getUserProfileController = async (req, res) => {
       user_id: publicProfile.user_id,
       username: publicProfile.username,
       email: privateProfile.email,  // Email is fetched from PrivateInfo model
-      role: publicProfile.role
+      role: publicProfile.role,
+      createdAt: publicProfile.createdAt
     });
   }
 
@@ -78,7 +80,8 @@ export const getUserProfileController = async (req, res) => {
       user_id: publicProfile.user_id,
       username: publicProfile.username,
       email: privateProfile.email,  // Email is fetched from PrivateInfo model
-      role: publicProfile.role
+      role: publicProfile.role,
+      createdAt: publicProfile.createdAt
     });
   } catch (error) {
     console.error('Error fetching user profile:', error);
