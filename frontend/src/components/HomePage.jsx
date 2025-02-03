@@ -82,7 +82,7 @@ const HomePage = () => {
       if(!fetchOnce)
       {
         setFetchOnce(() => true)
-        setPosts(() => [])
+        // setPosts(() => [])
         getHomepagePosts()
       }
     }
@@ -128,7 +128,7 @@ const HomePage = () => {
         <div className="max-w-2xl mx-auto space-y-4">
           {/* Post creation section */}
           {(user || googleUser) ? (
-            <PostCreateSection user={userProfile} setUser={setUserProfile} setPosts={setPosts}/>
+            <PostCreateSection user={userProfile} setUser={setUserProfile} setPosts={setPosts} setTotalPosts={setTotalPosts}/>
           ) : (
             <div className="bg-yellow-100 text-yellow-800 p-4 rounded-lg shadow-md">
               Please <Link to="/login" className="text-cyan-600">log in</Link> to post.
@@ -145,7 +145,7 @@ const HomePage = () => {
           {moreLoading?
           <PostSkeleton />
           :
-          (totalPosts===posts.length?
+          (posts.length===0 || (totalPosts===posts.length?
           <div
               className='max-w-2xl p-4 mx-auto rounded-xl text-cyan-600 font-bold text-xl tracking-wide
               flex flex-col justify-center items-center gap-2
@@ -177,7 +177,7 @@ const HomePage = () => {
             >
               Show more
             </button>
-          </div>)}
+          </div>))}
         </>
         }
         

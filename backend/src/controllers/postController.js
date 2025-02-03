@@ -97,7 +97,7 @@ export const getHomepagePosts = async(req, res) =>
               tags: { $in: tags }
             },
             {
-              _id: { $nin: seenPosts.posts }
+              _id: { $nin: [...homepagePosts, ...seenPosts.posts] }
             }
           ]
         }, n)
@@ -119,7 +119,7 @@ export const getHomepagePosts = async(req, res) =>
               ]
             },
             {
-              _id: { $nin: seenPosts.posts }
+              _id: { $nin: [...homepagePosts, ...seenPosts.posts] }
             }
           ]
         }, n-filteredPosts.length)
@@ -129,7 +129,7 @@ export const getHomepagePosts = async(req, res) =>
       if(filteredPosts.length<n)
       {
         await fetchPosts({
-          _id: { $nin: seenPosts.posts }
+          _id: { $nin: [...homepagePosts, ...seenPosts.posts] }
         }, n-filteredPosts.length)
       }
 
