@@ -1,6 +1,6 @@
 import Comment from './Comment'
 
-export default function Comments({ category, comments, postId, userId })
+export default function Comments({ category, comments, postId, userId, setPosts, setComments })
 {
   return (
     <>
@@ -17,7 +17,7 @@ export default function Comments({ category, comments, postId, userId })
         }
         return (
           <div key={index}>
-            <Comment category={category} comment={comment} postId={postId} userId={userId} />
+            <Comment category={category} comment={comment} postId={postId} userId={userId} setPosts={setPosts} setComments={setComments}/>
           </div>
         )
       })}

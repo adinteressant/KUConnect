@@ -2,17 +2,18 @@ import { useState } from "react"
 import { Link } from "react-router-dom"
 import formatTimeAgo from "../../utils/generateTimeAgo.js"
 import Comments from "./Comments.jsx"
+import ReplySection from "./ReplySection.jsx"
 
-export default function Comment({ category, comment, postId, userId })
+export default function Comment({ category, comment, postId, userId, setPosts, setComments })
 {
   const [reply, setReply] = useState(false)
   const [showReplies, setShowReplies] = useState(false)
   const [replies, setReplies] = useState([])
-  const [loadingReplies, setLoadingReplies] = useState(true)
+  const [loadingReplies, setLoadingReplies] = useState(false)
 
   const getReplies = async() =>
   {
-    if(replies.length===0)
+    if(comment.replies!==replies.length)
     {
       setLoadingReplies(() => true)
       try
@@ -107,6 +108,9 @@ export default function Comment({ category, comment, postId, userId })
             </div>
           </div>
         </div>
+        {reply &&
+        <ReplySection postId={postId} commentId={comment.commentId} userId={userId} setPosts={setPosts} setComments={setComments} setReplies={setReplies} setReply={setReply}/>
+        }
         {comment.replies > 0 &&
           <button 
             className={`mt-2 ml-[6px] mr-auto text-sm flex items-center gap-2 transition-all duration-300 ${showReplies?'text-cyan-600 hover:text-cyan-700':'text-gray-600 dark:text-gray-500 hover:text-cyan-600 dark:hover:text-cyan-600'}`}
@@ -145,7 +149,7 @@ export default function Comment({ category, comment, postId, userId })
           </div>
         </div>
         :
-        <Comments category={category} comments={replies} postId={postId} userId={userId}/>}
+        <Comments category={category} comments={replies} postId={postId} userId={userId} setPosts={setPosts} setComments={setReplies}/>}
       </div>
       }
     </>

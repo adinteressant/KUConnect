@@ -49,7 +49,8 @@ export const addComment = async (req, res) => {
     ])
 
     res.status(201).json({
-      message: 'Comment created sucessfully', 
+      message: 'Comment created sucessfully',
+      commentId: newComment._id,
       post: post,
       pfp: user.pfp_id,
       role: user.role,
