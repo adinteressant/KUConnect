@@ -228,25 +228,52 @@ const Navigation = ({ setVisibility, setPadding, searchTrait, setSearchTrait, us
 
   useEffect(() => {
     const checkAuthentication = async () => {
-      const localAuth = localStorage.getItem('isAuthenticated') === 'true';    
-      if (localAuth) {
-        setIsAuthenticated(true);
-      } else {
-        try {
-          const response = await fetch('/api/google/status', { credentials: 'include' });
-          const googleUserInfo = await response.json();
-          if (googleUserInfo?.email) {
-            localStorage.setItem('isAuthenticated', 'true');
-            setIsAuthenticated(true);
-          }
-        } catch (error) {
-          console.error('Error checking Google login status:', error);
+      try {
+        // Check Google Login
+        const googleResponse = await fetch('/api/google/status', { credentials: 'include' });
+        const googleUserInfo = await googleResponse.json();
+        
+        if (googleUserInfo?.email) {
+          localStorage.setItem('isAuthenticated', 'true');
+          setIsAuthenticated(true);
+          return; 
         }
+      } catch (error) {
+        console.error('Error checking Google login status:', error);
+      }
+  
+      try {
+        // If Google login fails, check JWT auth
+        const jwtResponse = await fetch('/api/verify', { credentials: 'include' });
+  
+        if (jwtResponse.ok) {
+          const jwtData = await jwtResponse.json();
+          localStorage.setItem('isAuthenticated', 'true');
+          setIsAuthenticated(true);
+        } else {
+          // Set to false only if both Google and JWT authentication fail
+          localStorage.setItem('isAuthenticated', 'false');
+          setIsAuthenticated(false);
+          localStorage.setItem('isLoggedIn', 'false');
+        }
+      } catch (error) {
+        console.error('Error checking manual login status:', error);
+        localStorage.setItem('isAuthenticated', 'false');
+        setIsAuthenticated(false);
+        localStorage.setItem('isLoggedIn', 'false');
       }
     };
-
+  
     checkAuthentication();
+  
+    const intervalId = setInterval(() => {
+      console.log('Checking authentication status...');
+      checkAuthentication();
+    }, 2 * 60 * 60 * 1000); // Recheck every 2 hours
+  
+    return () => clearInterval(intervalId); // Cleanup interval on unmount
   }, []);
+  
 
   const handleSearch = useCallback(async (e) => {
     e.preventDefault();
