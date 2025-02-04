@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Search, User, ChevronDown, LogOut, LogIn, UserPlus, UserCircle, Settings } from 'lucide-react';
 import axios from 'axios';
+import useAuthenticatedState from '../zustand/useAuthenticatedState';
 
 // Separate search component
 const SearchBar = React.memo(({ searchTrait, setSearchTrait, onSearch }) => {
@@ -215,7 +216,7 @@ const UserDropdown = React.memo(({ isAuthenticated, userProfile, onLogout }) => 
 });
 
 const Navigation = ({ setVisibility, setPadding, searchTrait, setSearchTrait, userProfile, setUserProfile }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem('isAuthenticated') === 'true');
+  const {isAuthenticated, setIsAuthenticated} = useAuthenticatedState();
   const navigate = useNavigate();
   // const { theme, toggleTheme } = useTheme();
   // // const [selected, setSelected] = useState(theme || 'light');
