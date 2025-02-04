@@ -9,7 +9,6 @@ function ShowComments({ postId, userProfile, setPosts }) {
   const [student, setStudent] = useState(0)
   const [faculty, setFaculty] = useState(0)
   const [loading, setLoading] = useState(true)
-  const [replyTo, setReplyTo] = useState(false)
 
   useEffect(() => {
     setLoading(() => true)
@@ -67,7 +66,7 @@ function ShowComments({ postId, userProfile, setPosts }) {
             </button>
           </div>
           <div className='p-4 flex-1 overflow-y-auto scrollbar flex flex-col gap-4'>
-            <Comments category={category} comments={comments} replyTo={replyTo} setReplyTo={setReplyTo} postId={postId} userId={userProfile.user_id} setPosts={setPosts}/>
+            <Comments category={category} comments={comments} postId={postId} userId={userProfile.user_id}/>
             {(comments.length===0 || (category === 'faculty' && faculty === 0) || (category === 'student' && student === 0)) && <div className="leading-none m-auto text-gray-600">No comments</div>}
           </div>
         </div>)}
