@@ -67,13 +67,13 @@ function ShowComments({ postId, userProfile, setPosts }) {
             </button>
           </div>
           <div className='p-4 flex-1 overflow-y-auto scrollbar flex flex-col gap-4'>
-            <Comments category={category} comments={comments} replyTo={replyTo} setReplyTo={setReplyTo}/>
+            <Comments category={category} comments={comments} replyTo={replyTo} setReplyTo={setReplyTo} postId={postId} userId={userProfile.user_id} setPosts={setPosts}/>
             {(comments.length===0 || (category === 'faculty' && faculty === 0) || (category === 'student' && student === 0)) && <div className="leading-none m-auto text-gray-600">No comments</div>}
           </div>
         </div>)}
-        <div className={`transition-all duration-500 ease-in-out ${replyTo?'opacity-100 max-h-screen overflow-y-auto scrollbar':'opacity-0 max-h-0 overflow-hidden'}`}>
+        {/* <div className={`transition-all duration-500 ease-in-out ${replyTo?'opacity-100 max-h-screen overflow-y-auto scrollbar':'opacity-0 max-h-0 overflow-hidden'}`}>
           <ReplySection commentId={replyTo} postId={postId} userId={userProfile.user_id} setComments={setComments} setPosts={setPosts} setReplyTo={setReplyTo}/>
-        </div>
+        </div> */}
     </>
   );
 }
