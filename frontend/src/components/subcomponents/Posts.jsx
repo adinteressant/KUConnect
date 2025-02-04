@@ -1075,6 +1075,7 @@ function Posts(props) {
           <div onClick={(e) => e.stopPropagation()}
             className={`relative bg-white dark:bg-slate-900  min-w-80 w-[50%] h-[60%] rounded-lg shadow-2xl
                     transition-all duration-300
+                    flex flex-col
                     ${overlayTransitionState ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}
                     `}
           >
@@ -1086,7 +1087,7 @@ function Posts(props) {
                 <path d="M18 6 6 18" /><path d="m6 6 12 12" />
               </svg>
             </button>
-            <ShowComments postId={showCommentOverlay} userProfile={userProfile} closeCommentOverlay={closeCommentOverlay} />
+            <ShowComments postId={showCommentOverlay} userProfile={userProfile} setPosts={setPosts}/>
           </div>
         </div>
         )}

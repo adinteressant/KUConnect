@@ -55,6 +55,9 @@ export const addComment = async (req, res) => {
       role: user.role,
       username:user.username,
       comment: newComment.content,
+      likeStatus: false,
+      likes: 0,
+      replies: 0,
       created: newComment.createdAt
     })
   }

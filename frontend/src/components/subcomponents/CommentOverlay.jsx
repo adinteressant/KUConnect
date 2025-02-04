@@ -2,9 +2,8 @@ import { React, useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 import formatTimeAgo from "../../utils/generateTimeAgo.js"
 import ReplySection from "./ReplySection.jsx"
-import { post } from "simple-get"
 
-function ShowComments({ postId, userProfile, closeCommentOverlay }) {
+function ShowComments({ postId, userProfile, setPosts }) {
 
   const [comments, setComments] = useState([])
   const [category, setCategory] = useState('all')
@@ -38,7 +37,7 @@ function ShowComments({ postId, userProfile, closeCommentOverlay }) {
   }, [])
 
   return (
-    <div className='flex flex-col w-[100%] h-[100%]'>
+    <>
       {loading ?
         (<div className='flex flex-col w-[100%] h-[100%] dark:bg-slate-900'>
           <div className='p-2 flex gap-2 border-b dark:border-slate-700'>
@@ -56,7 +55,7 @@ function ShowComments({ postId, userProfile, closeCommentOverlay }) {
             </div>))}
           </div>
         </div>) :
-        (<div className='flex flex-col w-[100%] h-[100%]'>
+        (<div className='flex-1 flex flex-col overflow-y-auto scrollbar'>
           <div className='p-2 flex gap-2 border-b dark:border-slate-700'>
             <button onClick={() => setCategory(() => 'all')} className={`p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-300 ${category === 'all' ? 'bg-gray-200 dark:text-white dark:bg-gray-700' : 'dark:bg-slate-900 dark:text-gray-400'}`}>
               All({student + faculty})
@@ -68,7 +67,7 @@ function ShowComments({ postId, userProfile, closeCommentOverlay }) {
               Faculty({faculty})
             </button>
           </div>
-          <div className='p-4 overflow-y-auto scrollbar flex flex-col gap-4 w-[100%] h-[100%]'>
+          <div className='p-4 flex-1 overflow-y-auto scrollbar flex flex-col gap-4'>
             {comments.map((comment, index) => {
               if (comment.role === 'student') {
 
@@ -85,7 +84,6 @@ function ShowComments({ postId, userProfile, closeCommentOverlay }) {
               return (
                 <div key={index} className='flex'>
                   <Link onClick={() => {
-                    closeCommentOverlay()
                   }} className='mt-2 shrink-0' to={`/${comment.username}`}>
                     <img src={`/api/get-pfp?id=${comment.pfp}`} alt="profile" className="w-8 h-8 rounded-full object-cover" />
                   </Link>
@@ -94,7 +92,6 @@ function ShowComments({ postId, userProfile, closeCommentOverlay }) {
                       <div className='bg-gray-100 dark:bg-slate-800 p-2 rounded-xl'>
                         <div className='flex gap-2 items-center'>
                           <Link onClick={() => {
-                            closeCommentOverlay()
                           }} to={`/${comment.username}`} className='text-gray-800 dark:text-slate-200 font-semibold text-sm'>
                             {comment.username}
                           </Link>
@@ -117,14 +114,13 @@ function ShowComments({ postId, userProfile, closeCommentOverlay }) {
                             <path d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z' />
                           </svg>
                         </button>
-                        <button className='group' onClick={() => setReplyTo((prev) => prev===comment.commentId?false:comment.commentId)}>
+                        <button className='group' onClick={() => setReplyTo(prev => prev===comment.commentId?false:comment.commentId)}>
                           <svg width='18' height='18' viewBox='0 0 24 24'
                             className={`transition-all duration-300 fill-none
-                                                        ${replyTo===comment.commentId
-                                ? 'stroke-cyan-600 group-hover:stroke-cyan-700'
-                                : 'stroke-gray-600 group-hover:stroke-cyan-600'
-                              }`}
-                            xmlns="http://www.w3.org/2000/svg"
+                            ${replyTo===comment.commentId
+                              ? 'stroke-cyan-600 group-hover:stroke-cyan-700'
+                              : 'stroke-gray-600 group-hover:stroke-cyan-600'
+                            }`}
                           >
                             <polyline points="9 17 4 12 9 7" /><path d="M20 18v-2a4 4 0 0 0-4-4H4" />
                           </svg>
@@ -159,12 +155,12 @@ function ShowComments({ postId, userProfile, closeCommentOverlay }) {
               )
             })}
             {((category === 'faculty' && faculty === 0) || (category === 'student' && student === 0)) && <div className="leading-none m-auto text-gray-600">No comments</div>}
-          </div>  
-          {replyTo &&
-            <ReplySection commentId={replyTo} postId={postId}/>
-          }
+          </div>
         </div>)}
-    </div>
+        <div className={`transition-all duration-500 ease-in-out ${replyTo?'opacity-100 max-h-screen overflow-y-auto scrollbar':'opacity-0 max-h-0 overflow-hidden'}`}>
+          <ReplySection commentId={replyTo} postId={postId} userId={userProfile.user_id} setComments={setComments} setPosts={setPosts} setReplyTo={setReplyTo}/>
+        </div>
+    </>
   );
 }
 
