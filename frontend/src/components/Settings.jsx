@@ -89,6 +89,8 @@ export default function SettingsPage(user) {
   const [isUsernameModalOpen, setIsUsernameModalOpen] = useState(false);
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isUpdateTagsModalOpen,setIsUpdateTagsModalOpen] = useState(false)
+  const [isChangeProfilePicOpen,setIsChangeProfilePicOpen] = useState(false)
   
   // Form states
   const [username, setUsername] = useState('');
@@ -191,6 +193,14 @@ export default function SettingsPage(user) {
    
   };
 
+  const handleUpdateTags = () => {
+    console.log('updatee')
+  }
+
+  const handleProfilePicChange = () => {
+    console.log('profile picture change')
+  }
+
   return (
     <div className="flex h-screen bg-white dark:bg-slate-900 text-gray-900 dark:text-white transition-colors duration-300">
       {/* Sidebar */}
@@ -202,7 +212,7 @@ export default function SettingsPage(user) {
           <div 
             className={`flex items-center p-3 mt-1 rounded-lg cursor-pointer transition-colors duration-300 ${
               activeSection === 'general' 
-                ? 'bg-blue-50 dark:bg-slate-800 text-blue-600 dark:text-blue-400' 
+                ? 'dark:bg-slate-800 text-cyan-600' 
                 : 'hover:bg-gray-100 dark:hover:bg-gray-700'
             }`}
             onClick={() => setActiveSection('general')}
@@ -213,7 +223,7 @@ export default function SettingsPage(user) {
           <div 
             className={`flex items-center p-3 rounded-lg cursor-pointer transition-colors duration-300 ${
               activeSection === 'security' 
-                ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' 
+                ? 'text-cyan-600' 
                 : 'hover:bg-gray-100 dark:hover:bg-gray-700'
             }`}
             onClick={() => setActiveSection('security')}
@@ -270,7 +280,7 @@ export default function SettingsPage(user) {
               <div className="bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 rounded-lg shadow-sm p-4 transition-colors duration-300">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="font-medium">Dark Mode</h3>
+                    <h3 className="font-medium">Theme</h3>
                     <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                       Switch between light and dark themes
                     </p>
@@ -300,6 +310,35 @@ export default function SettingsPage(user) {
                   <ChevronRight className="w-5 h-5 text-gray-400 dark:text-gray-500" />
                 </div>
               </div>
+              <div 
+                className="bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 rounded-lg shadow-sm p-4 cursor-pointer transition-colors duration-300"
+                onClick={()=>setIsChangeProfilePicOpen(true)}
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="font-medium">Change Profile Picture</h3>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                      Change your profile picture
+                    </p>
+                  </div>
+                  <ChevronRight className="w-5 h-5 text-gray-400 dark:text-gray-500" />
+                </div>
+              </div>
+              <div 
+                className="bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 rounded-lg shadow-sm p-4 cursor-pointer transition-colors duration-300"
+                onClick={()=>setIsUpdateTagsModalOpen(true)}
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="font-medium">Update Tags</h3>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                      Update your current tags
+                    </p>
+                  </div>
+                  <ChevronRight className="w-5 h-5 text-gray-400 dark:text-gray-500" />
+                </div>
+              </div>
+              
             </div>
           </div>
         )}
@@ -332,7 +371,7 @@ export default function SettingsPage(user) {
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              className="px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700"
             >
               Save Changes
             </button>
@@ -439,7 +478,7 @@ export default function SettingsPage(user) {
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              className="px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700"
             >
               Update Password
             </button>
@@ -468,6 +507,54 @@ export default function SettingsPage(user) {
               className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
             >
               Delete Account
+            </button>
+          </div>
+        </div>
+      </Modal>
+
+      <Modal isOpen={isChangeProfilePicOpen}
+      onClose={()=>setIsChangeProfilePicOpen(false)}
+      title="Change Profile Picture">
+        <div className="space-y-4">
+          <p className="text-gray-600 dark:text-gray-300">
+            change picture
+          </p>
+          <div className="flex justify-end gap-2">
+            <button
+              onClick={() => setIsChangeProfilePicOpen(false)}
+              className="px-4 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleProfilePicChange}
+              className="px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700"
+            >
+              Change
+            </button>
+          </div>
+        </div>
+      </Modal>
+
+      <Modal isOpen={isUpdateTagsModalOpen}
+      onClose={()=>setIsUpdateTagsModalOpen(false)}
+      title="Update Tags">
+        <div className="space-y-4">
+          <p className="text-gray-600 dark:text-gray-300">
+            update tags update tags
+          </p>
+          <div className="flex justify-end gap-2">
+            <button
+              onClick={() => setIsUpdateTagsModalOpen(false)}
+              className="px-4 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleUpdateTags}
+              className="px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700"
+            >
+              Update Tags
             </button>
           </div>
         </div>

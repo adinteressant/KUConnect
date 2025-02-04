@@ -291,7 +291,7 @@ export default function ProfilePage() {
         {/* Rest of the profile content */}
         <div className="flex items-end justify-between w-full">
           <div className="text-start mx-1 flex flex-col gap-1">
-            <h1 className="text-3xl font-semibold mb-4">
+            <h1 className="text-xl font-semibold mb-4">
               {username} 
             </h1>
             <h2 className="text-sm text-slate-400 mx-1">{profileData.role.charAt(0).toUpperCase()+profileData.role.slice(1)}</h2>
