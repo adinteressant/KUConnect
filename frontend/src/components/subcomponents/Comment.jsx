@@ -10,6 +10,7 @@ export default function Comment({ category, comment, postId, userId, setPosts, s
   const [showReplies, setShowReplies] = useState(false)
   const [replies, setReplies] = useState([])
   const [loadingReplies, setLoadingReplies] = useState(false)
+  const [showCommentOptions, setShowCommentOptions] = useState(false)
 
   const getReplies = async() =>
   {
@@ -44,8 +45,8 @@ export default function Comment({ category, comment, postId, userId, setPosts, s
   return (
     <>
       <div className="flex flex-col">
-        <div className='flex pr-4'>
-          <Link className='mt-2 shrink-0' to={`/${comment.username}`}>
+        <div className='group/comment flex pr-4'>
+          <Link className='mt-2 shrink-0 mb-auto' to={`/${comment.username}`}>
             <img src={`/api/get-pfp?id=${comment.pfp}`} alt="profile" className="w-8 h-8 rounded-full object-cover" />
           </Link>
           <div className='ml-2'>
@@ -87,24 +88,71 @@ export default function Comment({ category, comment, postId, userId, setPosts, s
                 </button>
               </div>
             </div>
-            <div className='flex items-center gap-4 ml-2 text-gray-600 text-xs'>
+            <div className='flex items-center gap-4 ml-2 mt-1 text-gray-600 text-xs'>
               <div>
                 {formatTimeAgo(comment.created)} ago
               </div>
+              
+              {comment.edited &&
+                <div>
+                  Edited
+                </div>
+              }
+
               {comment.likes > 0 &&
                 <button>
                   Likes: {comment.likes}
                 </button>
               }
-              
-              <button>
-                <svg width="16" height="16" viewBox="0 0 24 24"
-                  className='stroke-1 stroke-gray-600 dark:stroke-gray-400'>
-                  <circle cx="12" cy="12" r="1" />
-                  <circle cx="19" cy="12" r="1" />
-                  <circle cx="5" cy="12" r="1" />
-                </svg>
-              </button>
+
+              {userId === comment.userId &&
+              <div className='relative flex items-end' onMouseLeave={() => setShowCommentOptions(() => false)}>
+
+                <div className={`absolute right-full rounded-lg shadow-2xl text-sm bg-gray-100 dark:bg-slate-900 border dark:border-slate-700 border-gray-200 transition-all duration-300 overflow-hidden ${showCommentOptions?'opacity-100 max-h-screen':'opacity-0 max-h-0'}`}>
+                  
+                  <button
+                    disabled={!showCommentOptions}
+                    // onClick={() => openEditOverlay(post)}
+                    className={`w-[100%] group/edit flex items-center gap-2 p-2 text-gray-600 dark:text-gray-400 dark:hover:text-cyan-600 hover:text-cyan-600 dark:hover:bg-gray-700 hover:bg-gray-200 hover:shadow-inner transition-all duration-300`}
+                  >
+                    <svg className='stroke-gray-600 dark:stroke-gray-400 fill-none stroke-2 group-hover/edit:stroke-cyan-600 transition-all duration-300' width="16" height="16" viewBox="0 0 24 24">
+                      <path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                      <path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z" />
+                    </svg>
+                    <div>
+                      Edit
+                    </div>
+                  </button>
+
+                  <button
+                    disabled={!showCommentOptions}
+                    // onClick={() => openConfirmDeletePost(post)}
+                    className={`w-[100%] group/del flex items-center gap-2 border-t dark:border-slate-700 border-gray-200 p-2 text-red-600 hover:text-red-700 dark:hover:bg-gray-700 hover:bg-gray-200 hover:shadow-inner transition-all duration-300`}
+                  >
+                    <svg className='stroke-red-600 fill-none stroke-2 group-hover/del:stroke-red-700 transition-all duration-300' width="16" height="16" viewBox="0 0 24 24">
+                      <path d="M3 6h18" />
+                      <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                      <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                    </svg>
+                    <div>
+                      Delete
+                    </div>
+                  </button>
+                </div>
+                
+                <button
+                  className='opacity-0 group-hover/comment:opacity-100 rounded-full hover:text-cyan-600'
+                  onClick={() => setShowCommentOptions((prev) => !prev)}
+                >
+                  <svg width="16" viewBox="0 0 24 24"
+                    className='fill-none stroke-1 stroke-current'
+                  >
+                    <circle cx="12" cy="12" r="1" />
+                    <circle cx="19" cy="12" r="1" />
+                    <circle cx="5" cy="12" r="1" />
+                  </svg>
+                </button>
+              </div>}
             </div>
           </div>
         </div>

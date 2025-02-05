@@ -26,6 +26,7 @@ export default function ReplySection({ postId, commentId, userId, setPosts, setC
         setReplies(prev => [{
           commentId: reply.commentId,
           parentId: reply.parentId,
+          userId: reply.userId,
           pfp: reply.pfp,
           username: reply.username,
           role: reply.role,

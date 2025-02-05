@@ -50,9 +50,10 @@ export const addComment = async (req, res) => {
 
     res.status(201).json({
       message: 'Comment created sucessfully',
+      post: post,
       commentId: newComment._id,
       parentId: newComment.parentId,
-      post: post,
+      userId: newComment.userId,
       pfp: user.pfp_id,
       role: user.role,
       username:user.username,
@@ -96,6 +97,7 @@ export const getComments = async(req, res) =>
       return {
         commentId: comment._id,
         parentId: comment.parentId,
+        userId: comment.userId,
         pfp: user.pfp_id,
         username: user.username,
         role: user.role,

@@ -858,7 +858,7 @@ function Posts(props) {
                           (<div>
                             <Link
                               to={`/post/${post._id}`}
-                              className={`w-[100%] group/view flex items-center gap-2 rounded-t-lg p-2 dark:hover:text-cyan-600 text-gray-600 dark:text-gray-400 hover:text-cyan-600 hover:bg-gray-200 dark:hover:bg-gray-700 hover:shadow-inner transition-all duration-300`}
+                              className={`w-[100%] group/view flex items-center gap-2 p-2 border-b dark:border-slate-700 border-gray-200 dark:hover:text-cyan-600 text-gray-600 dark:text-gray-400 hover:text-cyan-600 hover:bg-gray-200 dark:hover:bg-gray-700 hover:shadow-inner transition-all duration-300`}
                             >
                               <svg className='stroke-gray-600 dark:stroke-gray-400 fill-none stroke-2 group-hover/view:stroke-cyan-600 transition-all duration-300' width="20" height="20" viewBox="0 0 24 24">
                                 <path d="M3 7V5a2 2 0 0 1 2-2h2" />
@@ -879,8 +879,6 @@ function Posts(props) {
                             savePost(post._id.toString(), userProfile.user_id)
                           }}
                           className={`w-[100%] group/save flex items-center gap-2 p-2 hover:bg-gray-200 dark:hover:text-cyan-600 dark:hover:bg-gray-700 hover:shadow-inner transition-all duration-300
-                            ${post.userId !== userProfile.user_id ? 'rounded-b-lg' : ''}
-                            ${urlPostId ? 'rounded-t-lg' : ''}
                             ${saveStatus ? 'text-cyan-600 hover:text-cyan-700' : 'text-gray-600 dark:text-gray-400 hover:text-cyan-600'}
                           `}
                         >
@@ -897,11 +895,10 @@ function Posts(props) {
                         {(post.userId === userProfile.user_id) &&
                           <div>
 
-
                             <button
                               disabled={postOptions !== post._id}
                               onClick={() => openEditOverlay(post)}
-                              className={`w-[100%] group/edit flex items-center gap-2 p-2 text-gray-600 dark:text-gray-400 dark:hover:text-cyan-600 hover:text-cyan-600 dark:hover:bg-gray-700 hover:bg-gray-200 hover:shadow-inner transition-all duration-300`}
+                              className={`w-[100%] group/edit flex items-center gap-2 p-2 border-y dark:border-slate-700 border-gray-200 text-gray-600 dark:text-gray-400 dark:hover:text-cyan-600 hover:text-cyan-600 dark:hover:bg-gray-700 hover:bg-gray-200 hover:shadow-inner transition-all duration-300`}
                             >
                               <svg className='stroke-gray-600 dark:stroke-gray-400  fill-none stroke-2 group-hover/edit:stroke-cyan-600 transition-all duration-300' width="20" height="20" viewBox="0 0 24 24">
                                 <path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z" />
@@ -912,7 +909,7 @@ function Posts(props) {
                             <button
                               disabled={postOptions !== post._id}
                               onClick={() => openConfirmDeletePost(post)}
-                              className={`w-[100%] group/del flex items-center gap-2 rounded-b-lg p-2 text-red-600 hover:text-red-700 dark:hover:bg-gray-700 hover:bg-gray-200 hover:shadow-inner transition-all duration-300`}
+                              className={`w-[100%] group/del flex items-center gap-2 p-2 text-red-600 hover:text-red-700 dark:hover:bg-gray-700 hover:bg-gray-200 hover:shadow-inner transition-all duration-300`}
                             >
                               <svg className='stroke-red-600 fill-none stroke-2 group-hover/del:stroke-red-700 transition-all duration-300' width="20" height="20" viewBox="0 0 24 24">
                                 <path d="M3 6h18" />
