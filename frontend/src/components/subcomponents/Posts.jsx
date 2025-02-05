@@ -620,12 +620,12 @@ function Posts(props) {
                         a: ({node, ...props}) => {
 
                           //Shriharsh's code commented
-                          //const youtubeMatch = props.href.match(URL_REGEX);
+                          const youtubeMatch = props.href.match(URL_REGEX);
 
-                          const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/;
-                          const youtubeMatch = props.href.match(youtubeRegex);
+                          //const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/;
+                          //const youtubeMatch = props.href.match(youtubeRegex);
                           const isLastYouTubeLink = youtubeMatch && post.content.includes(props.href) &&
-                          props.href === post.content.split(/\s+/).reverse().find((link) => youtubeRegex.test(link));
+                          props.href === post.content.split(/\s+/).reverse().find((link) => URL_REGEX.test(link));
                           
                           if (youtubeMatch) {
                             return (
