@@ -54,7 +54,7 @@ export default function ReplySection({ postId, commentId, userId, setPosts, setC
         }
         value={content}
         placeholder="Add a reply..."
-        className='flex-1 transition-all duration-300 p-2 border rounded-lg bg-gray-100 dark:bg-slate-900 dark:border-slate-700 focus:m-1 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:ring-offset-1
+        className='flex-1 transition-all duration-300 px-4 py-2 border rounded-full bg-gray-100 dark:bg-slate-900 dark:border-slate-700 focus:m-1 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:ring-offset-1
           dark:text-white resize-none overflow-auto scrollbar leading-6'
         rows='1'
       />
@@ -62,7 +62,7 @@ export default function ReplySection({ postId, commentId, userId, setPosts, setC
         disabled={!content.trim()}
         onClick={() => handleReply()}
         className="transition-all duration-300
-                        bg-cyan-600 text-white px-4 py-2 rounded-lg disabled:dark:bg-slate-600 disabled:bg-gray-400
+                        bg-cyan-600 text-white px-4 py-2 rounded-full disabled:dark:bg-slate-600 disabled:bg-gray-400
                         hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:ring-offset-2 focus:ml-1 focus:mb-1 focus:mt-1"
 
       >

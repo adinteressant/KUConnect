@@ -108,9 +108,11 @@ export default function Comment({ category, comment, postId, userId, setPosts, s
             </div>
           </div>
         </div>
-        {reply &&
-        <ReplySection postId={postId} commentId={comment.commentId} userId={userId} setPosts={setPosts} setComments={setComments} setReplies={setReplies} setReply={setReply}/>
-        }
+        
+        <div className={`transition-all duration-300 ease-in-out ${reply?'mt-2 opacity-100 max-h-screen overflow-y-auto scrollbar':'mt-0 max-h-0 opacity-0 overflow-hidden'}`}>
+          <ReplySection postId={postId} commentId={comment.commentId} userId={userId} setPosts={setPosts} setComments={setComments} setReplies={setReplies} setReply={setReply}/>
+        </div>
+        
         {comment.replies > 0 &&
           <button 
             className={`mt-2 ml-[6px] mr-auto text-sm flex items-center gap-2 transition-all duration-300 ${showReplies?'text-cyan-600 hover:text-cyan-700':'text-gray-600 dark:text-gray-500 hover:text-cyan-600 dark:hover:text-cyan-600'}`}
