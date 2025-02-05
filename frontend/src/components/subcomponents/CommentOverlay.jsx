@@ -1,5 +1,4 @@
 import { React, useState, useEffect } from "react"
-import ReplySection from "./ReplySection.jsx"
 import Comments from "./Comments.jsx"
 
 function ShowComments({ postId, userProfile, setPosts }) {
@@ -70,9 +69,6 @@ function ShowComments({ postId, userProfile, setPosts }) {
             {(comments.length===0 || (category === 'faculty' && faculty === 0) || (category === 'student' && student === 0)) && <div className="leading-none m-auto text-gray-600">No comments</div>}
           </div>
         </div>)}
-        {/* <div className={`transition-all duration-500 ease-in-out ${replyTo?'opacity-100 max-h-screen overflow-y-auto scrollbar':'opacity-0 max-h-0 overflow-hidden'}`}>
-          <ReplySection commentId={replyTo} postId={postId} userId={userProfile.user_id} setComments={setComments} setPosts={setPosts} setReplyTo={setReplyTo}/>
-        </div> */}
     </>
   );
 }

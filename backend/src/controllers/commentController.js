@@ -241,7 +241,7 @@ export const getCommentLikes = async(req, res) =>
 }
 
 // Recursively delete nested replies
-const deleteComments = async(id) =>
+const deleteComments = async(id, post) =>
 {
   try
   {
@@ -250,10 +250,9 @@ const deleteComments = async(id) =>
       Comment.findByIdAndDelete(id)
     ])
 
-    for(let reply of replies)
-    {
-      await deleteComments(reply._id)
-    }
+    post.comments = post.comments - 1
+
+    await Promise.all(replies.map(reply => deleteComments(reply._id, post)))
   }
   catch(err)
   {
@@ -264,12 +263,23 @@ const deleteComments = async(id) =>
 // Delete a comment
 export const deleteComment = async(req, res) =>
 {
-  const { comment } = req.body
+  const { comment, postId } = req.body
 
   try
   {
-    const post = await Post.findById(comment.postId)
-    await deleteComments(comment._id)
+    const [post, parent] = await Promise.all([
+      Post.findById(postId),
+      Comment.findById(comment.parentId)
+    ])
+
+    await deleteComments(comment.commentId, post)
+
+    parent && parent.replies && (parent.replies = parent.replies - 1)
+
+    await Promise.all([
+      post.save(),
+      parent?.save()
+    ])
 
     res.status(200).json({ message: 'Comment and its replies are deleted successfully' })
   }

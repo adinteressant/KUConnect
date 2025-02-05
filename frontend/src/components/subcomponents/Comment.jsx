@@ -1,8 +1,10 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
+import { createPortal } from "react-dom"
 import formatTimeAgo from "../../utils/generateTimeAgo.js"
 import Comments from "./Comments.jsx"
 import ReplySection from "./ReplySection.jsx"
+import { Loader2 } from "lucide-react"
 
 export default function Comment({ category, comment, postId, userId, setPosts, setComments })
 {
@@ -11,6 +13,8 @@ export default function Comment({ category, comment, postId, userId, setPosts, s
   const [replies, setReplies] = useState([])
   const [loadingReplies, setLoadingReplies] = useState(false)
   const [showCommentOptions, setShowCommentOptions] = useState(false)
+  const [openDeleteOverlay, setOpenDeleteOverlay] = useState(false)
+  const [deleteLoadingState, setDeleteLoadingState] = useState(false)
 
   const getReplies = async() =>
   {
@@ -39,6 +43,39 @@ export default function Comment({ category, comment, postId, userId, setPosts, s
       {
         console.log('Error getting replies:', err)
       }
+    }
+  }
+
+  const deleteComment = async()=> {
+    try
+    {
+      const response = await fetch(`/api/comment/delete-comment`, {
+        method:'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          userId,
+          postId,
+          comment
+        })
+      })
+
+      const data = await response.json()
+
+      if(response.ok)
+      {
+        setOpenDeleteOverlay(() => false)
+        setDeleteLoadingState(() => false)
+      }
+      else
+      {
+        console.error('Error getting replies:', data.message)
+      }
+    }
+    catch(err)
+    {
+      console.log('Error getting replies:', err)
     }
   }
 
@@ -126,7 +163,7 @@ export default function Comment({ category, comment, postId, userId, setPosts, s
 
                   <button
                     disabled={!showCommentOptions}
-                    // onClick={() => openConfirmDeletePost(post)}
+                    onClick={() => setOpenDeleteOverlay(() => true)}
                     className={`w-[100%] group/del flex items-center gap-2 border-t dark:border-slate-700 border-gray-200 p-2 text-red-600 hover:text-red-700 dark:hover:bg-gray-700 hover:bg-gray-200 hover:shadow-inner transition-all duration-300`}
                   >
                     <svg className='stroke-red-600 fill-none stroke-2 group-hover/del:stroke-red-700 transition-all duration-300' width="16" height="16" viewBox="0 0 24 24">
@@ -205,6 +242,51 @@ export default function Comment({ category, comment, postId, userId, setPosts, s
           </div>
         }
       </div>
+
+      {openDeleteOverlay &&
+      createPortal(
+        <div className={`fixed inset-0 z-[100]
+                          flex items-center justify-center
+                          bg-black transition-all duration-300
+                          bg-opacity-50`}
+        >
+          <div className={`bg-white dark:bg-slate-900 min-w-[320px] w-[40%] max-w-[580px] min-h-36 max-h-[400px] rounded-xl shadow-2xl
+                  transition-all duration-300
+                  flex p-2`}
+          >
+            {deleteLoadingState ?
+              <div className='m-auto text-lg text-gray-600 dark:text-gray-200 flex justify-center items-center gap-2'>
+                <div>
+                  Deleting Comment
+                </div>
+                <Loader2 className="w-5 h-5 text-cyan-600 animate-spin" />
+              </div>
+              :
+              <div>
+                <div className='m-3 mb-2 text-lg font-semibold dark:text-gray-200'>
+                  Delete Comment
+                </div>
+                <div className='m-3 my-2 dark:text-gray-200'>
+                  Once deleted, this comment cannot be restored. Are you sure you want to delete it permanently?
+                </div>
+                <div className='flex justify-end gap-2 m-2'>
+                  <button className='py-2 px-4 rounded-xl dark:text-gray-200 dark:hover:text-gray-300 text-gray-600 hover:text-white dark:bg-slate-700 bg-gray-200 dark:hover:bg-slate-800 hover:bg-gray-400'
+                    onClick={() => setOpenDeleteOverlay(() => false)}>
+                    Cancel
+                  </button>
+                  <button className='py-2 px-4 rounded-xl dark:text-gray-200 dark:hover:text-gray-300 text-white bg-red-600 hover:bg-red-700'
+                    onClick={() => {
+                      setDeleteLoadingState(() => true)
+                      deleteComment()
+                    }}>
+                    Delete
+                  </button>
+                </div>
+              </div>}
+          </div>
+        </div>,
+        document.body
+      )}
     </>
   )
 }

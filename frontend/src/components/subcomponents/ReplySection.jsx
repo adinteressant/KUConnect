@@ -1,7 +1,7 @@
 import { useState } from "react"
 
-export default function ReplySection({ postId, commentId, userId, setPosts, setComments, setReplies, setReply, setShowReplies, getReplies }) {
-  
+export default function ReplySection({ postId, commentId, userId, setPosts, setComments, setReplies, setReply, setShowReplies, getReplies })
+{
   const [content, setContent] = useState('')
 
   const handleReply = async() => {

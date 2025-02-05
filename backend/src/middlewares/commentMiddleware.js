@@ -13,9 +13,9 @@ export const validateComment = (req, res, next) => {
 
 // For update and delete
 export const validateUser = (req, res, next) => {
-    const { user, comment } = req.body
+    const { userId, comment } = req.body
     
-    if(user.user_id !== comment.userId)
+    if(userId !== comment.userId)
     {
       return res.status(400).json({ message: 'Comment cannot be altered by another user' })
     }
