@@ -10,10 +10,7 @@ import PostCreateSection from './PostCreateSection.jsx'
 import { useNavigate } from 'react-router-dom'
 import YouTubeEmbed from './YouTubeEmbed.jsx'
 import React from 'react'
-import rehypeRaw from 'rehype-raw'
-import remarkGfm from 'remark-gfm'
-import ReactMarkdown from 'react-markdown';
-
+import PostContent from './PostContent.jsx'
 
 import axios from 'axios'
 //Props include:
@@ -22,11 +19,7 @@ import axios from 'axios'
 
 
 
-
-
 function Posts(props) {
-
-  const URL_REGEX = /(((https?:\/\/)|(www\.))[^\s]+)/g;
   // const {theme, toggleTheme} = useTheme();
   // useEffect(() => {
   //   if (theme === 'dark') {
@@ -35,6 +28,7 @@ function Posts(props) {
   //     document.documentElement.classList.remove('dark');
   //   }
   // }, [theme]);
+  
   const { userProfile, setUserProfile } = useOutletContext()
   const [posts, setPosts] = useState([])
   const [likedPosts, setLikedPosts] = useState([])
@@ -228,7 +222,6 @@ function Posts(props) {
 
   const openLikeOverlay = (postId) => {
     setShowLikeOverlay(() => postId)
-
     setTimeout(() => {
       setOverlayTransitionState(true)
     }, 1)
@@ -572,52 +565,7 @@ function Posts(props) {
                   )}
 
                 <div className="dark:text-slate-200 text-gray-800 break-all whitespace-pre-line">
-
-                  <ReactMarkdown
-                    components={{
-                      p: ({ node, children }) => {
-                        return <>{children}</>
-                      },
-                      a: ({ node, ...props }) => {
-
-                          //Shriharsh's code commented
-                          const youtubeMatch = props.href.match(URL_REGEX);
-
-                          //const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/;
-                          //const youtubeMatch = props.href.match(youtubeRegex);
-                          const isLastYouTubeLink = youtubeMatch && post.content.includes(props.href) &&
-                          props.href === post.content.split(/\s+/).reverse().find((link) => URL_REGEX.test(link));
-                          
-                          if (youtubeMatch) {
-                            return (
-                              <>
-                                <a 
-                                  target='_blank' 
-                                  className='text-blue-400' 
-                                  {...props}
-                                >
-                                  {props.children}
-                                </a>
-                                {post.images===null && isLastYouTubeLink && <YouTubeEmbed videoUrl={props.href} />}
-                              </>
-                            );
-                          }
-                          
-                          return (
-                            <a
-                              target='_blank' 
-                              className='text-blue-400' 
-                              {...props}
-                            />
-                          );
-                        }
-                      }}
-                      rehypePlugins={[rehypeRaw]}
-                      remarkPlugins={[remarkGfm]}
-                    >
-                      {post.content}
-                    </ReactMarkdown>
-
+              <PostContent props={props} post={post}/>
                 </div>
 
                 {/* Display Images */}

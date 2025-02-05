@@ -38,7 +38,7 @@ import axios from 'axios';
     if (url) {
       fetchMetadata();
     }
-  }, [url]);
+  }, []);
 
   if (loading) {
     return (

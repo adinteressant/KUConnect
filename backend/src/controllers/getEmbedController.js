@@ -21,7 +21,7 @@ export default async function getEmbedController(req, res) {
 
   try {
     const axiosInstance = axios.create({
-      timeout: 5000,  // 5 seconds timeout
+      timeout: 10000,  // 10 seconds timeout
       headers: {
         'User-Agent': 'Mozilla/5.0 (compatible; LinkPreviewBot/1.0; +https://github.com/dhaiwat10/react-link-preview)',
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
