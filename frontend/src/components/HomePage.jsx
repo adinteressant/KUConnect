@@ -1,4 +1,4 @@
-import { useEffect, useState} from 'react'
+import { useCallback, useEffect, useState} from 'react'
 import { useOutletContext,Link } from 'react-router-dom'
 import Posts from './subcomponents/Posts.jsx'
 import WelcomeModal from './subcomponents/WelcomeModal.jsx'
@@ -77,6 +77,7 @@ const HomePage = () => {
   // }, [])
 
   // Fetch posts acc to user
+
   useEffect(() => {
     if(userProfile.user_id)
     {
@@ -89,7 +90,7 @@ const HomePage = () => {
     }
   }, [userProfile])
 
-  function getHomepagePosts()
+  const getHomepagePosts = useCallback(()=>
   {
     fetch(`/api/homepage/posts/user/${userProfile.user_id}/get-posts`,
       {
@@ -112,7 +113,7 @@ const HomePage = () => {
     .catch((e) => {
       console.error('Error fetching posts:', e)
     })
-  }
+  });
 
   return (
     <div className="flex-1 flex flex-col dark:bg-slate-900 bg-gray-200 overflow-y-auto scrollbar">
