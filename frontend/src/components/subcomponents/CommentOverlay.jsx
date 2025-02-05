@@ -66,11 +66,6 @@ function ShowComments({ postId, userProfile, setPosts }) {
             </button>
           </div>
           <div className='p-4 flex-1 overflow-y-auto scrollbar flex flex-col gap-4'>
-            
-            {category==='all' ||
-            <div className='text-xs text-gray-400 dark:text-gray-500'>
-              {`Comments and replies by ${category==='faculty'?'students':'faculties'} are hidden`}
-            </div>}
             <Comments category={category} comments={comments} postId={postId} userId={userProfile.user_id} setPosts={setPosts} setComments={setComments}/>
             {(comments.length===0 || (category === 'faculty' && faculty === 0) || (category === 'student' && student === 0)) && <div className="leading-none m-auto text-gray-600">No comments</div>}
           </div>
