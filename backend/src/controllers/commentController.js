@@ -51,6 +51,7 @@ export const addComment = async (req, res) => {
     res.status(201).json({
       message: 'Comment created sucessfully',
       commentId: newComment._id,
+      parentId: newComment.parentId,
       post: post,
       pfp: user.pfp_id,
       role: user.role,
@@ -94,6 +95,7 @@ export const getComments = async(req, res) =>
       const like = likes.find(like => like.commentId===comment._id)
       return {
         commentId: comment._id,
+        parentId: comment.parentId,
         pfp: user.pfp_id,
         username: user.username,
         role: user.role,

@@ -1,6 +1,6 @@
 import { useState } from "react"
 
-export default function ReplySection({ postId, commentId, userId, setPosts, setComments, setReplies, setReply }) {
+export default function ReplySection({ postId, commentId, userId, setPosts, setComments, setReplies, setReply, setShowReplies, getReplies }) {
   
   const [content, setContent] = useState('')
 
@@ -20,10 +20,12 @@ export default function ReplySection({ postId, commentId, userId, setPosts, setC
       const reply = await response.json()
       if(response.ok)
       {
+        setShowReplies(() => false)
         setPosts(prev => prev.map(post => post._id===postId?reply.post:post))
         setComments(prev => prev.map(comment => comment.commentId===commentId?{...comment, replies: comment.replies + 1}:comment))
-        setReplies(prev => [...prev, {
+        setReplies(prev => [{
           commentId: reply.commentId,
+          parentId: reply.parentId,
           pfp: reply.pfp,
           username: reply.username,
           role: reply.role,
@@ -32,9 +34,13 @@ export default function ReplySection({ postId, commentId, userId, setPosts, setC
           likes: reply.likes,
           replies: reply.replies,
           created: reply.created
-        }])
+        }, ...prev])
         setContent(() => '')
         setReply(() => false)
+        getReplies()
+        setTimeout(() => {
+          setShowReplies(() => true)
+        }, 1)
       }
       else
       {
