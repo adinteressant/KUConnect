@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate, useOutletContext } from "react-router-dom";
 import styles from "./bubble.module.css";
+import useAuthenticatedState from '../zustand/useAuthenticatedState';
 
 export default function LandingPage() {
   
@@ -10,7 +11,7 @@ export default function LandingPage() {
 
   useEffect(() => {
     // Check authentication status immediately
-    const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
+    const {isAuthenticated, setIsAuthenticated} = useAuthenticatedState();
     if (isAuthenticated) {
       navigate('/home');
       return;

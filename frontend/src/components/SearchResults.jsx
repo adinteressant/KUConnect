@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import useAuthenticatedState from '../../zustand/useAuthenticatedState.js' 
 
 const SearchResults = () => {
     const location = useLocation();
@@ -9,10 +10,10 @@ const SearchResults = () => {
     const [showCommentBox, setShowCommentBox] = useState(false);
     const [googleUser, setGoogleUser] = useState('');
     const [user, setUser] = useState(null); // Added user state
+    const {isAuthenticated, setIsAuthenticated} = useAuthenticatedState();
   
      // Check for logged-in user based on isAuthenticated
       useEffect(() => {
-        let isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
         if (isAuthenticated) {
           setUser({ email: 'user@example.com' });
         } else {

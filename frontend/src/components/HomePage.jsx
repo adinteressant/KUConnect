@@ -5,6 +5,7 @@ import WelcomeModal from './subcomponents/WelcomeModal.jsx'
 import { useGetUnreadMessage } from './hooks/useGetUnreadMessage.js'
 import PostSkeleton from './subcomponents/PostSkeleton.jsx'
 import PostCreateSection from './subcomponents/PostCreateSection.jsx'
+import useAuthenticatedState from '../zustand/useAuthenticatedState';
 
 const HomePage = () => {
   const [user, setUser] = useState(null)
@@ -18,9 +19,9 @@ const HomePage = () => {
   const [totalPosts, setTotalPosts] = useState(0)
   // Check for logged-in user based on isAuthenticated
   if(localStorage.getItem('isLoggedIn') === 'true') useGetUnreadMessage()
+    const {isAuthenticated, setIsAuthenticated} = useAuthenticatedState();
   
     useEffect(() => {
-    let isAuthenticated = localStorage.getItem('isAuthenticated') === 'true'  
     if (isAuthenticated) {
       setUser({ email: 'user@example.com' })
       const isNewLogin = sessionStorage.getItem('newLogin') === 'true'

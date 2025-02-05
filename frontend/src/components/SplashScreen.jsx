@@ -2,6 +2,7 @@ import { useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { useLocation,useSearchParams } from "react-router-dom"
 import { KUConnectSvg } from "../../public/logo/KUConnectSvg"
+import useAuthenticatedState from "../zustand/useAuthenticatedState"
 
 export default function SplashScreen({ setLoad }) {
     
@@ -10,8 +11,8 @@ export default function SplashScreen({ setLoad }) {
     const [query] = useSearchParams()
     const email = query.get('email')
 
+    const {isAuthenticated, setIsAuthenticated} = useAuthenticatedState();
     useEffect(() => {
-        const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true'
         
         setTimeout(() => {
             setLoad(() => false)
