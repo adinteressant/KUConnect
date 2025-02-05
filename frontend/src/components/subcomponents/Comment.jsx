@@ -44,7 +44,7 @@ export default function Comment({ category, comment, postId, userId, setPosts, s
   return (
     <>
       <div className="flex flex-col">
-        <div className='flex'>
+        <div className='flex pr-4'>
           <Link className='mt-2 shrink-0' to={`/${comment.username}`}>
             <img src={`/api/get-pfp?id=${comment.pfp}`} alt="profile" className="w-8 h-8 rounded-full object-cover" />
           </Link>
@@ -109,7 +109,7 @@ export default function Comment({ category, comment, postId, userId, setPosts, s
           </div>
         </div>
           
-        <div className={`transition-all duration-300 ease-in-out ${reply?'mt-2 opacity-100 max-h-screen overflow-y-auto scrollbar':'mt-0 max-h-0 opacity-0 overflow-hidden'}`}>
+        <div className={`transition-all duration-300 ease-in-out ${reply?'mt-2 pr-4 opacity-100 max-h-screen overflow-y-auto scrollbar':'mt-0 max-h-0 opacity-0 overflow-hidden'}`}>
           <ReplySection postId={postId} commentId={comment.commentId} userId={userId} setPosts={setPosts} setComments={setComments} setReplies={setReplies} setReply={setReply} setShowReplies={setShowReplies} getReplies={getReplies}/>
         </div>
           
