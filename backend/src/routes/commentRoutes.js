@@ -1,28 +1,25 @@
 import express from 'express'
-import { addComment, getComments } from '../controllers/commentController.js'
-import { validateComment } from '../middlewares/commentMiddleware.js'
+import { addComment, updateComment, getComments, likeComment, getCommentLikes, deleteComment } from '../controllers/commentController.js'
+import { validateComment, validateUser } from '../middlewares/commentMiddleware.js'
 
 const router = express.Router()
 
-// Add a comment to a post
-router.post('/api/post/:postId/parent/:parentId/user/:userId/add-comment', validateComment, addComment)
+// Add a comment
+router.post('/api/post/:postId/user/:userId/add-comment', validateComment, addComment)
 
-// Get comments for a post
-router.get('/api/post/:postId/get-comments', getComments)
+// Update a comment
+router.post('/api/comment/update-comment', validateComment, validateUser, updateComment)
 
-// Get replies for a comment
-// router.get('/api/comment/:commentId', getReplies)
+// Get comments
+router.get('/api/post/:postId/user/:userId/get-comments', getComments)
 
-// // Delete a comment of a post
-// router.post('/api/posts/:postId/comments/:commentId/delete-comment', deleteComment)
+// Like a comment
+router.post('/api/comment/:commentId/user/:userId/like-comment', likeComment)
 
-// // Add a reply to a post
-// router.post('/api/posts/:postId/users/:userId/add-a-reply', validateComment, addReply)
+// Get all likes of a comment
+router.get('/api/comment/:commentId/get-comment-likes', getCommentLikes)
 
-// // Get replies for a post
-// router.get('/api/comments/:commentId/get-replies', getReplies)
-
-// // Delete a reply for a comment
-// router.post('/api/posts/:postId/comments/:commentId/delete-a-reply', deleteReply)
+// Delete a comment
+router.post('/api/comment/delete-comment', validateUser, deleteComment)
 
 export default router

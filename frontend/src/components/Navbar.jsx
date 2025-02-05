@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Search, User, ChevronDown, LogOut, LogIn, UserPlus, UserCircle, Settings } from 'lucide-react';
 import axios from 'axios';
+import useAuthenticatedState from '../zustand/useAuthenticatedState';
 
 // Separate search component
 const SearchBar = React.memo(({ searchTrait, setSearchTrait, onSearch }) => {
@@ -215,7 +216,7 @@ const UserDropdown = React.memo(({ isAuthenticated, userProfile, onLogout }) => 
 });
 
 const Navigation = ({ setVisibility, setPadding, searchTrait, setSearchTrait, userProfile, setUserProfile }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem('isAuthenticated') === 'true');
+  const {isAuthenticated, setIsAuthenticated} = useAuthenticatedState();
   const navigate = useNavigate();
   // const { theme, toggleTheme } = useTheme();
   // // const [selected, setSelected] = useState(theme || 'light');
@@ -228,25 +229,52 @@ const Navigation = ({ setVisibility, setPadding, searchTrait, setSearchTrait, us
 
   useEffect(() => {
     const checkAuthentication = async () => {
-      const localAuth = localStorage.getItem('isAuthenticated') === 'true';    
-      if (localAuth) {
-        setIsAuthenticated(true);
-      } else {
-        try {
-          const response = await fetch('/api/google/status', { credentials: 'include' });
-          const googleUserInfo = await response.json();
-          if (googleUserInfo?.email) {
-            localStorage.setItem('isAuthenticated', 'true');
-            setIsAuthenticated(true);
-          }
-        } catch (error) {
-          console.error('Error checking Google login status:', error);
+      try {
+        // Check Google Login
+        const googleResponse = await fetch('/api/google/status', { credentials: 'include' });
+        const googleUserInfo = await googleResponse.json();
+        
+        if (googleUserInfo?.email) {
+          localStorage.setItem('isAuthenticated', 'true');
+          setIsAuthenticated(true);
+          return; 
         }
+      } catch (error) {
+        console.error('Error checking Google login status:', error);
+      }
+  
+      try {
+        // If Google login fails, check JWT auth
+        const jwtResponse = await fetch('/api/verify', { credentials: 'include' });
+  
+        if (jwtResponse.ok) {
+          const jwtData = await jwtResponse.json();
+          localStorage.setItem('isAuthenticated', 'true');
+          setIsAuthenticated(true);
+        } else {
+          // Set to false only if both Google and JWT authentication fail
+          localStorage.setItem('isAuthenticated', 'false');
+          setIsAuthenticated(false);
+          localStorage.setItem('isLoggedIn', 'false');
+        }
+      } catch (error) {
+        console.error('Error checking manual login status:', error);
+        localStorage.setItem('isAuthenticated', 'false');
+        setIsAuthenticated(false);
+        localStorage.setItem('isLoggedIn', 'false');
       }
     };
-
+  
     checkAuthentication();
+  
+    const intervalId = setInterval(() => {
+      console.log('Checking authentication status...');
+      checkAuthentication();
+    }, 2 * 60 * 60 * 1000); // Recheck every 2 hours
+  
+    return () => clearInterval(intervalId); // Cleanup interval on unmount
   }, []);
+  
 
   const handleSearch = useCallback(async (e) => {
     e.preventDefault();
@@ -304,8 +332,8 @@ const Navigation = ({ setVisibility, setPadding, searchTrait, setSearchTrait, us
       <div className="w-full">
         <div className="flex items-center h-16">
           <div className="w-56">
-            <Link to="/home" className={`text-2xl font-serif text-gray-800  dark:text-white`}>
-              <img src="../public/logo/KUConnect.svg" className="object-contain max-h-12 min-w-[60px] mx-4"/>
+            <Link to="/home">
+            <img src="../public/logo/KUConnect.svg" className="object-contain max-h-12 min-w-[60px] mx-4 inline-block"/>
             </Link>
           </div>
 

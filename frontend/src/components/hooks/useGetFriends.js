@@ -1,6 +1,7 @@
 import { useState,useEffect } from 'react'
 
 export default function useGetFriends(id){
+  const [userProfilesLoading, setUserProfilesLoading] = useState(true)
    const [friendsInfo,setFriendsInfo] = useState([])
     useEffect(()=>{
       fetch(`/api/view-friends?user_id=${id}`)
@@ -10,7 +11,9 @@ export default function useGetFriends(id){
       })
       .catch((e)=>{
         console.log(e)
+      }).finally(() => {
+        setUserProfilesLoading(false)
       })
     },[])
-    return friendsInfo
+    return {userProfilesLoading , userProfiles: friendsInfo}
 }

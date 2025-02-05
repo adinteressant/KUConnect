@@ -1,11 +1,11 @@
-import { useState, useRef} from 'react'
+import { useState, useRef, useEffect} from 'react'
 import { useOutletContext } from 'react-router-dom'
 import base64encode from '../../utils/base64encode.js'
 import tags from '../../data/tags.js'
 import { Loader2 } from 'lucide-react'
 import {Bold, Italic, Strikethrough} from 'lucide-react'
 
-export default function PostCreateSection({ parent ,user, setUser, setPosts, setPostImages, post, close }) {
+export default function PostCreateSection({ parent ,user, setUser, setPosts, setPostImages, post, close, setTotalPosts }) {
   const [content, setContent] = useState(
     parent==='edit'?post.content:''
   )
@@ -28,6 +28,11 @@ export default function PostCreateSection({ parent ,user, setUser, setPosts, set
   const [updatePostLoadingState, setUpdatePostLoadingState] = useState(false)
   const editorRef = useRef(null);
 
+  useEffect(() => {
+    if(parent === 'edit' && editorRef.current){
+      editorRef.current.innerHTML = post.content
+    }
+  }, [parent, post]);
 
   const handleTagRemove = (indexToRemove) => {
       const newTagList = tagList.filter((_, index) => {
@@ -98,6 +103,7 @@ export default function PostCreateSection({ parent ,user, setUser, setPosts, set
           setImages([])
           setEncodedImages([])
           setPosts(prev => [data.post, ...prev])
+          setTotalPosts(prev => prev + 1)
           const loggedInUser = data.updatedUsers.find(
             (updatedUser) => updatedUser.user_id === user.user_id
           );
@@ -261,8 +267,6 @@ export default function PostCreateSection({ parent ,user, setUser, setPosts, set
   }
 
   const applyFormatting = (formatType) => {
-    const selection = window.getSelection();
-    const range = selection.getRangeAt(0);
     
     // Apply the formatting
     document.execCommand('styleWithCSS', false, true);
@@ -343,7 +347,6 @@ export default function PostCreateSection({ parent ,user, setUser, setPosts, set
         onInput={handleChange}
         onFocus={handleTextareaFocus}
         onBlur={handleTextareaBlur}
-        role="textbox"
         aria-label="Post content"
       />
 

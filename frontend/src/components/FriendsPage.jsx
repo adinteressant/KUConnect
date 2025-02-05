@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { Users, UserPlus, Clock } from 'lucide-react';
 import useRequestCount from '../zustand/useRequestCount';
+import useAuthenticatedState from '../zustand/useAuthenticatedState';
 
 const FriendsPage = () => {
   const [activeTab, setActiveTab] = useState('friends');
@@ -13,8 +14,7 @@ const FriendsPage = () => {
   const [error, setError] = useState('');
   const [userProfile, setUserProfile] = useState({});
   const { incomingRequestsCount, setIncomingRequestsCount } = useRequestCount();
-
-  const isAuthenticated = localStorage.getItem('isAuthenticated') == 'true'
+  const {isAuthenticated, setIsAuthenticated} = useAuthenticatedState();
 
   // Fetch user profile
   useEffect(() => {

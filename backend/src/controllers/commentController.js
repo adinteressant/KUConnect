@@ -1,90 +1,110 @@
 import Post from '../models/Post.js'
 import PublicInfo from '../models/PublicInfo.js'
 import Comment from '../models/comment.js'
+import CommentLike from '../models/commentLikes.js'
 
-// Add a comment to a post
+// Add a comment
 export const addComment = async (req, res) => {
-    const postId = req.params.postId
-    const parentId = req.params.parentId
-    const userId = req.params.userId
-    const { content } = req.body
-  
-    try {
-      const [post, comment, user] = await Promise.all([ 
-        Post.findById(postId),
-        Comment.findById(parentId),
-        PublicInfo.findOne({user_id: userId})
-      ])
-
-      if (!post) {
-        return res.status(404).json({ message: 'Post not found!'})
-      }
-
-      if(parentId && !comment)
-      {
-        return res.status(404).json({ message: 'Parent comment not found' })
-      }
-  
-      if (!user) {
-        return res.status(404).json({ message: 'User not found!'})
-      }
-
-      const newComment = new Comment({
-        postId,
-        parentId,
-        userId,
-        content
-      })
-      post.comments = post.comments + 1
-      comment.replies = comment.replies + 1
-
-      await Promise.all([
-        newComment.save(),
-        post.save(),
-        comment.save()
-      ])
-
-      res.status(201).json({
-        message: 'Comment created sucessfully', 
-        post: post,
-        pfp: user.pfp_id,
-        role: user.role, 
-        username:user.username, 
-        comment: newComment.content, 
-        created: newComment.createdAt })
-    }
-    catch (error) 
-    {
-      console.error('Error adding comment:', error)
-      res.status(500).json({ message: 'Error creating comment:', error })
-    }
-}
-
-//Get comments for a post
-export const getComments = async(req, res) => 
-{
   const postId = req.params.postId
+  const parentId = req.query.parentId || null
+  const userId = req.params.userId
+  const { content } = req.body
 
   try
   {
-    const rawCommentArray = await Comment.find({ postId }).sort({ createdAt: -1 })
-    const userInfo = await PublicInfo.find({ user_id: {$in: rawCommentArray.map((comment) => comment.userId) } },
-                                           { user_id: 1, username: 1, role: 1, pfp_id: 1, likesCount: 1 ,repliesCount: 1  })
+    const [post, comment, user] = await Promise.all([ 
+      Post.findById(postId),
+      Comment.findById(parentId),
+      PublicInfo.findOne({user_id: userId})
+    ])
 
-    const commentArray = rawCommentArray.map((comment) => {
-        const user = userInfo.find((obj) => obj.user_id===comment.userId)
-        return {
-          pfp: user.pfp_id,
-          username: user.username,
-          role: user.role,
-          comment: comment.content,
-          created: comment.createdAt
-        }
+    if (!post)
+    {
+      return res.status(404).json({ message: 'Post not found!'})
+    }
+
+    if(parentId && !comment)
+    {
+      return res.status(404).json({ message: 'Parent comment not found' })
+    }
+
+    if (!user)
+    {
+      return res.status(404).json({ message: 'User not found!'})
+    }
+
+    const newComment = new Comment({
+      postId,
+      parentId,
+      userId,
+      content
+    })
+    post.comments = post.comments + 1
+    comment && (comment.replies = comment.replies + 1)
+
+    await Promise.all([
+      newComment.save(),
+      post.save(),
+      comment?.save()
+    ])
+
+    res.status(201).json({
+      message: 'Comment created sucessfully', 
+      post: post,
+      pfp: user.pfp_id,
+      role: user.role,
+      username:user.username,
+      comment: newComment.content,
+      created: newComment.createdAt
+    })
+  }
+  catch (error) 
+  {
+    console.error('Error adding comment:', error)
+    res.status(500).json({ message: 'Error creating comment:', error })
+  }
+}
+
+// Get comments
+export const getComments = async(req, res) =>
+{
+  const postId = req.params.postId
+  const parentId = req.query.parentId || null
+  const userId = req.params.userId
+
+  try
+  {
+    const rawComments = await Comment.find({ postId, parentId }).sort({ createdAt: -1 })
+    const [userInfo, likes] = await Promise.all([
+      PublicInfo.find(
+        { user_id: {$in: rawComments.map(comment => comment.userId)} },
+        { user_id: 1, username: 1, role: 1, pfp_id: 1 }
+      ),
+      CommentLike.find({
+        commentId: {$in: rawComments.map(comment => comment._id)}
       })
+    ])
 
-    res.status(201).json({ 
+    const comments = rawComments.map(comment => {
+      const user = userInfo.find(obj => obj.user_id===comment.userId)
+      const like = likes.find(like => like.commentId===comment._id)
+      return {
+        commentId: comment._id,
+        pfp: user.pfp_id,
+        username: user.username,
+        role: user.role,
+        comment: comment.content,
+        likeStatus: like?.userId.includes(userId),
+        likes: comment.likes,
+        replies: comment.replies,
+        created: comment.createdAt
+      }
+    })
+
+    res.status(200).json({ 
       message: 'Comments fetched sucessfully', 
-      commentArray: commentArray })
+      comments
+    })
   }
   catch(error)
   {
@@ -93,147 +113,161 @@ export const getComments = async(req, res) =>
   }
 }
 
-// //Delete a comment
-// export const deleteComment = async(req, res) =>
-// {
-//   const { postId, commentId } = req.params
+// Update a comment
+export const updateComment = async(req, res) =>
+{
+  const { comment, content } = req.body
 
-//   try
-//   {
-//     const comment = await Comment.findByIdAndDelete(commentId)
+  try
+  {
+    const updatedComment = await Comment.findByIdAndUpdate(
+      comment._id,
+      { content, edited: true },
+      { new: true }
+    )
 
-//     if(!comment)
-//     {
-//       return res.status(404).json({ message: 'Comment not found' })
-//     }
+    if(!updatedComment)
+    {
+      return res.status(404).json({ message: 'Comment not found' })
+    }
 
-//     const post = await Post.findByIdAndUpdate(postId, { $inc: {comments: -(1+comment.repliesCount)} } ,{new: true})
+    res.status(200).json({
+      message: 'Comment updated sucessfully',
+      updatedComment
+    })
+  }
+  catch(err)
+  {
+    console.error('Error updating comment:', err)
+    res.status(500).json({ message: 'Error updating comment', err })
+  }
+}
 
-//     if(!post)
-//     {
-//       return res.status(404).json({ message: 'Post not found' })
-//     }
+// Like a comment
+export const likeComment = async(req, res) =>
+{
+  const commentId = req.params.commentId
+  const userId = req.params.userId
 
-//     res.status(201).json({ message: 'Comment deleted successfully', post, comment})
-//   }
-//   catch(error)
-//   {
-//     console.error(error)
-//     res.status(500).json({ message: 'Error deleting comment', error })
-//   }
-// }
+  try
+  {
+    let [comment, like] = await Promise.all([
+      Comment.findById(commentId),
+      CommentLike.findOne({ commentId })
+    ])
 
-// //Add a reply to a comment
-// export const addReply = async(req, res) =>
-// {
-//   const userId = req.params.userId
-//   const postId = req.params.postId
-//   const {
-//     commentId,
-//     replyIdArray,
-//     content
-//   } = req.body
+    if(!comment) {
+      return res.status(404).json({ message: 'Comment not found!' })
+    }
 
-//   try
-//   {
-//     const [comment, post, user] = await Promise.all([
-//                                                       Comment.findById(commentId),
-//                                                       Post.findById(postId),
-//                                                       PublicInfo.findOne({user_id: userId})
-//                                                     ])
+    if(!like)
+    {
+      like = new CommentLike({ commentId, userId: [] })
+    }
 
-//     if(!comment)
-//     {
-//       return res.status(404).json({ message: 'Comment not found' })
-//     }
+    const existingLikedIndex = like.userId.findIndex(user => user === userId)
 
-//     if(!post)
-//     {
-//       return res.status(404).json({ message: 'Post not found' })
-//     }
+    if(existingLikedIndex !== -1)
+    {
+      like.userId.splice(existingLikedIndex, 1)
+      comment.likes = comment.likes - 1
+    }
+    else 
+    {
+      like.userId.push(userId)
+      comment.likes = comment.likes + 1
+    }
+        
+    await Promise.all([
+      comment.save(),
+      like.save()
+    ])
+        
+    res.status(201).json({
+      message: 'Liked comment successfully',
+      comment
+    })
+  } 
+  catch (error)
+  {
+    console.error('Error liking comment: ', error)
+    res.status(500).json({ message: 'Error while liking comment: ', error })
+  }
+}
 
-//     let parent = comment
-//     replyIdArray.forEach((id) => {
-//       parent = parent.replies.find((reply) => id === reply._id.toString()) 
-//     })
+// Get likes for a comment
+export const getCommentLikes = async(req, res) =>
+{
+  const commentId = req.params.commentId
 
-//     if(!parent)
-//     {
-//       return res.status(404).json({ message: 'Parent comment not found' })
-//     }
-
-//     const reply = {
-//       _id: new mongoose.Types.ObjectId(),
-//       userId,
-//       content,
-//       createdAt: new Date(Date.now()).toISOString(),
-//       likes: [],
-//       replies: [],
-//       likesCount: 0
-//     }
-
-//     parent.replies.push(reply)
-
-//     comment.repliesCount++
-//     post.comments++
+  try
+  {
+    const rawLikes = await CommentLike.findOne({ commentId })
     
-//     await Promise.all([
-//       comment.save(),
-//       post.save()
-//     ])
+    if(!rawLikes)
+    {
+      return res.status(404).json({ message: 'Cannot find the likes for this comment!' })
+    }
 
-//     return res.status(201).json({ 
-//       message: 'Reply added successfully',
-//       post: post, 
-//       pfp: user.pfp_id, 
-//       role: user.role, 
-//       username:user.username, 
-//       comment: reply.content,
-//       created: reply.createdAt,
-//       likesCount: reply.likesCount
-//     })
-//   }
-//   catch(error)
-//   {
-//     console.error(error)
-//     res.status(500).json({ message: 'Error adding reply to the comment', error })
-//   }
-// }
+    const userInfo = await PublicInfo.find(
+      { user_id: {$in: rawLikes[0].userId } },
+      { user_id: 1, username: 1, role: 1, pfp_id: 1 }
+    )
 
-// //Get replies for a comment
-// export const getReplies = async(req, res) => 
-// {
-//   const commentId = req.params.postId
+    const likes = rawLikes[0].userId.reverse()
+      .map(id => {
+        const matched = userInfo.find(user => user.user_id === id)
+        return matched
+    })
 
-//   try
-//   {
-//     const rawCommentArray = await Comment.findById(commentId)
-//     const userInfo = await PublicInfo.find({ user_id: {$in: rawCommentArray.map((comment) => comment.userId) } },
-//                                             { user_id: 1, username: 1, role: 1, pfp_id: 1, likesCount: 1 ,repliesCount: 1  })
+    res.status(200).json({ 
+      message: 'Likes fetched sucessfully',
+      likes
+    })
+  }
+  catch(error)
+  {
+      console.error('Error getting likes')
+      res.status(500).json({ message: 'Error in getting likes: ', error})
+  }
+}
 
-//     const commentArray = rawCommentArray.map((comment) => {
-//         const user = userInfo.find((obj) => obj.user_id===comment.userId)
-//         return {
-//           pfp: user.pfp_id,
-//           username: user.username,
-//           role: user.role,
-//           comment: comment.content,
-//           created: comment.createdAt
-//         }
-//       })
+// Recursively delete nested replies
+const deleteComments = async(id) =>
+{
+  try
+  {
+    const [replies] = await Promise.all([
+      Comment.find({ parentId: id }),
+      Comment.findByIdAndDelete(id)
+    ])
 
-//     res.status(201).json({ 
-//       message: 'Comments fetched sucessfully', 
-//       commentArray: commentArray })
-//   }
-//   catch(error)
-//   {
-//     console.error('Error while fetching comments:',error)
-//     res.status(500).json({ message: 'Error fetching comments', error })
-//   }
-// }
+    for(let reply of replies)
+    {
+      await deleteComments(reply._id)
+    }
+  }
+  catch(err)
+  {
+    console.error('Error in deleting comments:', err)
+  }
+}
 
-// export const deleteReply = async(req, res) =>
-// {
-  
-// }
+// Delete a comment
+export const deleteComment = async(req, res) =>
+{
+  const { comment } = req.body
+
+  try
+  {
+    const post = await Post.findById(comment.postId)
+    await deleteComments(comment._id)
+
+    res.status(200).json({ message: 'Comment and its replies are deleted successfully' })
+  }
+  catch(err)
+  {
+    console.error('Error deleting comment:',err)
+    res.status(500).json({ message: 'Error deleting comment', err})
+  }
+}

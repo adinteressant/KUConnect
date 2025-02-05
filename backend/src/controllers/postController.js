@@ -6,8 +6,11 @@ import Comment from '../models/comment.js'
 import Save from '../models/savePost.js'
 import PublicInfo from '../models/PublicInfo.js'
 import PrivateInfo from '../models/PrivateInfo.js'
+import FriendRequest from '../models/friendRequest.js'
+import SeenPost from '../models/seenPosts.js'
 import fs from 'fs'
 import path from 'path'
+import accepts from 'accepts'
 //import { fileURLToPath } from 'url'
 
 //const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -21,6 +24,170 @@ export const getAllPosts = async (req, res) => {
   } catch (error) {
     console.error('Error fetching posts:', error)
     res.status(500).json({ message: 'Failed to fetch posts. Please try again later.', error })
+  }
+}
+
+// Get homepage posts
+export const getHomepagePosts = async(req, res) =>
+{
+  const userId = req.params.userId
+  const { homepagePosts } = req.body
+
+  if(userId)
+  {
+    try
+    {
+      const n = 5 //num of posts to display in feed (in one load hai)
+      const [rawTags, rawFriends, rawSeenPosts, totalPosts] = await Promise.all([
+        PublicInfo.findOne(
+          {
+            user_id: userId
+          },
+          {
+            tags: 1
+          }
+        ),
+        FriendRequest.find(
+          {
+            $or: [{sender_id: userId}, {receiver_id: userId}],
+            status: 'accepted'
+          },
+          {
+            sender_id: 1,
+            receiver_id: 1
+          }
+        ),
+        SeenPost.findOne(
+          {
+            userId
+          },
+          {
+            posts: 1
+          }
+        ),
+        Post.countDocuments()
+      ])
+
+      const tags = rawTags?.tags || []
+      const friends = rawFriends?.map(f => f.sender_id===userId?f.receiver_id:f.sender_id) || []
+      let seenPosts = rawSeenPosts || new SeenPost({ userId })
+
+      let filteredPosts = []
+
+      const fetchPosts = async(query, limit) =>
+      {
+        filteredPosts.push(...await Post
+          .find(query)
+          .sort({ createdAt: -1 })
+          .limit(limit)
+        )
+
+        seenPosts.posts.push(...filteredPosts.filter(post => !seenPosts.posts.includes(post._id)).map(p => p._id))
+      }
+
+      // Get posts from friends as well as tags that is not seen
+      if (friends.length && tags.length)
+      {
+        await fetchPosts({
+          $and: [
+            {
+              userId: { $in: friends }
+            },
+            {
+              tags: { $in: tags }
+            },
+            {
+              _id: { $nin: [...homepagePosts, ...seenPosts.posts] }
+            }
+          ]
+        }, n)
+      }
+
+      // Get posts from either friends or tags that is not seen
+      if(filteredPosts.length<n && (friends.length || tags.length))
+      {
+        await fetchPosts({
+          $and: [
+            {
+              $or: [
+                {
+                  userId: { $in: friends }
+                },
+                {
+                  tags: { $in: tags }
+                }
+              ]
+            },
+            {
+              _id: { $nin: [...homepagePosts, ...seenPosts.posts] }
+            }
+          ]
+        }, n-filteredPosts.length)
+      }
+      
+      // Get other posts that is not seen
+      if(filteredPosts.length<n)
+      {
+        await fetchPosts({
+          _id: { $nin: [...homepagePosts, ...seenPosts.posts] }
+        }, n-filteredPosts.length)
+      }
+
+      // if all posts are already seen then get the seen posts in the order just like above but that is not displayed in the news feed currently
+      if(filteredPosts.length<n && friends.length && tags.length)
+      {
+        await fetchPosts({
+          $and: [
+            {
+              userId: { $in: friends }
+            },
+            {
+              tags: { $in: tags }
+            },
+            {
+              _id: { $nin: [...homepagePosts, ...filteredPosts] }
+            }
+          ]
+        }, n-filteredPosts.length)
+      }
+
+      if(filteredPosts.length<n && (friends.length || tags.length))
+      {
+        await fetchPosts({
+          $and: [
+            {
+              $or: [
+                {
+                  userId: { $in: friends }
+                },
+                {
+                  tags: { $in: tags }
+                }
+              ]
+            },
+            {
+              _id: { $nin: [...homepagePosts, ...filteredPosts] }
+            }
+          ]
+        }, n-filteredPosts.length)
+      }
+
+      if(filteredPosts.length<n)
+      {
+        await fetchPosts({
+          _id: { $nin: [...homepagePosts, ...filteredPosts] }
+        }, n-filteredPosts.length)
+      }
+
+      await seenPosts.save()
+
+      res.status(200).json({ message: 'Posts fetched successfully', posts: filteredPosts, totalPostsInDB: totalPosts })
+    }
+    catch(err)
+    {
+      console.error('Error fetching homepage posts:', err)
+      res.status(500).json({ message: 'Error fetching homepage posts', err })
+    }
   }
 }
 

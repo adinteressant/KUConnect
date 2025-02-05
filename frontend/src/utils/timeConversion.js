@@ -78,6 +78,60 @@ export function getMonthAndDate(stringTime){
   
 }
 
+export const getMonthAndYear = (stringTime) => {
+  const time = new Date(stringTime)
+
+  const offsetMinutes = 5 * 60 + 45
+  const nepaliTime = new Date(time.getTime() + offsetMinutes * 60 * 1000)
+
+  const month = nepaliTime.getUTCMonth() + 1
+  let mm
+  switch(month){
+    case 1:
+      mm = 'January'
+      break
+    case 2:
+      mm = 'February'
+      break
+    case 3:
+      mm = 'March'
+      break
+    case 4:
+      mm = 'April'
+      break
+    case 5:
+      mm = 'May'
+      break
+    case 6:
+      mm = 'June'
+      break
+    case 7:
+      mm = 'July'
+      break
+    case 8:
+      mm = 'August'
+      break
+    case 9:
+      mm = 'September'
+      break
+    case 10:
+      mm = 'October'
+      break
+    case 11:
+      mm = 'November'
+      break
+    case 12:
+      mm = 'December'
+      break
+    default:
+      mm = ''
+      break
+  }
+
+  const yy = nepaliTime.getUTCFullYear()
+  return {mm,yy}
+}
+
 function todaysDate(){
   const today = new Date()
   const MM = today.getMonth()+1

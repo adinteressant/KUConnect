@@ -27,6 +27,10 @@ const commentSchema = new mongoose.Schema({
     replies: {
         type: Number,
         default: 0
+    },
+    edited :{
+        type: Boolean,
+        default: false
     }
 },
 {

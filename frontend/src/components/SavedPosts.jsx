@@ -2,13 +2,14 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import Posts from './subcomponents/Posts.jsx'
 import PostSkeleton from './subcomponents/PostSkeleton.jsx'
+import useAuthenticatedState from '../zustand/useAuthenticatedState.js'
 
 export default function SavedPosts()
 {
     const [posts, setPosts] = useState([])
     const [ loadingState, setLoadingState ] = useState(true)
 
-    const isAuthenticated = localStorage.getItem('isAuthenticated') == 'true'
+    const {isAuthenticated, setIsAuthenticated} = useAuthenticatedState();
 
     useEffect(() => {
         fetch('/api/get-user-profile')
