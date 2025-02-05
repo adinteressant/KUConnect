@@ -65,7 +65,7 @@ function ShowComments({ postId, userProfile, setPosts }) {
             </button>
           </div>
           <div className='p-4 flex-1 overflow-auto scrollbar flex flex-col gap-4'>
-            <Comments category={category} comments={comments} postId={postId} userId={userProfile.user_id} setPosts={setPosts} setComments={setComments}/>
+            <Comments category={category} comments={comments} postId={postId} userId={userProfile.user_id} setPosts={setPosts} setComments={setComments} setStudent={setStudent} setFaculty={setFaculty}/>
             {(comments.length===0 || (category === 'faculty' && faculty === 0) || (category === 'student' && student === 0)) && <div className="leading-none m-auto text-gray-600">No comments</div>}
           </div>
         </div>)}

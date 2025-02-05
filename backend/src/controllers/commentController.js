@@ -276,12 +276,12 @@ export const deleteComment = async(req, res) =>
 
     parent && parent.replies && (parent.replies = parent.replies - 1)
 
-    await Promise.all([
+    const [updatedPost, updatedParent] = await Promise.all([
       post.save(),
       parent?.save()
     ])
 
-    res.status(200).json({ message: 'Comment and its replies are deleted successfully' })
+    res.status(200).json({ message: 'Comment and its replies are deleted successfully', post: updatedPost, parent: updatedParent })
   }
   catch(err)
   {

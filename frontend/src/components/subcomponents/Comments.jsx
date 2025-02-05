@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import Comment from './Comment'
 
-export default function Comments({ category, comments, postId, userId, setPosts, setComments })
+export default function Comments({ category, comments, postId, userId, setPosts, setComments, setParents, setShowParentReplies, setStudent, setFaculty })
 {
   const [studentHidden, setStudentHidden] = useState(false)
   const [facultyHidden, setFacultyHidden] = useState(false)
@@ -35,9 +35,13 @@ export default function Comments({ category, comments, postId, userId, setPosts,
             return;
           }
         }
+        if(!comment)
+        {
+          return;
+        }
         return (
           <div key={index}>
-            <Comment category={category} comment={comment} postId={postId} userId={userId} setPosts={setPosts} setComments={setComments}/>
+            <Comment category={category} comment={comment} postId={postId} userId={userId} setPosts={setPosts} setComments={setComments} setParents={setParents} setShowParentReplies={setShowParentReplies} setStudent={setStudent} setFaculty={setFaculty}/>
           </div>
         )
       })}
