@@ -1,5 +1,6 @@
 import PrivateInfo from "../models/PrivateInfo.js";
 import PublicInfo from "../models/PublicInfo.js"
+import {GoogleUser} from "../models/googleUser.model.js"
 
 export default async function deleteAccount(req, res){
     const user_id = req.body.user_id;
@@ -7,11 +8,20 @@ export default async function deleteAccount(req, res){
     try{
     const privateInfo = await PrivateInfo.findOne({ user_id });
     const publicInfo = await PublicInfo.findOne({ user_id });
+    if(!privateInfo){
+      return res.status(404).json({message: "User not found"});
+    }
+    const email = privateInfo.email;
+    const googleUser = await GoogleUser.findOne({email})
   if (!privateInfo && !publicInfo) {
     return res.status(404).json({ message: "User not found" });
   }
   await privateInfo.deleteOne(); 
   await publicInfo.deleteOne(); 
+  if (googleUser)
+  {
+    await googleUser.deleteOne();
+  }
   res.clearCookie("JWT_TOKEN")
   res.clearCookie("REFRESH_TOKEN")
   res.clearCookie('connect.sid')
