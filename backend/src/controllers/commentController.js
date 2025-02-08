@@ -93,7 +93,7 @@ export const getComments = async(req, res) =>
 
     const comments = rawComments.map(comment => {
       const user = userInfo.find(obj => obj.user_id===comment.userId)
-      const like = likes.find(like => like.commentId===comment._id)
+      const like = likes.find(like => like.commentId.toString()===comment._id.toString())
       return {
         commentId: comment._id,
         parentId: comment.parentId,
@@ -174,16 +174,19 @@ export const likeComment = async(req, res) =>
     }
 
     const existingLikedIndex = like.userId.findIndex(user => user === userId)
+    let likeStatus
 
     if(existingLikedIndex !== -1)
     {
       like.userId.splice(existingLikedIndex, 1)
       comment.likes = comment.likes - 1
+      likeStatus = false
     }
     else 
     {
       like.userId.push(userId)
       comment.likes = comment.likes + 1
+      likeStatus = true
     }
         
     await Promise.all([
@@ -192,8 +195,9 @@ export const likeComment = async(req, res) =>
     ])
         
     res.status(201).json({
-      message: 'Liked comment successfully',
-      comment
+      message: 'Liked/Unliked comment successfully',
+      commentLikes: comment.likes,
+      likeStatus
     })
   } 
   catch (error)
