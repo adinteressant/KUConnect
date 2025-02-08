@@ -222,11 +222,11 @@ export const getCommentLikes = async(req, res) =>
     }
 
     const userInfo = await PublicInfo.find(
-      { user_id: {$in: rawLikes[0].userId } },
+      { user_id: {$in: rawLikes.userId } },
       { user_id: 1, username: 1, role: 1, pfp_id: 1 }
     )
 
-    const likes = rawLikes[0].userId.reverse()
+    const likes = rawLikes.userId.reverse()
       .map(id => {
         const matched = userInfo.find(user => user.user_id === id)
         return matched
@@ -234,12 +234,12 @@ export const getCommentLikes = async(req, res) =>
 
     res.status(200).json({ 
       message: 'Likes fetched sucessfully',
-      likes
+      likeArray: likes
     })
   }
   catch(error)
   {
-      console.error('Error getting likes')
+      console.error('Error getting likes:', error)
       res.status(500).json({ message: 'Error in getting likes: ', error})
   }
 }
