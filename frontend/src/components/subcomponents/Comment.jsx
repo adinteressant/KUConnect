@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 import { createPortal } from "react-dom"
 import formatTimeAgo from "../../utils/generateTimeAgo.js"
@@ -7,7 +7,7 @@ import ReplySection from "./ReplySection.jsx"
 import ShowLikes from "./LikeOverlay.jsx"
 import { Loader2 } from "lucide-react"
 
-export default function Comment({ category, comment, postId, userId, setPosts, setComments, setParents, setShowParentReplies, setStudent, setFaculty }) {
+export default function Comment({ category, comment, postId, userId, setPosts, setComments, setParents, setShowParentReplies, setStudent, setFaculty, editComment, setEditComment }) {
   const [reply, setReply] = useState(false)
   const [showReplies, setShowReplies] = useState(false)
   const [replies, setReplies] = useState([])
@@ -16,6 +16,22 @@ export default function Comment({ category, comment, postId, userId, setPosts, s
   const [showCommentLikes, setShowCommentLikes] = useState(false)
   const [openDeleteOverlay, setOpenDeleteOverlay] = useState(false)
   const [deleteLoadingState, setDeleteLoadingState] = useState(false)
+
+  useEffect(() => {
+    if(comment.commentId===editComment?.comment?.commentId)
+    {
+      if(editComment?.updated)
+      {
+        setComments(prev =>
+          prev.map(c =>
+            c.commentId === comment.commentId ?
+              { ...c, comment: editComment.comment.comment, edited: editComment.comment.edited }
+              : c
+          )
+        )
+      }
+    }
+  }, [editComment?.updated])
 
   const getReplies = async () => {
     if (comment.replies !== replies.length) {
@@ -195,7 +211,7 @@ export default function Comment({ category, comment, postId, userId, setPosts, s
 
                         <button
                           disabled={!showCommentOptions}
-                          // onClick={() => openEditOverlay(post)}
+                          onClick={() => setEditComment({comment, updated: false, show: true })}
                           className={`w-[100%] group/edit flex items-center gap-2 p-2 text-gray-600 dark:text-gray-400 dark:hover:text-cyan-600 hover:text-cyan-600 dark:hover:bg-gray-700 hover:bg-gray-200 hover:shadow-inner transition-all duration-300`}
                         >
                           <svg className='stroke-gray-600 dark:stroke-gray-400 fill-none stroke-2 group-hover/edit:stroke-cyan-600 transition-all duration-300' width="16" height="16" viewBox="0 0 24 24">
@@ -282,7 +298,7 @@ export default function Comment({ category, comment, postId, userId, setPosts, s
                       </div>
                     </div>
                     :
-                    <Comments category={category} comments={replies.filter(r => r.parentId === comment.commentId)} postId={postId} userId={userId} setPosts={setPosts} setComments={setReplies} setParents={setComments} setShowParentReplies={setShowReplies} />}
+                    <Comments category={category} comments={replies.filter(r => r.parentId === comment.commentId)} postId={postId} userId={userId} setPosts={setPosts} setComments={setReplies} setParents={setComments} setShowParentReplies={setShowReplies} editComment={editComment} setEditComment={setEditComment} />}
                 </div>
               </div>
             }

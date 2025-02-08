@@ -1,5 +1,6 @@
 import { React, useState, useEffect } from "react"
 import Comments from "./Comments.jsx"
+import ReplySection from "./ReplySection.jsx"
 
 function ShowComments({ postId, userProfile, setPosts }) {
 
@@ -8,6 +9,7 @@ function ShowComments({ postId, userProfile, setPosts }) {
   const [student, setStudent] = useState(0)
   const [faculty, setFaculty] = useState(0)
   const [loading, setLoading] = useState(true)
+  const [editComment, setEditComment] = useState({show: false})
 
   useEffect(() => {
     setLoading(() => true)
@@ -65,10 +67,14 @@ function ShowComments({ postId, userProfile, setPosts }) {
             </button>
           </div>
           <div className='p-4 flex-1 overflow-auto scrollbar flex flex-col gap-4'>
-            <Comments category={category} comments={comments} postId={postId} userId={userProfile.user_id} setPosts={setPosts} setComments={setComments} setStudent={setStudent} setFaculty={setFaculty}/>
+            <Comments category={category} comments={comments} postId={postId} userId={userProfile.user_id} setPosts={setPosts} setComments={setComments} setStudent={setStudent} setFaculty={setFaculty} editComment={editComment} setEditComment={setEditComment}/>
             {(comments.length===0 || (category === 'faculty' && faculty === 0) || (category === 'student' && student === 0)) && <div className="leading-none m-auto text-gray-600">No comments</div>}
           </div>
         </div>)}
+
+        <div className={`border-t dark:border-slate-700 transition-all duration-300 ${editComment.show?'p-4 opacity-100 max-h-full':'opacity-0 max-h-0 overflow-hidden'}`}>
+          <ReplySection parent={'edit'} userId={userProfile.user_id} editComment={editComment} setEditComment={setEditComment}/>
+        </div>
     </>
   );
 }

@@ -61,7 +61,8 @@ export const addComment = async (req, res) => {
       likeStatus: false,
       likes: 0,
       replies: 0,
-      created: newComment.createdAt
+      created: newComment.createdAt,
+      edited: newComment.edited
     })
   }
   catch (error) 
@@ -105,7 +106,8 @@ export const getComments = async(req, res) =>
         likeStatus: like?.userId.includes(userId),
         likes: comment.likes,
         replies: comment.replies,
-        created: comment.createdAt
+        created: comment.createdAt,
+        edited: comment.edited
       }
     })
 
@@ -129,7 +131,7 @@ export const updateComment = async(req, res) =>
   try
   {
     const updatedComment = await Comment.findByIdAndUpdate(
-      comment._id,
+      comment.commentId,
       { content, edited: true },
       { new: true }
     )
