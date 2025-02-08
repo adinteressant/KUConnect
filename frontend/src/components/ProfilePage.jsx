@@ -258,7 +258,7 @@ export default function ProfilePage() {
       });
   };
 
-  if(!status || postLoadingState){
+  if(!status || postLoadingState){  //!status
     return (
       <div className='p-4 overflow-y-auto scrollbar'>
         <ProfileSkeleton />

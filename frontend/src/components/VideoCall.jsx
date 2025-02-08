@@ -2,21 +2,21 @@ import React, { useState, useEffect, useRef} from 'react';
 import { useSearchParams} from 'react-router-dom';
 import { createOffer, answerOffer, createEndCall } from '../utils/webRTC.js';
 import { useSocketContext } from './context/socketContext.jsx';
-
+import { Video,Phone,PhoneOff } from 'lucide-react';
 export default function VideoCall() {
   const [localStream, setLocalStream] = useState(null);
-  const [callId, setCallId] = useState('');
+  const [queries]= useSearchParams();
+  const [callId, setCallId] = useState(queries.get('call_id'));
   const [peerConnection,setPeerConnection] = useState(null);
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);
-  const [queries]= useSearchParams();
   const isFirstRender = useRef(0);
   const socket = useSocketContext();
 
   useEffect(()=>{
     if(isFirstRender.current == 0 && localStream != null){   
     async function generateCallIdOnLoad(){
-      if(!!(queries.get('start_call'))){
+      if((queries.get('start_call'))==='true'){
         await handleCreateOffer();
       }
     }
@@ -26,6 +26,23 @@ export default function VideoCall() {
     //  isFirstRender.current=1
     //};
   },[localStream])
+
+  useEffect(()=>{
+
+    if(isFirstRender.current == 0 && localStream != null){   
+    async function joinCallOnId(){
+      if((queries.get('call_id'))){
+        //console.log(typeof(queries.get('call_id')))
+        setCallId(queries.get('call_id'))
+        //console.log(`${queries.get('call_id')}`)
+        //console.log(callId)
+        await handleAnswerOffer();
+      }
+    }
+    joinCallOnId();
+    }
+  },[localStream])
+
 
   useEffect(() => {
     const setupMedia = async () => {
@@ -48,6 +65,9 @@ return () => { localStream?.getTracks().forEach(track => track.stop()); };
   }, [localStream]);
 
   const handleCreateOffer = async () => {
+    socket?.emit('call_incoming',callId,()=>{
+      console.log("Call Being Ringed!")
+    })
     const generatedCallId = await createOffer(remoteVideoRef, localStream,socket);
     setCallId(generatedCallId||'');
   };
@@ -62,63 +82,80 @@ return () => { localStream?.getTracks().forEach(track => track.stop()); };
     await createEndCall(peerConnection);
   }
 
-socket?.on('call_incoming',(callId)=>{
-  console.log('work?')
+socket?.on('call_incoming',(arg,callback)=>{
+  console.log(arg)
 })
 
   return (
-    <div className="p-12">
-      <div className="grid grid-cols-2 gap-12 max-w-4xl mx-auto">
-        <div className="relative">
+    <div className="min-h-screen bg-gray-50 p-4">
+      <div className="max-w-6xl mx-auto relative">
+        {/* Main video container */}
+        <div className="relative aspect-video bg-gray-900 rounded-xl overflow-hidden shadow-xl">
+          {/* Remote video (main view) */}
           <video
-            ref={localVideoRef}
-            className="bg-black w-full aspect-video rounded-lg shadow-lg"
+            ref={remoteVideoRef}
+            className="w-full h-full object-cover"
             autoPlay
             playsInline
-            muted
           />
+          
+          {/* Local video (picture-in-picture) */}
+          <div className="absolute top-4 right-4 w-1/4 aspect-video">
+            <video
+              ref={localVideoRef}
+              className="w-full h-full object-cover rounded-lg border-2 border-white/20 shadow-lg"
+              autoPlay
+              playsInline
+              muted
+            />
+          </div>
         </div>
-        <video
-          ref={remoteVideoRef}
-          className="bg-black w-full aspect-video rounded-lg shadow-lg"
-          autoPlay
-          playsInline
-        />
-      </div>
-      
-      <div className="mt-8 space-y-4 max-w-4xl mx-auto">
-        <div className="flex gap-4">
-          <button
-            onClick={handleCreateOffer}
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-          >
-            Start Call
-          </button>
-          
-        <input
-          type="text"
-          value={callId || ''}
-          onChange={(e) => setCallId((e.target.value.trim() || ''))}
-          placeholder="Enter Call ID"
-          className="flex-1 px-4 py-2 border rounded-lg"
-        />
-          
-          <button
-            onClick={endCall}
-            className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
-          End Call
-          </button>
-          
-       <button
-            onClick={handleAnswerOffer}
-            className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
-          >
-            Join Call
-          </button>
-        </div>
-        
-        <div className="text-gray-600 text-sm" >
-          {callId && `Call ID: ${callId}`}
+
+        {/* Controls section */}
+        <div className="mt-6 bg-white rounded-xl p-6 shadow-md">
+          <div className="flex flex-col sm:flex-row gap-4 items-stretch">
+            <button
+              onClick={handleCreateOffer}
+              className="flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium"
+            >
+              <Video className="w-5 h-5" />
+              Start Call
+            </button>
+
+            <div className="flex-1">
+              <input
+                type="text"
+                value={callId || ''}
+                onChange={(e) => setCallId(e.target.value.trim())}
+                placeholder="Enter call ID to join"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200"
+              />
+            </div>
+
+            <button
+              onClick={handleAnswerOffer}
+              className="flex items-center justify-center gap-2 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200 font-medium"
+            >
+              <Phone className="w-5 h-5" />
+              Join Call
+            </button>
+
+            <button
+              onClick={endCall}
+              className="flex items-center justify-center gap-2 px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 font-medium"
+            >
+              <PhoneOff className="w-5 h-5" />
+              End Call
+            </button>
+          </div>
+
+          {callId && (
+            <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+              <p className="text-gray-600 text-sm font-medium">
+                Call ID: <span className="font-mono">{callId}</span>
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </div>
