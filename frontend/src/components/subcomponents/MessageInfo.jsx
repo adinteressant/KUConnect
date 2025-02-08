@@ -4,6 +4,8 @@ import useReply from '../../zustand/useReply'
 import { Loader2 } from 'lucide-react'
 import useEditMessage from '../../zustand/useEditMessage'
 
+import { Edit,Trash,Reply} from 'lucide-react'
+
 export default function MessageInfo({isVisible,msg,post}){
   const [loading,setLoading] = useState(false)
   const {selectedConversation,setMessages} = useConversation()  
@@ -49,13 +51,25 @@ export default function MessageInfo({isVisible,msg,post}){
   `}>
     <div className="p-2 hover:bg-gray-200 dark:hover:bg-slate-900 cursor-pointer      hover:rounded-t-md border-b border-gray-200 dark:border-slate-700"
     onClick={()=>{setReply(true);setReplyOf(msg)}}>
-      Reply
+      <div className="flex gap-3 items-center">
+        <div>
+          <Reply className="w-5 h-5"/>
+        </div>
+        <div>Reply</div>
+      </div>
     </div>
 
     {post===null && <div className="p-2 hover:bg-gray-200 dark:hover:bg-slate-900 cursor-pointer
     border-b border-gray-200 dark:border-slate-700"
     onClick={()=>{handleEdit(msg)}}
-    >Edit
+    >
+      <div className="flex gap-3 items-center">
+        <div>
+          <Edit className="w-5 h-5"/>
+        </div>
+        <div>Edit</div>
+      </div>
+ 
     </div>}
 
     <div className="dark:hover:bg-slate-900 dark:border-slate-700 p-2 hover:bg-gray-200 cursor-pointer hover:rounded-b-md"
@@ -63,9 +77,13 @@ export default function MessageInfo({isVisible,msg,post}){
         await handleDelete()
       }}
     >
-      Delete
+    <div className="flex gap-3 items-center">
+      <div>
+        <Trash className="w-5 h-5 text-red-500"/>
+      </div>
+        <div className="text-red-500">Delete</div>
+      </div>
     </div>    
-    
   </div>
   
 }
