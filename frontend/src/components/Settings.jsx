@@ -94,6 +94,7 @@ export default function SettingsPage(user) {
   const [isChangeProfilePicOpen,setIsChangeProfilePicOpen] = useState(false)
   const [selectedTags, setSelectedTags] = useState([])
   const [userprofile, setuserprofile] = useState({})
+  const [showprofilepicoverlay, setshowprofilepicoverlay] = useState(false)
   // Form states
   const [username, setUsername] = useState('');
   const [passwordform, setpasswordform] = useState({
@@ -227,13 +228,24 @@ export default function SettingsPage(user) {
         }
    
   };
-
-  const handleUpdateTags = () => {
-    console.log('updatee')
-  }
+  const profilepictures = [1, 2, 3, 4, 5]
 
   const handleProfilePicChange = () => {
     console.log('profile picture change')
+  }
+  const handleprofilepicselect = async (p) => {
+    try {
+      await axios.post(`/api/update-pfp?id=${p}`,
+        {
+          user_id: userprofile.user_id,
+        },
+        { withCredentials: true },
+      );
+      setuserprofile(prev => ({ ...prev, pfp_id: p }));
+      setshowprofilepicoverlay(false);
+    } catch (error) {
+      console.error('error updating profile picture:', error);
+    }
   }
 
   return (
@@ -546,28 +558,68 @@ export default function SettingsPage(user) {
           </div>
         </div>
       </Modal>
-
+      
+      {showprofilepicoverlay && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[99]">
+            <div className="bg-white dark:bg-slate-800 p-6 rounded-lg relative">
+              <button
+                className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+                onClick={() => setshowprofilepicoverlay(false)}
+              >
+                <X size={24} />
+              </button>
+              <h2 className="text-2xl mb-4 font-semibold">Choose Profile Picture</h2>
+              <div className="grid grid-cols-3 gap-4">
+                {profilepictures.map((pic, index) => (
+                  <img
+                    key={index}
+                    src={`/api/get-pfp?id=${pic}`}
+                    alt={`profile option ${index + 1}`}
+                    className="w-24 h-24 object-cover rounded-full cursor-pointer hover:scale-105 transition-transform"
+                    onClick={() => handleprofilepicselect(pic)}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
       <Modal isOpen={isChangeProfilePicOpen}
       onClose={()=>setIsChangeProfilePicOpen(false)}
-      title="Change Profile Picture">
+      title="Profile Picture">
         <div className="space-y-4">
           <p className="text-gray-600 dark:text-gray-300">
-            change picture
+            <div className="relative w-32 h-32 mx-auto mb-6 md:w-40 md:h-40">
+              <div 
+                className="w-full h-full rounded-full bg-gray-300 flex items-center justify-center overflow-hidden cursor-pointer"
+                onClick={() => setshowprofilepicoverlay(true)}
+              >
+                {userprofile.pfp_id ? (
+                  <img
+                    src={`/api/get-pfp?id=${userprofile.pfp_id}`}
+                    alt="profile"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <span className="text-gray-500">add photo</span>
+                )}
+              </div>
+              <div 
+                className="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity cursor-pointer"
+                onClick={() => setshowprofilepicoverlay(true)}
+              >
+                <span className="text-white text-sm">change picture</span>
+              </div>
+            </div>
+            <div className="flex justify-end">
+            <button
+                onClick={() => setIsChangeProfilePicOpen(false)}
+                type="button"
+                className="px-4 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg"
+              >
+                Cancel
+            </button>
+            </div>
           </p>
-          <div className="flex justify-end gap-2">
-            <button
-              onClick={() => setIsChangeProfilePicOpen(false)}
-              className="px-4 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleProfilePicChange}
-              className="px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700"
-            >
-              Change
-            </button>
-          </div>
         </div>
       </Modal>
 
@@ -609,20 +661,6 @@ export default function SettingsPage(user) {
             </div>
           </div>
           </p>
-          {/* <div className="flex justify-end gap-2">
-            <button
-              onClick={() => setIsUpdateTagsModalOpen(false)}
-              className="px-4 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleUpdateTags}
-              className="px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700"
-            >
-              Update Tags
-            </button>
-          </div> */}
         </div>
       </Modal>
     </div>
