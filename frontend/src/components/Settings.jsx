@@ -5,6 +5,7 @@ import { FiMoon, FiSun } from "react-icons/fi";
 import { useTheme } from './context/themeContext';
 import axios from 'axios';
 import { useOutletContext } from 'react-router-dom';
+import tags from '../data/tags'
 
 const Modal = ({ isOpen, onClose, title, children }) => {
   if (!isOpen) return null;
@@ -91,7 +92,8 @@ export default function SettingsPage(user) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isUpdateTagsModalOpen,setIsUpdateTagsModalOpen] = useState(false)
   const [isChangeProfilePicOpen,setIsChangeProfilePicOpen] = useState(false)
-  
+  const [selectedTags, setSelectedTags] = useState([])
+  const [userprofile, setuserprofile] = useState({})
   // Form states
   const [username, setUsername] = useState('');
   const [passwordform, setpasswordform] = useState({
@@ -168,6 +170,39 @@ export default function SettingsPage(user) {
     } catch (error) {
       console.error('error changing password:', error);
       alert('failed to change password');
+    }
+  };
+
+  const availableTags = tags
+  useEffect(() => {
+    (async () => {
+      try {
+        const response = await axios.get('/api/get-user-profile/', {
+          withCredentials: true
+        });
+        if (!response.data) return;
+        setuserprofile(response.data);
+        setSelectedTags(response.data.tags || []); // Initialize selected tags from user profile
+      } catch (error) {
+        console.error('error fetching user profile:', error);
+      }
+    })();
+  }, []);
+
+  const handleTagToggle = (tag) => {
+    setSelectedTags(prevTags => 
+      prevTags.includes(tag)
+        ? prevTags.filter(t => t !== tag)
+        : [...prevTags, tag]
+    );
+  };
+  const handleTagSubmit = async () => {
+    try {
+      await axios.post('/api/update-tags', { tags: selectedTags, user_id: userprofile.user_id }, { withCredentials: true });
+      alert('Tags updated successfully');
+    } catch (error) {
+      console.error('Error updating tags:', error);
+      alert('Failed to update tags');
     }
   };
 
@@ -332,7 +367,7 @@ export default function SettingsPage(user) {
                   <div>
                     <h3 className="font-medium">Update Tags</h3>
                     <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                      Update your current tags
+                      Update Tags
                     </p>
                   </div>
                   <ChevronRight className="w-5 h-5 text-gray-400 dark:text-gray-500" />
@@ -352,7 +387,7 @@ export default function SettingsPage(user) {
       >
         <form onSubmit={handleUsernameSubmit}>
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-2">New Username</label>
+            <label className="block text-sm font-medium mb-2 text-gray-600 dark:text-gray-300">New Username</label>
             <input
               type="text"
               value={username}
@@ -541,9 +576,40 @@ export default function SettingsPage(user) {
       title="Update Tags">
         <div className="space-y-4">
           <p className="text-gray-600 dark:text-gray-300">
-            update tags update tags
+          <div className="mt-1">
+            <div className="text-md mb-4 text-gray-600 dark:text-gray-300 md:text-lg">Select Tags</div>
+            <div className="flex flex-wrap justify-center gap-2 mb-6">
+              {availableTags.map((tag) => (
+                <button
+                  key={tag}
+                  onClick={() => handleTagToggle(tag)}
+                  className={`px-3 py-1 rounded-full text-sm font-semibold transition-colors ${
+                    selectedTags.includes(tag)
+                      ? 'bg-cyan-600 text-white'
+                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  }`}
+                >
+                  {tag}
+                </button>
+              ))}
+            </div>
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setIsUpdateTagsModalOpen(false)}
+                className="px-4 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={handleTagSubmit}
+                className="bg-cyan-600 text-white px-4 py-2 rounded hover:bg-cyan-700 transition-colors"
+              >
+                Update
+              </button>
+            </div>
+          </div>
           </p>
-          <div className="flex justify-end gap-2">
+          {/* <div className="flex justify-end gap-2">
             <button
               onClick={() => setIsUpdateTagsModalOpen(false)}
               className="px-4 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg"
@@ -556,7 +622,7 @@ export default function SettingsPage(user) {
             >
               Update Tags
             </button>
-          </div>
+          </div> */}
         </div>
       </Modal>
     </div>
