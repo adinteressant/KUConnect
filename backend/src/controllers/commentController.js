@@ -49,12 +49,18 @@ export const addComment = async (req, res) => {
     ])
 
     res.status(201).json({
-      message: 'Comment created sucessfully', 
+      message: 'Comment created sucessfully',
       post: post,
+      commentId: newComment._id,
+      parentId: newComment.parentId,
+      userId: newComment.userId,
       pfp: user.pfp_id,
       role: user.role,
       username:user.username,
       comment: newComment.content,
+      likeStatus: false,
+      likes: 0,
+      replies: 0,
       created: newComment.createdAt
     })
   }
@@ -90,6 +96,8 @@ export const getComments = async(req, res) =>
       const like = likes.find(like => like.commentId===comment._id)
       return {
         commentId: comment._id,
+        parentId: comment.parentId,
+        userId: comment.userId,
         pfp: user.pfp_id,
         username: user.username,
         role: user.role,
@@ -233,7 +241,7 @@ export const getCommentLikes = async(req, res) =>
 }
 
 // Recursively delete nested replies
-const deleteComments = async(id) =>
+const deleteComments = async(id, post) =>
 {
   try
   {
@@ -242,10 +250,9 @@ const deleteComments = async(id) =>
       Comment.findByIdAndDelete(id)
     ])
 
-    for(let reply of replies)
-    {
-      await deleteComments(reply._id)
-    }
+    post.comments = post.comments - 1
+
+    await Promise.all(replies.map(reply => deleteComments(reply._id, post)))
   }
   catch(err)
   {
@@ -256,14 +263,25 @@ const deleteComments = async(id) =>
 // Delete a comment
 export const deleteComment = async(req, res) =>
 {
-  const { comment } = req.body
+  const { comment, postId } = req.body
 
   try
   {
-    const post = await Post.findById(comment.postId)
-    await deleteComments(comment._id)
+    const [post, parent] = await Promise.all([
+      Post.findById(postId),
+      Comment.findById(comment.parentId)
+    ])
 
-    res.status(200).json({ message: 'Comment and its replies are deleted successfully' })
+    await deleteComments(comment.commentId, post)
+
+    parent && parent.replies && (parent.replies = parent.replies - 1)
+
+    const [updatedPost, updatedParent] = await Promise.all([
+      post.save(),
+      parent?.save()
+    ])
+
+    res.status(200).json({ message: 'Comment and its replies are deleted successfully', post: updatedPost, parent: updatedParent })
   }
   catch(err)
   {

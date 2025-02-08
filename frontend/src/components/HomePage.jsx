@@ -1,10 +1,11 @@
-import { useEffect, useState} from 'react'
+import { useCallback, useEffect, useState} from 'react'
 import { useOutletContext,Link } from 'react-router-dom'
 import Posts from './subcomponents/Posts.jsx'
 import WelcomeModal from './subcomponents/WelcomeModal.jsx'
 import { useGetUnreadMessage } from './hooks/useGetUnreadMessage.js'
 import PostSkeleton from './subcomponents/PostSkeleton.jsx'
 import PostCreateSection from './subcomponents/PostCreateSection.jsx'
+import useAuthenticatedState from '../zustand/useAuthenticatedState';
 
 const HomePage = () => {
   const [user, setUser] = useState(null)
@@ -18,9 +19,9 @@ const HomePage = () => {
   const [totalPosts, setTotalPosts] = useState(0)
   // Check for logged-in user based on isAuthenticated
   if(localStorage.getItem('isLoggedIn') === 'true') useGetUnreadMessage()
+    const {isAuthenticated, setIsAuthenticated} = useAuthenticatedState();
   
     useEffect(() => {
-    let isAuthenticated = localStorage.getItem('isAuthenticated') === 'true'  
     if (isAuthenticated) {
       setUser({ email: 'user@example.com' })
       const isNewLogin = sessionStorage.getItem('newLogin') === 'true'
@@ -76,19 +77,20 @@ const HomePage = () => {
   // }, [])
 
   // Fetch posts acc to user
+
   useEffect(() => {
     if(userProfile.user_id)
     {
       if(!fetchOnce)
       {
         setFetchOnce(() => true)
-        setPosts(() => [])
+        // setPosts(() => [])
         getHomepagePosts()
       }
     }
   }, [userProfile])
 
-  function getHomepagePosts()
+  const getHomepagePosts = useCallback(()=>
   {
     fetch(`/api/homepage/posts/user/${userProfile.user_id}/get-posts`,
       {
@@ -111,7 +113,7 @@ const HomePage = () => {
     .catch((e) => {
       console.error('Error fetching posts:', e)
     })
-  }
+  });
 
   return (
     <div className="flex-1 flex flex-col dark:bg-slate-900 bg-gray-200 overflow-y-auto scrollbar">
@@ -128,7 +130,7 @@ const HomePage = () => {
         <div className="max-w-2xl mx-auto space-y-4">
           {/* Post creation section */}
           {(user || googleUser) ? (
-            <PostCreateSection user={userProfile} setUser={setUserProfile} setPosts={setPosts}/>
+            <PostCreateSection user={userProfile} setUser={setUserProfile} setPosts={setPosts} setTotalPosts={setTotalPosts}/>
           ) : (
             <div className="bg-yellow-100 text-yellow-800 p-4 rounded-lg shadow-md">
               Please <Link to="/login" className="text-cyan-600">log in</Link> to post.
@@ -145,7 +147,7 @@ const HomePage = () => {
           {moreLoading?
           <PostSkeleton />
           :
-          (totalPosts===posts.length?
+          (posts.length===0 || (totalPosts===posts.length?
           <div
               className='max-w-2xl p-4 mx-auto rounded-xl text-cyan-600 font-bold text-xl tracking-wide
               flex flex-col justify-center items-center gap-2
@@ -177,7 +179,7 @@ const HomePage = () => {
             >
               Show more
             </button>
-          </div>)}
+          </div>))}
         </>
         }
         

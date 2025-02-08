@@ -62,7 +62,6 @@ export const checkFriendRequestStatus = async (req, res) => {
     }
 
     res.status(200).json({ status: request.status, sender_id: request.sender_id, request_id: request.request_id });
-    console.log(request.status);
   } catch (error) {
     console.error('Error checking friend request status:', error);
     res.status(500).json({ message: 'Internal server error' });
@@ -303,7 +302,6 @@ export const denyFriendRequestfromProfile = async (req,res) => {
 };
 
 export const cancelFriendRequestfromProfile = async (req,res) => {
-  console.log('Cancel request received:', req.body);
 
   const { sender_id, receiver_id } = req.body;
 

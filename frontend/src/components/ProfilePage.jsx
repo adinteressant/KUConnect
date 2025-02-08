@@ -328,13 +328,12 @@ export default function ProfilePage() {
               </button>
               </div>
             ) : status === 'pending' ? (<>
-              <p className="mt-6 text-green-600">Friend Request Sent!</p><br />
               <div className = "flex items-center justify-center space-x-4">
               <button
                   onClick={cancelRequest}
                   className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
                 >
-                  Cancel
+                  Cancel Request
                 </button>
                 </div>
                 </>
@@ -369,7 +368,6 @@ export default function ProfilePage() {
               </div>
             ) : status ==='incoming' ? (
                 <>
-                <p className="mt-6 text-green-600">User has sent you a friend request!</p><br />
                 <div className="flex items-center justify-center space-x-4">
                 <button
                 onClick={confirmRequest}

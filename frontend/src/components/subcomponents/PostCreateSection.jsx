@@ -5,7 +5,7 @@ import tags from '../../data/tags.js'
 import { Loader2 } from 'lucide-react'
 import {Bold, Italic, Strikethrough} from 'lucide-react'
 
-export default function PostCreateSection({ parent ,user, setUser, setPosts, setPostImages, post, close }) {
+export default function PostCreateSection({ parent ,user, setUser, setPosts, setPostImages, post, close, setTotalPosts }) {
   const [content, setContent] = useState(
     parent==='edit'?post.content:''
   )
@@ -103,6 +103,7 @@ export default function PostCreateSection({ parent ,user, setUser, setPosts, set
           setImages([])
           setEncodedImages([])
           setPosts(prev => [data.post, ...prev])
+          setTotalPosts(prev => prev + 1)
           const loggedInUser = data.updatedUsers.find(
             (updatedUser) => updatedUser.user_id === user.user_id
           );
@@ -341,7 +342,7 @@ export default function PostCreateSection({ parent ,user, setUser, setPosts, set
         placeholder="What's on your mind?"
         ref={editorRef}
         contentEditable
-        className={`w-full p-2 border rounded-lg dark:bg-slate-900 dark:border-slate-800 dark:text-gray-200 bg-gray-100 focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-600 transition-all duration-300 ${isTextareaFocused || isTagsInputFocused ? 'h-28' : 'h-20'
+        className={`overflow-y-auto scrollbar w-full p-2 border rounded-lg dark:bg-slate-900 dark:border-slate-800 dark:text-gray-200 bg-gray-100 focus:bg-white focus:outline-none focus:ring-2 focus:ring-cyan-600 transition-all duration-300 ${isTextareaFocused || isTagsInputFocused ? 'h-28' : 'h-20'
         }`}        
         onInput={handleChange}
         onFocus={handleTextareaFocus}
