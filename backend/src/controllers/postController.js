@@ -3,6 +3,7 @@ import Post from '../models/Post.js' // Post model
 import PostImages from '../models/PostImages.js'
 import Like from '../models/like.js'
 import Comment from '../models/comment.js'
+import CommentLike from '../models/commentLikes.js'
 import Save from '../models/savePost.js'
 import PublicInfo from '../models/PublicInfo.js'
 import PrivateInfo from '../models/PrivateInfo.js'
@@ -497,13 +498,16 @@ export const deletePost = async(req, res) => {
   try
   {
     const { post } = req.body
-    const updatedUsers = await decrementCount(post.tags);
+    const updatedUsers = await decrementCount(post.tags)
+
+    const comments = await Comment.find({ postId: post._id })
 
     const [deletedPost] = await Promise.all([
       Post.findByIdAndDelete(post._id),
       PostImages.findByIdAndDelete(post.images),
       Like.deleteMany({ postId: post._id }),
       Comment.deleteMany({ postId: post._id }),
+      CommentLike.deleteMany({ commentId: {$in: comments.map(comment => comment._id)} }),
       Save.deleteMany({ postId: post._id })
     ])
 

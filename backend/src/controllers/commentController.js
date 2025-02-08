@@ -253,7 +253,8 @@ const deleteComments = async(id, post) =>
   {
     const [replies] = await Promise.all([
       Comment.find({ parentId: id }),
-      Comment.findByIdAndDelete(id)
+      Comment.findByIdAndDelete(id),
+      CommentLike.findOneAndDelete({ commentId: id })
     ])
 
     post.comments = post.comments - 1
