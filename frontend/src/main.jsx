@@ -10,7 +10,7 @@ import HomePage from './components/HomePage.jsx'
 import MessagePage from './components/MessagePage.jsx'
 import FriendsPage from './components/FriendsPage.jsx'
 import NotificationPage from './components/NotificationPage.jsx'
-import CustomizeMyProfile from './components/CustomizeMyProfile.jsx'
+// import CustomizeMyProfile from './components/CustomizeMyProfile.jsx'
 import VerifyOtp from './components/VerifyOtpPage.jsx'
 import SetInfoGoogle from './components/SetInfoGoogle.jsx'
 import ProfilePage from './components/ProfilePage.jsx'
@@ -59,10 +59,10 @@ const router = createBrowserRouter([
         path:'/notifications',
         element:<NotificationPage/>
       },
-      {
-        path:'/customizemyprofile',
-        element:<CustomizeMyProfile/>
-      },
+      // {
+      //   path:'/customizemyprofile',
+      //   element:<CustomizeMyProfile/>
+      // },
       {
         path:'/verifyotp',
         element:<VerifyOtp/>

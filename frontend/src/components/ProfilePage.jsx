@@ -43,9 +43,18 @@ export default function ProfilePage() {
         }
         return response.json();
       })
-      .then((data) => setProfileData(data))
+      .then((data) => {
+        console.log('data')
+        console.log(data)
+        setProfileData(data)})
       .catch((error) => {
-        console.error('Error fetching profile data:', error);
+        console.error('Error fetching profile data:', error)
+        setProfileData({
+          role:'',
+          pfp_id : '',
+          message:'not found',
+          user_id : '',
+        })
       });
   }, [username]);
 
@@ -257,7 +266,18 @@ export default function ProfilePage() {
         console.error('Error sending friend request:', error);
       });
   };
-
+  if(profileData.message == 'not found'){
+    // document.title = "Page not fnd \u00b7 KUConnect"
+  return(
+    <div className="flex justify-center mt-32 w-full h-screen">
+    <div className="dark:text-gray-200 flex flex-col gap-8">
+        <div className="text-center font-semibold text-2xl">Sorry, this page is not available.</div>
+        <div> The link you followed may be broken, or the page may have been removed.
+    <Link to="/home" className="text-cyan-600">Go back to KUConnect.</Link> </div>
+    </div>
+    </div>
+  )
+  }
   if(!status || postLoadingState){  //!status
     return (
       <div className='p-4 overflow-y-auto scrollbar'>
@@ -266,6 +286,11 @@ export default function ProfilePage() {
       </div>
     )
   }
+  // if(profileData.message == 'not found'){
+  // return(
+  //   <div>page not found</div>
+  // )
+  // }
   
   const {mm,yy} = getMonthAndYear(userProfile.createdAt)
   return (
