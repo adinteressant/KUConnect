@@ -44,8 +44,6 @@ export default function ProfilePage() {
         return response.json();
       })
       .then((data) => {
-        console.log('data')
-        console.log(data)
         setProfileData(data)})
       .catch((error) => {
         console.error('Error fetching profile data:', error)
