@@ -73,7 +73,6 @@ export const getMessageController = async (req,res) => {
 export const changeStatus = async (req,res) => {
   const { receiverId } = req.params
   const { senderId } = req
-  console.log(receiverId,senderId)
  
   try{
     await Message.updateMany(
@@ -120,6 +119,10 @@ export const deleteMessageController = async (req,res) => {
     if(!conversation) {
       return res.status(200).json([])
     }
+
+    //socket io
+    const receiverSocketId = getReceiverSocketId(receiverId)
+    if(receiverSocketId) socketIo.to(receiverSocketId).emit('deleteMessage',messageId)
   }catch(error){
     console.log(error)
     return res.status(500).json({error})
@@ -129,7 +132,6 @@ export const deleteMessageController = async (req,res) => {
 }
 
 export const editMessageController = async (req,res) => {
-  console.log('edited called')
   const { senderId } = req
   const { receiverId } = req.query
   const {message,id} = req.body
@@ -151,6 +153,13 @@ export const editMessageController = async (req,res) => {
     if(!conversation) {
       return res.status(200).json([])
     }
+    const receiverSocketId = getReceiverSocketId(receiverId)
+    
+    if(receiverSocketId) {
+      const editedMessage = await Message.findById(id)
+      socketIo.to(receiverSocketId).emit('newMessage',editedMessage)
+    }
+
   }catch(e){
     console.log(e)
     return res.status(500).json({e})
