@@ -11,10 +11,34 @@ const useListenMessage = () => {
     socket?.on('newMessage',(newMessage)=>{
       if(selectedConversation.user_id == newMessage.senderId||
         selectedConversation.user_id == newMessage.receiverId){
-        setMessages([...messages,newMessage])
+          if(newMessage.edited){
+            const msgs = messages.map((message)=>{
+              if(message._id == newMessage._id){
+                return newMessage
+              }else{
+                return message
+              }
+            })
+            setMessages(msgs)
+          }else{ 
+            setMessages([...messages,newMessage])
+          }
       }
     })
-    return ()=> socket?.off('newMessage')
+    socket?.on('deleteMessage',(deletedMessageId)=>{
+      const msgs = []
+      messages.forEach((message)=>{
+        if(message._id == deletedMessageId){
+          return
+        }
+        msgs.push(message)
+      })
+      setMessages(msgs)
+    })
+    return ()=> {
+      socket?.off('newMessage')
+      socket?.off('deleteMessage')
+    }
   },[socket,messages,setMessages])
 }
 export default useListenMessage
