@@ -3,6 +3,9 @@ import { useSearchParams} from 'react-router-dom';
 import { createOffer, answerOffer, createEndCall } from '../utils/webRTC.js';
 import { useSocketContext } from './context/socketContext.jsx';
 import { Video,Phone,PhoneOff } from 'lucide-react';
+
+import { useUpdateCallId } from './hooks/useUpdateCallId.js'
+
 export default function VideoCall() {
   const [localStream, setLocalStream] = useState(null);
   const [queries]= useSearchParams();
@@ -12,7 +15,8 @@ export default function VideoCall() {
   const remoteVideoRef = useRef(null);
   const isFirstRender = useRef(0);
   const socket = useSocketContext();
-
+  const authUserId = JSON.parse(localStorage.getItem('authUser'))
+  
   useEffect(()=>{
     if(isFirstRender.current == 0 && localStream != null){   
     async function generateCallIdOnLoad(){
@@ -34,8 +38,6 @@ export default function VideoCall() {
       if((queries.get('call_id'))){
         //console.log(typeof(queries.get('call_id')))
         setCallId(queries.get('call_id'))
-        //console.log(`${queries.get('call_id')}`)
-        //console.log(callId)
         await handleAnswerOffer();
       }
     }
@@ -70,6 +72,8 @@ return () => { localStream?.getTracks().forEach(track => track.stop()); };
     })
     const generatedCallId = await createOffer(remoteVideoRef, localStream,socket);
     setCallId(generatedCallId||'');
+    useUpdateCallId(generatedCallId,authUserId,queries.get('userId'))
+
   };
 
   const handleAnswerOffer = async () => {

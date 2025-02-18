@@ -7,11 +7,11 @@ import { Reply } from 'lucide-react'
 
 import useReply from '../../zustand/useReply'
 import useConversation from '../../zustand/useConversation'
-
+import {useGetUpdateCallId} from '../hooks/useUpdateCallId'
 import { Link } from 'react-router-dom'
 
-export default function Message({ message, replyMessage, mm, dd, prevMM,prevDD }) {
-  //logged in user 
+export default function Message({ message, replyMessage, mm, dd, prevMM,prevDD,senderName='',senderNameId='' }) {
+  //logged in user
 
   const [timeDisplay, setTimeDisplay] = useState(false)
   const [showMessageInfo, setShowMessageInfo] = useState(false)
@@ -32,6 +32,14 @@ export default function Message({ message, replyMessage, mm, dd, prevMM,prevDD }
   }
   const removeMessageInfo = () => {
     setShowMessageInfo(false)
+  }
+  const handleCallJoin =async  () => {
+   const data = await useGetUpdateCallId(senderNameId,authUserId)
+   if (data.message=='found'){
+    console.log(data.callId)
+   }else{
+    console.log(data.message)
+   }
   }
   return (<div>
     {(dd!=prevDD || mm!=prevMM) &&
@@ -91,7 +99,21 @@ export default function Message({ message, replyMessage, mm, dd, prevMM,prevDD }
                 <Link className='rounded-lg shadow-md bg-sky-200 hover:bg-sky-100 dark:bg-sky-800 dark:hover:bg-sky-900' to={`/post/${message.postId}`}>
                   <SpecificPost msgPostId={message.postId} />
                 </Link>
-                :
+                :message.callId?
+                <div className={`${colorClass} p-3 rounded-lg ${fromMe && `hovered-class`}`}>
+                  {!fromMe &&
+                  <div>
+                  <div>{senderName} started a call.</div>
+                   <button className="py-1 px-3 rounded-3xl bg-green-400 dark:bg-green-600
+                   hover:bg-green-500 dark:hover:bg-green-700"
+                   onClick={handleCallJoin}>Join</button>
+                  </div>
+                  }
+                  {fromMe && 
+                    <div>You started video call</div>
+                  }
+                </div>
+                : 
                 <div className={`${colorClass} p-3 rounded-lg cursor-pointer break-all
                     ${fromMe && `hovered-class`}
                   `}

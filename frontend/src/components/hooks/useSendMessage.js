@@ -5,7 +5,7 @@ const useSendMessage = (replyOf) => {
   const [loading,setLoading] = useState(false)
   const {messages,setMessages,selectedConversation} = useConversation()
   
-  const sendMessage = async (message, postId, receiverId) => {
+  const sendMessage = async (message, postId, receiverId,callId=null) => {
     setLoading(true)
     try {
       const r = receiverId || selectedConversation.user_id
@@ -15,7 +15,7 @@ const useSendMessage = (replyOf) => {
           headers:{
             'Content-Type':'application/json'
           },
-          body:JSON.stringify({message,replyOf,postId})
+          body:JSON.stringify({message,replyOf,postId,callId})
         }
       )
       const data = await response.json()

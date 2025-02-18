@@ -34,6 +34,10 @@ const messageSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref:'Post',
     default: null
+  },
+  callId:{
+    type:String,
+    default:null
   }
 },{timestamps:true}) //timestamps:true will record the time when the message is saved
 
