@@ -3,7 +3,7 @@ import { useSearchParams} from 'react-router-dom';
 import { createOffer, answerOffer, createEndCall } from '../utils/webRTC.js';
 import { useSocketContext } from './context/socketContext.jsx';
 import { Video,Phone,PhoneOff } from 'lucide-react';
-
+import { useLocation } from 'react-router-dom'
 import { useUpdateCallId } from './hooks/useUpdateCallId.js'
 
 export default function VideoCall() {
@@ -16,6 +16,9 @@ export default function VideoCall() {
   const isFirstRender = useRef(0);
   const socket = useSocketContext();
   const authUserId = JSON.parse(localStorage.getItem('authUser'))
+  const location = useLocation()
+  const queryParams = new URLSearchParams(location.search)
+  const receivedCallId = queryParams.get('callId') 
   
   useEffect(()=>{
     if(isFirstRender.current == 0 && localStream != null){   
@@ -30,6 +33,12 @@ export default function VideoCall() {
     //  isFirstRender.current=1
     //};
   },[localStream])
+
+  useEffect(()=>{
+    if(receivedCallId){
+      setCallId(receivedCallId)
+    }   
+  },[])
 
   useEffect(()=>{
 
