@@ -200,3 +200,12 @@ export const getCallIdController = async (req,res) => {
     callId:call.callId
   })
 }
+export const deleteCallIdController = async (req,res) => {
+  const {callId} = req.body
+  if(!callId){
+    return res.send('empty call id')
+  }
+  await Call.deleteOne({callId})
+  return res.status(200).json({message:'success'}) 
+
+}

@@ -13,11 +13,6 @@ const callSchema = new mongoose.Schema({
     type:String,
     required:true
   },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-    expires: '1m'
-  }
 })
 
 export const Call = mongoose.model('Call',callSchema)

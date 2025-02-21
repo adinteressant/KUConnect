@@ -3,7 +3,7 @@ import { changeStatus, deleteMessageController, editMessageController, getConver
 import { messageMiddleware } from '../middlewares/messageMiddleware.js'
 import authenticateJWT from '../middlewares/authenticateJWT.js'
 import { getMessageController } from '../controllers/messageController.js'
-import { updateCallIdController,getCallIdController } from '../controllers/messageController.js'
+import { updateCallIdController,getCallIdController,deleteCallIdController } from '../controllers/messageController.js'
 const router = Router()
 
 router.get('/api/conversations',getConversations)
@@ -24,4 +24,5 @@ router.post('/api/message/update-call-id',updateCallIdController)
 
 router.post('/api/message/get-call-id',getCallIdController)
 
+router.delete('/api/message/delete-call-id',deleteCallIdController)
 export default router

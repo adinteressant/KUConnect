@@ -5,6 +5,8 @@ import { useSocketContext } from './context/socketContext.jsx';
 import { Video,Phone,PhoneOff } from 'lucide-react';
 import { useLocation } from 'react-router-dom'
 import { useUpdateCallId } from './hooks/useUpdateCallId.js'
+import { useEditExistingMessage } from './hooks/useEditExistingMessage.js'
+import useDeleteCallId from './hooks/useDeleteCallId.js';
 
 export default function VideoCall() {
   const [localStream, setLocalStream] = useState(null);
@@ -16,9 +18,13 @@ export default function VideoCall() {
   const isFirstRender = useRef(0);
   const socket = useSocketContext();
   const authUserId = JSON.parse(localStorage.getItem('authUser'))
+  const {editExistingMessage} = useEditExistingMessage()
+
   const location = useLocation()
   const queryParams = new URLSearchParams(location.search)
-  const receivedCallId = queryParams.get('callId') 
+  const receivedCallId = queryParams.get('callId')
+  const messageId = queryParams.get('messageId')
+  const receiverId = queryParams.get('receiverId')
   
   useEffect(()=>{
     if(isFirstRender.current == 0 && localStream != null){   
@@ -93,6 +99,9 @@ return () => { localStream?.getTracks().forEach(track => track.stop()); };
   
   const endCall = async ()=>{
     await createEndCall(peerConnection);
+    if(messageId){
+      await Promise.all([editExistingMessage('',messageId,'expired',receiverId),useDeleteCallId(receivedCallId)])
+    }
   }
 
 socket?.on('call_incoming',(arg,callback)=>{

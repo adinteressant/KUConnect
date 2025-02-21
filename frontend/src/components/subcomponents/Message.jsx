@@ -40,7 +40,7 @@ export default function Message({ message, replyMessage, mm, dd, prevMM,prevDD,s
    const data = await useGetUpdateCallId(senderNameId,authUserId)
    if(data?.callId){
     await editExistingMessage('',message._id,data.callId) 
-    window.open(`/call?callId=${data.callId}`)
+    window.open(`/call?callId=${data.callId}&&messageId=${message._id}&&receiverId=${authUserId}`)
   }
 
   }

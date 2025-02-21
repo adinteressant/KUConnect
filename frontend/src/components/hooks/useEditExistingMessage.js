@@ -4,11 +4,12 @@ import useConversation from '../../zustand/useConversation'
 export const useEditExistingMessage = () => {
   const [loadingEdit,setLoadingEdit] = useState(false)
   const {setMessages,selectedConversation} = useConversation()
-  const editExistingMessage = async (message='',id,callId='') => {
+  const editExistingMessage = async (message='',id,callId='',receiverId='') => {
     setLoadingEdit(()=>true)
     try{
+    const receiver_id = receiverId || selectedConversation.user_id 
       const response = 
-      await fetch(`/api/edit-message?receiverId=${selectedConversation.user_id}`,
+      await fetch(`/api/edit-message?receiverId=${receiver_id}`,
         {
           method: 'PATCH',
           headers: {
