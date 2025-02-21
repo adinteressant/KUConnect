@@ -3,8 +3,8 @@ import useConversation from '../../zustand/useConversation'
 
 export const useEditExistingMessage = () => {
   const [loadingEdit,setLoadingEdit] = useState(false)
-  const {messages,setMessages,selectedConversation} = useConversation()
-  const editExistingMessage = async (message,id) => {
+  const {setMessages,selectedConversation} = useConversation()
+  const editExistingMessage = async (message='',id,callId='') => {
     setLoadingEdit(()=>true)
     try{
       const response = 
@@ -14,7 +14,7 @@ export const useEditExistingMessage = () => {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({message,id})
+          body: JSON.stringify({message,id,callId})
         })
       const data = await response.json()
       setMessages(data.messages)
