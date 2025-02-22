@@ -4,7 +4,7 @@ import useListenMessage from '../hooks/useListenMessage.js';
 import Message from './Message.jsx';
 import MessagesSketeleton from './MessagesSkeleton.jsx'
 
-export default function Messages() {
+export default function Messages({senderName,senderNameId}) {
   const { loading, messages } = useGetMessage()
   useListenMessage()
   let MM='', DD=''
@@ -30,7 +30,7 @@ export default function Messages() {
           MM = mm
           return(
           <Message key={message._id} message={message} replyMessage={replyMessage}
-          dd={dd} mm={mm} prevDD={prevDD} prevMM={prevMM}/>
+          dd={dd} mm={mm} prevDD={prevDD} prevMM={prevMM} senderName={senderName} senderNameId = {senderNameId}/>
         )})
       ) : (
         <div className="flex items-center justify-center h-full text-gray-500">

@@ -34,7 +34,7 @@ export default function MessageContainer() {
           {/* Scrollable Messages Section */}
           <div className="flex-1 overflow-y-auto scrollbar-msg dark:bg-slate-900 dark:text-slate-100 bg-gray-50 border-l border-gray-200 dark:border-slate-800 flex flex-col-reverse">
             <div className="pt-[80px] pb-[91px] px-4 space-y-4 dark:bg-slate-900">
-              <Messages />
+              <Messages senderName={selectedConversation.username} senderNameId = {selectedConversation.user_id}/>
               {/* Empty div for scrolling to the bottom */}
               {/* <div ref={messagesEndRef}></div> */}
             </div>

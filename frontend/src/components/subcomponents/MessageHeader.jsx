@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { PhoneCall } from 'lucide-react';
 import {useSocketContext} from '../context/socketContext.jsx';
+import useSendMessage from '../hooks/useSendMessage.js'
 
 export default function MessageHeader({ username }) {
   const [profileData, setProfileData] = useState({
@@ -14,6 +15,7 @@ export default function MessageHeader({ username }) {
   const [error, setError] = useState(false);
   const [profilePic, setProfilePic] = useState(null);
   const {socket,onlineUsers} = useSocketContext();
+  const {sendMessage} = useSendMessage()
   // Fetch profile data based on username
   useEffect(() => {
     const loadProfileData = async () => {
@@ -63,7 +65,8 @@ export default function MessageHeader({ username }) {
   }, []);
 
   const onCallHandler = ()=>{
-    window.open("/call?start_call=true", "_blank");
+    window.open(`/call?start_call=true&&userId=${profileData.user_id}`, "_blank")
+    sendMessage(null,null,null,'callId')
   }
  
   return (
@@ -96,8 +99,8 @@ export default function MessageHeader({ username }) {
                   </Link>
                   </div>
     {(onlineUsers.includes(profileData.user_id))?
-        <div className='bg-cyan-100'>
-          <button onClick={onCallHandler}><PhoneCall className='cyan-500'/>
+        <div className='dark:text-gray-200 bg-gray-200 dark:bg-slate-700 rounded-full flex justify-center items-center p-2'>
+          <button onClick={onCallHandler}><PhoneCall className='h-5 w-5'/>
           </button>
         </div>
       :

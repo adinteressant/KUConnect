@@ -1,7 +1,7 @@
 import Conversation from '../models/conversation.model.js'
 import Message from '../models/message.model.js'
 import { getReceiverSocketId, socketIo } from '../utils/socket/socket.js'
-
+import { Call } from '../models/call.model.js'
 
 export const getConversations = async (req,res) => {
   const conversations = await Conversation.find().select('participants updatedAt')
@@ -12,7 +12,7 @@ export const sendMessageController = async (req,res) => {
   try{
     const { senderId } = req
     const { receiverId } = req.params
-    const { message,replyOf, postId } = req.body
+    const { message,replyOf, postId,callId } = req.body
 
     let conversation = await Conversation.findOne({
       participants:{$all : [senderId,receiverId]}
@@ -29,7 +29,8 @@ export const sendMessageController = async (req,res) => {
       receiverId,
       message,
       replyOf:replyOf?._id,
-      postId
+      postId,
+      callId
     })
 
     if(newMessage){
@@ -134,18 +135,26 @@ export const deleteMessageController = async (req,res) => {
 export const editMessageController = async (req,res) => {
   const { senderId } = req
   const { receiverId } = req.query
-  const {message,id} = req.body
-  if (!message) {
-    return res.status(400).json({ error: 'Content is required to update the message.' });
-  }
+  const {message,id,callId} = req.body
+  
   let conversation
   try{
+  if(callId){
     await Message.findByIdAndUpdate(id,
+      {
+        callId,
+        edited:true
+      }
+    )    
+  }else{
+     await Message.findByIdAndUpdate(id,
       {
         message,
         edited:true
       }
     )
+
+  }
     conversation = await Conversation.findOne({
       participants:{$all:[senderId,receiverId]}
     }).populate('messages')
@@ -165,4 +174,38 @@ export const editMessageController = async (req,res) => {
     return res.status(500).json({e})
   }
   return res.status(200).json({messages:conversation.messages,msg:'success'})
+}
+
+export const updateCallIdController =async (req,res) => {
+  const {senderId,receiverId,callId} = req.body
+  const call = new Call({
+    senderId,
+    receiverId,
+    callId
+  })
+  
+  await call.save()
+  res.status(201).json({message:'success'})
+}
+
+export const getCallIdController = async (req,res) => {
+  const {senderId,receiverId} = req.body
+
+  const call = await Call.findOne({senderId,receiverId})
+  if(!call){
+    return res.status(200).json({message:'not found'})
+  }
+  return res.status(200).json({
+    message:'found',
+    callId:call.callId
+  })
+}
+export const deleteCallIdController = async (req,res) => {
+  const {callId} = req.body
+  if(!callId){
+    return res.send('empty call id')
+  }
+  await Call.deleteOne({callId})
+  return res.status(200).json({message:'success'}) 
+
 }

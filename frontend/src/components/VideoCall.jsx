@@ -3,6 +3,11 @@ import { useSearchParams} from 'react-router-dom';
 import { createOffer, answerOffer, createEndCall } from '../utils/webRTC.js';
 import { useSocketContext } from './context/socketContext.jsx';
 import { Video,Phone,PhoneOff } from 'lucide-react';
+import { useLocation } from 'react-router-dom'
+import { useUpdateCallId } from './hooks/useUpdateCallId.js'
+import { useEditExistingMessage } from './hooks/useEditExistingMessage.js'
+import useDeleteCallId from './hooks/useDeleteCallId.js';
+
 export default function VideoCall() {
   const [localStream, setLocalStream] = useState(null);
   const [queries]= useSearchParams();
@@ -12,7 +17,15 @@ export default function VideoCall() {
   const remoteVideoRef = useRef(null);
   const isFirstRender = useRef(0);
   const socket = useSocketContext();
+  const authUserId = JSON.parse(localStorage.getItem('authUser'))
+  const {editExistingMessage} = useEditExistingMessage()
 
+  const location = useLocation()
+  const queryParams = new URLSearchParams(location.search)
+  const receivedCallId = queryParams.get('callId')
+  const messageId = queryParams.get('messageId')
+  const receiverId = queryParams.get('receiverId')
+  
   useEffect(()=>{
     if(isFirstRender.current == 0 && localStream != null){   
     async function generateCallIdOnLoad(){
@@ -28,14 +41,18 @@ export default function VideoCall() {
   },[localStream])
 
   useEffect(()=>{
+    if(receivedCallId){
+      setCallId(receivedCallId)
+    }   
+  },[])
+
+  useEffect(()=>{
 
     if(isFirstRender.current == 0 && localStream != null){   
     async function joinCallOnId(){
       if((queries.get('call_id'))){
         //console.log(typeof(queries.get('call_id')))
         setCallId(queries.get('call_id'))
-        //console.log(`${queries.get('call_id')}`)
-        //console.log(callId)
         await handleAnswerOffer();
       }
     }
@@ -70,6 +87,8 @@ return () => { localStream?.getTracks().forEach(track => track.stop()); };
     })
     const generatedCallId = await createOffer(remoteVideoRef, localStream,socket);
     setCallId(generatedCallId||'');
+    useUpdateCallId(generatedCallId,authUserId,queries.get('userId'))
+
   };
 
   const handleAnswerOffer = async () => {
@@ -80,6 +99,9 @@ return () => { localStream?.getTracks().forEach(track => track.stop()); };
   
   const endCall = async ()=>{
     await createEndCall(peerConnection);
+    if(messageId){
+      await Promise.all([editExistingMessage('',messageId,'expired',receiverId),useDeleteCallId(receivedCallId)])
+    }
   }
 
 socket?.on('call_incoming',(arg,callback)=>{
