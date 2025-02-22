@@ -8,7 +8,7 @@ import CommentLike from "../models/commentLikes.js"
 import Like from '../models/like.js'
 import SeenPost from "../models/seenPosts.js"
 import Save from "../models/savePost.js"
-import like from "../models/like.js"
+import { deleteMainComment } from "./commentController.js"
 
 export default async function deleteAccount(req, res)
 {
@@ -42,13 +42,14 @@ export default async function deleteAccount(req, res)
         await PostImages.deleteMany({ _id: { $in: imageIds } })
       }
 
-      // Delete all likes and comments on user's posts
-      const [_, comments] = await Promise.all([
-        Like.deleteMany({ postId: { $in: postIds } }),
-        Comment.deleteMany({ postId: { $in: postIds } })
-      ])
+      const comments = await Comment.find({ postId: { $in: postIds } })
 
-      await CommentLike.deleteMany({ commentId: { $in: comments.map(c => c._id) } })
+      // Delete all likes and comments on user's posts
+      await Promise.all([
+        Like.deleteMany({ postId: { $in: postIds } }),
+        Comment.deleteMany({ postId: { $in: postIds } }),
+        CommentLike.deleteMany({ commentId: { $in: comments.map(c => c._id) } })
+      ])
     }
 
     // Remove User's Likes in other posts
@@ -70,24 +71,36 @@ export default async function deleteAccount(req, res)
       })
     )
 
-    // Delete user's comments and its likes in other posts
+    // Delete user's comments in other posts
     const userComments = await Comment.find({ userId: user_id })
-
-    const commentCountMap = {}
-    userComments.forEach(comment => {
-      commentCountMap[comment.postId] = (commentCountMap[comment.postId] || 0) + 1
-    })
-
+    
     await Promise.all(
-      Object.entries(commentCountMap).map(async ([postId, count]) => {
-        await Post.updateOne({ _id: postId }, { $inc: { comments: -count } })
+      userComments.map(async (c) => {
+        const comment = {
+          commentId: c._id,
+          parentId: c.parentId
+        }
+        await deleteMainComment(c.postId, comment)
       })
     )
 
-    await Promise.all([
-      Comment.deleteMany({ userId: user_id }),
-      CommentLike.deleteMany({ commentId: { $in: userComments.map(c => c._id) } })
-    ])
+    // Remove User's Likes in other comments
+    const likedComments = await CommentLike.find({ userId: user_id })
+
+    await Promise.all(
+      likedComments.map(async (like) => {
+        like.userId = like.userId.filter(id => id !== user_id)
+        await like.save()
+      })
+    )
+
+    await Promise.all(
+      likedComments.map(async (like) => {
+        const comment = await Comment.findById(like.commentId)
+        comment.likes = comment.likes - 1
+        await comment.save()
+      })
+    )
 
     await Promise.all([
       privateInfo.deleteOne(),
