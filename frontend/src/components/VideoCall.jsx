@@ -24,7 +24,6 @@ export default function VideoCall() {
   const queryParams = new URLSearchParams(location.search)
   const receivedCallId = queryParams.get('callId')
   const messageId = queryParams.get('messageId')
-  const receiverId = queryParams.get('receiverId')
   
   useEffect(()=>{
     if(isFirstRender.current == 0 && localStream != null){   
@@ -98,10 +97,14 @@ return () => { localStream?.getTracks().forEach(track => track.stop()); };
   };
   
   const endCall = async ()=>{
-    await createEndCall(peerConnection);
     if(messageId){
-      await Promise.all([editExistingMessage('',messageId,'expired',receiverId),useDeleteCallId(receivedCallId)])
+      let receiverId = queryParams.get('receiverId')
+      if(!receiverId){
+        receiverId = queryParams.get('userId')
+      }
+      await Promise.all([editExistingMessage('',messageId,'expired',receiverId),useDeleteCallId(callId)])
     }
+    await createEndCall(peerConnection);
   }
 
 socket?.on('call_incoming',(arg,callback)=>{
