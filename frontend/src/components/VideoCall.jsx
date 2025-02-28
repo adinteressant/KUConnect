@@ -45,6 +45,7 @@ export default function VideoCall() {
     }   
   },[])
 
+
   useEffect(()=>{
 
     if(isFirstRender.current == 0 && localStream != null){   
@@ -84,15 +85,17 @@ return () => { localStream?.getTracks().forEach(track => track.stop()); };
     socket?.emit('call_incoming',callId,()=>{
       console.log("Call Being Ringed!")
     })
-    const generatedCallId = await createOffer(remoteVideoRef, localStream,socket);
+    const [generatedCallId,peerConnection] = await createOffer(remoteVideoRef, localStream,socket);
     setCallId(generatedCallId||'');
     useUpdateCallId(generatedCallId,authUserId,queries.get('userId'))
-
+    setPeerConnection(peerConnection);
   };
 
   const handleAnswerOffer = async () => {
     if (callId) {
-      setPeerConnection(await answerOffer(callId, remoteVideoRef, localStream));
+      let value = await answerOffer(callId, remoteVideoRef, localStream)
+      console.log(value);
+      setPeerConnection(value);
     }
   };
   
@@ -104,6 +107,7 @@ return () => { localStream?.getTracks().forEach(track => track.stop()); };
       }
       await Promise.all([editExistingMessage('',messageId,'expired',receiverId),useDeleteCallId(callId)])
     }
+    console.log(peerConnection);
     await createEndCall(peerConnection);
   }
 
