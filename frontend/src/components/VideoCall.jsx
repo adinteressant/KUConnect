@@ -150,7 +150,8 @@ export default function VideoCall() {
   };
   
   const handleCloseEndCallScreen = () => {
-    window.location.href = '/'; // Navigate home without feedback
+    // window.location.href = '/'; // Navigate home without feedback
+    window.open('', '_self').close()
   };
   
   socket?.on('call_incoming', (arg, callback) => {
@@ -256,21 +257,21 @@ export default function VideoCall() {
       {/* End Call Screen Modal */}
       {endCallScreen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80 backdrop-blur-sm">
-          <div className="w-full max-w-md p-6 bg-white rounded-xl shadow-2xl animate-fadeIn">
+          <div className="w-full max-w-md p-6 bg-white rounded-xl shadow-2xl animate-fadeIn dark:bg-slate-800">
             {/* Call ended header */}
             <div className="flex flex-col items-center mb-6">
               <div className="flex items-center justify-center w-20 h-20 mb-4 bg-cyan-100 rounded-full">
                 <PhoneOff className="w-10 h-10 text-cyan-500" />
               </div>
-              <h1 className="text-2xl font-bold text-gray-800">Call Ended</h1>
+              <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Call Ended</h1>
             </div>           
             {/* Action buttons */}
             <div className="flex space-x-4">
               <button 
                 onClick={handleCloseEndCallScreen}
-                className="flex-1 px-4 py-3 font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-cyan-500 transition-all hover:shadow-md"
+                className="text-gray-100 flex-1 px-4 py-3 font-medium text-gray-700 bg-cyan-600 rounded-lg hover:bg-cyan-700 transition-all hover:shadow-md"
               >
-               Back to website!  
+               Close  
               </button>
             </div>
             
