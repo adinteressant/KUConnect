@@ -15,7 +15,7 @@ import profileRouter from '../routes/profileRoute.js'
 import messageRouter from '../routes/messageRoutes.js'
 import friendRouter from '../routes/friendRoutes.js'
 import getEmbedRouter from '../routes/embeds.js'
-import deleteAccountRouter from '../controllers/deleteAccountController.js'
+import deleteAccountRouter from '../routes/deleteAccountRoutes.js'
 
 const router = Router()
 
