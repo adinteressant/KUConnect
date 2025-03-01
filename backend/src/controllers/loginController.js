@@ -75,3 +75,8 @@ export const forgotPasswordController = async (req,res) => {
   res.status(200).json({message:'success',otp})
 
 }
+
+export const setNewPasswordController = async (req,res) => {
+  const {email,newPassword} = req.body
+  res.send('success')
+}

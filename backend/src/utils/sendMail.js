@@ -46,7 +46,7 @@ export const sendMailPasswordChange = async (to,otp) => {
       We received a request to reset your password for your KUConnect account.<br>
       To proceed with resetting your password, please use the following One-Time Password (OTP):<br>
       <h4>${otp}</h4><br>
-      This OTP is valid for 2 minutes. If you did not request a password reset, please ignore this email.<br><br>
+      If you did not request a password reset, please ignore this email.<br><br>
       Best regards,<br>
       KUConnect Team`   
     })

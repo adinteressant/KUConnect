@@ -18,6 +18,10 @@ export default function LoginPage() {
   const [modalOTP,setModalOTP] = useState('')
   const [emailOTP,setEmailOTP] = useState('')
 
+  const [isNewPassModalOpen,setIsNewPassModalOpen] = useState(false)
+  const [newPass,setNewPass] = useState('')
+  const [confirmPass,setConfirmPass] = useState('')
+
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
@@ -70,8 +74,21 @@ export default function LoginPage() {
   }
 
   const handleEnterOTP = () => {
-    console.log(modalEmail,modalOTP,emailOTP)
+    if(modalOTP == emailOTP){
+      setIsNewPassModalOpen(true)
+    }else{
+      alert('OTP does not match.')
+    }
   }
+
+  const handleEnterNewPass = () => {
+   if(newPass === confirmPass ){
+   //passwordsmatch 
+   }else{
+    alert('Passwords do not match.')
+   }
+  }
+
   return (
     <div className="min-h-screen w-full flex items-center justify-center dark:bg-gray-900 bg-gray-100">
       <div className="w-full max-w-md p-8 dark:bg-gray-800  bg-white rounded-lg shadow-md">
@@ -189,7 +206,6 @@ export default function LoginPage() {
               className="mt-2 w-full p-2 border rounded-lg dark:bg-slate-700 dark:border-slate-600"
               required
             />
-
          </p>
           <div className="flex justify-end gap-2">
             <button
@@ -207,7 +223,51 @@ export default function LoginPage() {
           </div>
         </div>
       </Modal>
+      <Modal
+        isOpen={isNewPassModalOpen}
+        onClose={() => setIsNewPassModalOpen(false)}
+        title="Forgot Password"
+      >
+        <div className="space-y-4">
+          <p className="text-gray-600 dark:text-gray-300">
+            Enter new password.
+            <input
+              type="password"
+              placeholder="New Password"
+              value={newPass}
+              onChange={(e) => setNewPass(e.target.value)}
+              className="mt-2 w-full p-2 border rounded-lg dark:bg-slate-700 dark:border-slate-600"
+              required
+            />
+          </p>
+           <p className="text-gray-600 dark:text-gray-300">
+            Confirm password.
+            <input
+              type="password"
+              placeholder="Confirm Password"
+              value={confirmPass}
+              onChange={(e) => setConfirmPass(e.target.value)}
+              className="mt-2 w-full p-2 border rounded-lg dark:bg-slate-700 dark:border-slate-600"
+              required
+            />
+         </p>
 
+          <div className="flex justify-end gap-2">
+            <button
+              onClick={() => setIsNewPassModalOpen(false)}
+              className="px-4 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleEnterNewPass}
+              className="px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700"
+            >
+             Enter 
+            </button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }
