@@ -269,7 +269,7 @@ export default function VideoCall() {
             <div className="flex space-x-4">
               <button 
                 onClick={handleCloseEndCallScreen}
-                className="text-gray-100 flex-1 px-4 py-3 font-medium text-gray-700 bg-cyan-600 rounded-lg hover:bg-cyan-700 transition-all hover:shadow-md"
+                className="text-gray-100 flex-1 px-4 py-3 font-medium bg-cyan-600 rounded-lg hover:bg-cyan-700 transition-all hover:shadow-md"
               >
                Close  
               </button>

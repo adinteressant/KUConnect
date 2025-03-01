@@ -4,6 +4,9 @@ import { comparePassword } from '../utils/hashPassword.js';
 import { generate_jwt_token,generate_refresh_token } from '../utils/generateJwtToken.js';
 import PublicInfo from '../models/PublicInfo.js';
 
+import generateOTP from '../utils/generateOTP.js'
+import { sendMailPasswordChange } from '../utils/sendMail.js'
+
 export default async function loginController(req, res) {
   try {
     // Extract validated data from request
@@ -61,4 +64,14 @@ export default async function loginController(req, res) {
       error: error.message,
     });
   }
+}
+
+export const forgotPasswordController = async (req,res) => {
+  const {email} = req.query
+  const otp = generateOTP()
+
+  sendMailPasswordChange(email,otp)
+
+  res.status(200).json({message:'success',otp})
+
 }

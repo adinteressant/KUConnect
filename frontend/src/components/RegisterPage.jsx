@@ -56,7 +56,6 @@ export default function RegisterPage() {
         return;
       }
   
-      console.log('Success:', context);
       window.location.href = `/verifyotp?email=${formData.email}`;
     } catch (error) {
       console.error('Unexpected error:', error);
