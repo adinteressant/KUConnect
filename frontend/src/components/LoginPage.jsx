@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { Link } from 'react-router-dom'
+import {Modal} from '../components/Settings.jsx'
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
@@ -10,6 +11,12 @@ export default function LoginPage() {
 
   const [errorMessage, setErrorMessage] = useState(""); // Add state for displaying errors
   const [showPassword, setShowPassword] = useState(false);
+  const [isEmailModalOpen,setIsEmailModalOpen] = useState(false)
+  const [modalEmail,setModalEmail] = useState('')
+  
+  const [isOTPModalOpen,setIsOTPModalOpen] = useState(false)
+  const [modalOTP,setModalOTP] = useState('')
+  const [emailOTP,setEmailOTP] = useState('')
 
   const handleSubmit = async (e) => {
     try {
@@ -51,6 +58,20 @@ export default function LoginPage() {
     sessionStorage.setItem('newGoogleLogin', 'true');
   };
 
+  const handleEnter = async () => {
+    try{
+      const response = await fetch(`/api/forgot-password?email=${modalEmail}`)
+      const data = await response.json()
+      setEmailOTP(data.otp)
+    }catch(err){
+      console.log(err)
+    }
+    setIsOTPModalOpen(true)
+  }
+
+  const handleEnterOTP = () => {
+    console.log(modalEmail,modalOTP,emailOTP)
+  }
   return (
     <div className="min-h-screen w-full flex items-center justify-center dark:bg-gray-900 bg-gray-100">
       <div className="w-full max-w-md p-8 dark:bg-gray-800  bg-white rounded-lg shadow-md">
@@ -86,6 +107,8 @@ export default function LoginPage() {
                 <EyeIcon className="w-5 h-5" />}
               </button>
               </div>
+              <div className= "dark:text-[#e5e7eb]"><span className="hover:text-cyan-600 cursor-pointer"
+              onClick={()=>{setIsEmailModalOpen(true)}}>Forgot Password?</span></div>
           </div>
           <div className="pt-2">
             <button
@@ -116,6 +139,75 @@ export default function LoginPage() {
           </div>
         </form>
       </div>
+      <Modal
+        isOpen={isEmailModalOpen}
+        onClose={() => setIsEmailModalOpen(false)}
+        title="Forgot Password"
+      >
+        <div className="space-y-4">
+          <p className="text-gray-600 dark:text-gray-300">
+            Enter your Email.
+            <input
+              type="email"
+              placeholder="Email"
+              value={modalEmail}
+              onChange={(e) => setModalEmail(e.target.value)}
+              className="mt-2 w-full p-2 border rounded-lg dark:bg-slate-700 dark:border-slate-600"
+              required
+            />
+
+         </p>
+          <div className="flex justify-end gap-2">
+            <button
+              onClick={() => setIsEmailModalOpen(false)}
+              className="px-4 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleEnter}
+              className="px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700"
+            >
+             Enter 
+            </button>
+          </div>
+        </div>
+      </Modal>
+      <Modal
+        isOpen={isOTPModalOpen}
+        onClose={() => setIsOTPModalOpen(false)}
+        title="Forgot Password"
+      >
+        <div className="space-y-4">
+          <p className="text-gray-600 dark:text-gray-300">
+            Enter the OTP sent to your Email.
+            <input
+              type="text"
+              placeholder="OTP"
+              value={modalOTP}
+              onChange={(e) => setModalOTP(e.target.value)}
+              className="mt-2 w-full p-2 border rounded-lg dark:bg-slate-700 dark:border-slate-600"
+              required
+            />
+
+         </p>
+          <div className="flex justify-end gap-2">
+            <button
+              onClick={() => setIsOTPModalOpen(false)}
+              className="px-4 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleEnterOTP}
+              className="px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700"
+            >
+             Enter 
+            </button>
+          </div>
+        </div>
+      </Modal>
+
     </div>
   );
 }

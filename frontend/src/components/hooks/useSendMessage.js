@@ -7,6 +7,7 @@ const useSendMessage = (replyOf) => {
   
   const sendMessage = async (message, postId, receiverId,callId=null) => {
     setLoading(true)
+    let data
     try {
       const r = receiverId || selectedConversation.user_id
       const response = await fetch(`/api/message/send/${r}`,
@@ -18,14 +19,14 @@ const useSendMessage = (replyOf) => {
           body:JSON.stringify({message,replyOf,postId,callId})
         }
       )
-      const data = await response.json()
+      data = await response.json()
       setMessages([...messages,data])
       return true
       } catch (error) {
       console.log(error)
     }finally{
       setLoading(false)
-
+      return {messageId:data._id,receiverId:data.receiverId}
     }
   }
   return {loading,sendMessage}

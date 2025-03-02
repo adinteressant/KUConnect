@@ -64,9 +64,11 @@ export default function MessageHeader({ username }) {
     loadUserProfile();
   }, []);
 
-  const onCallHandler = ()=>{
-    window.open(`/call?start_call=true&&userId=${profileData.user_id}`, "_blank")
-    sendMessage(null,null,null,'callId')
+  const onCallHandler = async ()=>{
+    const {messageId,receiverId} = await sendMessage(null,null,null,'callId')
+    window.open(`/call?start_call=true&&userId=${profileData.user_id}&&
+    receiverId=${receiverId}&&messageId=${messageId}`, "_blank")
+
   }
  
   return (

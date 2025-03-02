@@ -7,14 +7,14 @@ import axios from 'axios';
 import { useOutletContext } from 'react-router-dom';
 import tags from '../data/tags'
 
-const Modal = ({ isOpen, onClose, title, children }) => {
+export const Modal = ({ isOpen, onClose, title, children }) => {
   if (!isOpen) return null;
   
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div className="bg-white dark:bg-slate-800 rounded-lg w-full max-w-md">
         <div className="flex justify-between items-center p-4 border-b border-gray-200 dark:border-gray-700">
-          <h3 className="text-lg font-semibold">{title}</h3>
+          <h3 className="text-lg font-semibold dark:text-gray-100">{title}</h3>
           <button 
             onClick={onClose}
             className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
@@ -95,6 +95,8 @@ export default function SettingsPage(user) {
   const [selectedTags, setSelectedTags] = useState([])
   const [userprofile, setuserprofile] = useState({})
   const [showprofilepicoverlay, setshowprofilepicoverlay] = useState(false)
+  const [isConfirmPasswordOpen,setIsConfirmPasswordOpen] = useState(false)
+  const [confirmPassword,setConfirmPassword] = useState('')
   // Form states
   const [username, setUsername] = useState('');
   const [passwordform, setpasswordform] = useState({
@@ -206,7 +208,6 @@ export default function SettingsPage(user) {
       alert('Failed to update tags');
     }
   };
-
   const handleDeleteAccount = async (e) => {
     e.preventDefault();
     try{
@@ -227,7 +228,26 @@ export default function SettingsPage(user) {
         alert('failed to delete account');
         }
    
-  };
+  }
+  const handleConfirmPassword = async (e) => { 
+    try{
+     const response = await fetch('/api/delete/confirm-password',{
+        method:'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({user_id: userProfile.user_id,confirmPassword}),
+     })
+     const data = await response.json()
+     if(data.status){
+      handleDeleteAccount(e)
+     }else{
+      alert("password doesn't match")
+     }
+    }catch(err){
+      console.log(err)
+    }
+  }
   const profilepictures = [1, 2, 3, 4, 5]
 
   const handleProfilePicChange = () => {
@@ -550,13 +570,47 @@ export default function SettingsPage(user) {
               Cancel
             </button>
             <button
-              onClick={handleDeleteAccount}
+              onClick={()=>setIsConfirmPasswordOpen(true)}
               className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
             >
               Delete Account
             </button>
           </div>
         </div>
+      </Modal>
+      <Modal isOpen={isConfirmPasswordOpen}
+        onClose={()=>{setIsConfirmPasswordOpen(false)}}
+        title="Confirm Password">
+        <div className="space-y-4">
+          <p className="text-gray-600 dark:text-gray-300">
+            Enter your password to verify it is you.
+          </p>
+          <p>
+              <input
+              type="password"
+              placeholder="Password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className="w-full p-2 border rounded-lg dark:bg-slate-700 dark:border-slate-600"
+              required
+              />
+
+          </p>
+          <div className="flex justify-end gap-2">
+            <button
+              onClick={() => setIsConfirmPasswordOpen(false)}
+              className="px-4 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleConfirmPassword}
+              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+            >
+             Enter 
+            </button>
+          </div>
+          </div>
       </Modal>
       
       {showprofilepicoverlay && (

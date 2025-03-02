@@ -1,6 +1,7 @@
 import PrivateInfo from "../models/PrivateInfo.js"
 import PublicInfo from "../models/PublicInfo.js"
-import { GoogleUser } from "../models/googleUser.model.js"
+import { GoogleUser } from '../models/googleUser.model.js'
+import {comparePassword} from '../utils/hashPassword.js'
 import Post from "../models/Post.js"
 import PostImages from "../models/PostImages.js"
 import Comment from '../models/comment.js'
@@ -10,8 +11,27 @@ import SeenPost from "../models/seenPosts.js"
 import Save from "../models/savePost.js"
 import { deleteMainComment } from "./commentController.js"
 
-export default async function deleteAccount(req, res)
-{
+export const confirmPassword = async (req,res) => {
+  const {user_id,confirmPassword} = req.body
+
+  try{
+    const privateInfo = await PrivateInfo.findOne({user_id})
+    if(!privateInfo){
+      return res.status(404).json({message:'Account not found'})
+    }
+    const {password_hash} = privateInfo
+    const status = comparePassword(confirmPassword,password_hash)
+    
+    return res.status(200).json({status})
+  }catch(err){
+    return res.status(500).json({message:'Internal Server Error'})
+  }
+
+} 
+
+
+export const deleteAccount = async (req, res) => {
+
   const user_id = req.body.user_id
   
   try

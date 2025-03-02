@@ -24,7 +24,6 @@ const servers = {
 }
 
 const createOffer = async (
-
   remoteStreamRef,
   localStream,
   remoteStream,
@@ -91,7 +90,7 @@ const createOffer = async (
   })
 
   socket?.emit('call_incoming',call_id)
-  return callDoc.id // Return the call ID for future use
+  return [callDoc.id,peerConnection] // Return the call ID for future use
 }
 
 async function answerOffer(callId, remoteStreamRef, localStream) {
@@ -124,8 +123,7 @@ async function answerOffer(callId, remoteStreamRef, localStream) {
       remoteStream.addTrack(track);
     });
   };
-
-  
+ 
   const callSnapshot = await getDoc(callDocRef); // gets the value of the offer, with the callID associated with the snapshot
   const callData = callSnapshot.data(); // gets the value of the offer
 
@@ -156,6 +154,7 @@ async function answerOffer(callId, remoteStreamRef, localStream) {
       }
     });
   });
+  //console.log(peerConnection);
   return peerConnection;
 }
 
@@ -166,7 +165,6 @@ async function createEndCall(peer){
   //const offerCandidates = collection(callDoc, "offerCandidates") // offer table 
   //const answerCandidates = collection(callDoc, "answerCandidates") // answer table
   
-  console.log(peer)      
   // Remove all event listeners
   peer.ontrack = null;
   peer.onremovetrack = null;
