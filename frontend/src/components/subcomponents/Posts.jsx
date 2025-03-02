@@ -641,7 +641,7 @@ function Posts(props) {
                     >
                       {(post.likes < 3
                         ? `Liked by ${post.recentLikes.join(' and ')}`
-                        : `Liked by ${post.recentLikes.join(', ')} and ${post.likes - 2} more`
+                        : `Liked by ${post.recentLikes.join(', ')} and ${post.likes - post.recentLikes.length} more`
                       )}
                     </button>
                   }

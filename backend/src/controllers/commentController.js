@@ -267,11 +267,8 @@ const deleteComments = async(id, post) =>
   }
 }
 
-// Delete a comment
-export const deleteComment = async(req, res) =>
+export const deleteMainComment = async(postId, comment) =>
 {
-  const { comment, postId } = req.body
-
   try
   {
     const [post, parent] = await Promise.all([
@@ -283,10 +280,25 @@ export const deleteComment = async(req, res) =>
 
     parent && parent.replies && (parent.replies = parent.replies - 1)
 
-    const [updatedPost, updatedParent] = await Promise.all([
+    return await Promise.all([
       post.save(),
       parent?.save()
     ])
+  }
+  catch(err)
+  {
+    console.error('Error in deleting comments:', err)
+  }
+}
+
+// Delete a comment
+export const deleteComment = async(req, res) =>
+{
+  const { comment, postId } = req.body
+
+  try
+  {
+    const [updatedPost, updatedParent] = await deleteMainComment(postId, comment)
 
     res.status(200).json({ message: 'Comment and its replies are deleted successfully', post: updatedPost, parent: updatedParent })
   }
