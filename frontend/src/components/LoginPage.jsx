@@ -22,6 +22,8 @@ export default function LoginPage() {
   const [newPass,setNewPass] = useState('')
   const [confirmPass,setConfirmPass] = useState('')
 
+  const [validationString,setValidationString] = useState({message:'Enter your Email.',colorClass:''})
+
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
@@ -63,6 +65,14 @@ export default function LoginPage() {
   };
 
   const handleEnter = async () => {
+    if(!modalEmail){
+      setValidationString({message:'Can not be empty.',colorClass:'text-red-500'})
+      return 
+    }
+    if(!modalEmail.includes('ku.edu.np')){
+      setValidationString({message:'Must be a KU domain.',colorClass:'text-red-500'})
+      return
+    }
     try{
       const response = await fetch(`/api/forgot-password?email=${modalEmail}`)
       const data = await response.json()
@@ -81,12 +91,35 @@ export default function LoginPage() {
     }
   }
 
-  const handleEnterNewPass = () => {
-   if(newPass === confirmPass ){
-   //passwordsmatch 
-   }else{
-    alert('Passwords do not match.')
-   }
+  const handleEnterNewPass = async () => {
+    if(!newPass || newPass.length<8){
+      alert('Password should be at least 8 characters long.')
+      return
+    }
+    if(newPass === confirmPass ){
+      try{
+        const response = await fetch(`/api/set-new-password`,{
+          method:'POST',
+          headers:{
+            'Content-Type':'application/json'
+          },
+          body:JSON.stringify({email:modalEmail,newPassword:newPass})
+        })
+        if(!response.ok){
+          alert('Something went wrong.')
+          return
+        }
+      }catch(err){
+        console.log(err)
+      }finally{
+        alert('Password reset successfully.')
+        setIsNewPassModalOpen(false)
+        setIsOTPModalOpen(false)
+        setIsEmailModalOpen(false)
+      }
+    }else{
+      alert('Passwords do not match.')
+    }
   }
 
   return (
@@ -158,12 +191,12 @@ export default function LoginPage() {
       </div>
       <Modal
         isOpen={isEmailModalOpen}
-        onClose={() => setIsEmailModalOpen(false)}
+        onClose={() => {setIsEmailModalOpen(false);setValidationString({message:'Enter your Email.',colorClass:''})}}
         title="Forgot Password"
       >
         <div className="space-y-4">
           <p className="text-gray-600 dark:text-gray-300">
-            Enter your Email.
+            <span className={validationString.colorClass}>{validationString.message}</span>
             <input
               type="email"
               placeholder="Email"
@@ -176,7 +209,7 @@ export default function LoginPage() {
          </p>
           <div className="flex justify-end gap-2">
             <button
-              onClick={() => setIsEmailModalOpen(false)}
+              onClick={() => {setIsEmailModalOpen(false);setValidationString({message:'Enter your Email.',colorClass:''})}}
               className="px-4 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg"
             >
               Cancel
@@ -235,7 +268,7 @@ export default function LoginPage() {
               type="password"
               placeholder="New Password"
               value={newPass}
-              onChange={(e) => setNewPass(e.target.value)}
+              onChange={(e) => setNewPass(e.target.value.trim())}
               className="mt-2 w-full p-2 border rounded-lg dark:bg-slate-700 dark:border-slate-600"
               required
             />
@@ -246,7 +279,7 @@ export default function LoginPage() {
               type="password"
               placeholder="Confirm Password"
               value={confirmPass}
-              onChange={(e) => setConfirmPass(e.target.value)}
+              onChange={(e) => setConfirmPass(e.target.value.trim())}
               className="mt-2 w-full p-2 border rounded-lg dark:bg-slate-700 dark:border-slate-600"
               required
             />
