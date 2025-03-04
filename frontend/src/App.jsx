@@ -4,6 +4,7 @@ import Sidebar from "./components/Sidebar.jsx"
 import { useTheme } from "./components/context/themeContext.jsx"
 import { useState, useEffect } from "react"
 import SplashScreen from "./components/SplashScreen.jsx"
+import { SocketContextProvider } from "./components/context/socketContext.jsx"
 
 export default function App() {
   const [isSidebarVisible, setIsSidebarVisible] = useState(true)
@@ -50,9 +51,11 @@ export default function App() {
         {isSidebarVisible && <Sidebar userPosts={userPosts} userProfile={userProfile} setUserProfile={setUserProfile} />}
 
         {/* Content Area */}
+        <SocketContextProvider>
         <div className={`flex-grow flex flex-col min-h-screen max-h-screen ${paddingValue}`}>
           <Outlet context={{ searchTrait, setSearchTrait ,userPosts,setUserPosts,userProfile,setUserProfile,setIsSidebarVisible}} />
         </div>
+        </SocketContextProvider>
       </div>
     </div>)
   )

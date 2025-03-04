@@ -30,9 +30,9 @@ const router = createBrowserRouter([
   {
     path : '/',
     element : (
-    <SocketContextProvider>  
+    // <SocketContextProvider>  
       <App/>
-    </SocketContextProvider>
+    // </SocketContextProvider>
   ),
     children:[
       {
