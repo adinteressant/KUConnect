@@ -22,7 +22,7 @@ import PushNotification from './components/pushNotifications.jsx'
 import SpecificPost from './components/subcomponents/SpecificPost.jsx'
 import SavedPosts from './components/SavedPosts.jsx'
 import { ThemeProvider } from "./components/context/themeContext.jsx";
- import { SocketContextProvider } from './components/context/socketContext.jsx'
+ // import { SocketContextProvider } from './components/context/socketContext.jsx'
  import SettingsPage from './components/Settings.jsx'
 import { m } from 'framer-motion'
 
