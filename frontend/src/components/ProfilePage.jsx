@@ -345,7 +345,7 @@ export default function ProfilePage() {
               <div className = "flex items-center justify-center space-x-4">
               <button
                 onClick={handleAddFriend}
-                className="mt-6 bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-blue-600 transition"
+                className="mt-6 bg-cyan-600 text-white px-6 py-2 rounded-full hover:bg-cyan-700 transition"
               >
                 Add Friend
               </button>

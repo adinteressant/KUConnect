@@ -35,7 +35,7 @@ export default function SendMessage(){
         <input
           type="text"
           placeholder="Type your message..."
-          className="flex-1 rounded-full px-4 py-2 border border-gray-300 dark:bg-slate-900 dark:text-slate-100 focus:outline-none focus:border-indigo-500
+          className="flex-1 rounded-full px-4 py-2 border border-gray-300 dark:bg-slate-900 dark:text-slate-100 focus:outline-none focus:border-cyan-600
           dark:border-slate-700"
           value={edit? editMessage:message}
           onChange={(e) => {
@@ -47,7 +47,7 @@ export default function SendMessage(){
         <button
           type="submit"
           disabled={loading}
-          className="bg-indigo-600 text-white rounded-full p-2 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50"
+          className="bg-cyan-700 text-white rounded-full p-2 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:ring-offset-2 disabled:opacity-50"
         >
           {(loading || loadingEdit) ? (
             <Loader2 className="w-5 h-5 animate-spin" />
