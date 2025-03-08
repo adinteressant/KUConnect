@@ -38,43 +38,54 @@ export default async function userPasswordChangeController(req, res) {
   }
 
   else if (type === 'username') {
-    let existingPublicInfo
-    const user_id = req.body.user_id;
-    const username = req.body.username;
-    const [publicInfo, posts] = await Promise.all([
-      PublicInfo.findOne({ user_id }),
-      Post.find({ userId: user_id })
-    ])
-    if (!publicInfo) {
-      return res.status(404).json({ message: "User not found" });
-    }
     try {
+      let existingPublicInfo
+      const user_id = req.body.user_id;
+      const username = req.body.username;
+      const publicInfo = await PublicInfo.findOne({ user_id })
+      if (!publicInfo) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
       existingPublicInfo = await PublicInfo.findOne({ username })
+
+      if (existingPublicInfo) {
+        return res.status(400).json({ message: 'Username is already taken' })
+      }
+      // if(privateInfo.username != username){
+      //   return res.status(400).json({ message: "Enter your new username" });
+      // }
+      const recentlyLikedPosts = await Post.find({ recentLikes: publicInfo.username })
+      console.log(recentlyLikedPosts)
+      if (recentlyLikedPosts.length > 0) {
+        await Promise.all(
+          recentlyLikedPosts.map(async (post) => {
+            console.log(post.recentLikes)
+            post.recentLikes = post.recentLikes.map(name => name === publicInfo.username ? username : name)
+            await post.save()
+          })
+        )
+      }
+
+      publicInfo.username = username;
+      await publicInfo.save();
+
+      const posts = await Post.find({ userId: user_id })
+      if (posts.length > 0) {
+        await Promise.all(
+          posts.map(async (post) => {
+            post.username = username
+            await post.save()
+          })
+        )
+      }
+
+      return res.status(200).json(
+        { message: "Username changed successfully" }
+      )
     } catch (e) {
       console.log(e)
     }
-    if (existingPublicInfo) {
-      return res.status(400).json({ message: 'Username is already taken' })
-    }
-    // if(privateInfo.username != username){
-    //   return res.status(400).json({ message: "Enter your new username" });
-    // }
-    publicInfo.username = username;
-    await publicInfo.save();
-
-    if(posts.length>0)
-    {
-      await Promise.all(
-        posts.map(async (post) => {
-          post.username = username
-          await post.save()
-        })
-      )
-    }
-
-    return res.status(200).json(
-      { message: "Username changed successfully" }
-    )
   }
   else {
     return res.status(400).json({ message: "Invalid request" });
