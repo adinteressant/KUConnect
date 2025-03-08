@@ -26,9 +26,15 @@ export default function VerifyOtp(){
     })
     .then(response => response.json())
     .then((data)=>{
-      console.log('Success:', data);
-      alert('Registration successful!');
-      window.location.href = `/login`
+      if(!data.error){
+       alert('Registration successful!');
+       window.location.href = `/login`
+      }else if(data.error=='otp expired'){
+        alert('OTP expired!')
+        window.location.href = `/register`
+      }else{
+        alert('Registration unsuccessful!')
+      }
     })
     .catch((e)=>{
       console.log(e)
