@@ -219,7 +219,7 @@ export default function VideoCall() {
             <div className="flex gap-2 md:order-3">
               <button
                 onClick={handleCreateOffer}
-                className="flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium"
+                className="flex items-center justify-center gap-2 px-6 py-3 bg-gray-100 text-black rounded-lg hover:bg-gray-400 transition-colors duration-200 font-medium"
               >
                 <Video className="w-5 h-5" />
                 Start
@@ -227,7 +227,7 @@ export default function VideoCall() {
               
               <button
                 onClick={handleAnswerOffer}
-                className="flex items-center justify-center gap-2 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200 font-medium"
+                className="flex items-center justify-center gap-2 px-6 py-3 bg-gray-100 text-black rounded-lg hover:bg-gray-400 transition-colors duration-200 font-medium"
               >
                 <Phone className="w-5 h-5" />
                 Join
