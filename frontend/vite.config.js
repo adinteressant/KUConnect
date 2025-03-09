@@ -8,7 +8,7 @@ export default defineConfig({
     port: 5173,
     proxy: {
       '/api': {
-        target: 'https://192.168.0.100:4000',
+        target: 'https://HARDCODED_IP_HERE',
         changeOrigin: true,
         secure: false, 
       },
