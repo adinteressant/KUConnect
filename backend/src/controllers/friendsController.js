@@ -122,7 +122,7 @@ export const getIncomingFriendRequests = async (req, res) => {
         return {
           sender_username: senderInfo?.username || 'Unknown', // Sender's username
           request_id: request.request_id, // Friend request ID
-          pfp_id: senderInfo.pfp_id,    // Include profile picture ID
+          pfp_id: senderInfo?.pfp_id,    // Include profile picture ID
         };
       })
     );

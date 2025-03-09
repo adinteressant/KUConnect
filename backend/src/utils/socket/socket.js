@@ -1,9 +1,15 @@
 import { Server } from 'socket.io'
-import http from 'http'
+import https from 'https'
 import express from 'express'
+import fs from 'fs';
 
 export const app = express()
-export const server = http.createServer(app)
+const options = {
+    key: fs.readFileSync("key.pem"),
+    cert: fs.readFileSync("cert.pem"),
+    rejectUnauthorized: false,
+};
+export const server = https.createServer(options,app)
 export const socketIo = new Server(server,{
   cors:{
     origin:'*',

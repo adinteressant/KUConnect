@@ -15,10 +15,6 @@ import { app } from './utils/socket/socket.js'
 import {server} from './utils/socket/socket.js'
 
 dotenv.config({path: './.env'});
-
-
-// export const app = express();
-//middleware attachments
 app.use(express.json({limit: '50mb'}));
 
 app.use("/public",express.static("../public/"))

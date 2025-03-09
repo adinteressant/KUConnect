@@ -31,9 +31,7 @@ export const toggleLike = async (req, res) => {
             Like.findOne({ postId })
         ])
 
-        if (!post) {
-            return res.status(404).json({ message: 'Post not found!' });
-        }
+        if (!post) { return res.status(404).json({ message: 'Post not found!' }); }
 
         if(!like)
         {
@@ -59,8 +57,9 @@ export const toggleLike = async (req, res) => {
 
         post.recentLikes = like.userId.slice(-2).reverse()
             .map((id) => {
-                const matched = usernames.find(user => user.user_id === id)
-                return matched.username
+                const matched = usernames?.find(user => user.user_id === id)
+
+                return matched?.username
             } 
         )
 

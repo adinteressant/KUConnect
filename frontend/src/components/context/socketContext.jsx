@@ -16,10 +16,11 @@ export const SocketContextProvider = (({children})=>{
   } 
   useEffect(()=>{
     if(authUserId){
-      const socket = io('http://localhost:4000',{
+      // HARD-CODE SOCKET SERVER
+      const socket = io('https://192.168.0.100:4000',{
         query:{
           userId:authUserId
-        }
+         },
       })
       setSocket(socket)
       socket.on('getOnlineUsers',(users)=>{
