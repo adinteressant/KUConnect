@@ -76,6 +76,10 @@ export default function LoginPage() {
     try{
       const response = await fetch(`/api/forgot-password?email=${modalEmail}`)
       const data = await response.json()
+      if(data.message=='not found'){
+        setValidationString({message:'Account does not exist.',colorClass:'text-red-500'})
+        return
+      }
       setEmailOTP(data.otp)
     }catch(err){
       console.log(err)

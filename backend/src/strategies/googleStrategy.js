@@ -30,7 +30,7 @@ export default passport.use(new Strategy({
   async (req,accessToken, refreshToken, profile, done) => {
     const gmail = profile.email
     if(!gmail.includes(KU_DOMAIN)){
-      return done(null,null);
+      return done('Must be a ku domain.',null);
     }
     let findUser
     try{

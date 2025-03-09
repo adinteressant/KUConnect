@@ -1,13 +1,14 @@
 import { UnregisteredUser } from '../models/unregisteredUser.model.js'
 import PrivateInfo from '../models/PrivateInfo.js'
 import PublicInfo from '../models/PublicInfo.js'
-
 const verifyOTP = async (req,res) => {
   try{
     const {unregisteredEmail,otp} = req.body
     const unregisteredUser = await UnregisteredUser.findOne({email:unregisteredEmail})
-    
-    if(unregisteredUser.otp != otp){
+    if(!unregisteredUser){
+      return res.status(404).json({error:'otp expired'})
+    }
+    if(otp != atob(unregisteredUser.otp)){
       return res.status(401).send({error:'failed to register'})
     }
 
@@ -28,7 +29,6 @@ const verifyOTP = async (req,res) => {
       tags: [], // Default empty tags
       role: role, // Save the role in PublicInfo
     })
-
      await Promise.all([publicInfo.save(),privateInfo.save()])
     // req.userId = userId
     res.status(201).json({

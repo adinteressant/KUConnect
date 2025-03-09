@@ -68,11 +68,15 @@ export default async function loginController(req, res) {
 
 export const forgotPasswordController = async (req,res) => {
   const {email} = req.query
+  const privateInfo = await PrivateInfo.findOne({email})
+  if(!privateInfo){
+    return res.status(404).json({message:'not found'})
+  }
   const otp = generateOTP()
 
   sendMailPasswordChange(email,otp)
 
-  res.status(200).json({message:'success',otp})
+  return res.status(200).json({message:'success',otp})
 
 }
 

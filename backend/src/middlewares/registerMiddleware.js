@@ -73,11 +73,11 @@ export default async function registerMiddleware(req,res,next){
   }
 
   //generate OTP
-  const otp = generateOTP()
+  let otp = generateOTP()
 
   //send mail to the email address
   sendMail(email,otp)
-
+  otp = btoa(otp) 
   const unregisteredUser = new UnregisteredUser({
     user_id: userId,
     email: email,
