@@ -18,7 +18,6 @@ import axios from 'axios';
         
         const metadata = {};
         response.data?.metaTags?.forEach(tag => {
-          console.log(tag);
           const property = tag.property?.replace('og:', '');
           if (property && tag.content) {
             metadata[property] = tag.content;
