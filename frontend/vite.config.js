@@ -8,9 +8,10 @@ export default defineConfig({
     port: 5173,
     proxy: {
       '/api': {
-        target: 'https://HARDCODED_IP_HERE',
+        target: 'https://172.18.183.176:4000',
         changeOrigin: true,
         secure: false, 
+        ws:true,
       },
     },
   },

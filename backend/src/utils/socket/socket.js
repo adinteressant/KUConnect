@@ -1,5 +1,6 @@
 import { Server } from 'socket.io'
 import https from 'https'
+import http from 'http'
 import express from 'express'
 import fs from 'fs';
 
@@ -9,6 +10,7 @@ const options = {
     cert: fs.readFileSync("cert.pem"),
     rejectUnauthorized: false,
 };
+
 export const server = https.createServer(options,app)
 export const socketIo = new Server(server,{
   cors:{

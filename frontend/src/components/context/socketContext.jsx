@@ -17,7 +17,7 @@ export const SocketContextProvider = (({children})=>{
   useEffect(()=>{
     if(authUserId){
       // HARDCODED SOCKET SERVER
-      const socket = io('https://HARDCODED_IP_HERE',{
+      const socket = io('https://172.18.183.176:4000',{
         query:{
           userId:authUserId
          },
