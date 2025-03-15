@@ -2,7 +2,7 @@
 
 KUConnect is a platform designed to connect university students, facilitating collaboration, networking, and academic discussions. Built using the MERN (MongoDB, Express, React, Node.js) stack, KUConnect provides a seamless experience for students to engage with peers, join study groups, share resources, and stay updated on university events.
 
-## aFeatures
+## Features
 
 - **User Authentication**: Secure login and signup with JWT authentication.
 - **Student Networking**: Connect with fellow students, send messages, and create profiles.
